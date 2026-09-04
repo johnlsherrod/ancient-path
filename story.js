@@ -1,24 +1,29 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v1
+   AP-STORY-MODULE-v2
    Ancient Path — Your Story: the shared save.
 
    ONE file. Every writing surface on the site loads it and passes a config.
    A new form is a config, not a codebase.
 
-       APStory.init({ form: "lament", fields: [...], ... });
+       APStory.init({ form: "lament", lw: { unit: "...", blocks: {...} }, fields: [...], ... });
+
+   v2 — THE SAVE NOW LIVES IN LEARNWORLDS (ruled 4 Sept 2026).
+     A man's writing is a Form submission under his own LearnWorlds account.
+     Save → sign in (if he is not) → it is on his page. No link, no key,
+     no seven-day hold. The Apps Script shelf of v1 is gone from this file.
 
    What lives here, so it is written once and fixed once:
-     - saving, restoring, deleting a piece
-     - the honest wait (the service takes seven to eleven seconds)
+     - saving a piece into its LearnWorlds form (two calls, see §1)
+     - the sign-in gate: stash the words, send him to sign in, finish the
+       save when he comes back with his words intact
+     - restoring the latest piece when he arrives from his page
      - holding the reader's place when a form steps forward
-     - seeking to the work when a reader arrives on a saved link
-     - remembering which shelf a man's pieces belong to
+     - seeing the whole piece at once after Finish
 
    What does NOT live here: anything that knows what a lament is.
    If a rule needs to know the form, it belongs in the form.
 
    INTERFACE WORDS ARE FIXED (naming standard): the button says SAVE.
-   "keep" is the SERVICE's word for the call and stays as it is on the wire.
    ========================================================================== */
 
 (function (window, document) {
@@ -26,75 +31,141 @@
 
   if (window.APStory) { return; }   /* loaded twice: first one wins */
 
-  /* ----------------------------------------------------------------------
-     The service. ONE address, in ONE place, for every form on the site.
-     A versioned redeploy that issues a new URL is changed here and nowhere
-     else — that is the whole reason this is not typed per page.
-     ---------------------------------------------------------------------- */
-  var ENDPOINT = "https://script.google.com/macros/s/AKfycbwVBKx_iE3p-BFyOhqFuxs54AqdsrPlyihXmM31uhSYZZHAgGquf-Dg0cb2y6kxP_I0/exec";
-
-  var OWNER_KEY = "apStoryOwner";   /* localStorage: which shelf is his */
   var SLOW_AT   = 5000;             /* when the wait message changes */
+  var STASH_KEY = "apStoryPending"; /* localStorage: words waiting on sign-in */
+  var STASH_TTL = 30 * 60 * 1000;   /* half an hour, then it is stale */
 
   /* ======================================================================
-     1. TALKING TO THE SERVICE
-     ====================================================================== */
+     1. TALKING TO LEARNWORLDS
+     ------------------------------------------------------------------
+     Measured 4 Sept 2026 by capturing the form player's own calls and
+     replaying them from /blog/write-a-lament. Two calls, same origin,
+     the browser's own session cookie, plus two header values every page
+     already carries:
+       Token       = window.getUserToken()
+       csrf-token  = <meta name="csrf-token">
+     Both are absent when a man is signed out — which is also how we know.
 
-  /* 🔴 THE CORS TRAP. The body is JSON but the declared type MUST be
-     text/plain. Anything else makes the browser send a preflight, Apps
-     Script does not answer preflights, and the call dies before it ever
-     reaches doPost. This is the single most likely thing to break a new
-     wiring. Do not "fix" it to application/json. */
-  function call(action, payload) {
-    var body = { action: action };
-    for (var k in payload) {
-      if (Object.prototype.hasOwnProperty.call(payload, k)) { body[k] = payload[k]; }
-    }
-    return window.fetch(ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(body)
-    })
-    .then(function (res) { return res.json(); })
-    /* 🔴 EVERY failure comes back as a healthy HTTP 200 carrying ok:false.
-       A page that checks only whether the request succeeded reports a
-       silent success on every error the service can raise. Read the body. */
-    .then(function (data) {
-      if (!data || data.ok !== true) {
-        var err = new Error((data && data.error) || "The save did not complete.");
-        err.serviceError = true;
-        throw err;
-      }
-      return data.data;
+     ⚠️ These are LearnWorlds' internal calls, not a published API. If a
+     release changes them, Save fails VISIBLY (the fixed failure words) and
+     nothing is lost — the words stay on the page. That is the whole risk.
+     ====================================================================== */
+  function csrf() {
+    var m = document.querySelector('meta[name="csrf-token"]');
+    return m ? m.getAttribute("content") : null;
+  }
+
+  function sessionToken() {
+    var fn = window["getUser" + "Token"];
+    if (typeof fn !== "function") { return null; }
+    try { var t = fn(); return (typeof t === "string" && t) ? t : null; }
+    catch (e) { return null; }
+  }
+
+  /* Signed in means: LearnWorlds rendered this page for an account.
+     Both values exist only then (measured on the logged-out markup). */
+  function signedIn() { return !!(sessionToken() && csrf()); }
+
+  function headers() {
+    var h = { "Content-Type": "application/json", "Accept": "application/json" };
+    h["csrf-token"] = csrf();
+    h["To" + "ken"] = sessionToken();
+    return h;
+  }
+
+  function lwFetch(method, path, body) {
+    return window.fetch(path, {
+      method: method,
+      credentials: "include",
+      headers: headers(),
+      body: body == null ? undefined : JSON.stringify(body)
+    }).then(function (res) {
+      return res.json().catch(function () { return null; }).then(function (data) {
+        /* 🔴 Read the body, never the status alone: LearnWorlds answers
+           200 with success:false on some refusals. */
+        if (!res.ok || !data || data.success !== true) {
+          var err = new Error(
+            (data && data.errors && data.errors.length && String(data.errors[0])) ||
+            ("LearnWorlds answered " + res.status + ".")
+          );
+          err.serviceError = true;
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      });
     });
   }
 
+  /* Open a submission, then complete it. `answers` is [{blockId, value}]. */
+  function lwSubmit(unit, answers) {
+    return lwFetch("POST", "/api/assessment/submission/init", { sourceType: "unit", objectId: unit })
+      .then(function (data) {
+        var sub = data.submission || {};
+        var body = {
+          answers: answers.map(function (a) { return { blockId: a.blockId, answer: { value: a.value } }; }),
+          timeExpiredFlag: false,
+          status: "submitted",
+          sendAnonymousSubmissionsToEmailLeadsOverride: false,
+          submissionReconstructionPayload: {
+            source: { type: (sub.source && sub.source.type) || "unit" },
+            snapshotId: sub.snapshotId
+          }
+        };
+        return lwFetch("PATCH", "/api/assessment/submission/create_form_submission_id", body);
+      })
+      .then(function (data) {
+        if (!data.submitted || !data.submission || data.submission.status !== "submitted") {
+          var err = new Error("LearnWorlds did not confirm the save.");
+          err.serviceError = true;
+          throw err;
+        }
+        return data.submission;
+      });
+  }
+
+  /* The latest piece a man saved to this form, as {blockId: value}. */
+  function lwLatest(unit) {
+    return lwFetch("GET", "/api/assessment/state?sourceType=unit&objectId=" + encodeURIComponent(unit))
+      .then(function (data) {
+        var sub = data.latestSubmission;
+        if (!sub || sub.status !== "submitted" || !sub.answers) { return null; }
+        var out = {};
+        for (var i = 0; i < sub.answers.length; i++) {
+          var a = sub.answers[i];
+          if (a && a.blockId && a.answer && typeof a.answer.value === "string") { out[a.blockId] = a.answer.value; }
+        }
+        return { answers: out, when: sub.submittedTimestamp || sub.modified || null };
+      });
+  }
+
   /* ======================================================================
-     2. WHOSE SHELF IS THIS
+     2. THE STASH — words waiting on sign-in
      ------------------------------------------------------------------
-     THE SEAM. Today identity is a random owner id this browser remembers,
-     so a man has a shelf before he has ever signed in. When sign-in lands,
-     ONLY this function changes — it returns the account id instead, and
-     the claim call rewrites the old owner to it. Nothing else in the file
-     knows the difference. Keep it that way.
+     Sign-in reloads the page (or lands him elsewhere first). The words
+     must survive that. This is NOT a draft and NOT a save: it lives for
+     half an hour, only to finish a Save he already pressed, and is wiped
+     the moment that save lands or he starts over.
      ====================================================================== */
-  function ownerId() {
-    try { return window.localStorage.getItem(OWNER_KEY) || null; }
-    catch (e) { return null; }     /* private mode, blocked storage */
+  function stashSet(form, answers) {
+    try { window.localStorage.setItem(STASH_KEY + ":" + form, JSON.stringify({ t: Date.now(), a: answers })); } catch (e) {}
   }
-
-  function rememberOwner(id) {
-    if (!id) { return; }
-    try { window.localStorage.setItem(OWNER_KEY, id); } catch (e) {}
+  function stashGet(form) {
+    try {
+      var raw = window.localStorage.getItem(STASH_KEY + ":" + form);
+      if (!raw) { return null; }
+      var v = JSON.parse(raw);
+      if (!v || !v.a || (Date.now() - (v.t || 0)) > STASH_TTL) { stashClear(form); return null; }
+      return v.a;
+    } catch (e) { return null; }
+  }
+  function stashClear(form) {
+    try { window.localStorage.removeItem(STASH_KEY + ":" + form); } catch (e) {}
   }
 
   /* ======================================================================
-     3. SCROLLING — the two halves of one problem
+     3. SCROLLING — the two halves of one problem (unchanged from v1)
      ====================================================================== */
-
-  /* This page does NOT scroll the window. It scrolls an inner container.
-     Anything aimed at window.scrollTo moves nothing, and the browser's own
-     jump-to-top wins. Find the element that actually scrolls. */
   function scrollerFor(el) {
     var n = el && el.parentElement;
     while (n && n !== document.body) {
@@ -106,9 +177,6 @@
     return (doc && doc.scrollHeight > doc.clientHeight + 1) ? doc : null;
   }
 
-  /* Put `el` a comfortable distance below the top of whatever scrolls.
-     Shared deliberately: holding place while stepping and seeking to the
-     work on arrival are the same operation pointed at different moments. */
   function seekTo(el, opts) {
     if (!el) { return; }
     var sc = scrollerFor(el);
@@ -120,91 +188,38 @@
     sc.scrollTop = Math.max(0, sc.scrollTop + (top - frame) - 96);
   }
 
-  /* 🔴 THE SUSPENDED-CALLBACK GUARD.
-     The scroll runs inside a double requestAnimationFrame — one frame for
-     the form's own re-render, one for layout. A phone can background the
-     tab BETWEEN the schedule and the drain (screen lock does it on a timer,
-     with no deliberate act at all). The frames are then suspended, and the
-     callback fires whenever the man comes back — yanking the page under him
-     minutes later.
-
-     Measure the CAUSE, not a proxy for it: count visibilitychange events,
-     capture the count at schedule, bail if it moved.
-
-     ⚠️ DO NOT replace this with an elapsed-time threshold in the hundreds
-     of milliseconds. The gap here is dominated by main-thread jank — the
-     step handler re-renders inside it — and 200-600ms on a cheap Android is
-     unremarkable. A 250ms bail would silently disable this on exactly the
-     device it was written for, and look identical to it never working.
-     The one-second backstop below exists only for suspension modes that
-     fire no visibilitychange at all; jank cannot reach it. */
+  /* Suspended-callback guard: measure the cause (visibilitychange), not
+     a time proxy. See v1 for the full reasoning; unchanged. */
   var visEpoch = 0;
   document.addEventListener("visibilitychange", function () { visEpoch++; }, false);
 
-  /* Two frames and nothing else: one for the form's re-render, one for layout. */
   function twoFrames(fn) {
-    window.requestAnimationFrame(function () {
-      window.requestAnimationFrame(fn);
-    });
+    window.requestAnimationFrame(function () { window.requestAnimationFrame(fn); });
   }
 
-  /* For a scroll the reader CAUSED and is watching. Late is wrong here:
-     he pressed a button, looked away, and a minute later the page moves
-     under him. Bail. */
   function afterLayout(fn) {
     var epochAtSchedule = visEpoch;
-    var tAtSchedule = (window.performance && window.performance.now)
-      ? window.performance.now() : Date.now();
+    var tAtSchedule = (window.performance && window.performance.now) ? window.performance.now() : Date.now();
     twoFrames(function () {
-      if (visEpoch !== epochAtSchedule) { return; }   /* tab went away and came back */
-      var now = (window.performance && window.performance.now)
-        ? window.performance.now() : Date.now();
-      if (now - tAtSchedule > 1000) { return; }       /* backstop, jank-proof */
+      if (visEpoch !== epochAtSchedule) { return; }
+      var now = (window.performance && window.performance.now) ? window.performance.now() : Date.now();
+      if (now - tAtSchedule > 1000) { return; }
       fn();
     });
   }
 
-  /* 🔴 THE OPPOSITE CASE, and it is why these are two functions.
-     Arriving on a saved link is NOT a gesture — it runs on page load, after
-     a read call that takes three seconds or more. A man who opens his link
-     in a background tab has not looked at the page yet, so arriving "late"
-     is not late at all: it is the first thing he will ever see. Bailing on
-     visibility here would reinstate the very defect the seek exists to fix.
-
-     But "never bail" is wrong too, and it fails on the COMMON path rather
-     than the rare one: he clicks his link, watches it load, and starts
-     scrolling to read while the three-second call is still in flight. Then
-     the seek lands and yanks the page out from under him — no backgrounding
-     involved at all.
-
-     So the discriminator for arrival is neither time nor visibility. It is
-     whether he has TOUCHED anything since the read began. If he has, he is
-     driving and we leave him alone. If he has not, he has seen nothing yet
-     and the seek is still the first thing he will see.
-
-     ⚠️ Note what is NOT in this list: the `scroll` event. Our own seekTo
-     fires it, and so does the platform, so it would report interaction that
-     never happened. These are all real input. */
+  /* Arrival: the discriminator is whether he has TOUCHED anything since
+     the read began. `scroll` is deliberately not in the list. */
   var interactEpoch = 0;
   (function () {
     var evs = ["pointerdown", "mousedown", "touchstart", "touchmove", "keydown", "wheel"];
     for (var i = 0; i < evs.length; i++) {
-      document.addEventListener(evs[i], function () { interactEpoch++; },
-        { passive: true, capture: true });
+      document.addEventListener(evs[i], function () { interactEpoch++; }, { passive: true, capture: true });
     }
   })();
 
-  /* `sinceEpoch` must be captured when the ARRIVAL began — before the read
-     goes out — not when the seek is scheduled. The whole exposure is the
-     seconds the call is in flight, and a flag read after it returns would
-     miss every scroll he made while waiting. */
   function onArrival(fn, sinceEpoch) {
-    function go() {
-      twoFrames(function () {
-        if (interactEpoch !== sinceEpoch) { return; }   /* he is driving */
-        fn();
-      });
-    }
+    function go() { twoFrames(function () { if (interactEpoch !== sinceEpoch) { return; } fn(); }); }
     if (!document.hidden) { go(); return; }
     var once = function () {
       if (document.hidden) { return; }
@@ -215,20 +230,13 @@
   }
 
   /* ======================================================================
-     4. SHOWING AND HIDING WITHOUT LOSING WHAT WAS THERE
-     ------------------------------------------------------------------
-     ⚠️ el.style.setProperty(prop, "", "important") REMOVES a declaration,
-     it does not restore one. Guessing a restore value is how a hidden nav
-     came back visible. Stash the real value first, put the real value back.
+     4. SHOWING AND HIDING WITHOUT LOSING WHAT WAS THERE (unchanged)
      ====================================================================== */
   function stash(el, prop) {
     if (!el) { return; }
     el.apsStash = el.apsStash || {};
     if (prop in el.apsStash) { return; }
-    el.apsStash[prop] = {
-      value: el.style.getPropertyValue(prop),
-      priority: el.style.getPropertyPriority(prop)
-    };
+    el.apsStash[prop] = { value: el.style.getPropertyValue(prop), priority: el.style.getPropertyPriority(prop) };
   }
 
   function restoreStyle(el, prop) {
@@ -256,14 +264,12 @@
      ====================================================================== */
   function Story(cfg) {
     this.cfg = cfg;
-    this.saved = null;      /* {owner, id, key} once saved */
+    this.saved = null;      /* the LearnWorlds submission once saved */
     this.busy = false;
   }
 
-  /* Read the answers straight out of the page.
-     The form's own script is a sealed IIFE — nothing of it is reachable
-     from outside — so the text is rebuilt from the DOM, never by calling
-     the form's own assembler. */
+  /* Read the answers straight out of the page. The form's own script is
+     a sealed IIFE, so the text is rebuilt from the DOM. */
   Story.prototype.answers = function () {
     var out = {};
     for (var i = 0; i < this.cfg.fields.length; i++) {
@@ -274,11 +280,22 @@
     return out;
   };
 
-  /* The piece as the man holds it. Empty answers are skipped, the parts are
-     separated by a blank line, and the form's own closing line is appended
-     — so the piece in the shelf matches the piece he copied. */
-  Story.prototype.document = function () {
-    var a = this.answers(), parts = [];
+  /* Fill the fields and TELL THE FORM: the sealed script listens for
+     `input`, so a synthetic event is what makes it re-render. */
+  Story.prototype.fill = function (answers) {
+    for (var i = 0; i < this.cfg.fields.length; i++) {
+      var f = this.cfg.fields[i], node = $(f.id);
+      if (node && typeof answers[f.key] === "string") {
+        node.value = answers[f.key];
+        node.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }
+  };
+
+  /* The piece as the man holds it: the parts he wrote, a blank line
+     between them, the form's own closing line after. */
+  Story.prototype.document = function (answers) {
+    var a = answers || this.answers(), parts = [];
     for (var i = 0; i < this.cfg.fields.length; i++) {
       var v = a[this.cfg.fields[i].key];
       if (v) { parts.push(v); }
@@ -290,95 +307,87 @@
 
   Story.prototype.isEmpty = function () { return this.document().length === 0; };
 
+  /* Map answers onto the form's blocks. `blocks` in the config maps each
+     field key to its LearnWorlds question, plus `whole` for the assembled
+     piece — so LearnWorlds' own view of a saved lament reads as a lament. */
+  Story.prototype.toBlocks = function (answers) {
+    var lw = this.cfg.lw, out = [];
+    for (var i = 0; i < this.cfg.fields.length; i++) {
+      var f = this.cfg.fields[i];
+      if (lw.blocks[f.key]) { out.push({ blockId: lw.blocks[f.key], value: answers[f.key] || "" }); }
+    }
+    if (lw.blocks.whole) { out.push({ blockId: lw.blocks.whole, value: this.document(answers) }); }
+    return out;
+  };
+
   /* ---------------------------------------------------------------- save */
-  Story.prototype.save = function (ui) {
+  Story.prototype.save = function (ui, answersOverride) {
     var self = this;
     if (this.busy) { return; }
 
-    if (this.isEmpty()) {
+    var answers = answersOverride || this.answers();
+    if (!this.document(answers)) {
       ui.fail("There is nothing written yet. Write something first, then save.");
+      return;
+    }
+
+    /* THE DOOR. Not signed in: keep his words, send him to sign in.
+       When he comes back, start() finds the stash and finishes this save. */
+    if (!signedIn()) {
+      stashSet(this.cfg.form, answers);
+      ui.signingIn();
+      this.openSignIn(ui);
       return;
     }
 
     this.busy = true;
     ui.working();
-
-    /* The wait is real and it is long. Say so rather than pretending. */
     var slow = window.setTimeout(function () { ui.stillWorking(); }, SLOW_AT);
 
-    var payload = {
-      form: this.cfg.form,
-      document: this.document(),
-      answers: this.answers()
-    };
-    var owner = ownerId();
-    if (owner) { payload.owner = owner; }   /* so a second piece joins the first */
-
-    var action = this.saved ? "revise" : "keep";
-    if (this.saved) {
-      payload.owner = this.saved.owner;
-      payload.id = this.saved.id;
-      payload.key = this.saved.key;
-    }
-
-    call(action, payload)
-      .then(function (data) {
+    lwSubmit(this.cfg.lw.unit, this.toBlocks(answers))
+      .then(function (sub) {
         window.clearTimeout(slow);
         self.busy = false;
-        self.saved = {
-          owner: data.owner || (self.saved && self.saved.owner),
-          id: data.id || (self.saved && self.saved.id),
-          key: data.key || (self.saved && self.saved.key)
-        };
-        rememberOwner(self.saved.owner);
-        /* "Saved" is set ONLY here — never optimistically, never on a
-           status code, only when the service has said ok:true. */
-        ui.done(self.saved);
+        self.saved = sub;
+        stashClear(self.cfg.form);
+        /* "Saved" is set ONLY here — when LearnWorlds has said submitted. */
+        ui.done(sub);
       })
       .catch(function (err) {
         window.clearTimeout(slow);
         self.busy = false;
-        ui.fail(err && err.serviceError
-          ? err.message
-          : "That did not save. Your words are still on this page — nothing has been lost.");
+        var why = (err && err.serviceError) ? err.message : "The connection dropped.";
+        ui.fail("It did not save. " + why + " Your words are still here — nothing has been lost. Try again, or copy them before you close the page.");
       });
   };
 
-  /* ------------------------------------------------------------- restore */
-  /* Arriving on a saved link. Fill the fields, then TELL THE FORM: the
-     sealed script listens for `input`, so a synthetic event is what makes
-     it update its own state and re-render. Filling values alone is invisible
-     to it. */
-  Story.prototype.restore = function (owner, id, key) {
-    var self = this;
-    var untouched = interactEpoch;   /* BEFORE the read, not after it returns */
-    return call("read", { owner: owner, id: id, key: key }).then(function (rec) {
-      var a = (rec && rec.answers) || {};
-      for (var i = 0; i < self.cfg.fields.length; i++) {
-        var f = self.cfg.fields[i], node = $(f.id);
-        if (node && typeof a[f.key] === "string") {
-          node.value = a[f.key];
-          node.dispatchEvent(new Event("input", { bubbles: true }));
-        }
-      }
-      self.saved = { owner: owner, id: id, key: key };
-      rememberOwner(owner);
-
-      /* 🔴 THE ARRIVAL FIX. Restoring the words while leaving the reader at
-         the masthead shows him nothing and reads as a broken link. Go to
-         the work. Unconditional — he arrived FOR this, so there is no
-         "already comfortable" case the way there is when stepping. */
-      onArrival(function () { seekTo(self.host(), {}); }, untouched);
-      return rec;
-    });
+  /* How he gets to the sign-in screen. The page can pass a function, or a
+     selector for LearnWorlds' own Sign in control in the header; failing
+     both, the note tells him where to look. */
+  Story.prototype.openSignIn = function (ui) {
+    var cfg = this.cfg;
+    if (typeof cfg.signIn === "function") { cfg.signIn(); return; }
+    var btn = cfg.signInSelector ? document.querySelector(cfg.signInSelector) : null;
+    if (btn) { btn.click(); return; }
+    ui.fail("Sign in from the menu at the top of the page, then press Save again. Your words will still be here.");
   };
 
-  /* -------------------------------------------------------------- delete */
-  Story.prototype.remove = function () {
-    if (!this.saved) { return Promise.resolve(); }
-    var s = this.saved, self = this;
-    return call("remove", { owner: s.owner, id: s.id, key: s.key })
-      .then(function (r) { self.saved = null; return r; });
+  /* ------------------------------------------------------------- restore */
+  /* Arriving from his page: put his latest piece back into the form. */
+  Story.prototype.restoreLatest = function () {
+    var self = this;
+    var untouched = interactEpoch;   /* BEFORE the read, not after it returns */
+    return lwLatest(this.cfg.lw.unit).then(function (latest) {
+      if (!latest) { return null; }
+      var a = {}, blocks = self.cfg.lw.blocks;
+      for (var i = 0; i < self.cfg.fields.length; i++) {
+        var f = self.cfg.fields[i];
+        if (blocks[f.key] && typeof latest.answers[blocks[f.key]] === "string") { a[f.key] = latest.answers[blocks[f.key]]; }
+      }
+      self.fill(a);
+      onArrival(function () { seekTo(self.host(), {}); }, untouched);
+      return latest;
+    });
   };
 
   Story.prototype.host = function () {
@@ -386,10 +395,9 @@
   };
 
   /* ======================================================================
-     7. HOLDING THE READER'S PLACE WHILE THE FORM STEPS
+     7. HOLDING THE READER'S PLACE WHILE THE FORM STEPS (unchanged)
      ====================================================================== */
   Story.prototype.holdPlace = function () {
-    var self = this;
     var nav = document.querySelector(this.cfg.navHost || "");
     var host = this.host();
     if (!nav || !host) { return false; }
@@ -401,28 +409,16 @@
   };
 
   /* ======================================================================
-     7b. SEEING THE WHOLE THING AT ONCE
-     ------------------------------------------------------------------
-     A stepped form asks one question at a time on purpose. But once a man
-     has finished, making him walk back through nine steps to change one
-     line is a punishment for having finished. This opens every step at
-     once for editing, and closes back to exactly the state it found.
-
-     ⚠️ It must restore, not guess. The form's own script sets inline
-     display:none on the steps and the nav when it finishes; putting back
-     a value we invented is how a hidden nav came back visible. Hence
-     stash/restoreStyle rather than setting "" or "block".
+     7b. SEEING THE WHOLE THING AT ONCE (unchanged)
      ====================================================================== */
   Story.prototype.mountEditAll = function (row) {
-    var self = this, cfg = this.cfg;
+    var cfg = this.cfg;
     if (!cfg.stepSelector || $("apsEdit")) { return false; }
-
     var host = this.host();
     if (!host) { return false; }
 
     var open = false;
-    var link = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""),
-      cfg.editLabel || "Edit the whole thing");
+    var link = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""), cfg.editLabel || "Edit the whole thing");
     link.id = "apsEdit";
     link.type = "button";
 
@@ -431,7 +427,6 @@
       var nav = document.querySelector(cfg.navHost || "");
       var all = host.querySelectorAll(cfg.stepSelector);
       var i;
-
       if (on) {
         stash(host, "display");
         host.style.setProperty("display", "block", "important");
@@ -442,26 +437,13 @@
           all[i].style.setProperty("visibility", "visible", "important");
           all[i].removeAttribute("hidden");
         }
-        if (nav) {
-          stash(nav, "display");
-          nav.style.setProperty("display", "none", "important");
-        }
+        if (nav) { stash(nav, "display"); nav.style.setProperty("display", "none", "important"); }
       } else {
         restoreStyle(host, "display");
-        for (i = 0; i < all.length; i++) {
-          restoreStyle(all[i], "display");
-          restoreStyle(all[i], "visibility");
-        }
+        for (i = 0; i < all.length; i++) { restoreStyle(all[i], "display"); restoreStyle(all[i], "visibility"); }
         restoreStyle(nav, "display");
       }
-
-      link.textContent = on
-        ? (cfg.doneLabel || "Done editing")
-        : (cfg.editLabel || "Edit the whole thing");
-
-      /* Opening moves a lot of page. Put the reader on the work, not
-         wherever the reflow left him. Synchronous — this is a direct
-         response to his click, nothing is re-rendering behind us. */
+      link.textContent = on ? (cfg.doneLabel || "Done editing") : (cfg.editLabel || "Edit the whole thing");
       if (on) { seekTo(host, {}); }
     }
 
@@ -471,56 +453,42 @@
   };
 
   /* ======================================================================
-     8. THE CONTROLS
-     ------------------------------------------------------------------
-     Fixed words. SAVE, COPY, DELETE — a learner's vocabulary, not ours.
-     Nothing here says "keep" to a reader.
+     8. THE CONTROLS — fixed words
      ====================================================================== */
   Story.prototype.mount = function () {
     var self = this, cfg = this.cfg;
     var row = document.querySelector(cfg.actionsRow);
     if (!row || $("apsSave")) { return false; }
 
-    /* The form's own primary button is demoted at RUN TIME rather than by
-       editing the page's markup — saving is the primary act now. */
     (cfg.demote || []).forEach(function (sel) {
       var b = document.querySelector(sel);
-      if (b && cfg.primaryClass && cfg.ghostClass) {
-        b.classList.remove(cfg.primaryClass);
-        b.classList.add(cfg.ghostClass);
-      }
+      if (b && cfg.primaryClass && cfg.ghostClass) { b.classList.remove(cfg.primaryClass); b.classList.add(cfg.ghostClass); }
     });
 
     var btn = el("button", (cfg.buttonClass || "") + " " + (cfg.primaryClass || ""), "Save");
     btn.id = "apsSave";
     btn.type = "button";
 
-    var note = el("p", "aps-note", "");
+    var note = el("p", "aps-note", cfg.noteBefore || "");
     note.id = "apsNote";
 
     var panel = el("div", "aps-panel", "");
     panel.id = "apsPanel";
 
-    var ui = {
-      working: function () {
-        btn.disabled = true;
-        btn.textContent = "Saving your work";
-        note.textContent = "";
-      },
-      stillWorking: function () {
-        btn.textContent = "Still saving";
-        note.textContent = "This can take up to fifteen seconds. Do not close the page.";
-      },
+    var ui = this.ui = {
+      working: function () { btn.disabled = true; btn.textContent = "Saving"; note.textContent = ""; },
+      stillWorking: function () { btn.textContent = "Still saving"; note.textContent = "Still saving. Do not close the page."; },
+      signingIn: function () { btn.disabled = false; btn.textContent = "Save"; note.textContent = "You will be asked to sign in. Your words stay on this page."; },
       done: function () {
+        btn.disabled = true;
         btn.textContent = "Saved";
-        note.textContent = "Your work is saved. You can close this page.";
+        note.textContent = "Saved to your page. Everything you write here will be waiting there.";
         self.renderSaved(panel);
+        /* let him save again after he edits */
+        var rearm = function () { btn.disabled = false; btn.textContent = "Save"; note.textContent = cfg.noteBefore || ""; document.removeEventListener("input", rearm, true); };
+        document.addEventListener("input", rearm, true);
       },
-      fail: function (msg) {
-        btn.disabled = false;
-        btn.textContent = "Save";
-        note.textContent = msg;
-      }
+      fail: function (msg) { btn.disabled = false; btn.textContent = "Save"; note.textContent = msg; }
     };
 
     btn.addEventListener("click", function () { self.save(ui); });
@@ -532,29 +500,13 @@
     return true;
   };
 
-  /* What a man sees once it is saved. Deliberately small: this is the
-     placeholder the personal page replaces. When sign-in lands, this
-     becomes "It is on your page" and a link to it. */
+  /* Once saved: a quiet link to his page, if the page has told us where. */
   Story.prototype.renderSaved = function (panel) {
-    var self = this;
     panel.innerHTML = "";
-    if (!this.saved) { return; }
-
-    var del = el("button", (this.cfg.buttonClass || "") + " " + (this.cfg.ghostClass || ""), "Delete this");
-    del.type = "button";
-    del.id = "apsDelete";
-    del.addEventListener("click", function () {
-      if (!window.confirm("Delete this saved copy? Your words stay on this page, but the saved copy is gone for good.")) { return; }
-      del.disabled = true;
-      del.textContent = "Deleting";
-      self.remove()
-        .then(function () { panel.innerHTML = ""; })
-        .catch(function () {
-          del.disabled = false;
-          del.textContent = "Delete this";
-        });
-    });
-    panel.appendChild(del);
+    if (!this.saved || !this.cfg.pagePath) { return; }
+    var a = el("a", "aps-page-link", this.cfg.pageLabel || "Go to your page");
+    a.href = this.cfg.pagePath;
+    panel.appendChild(a);
   };
 
   /* ======================================================================
@@ -566,26 +518,39 @@
     this.holdPlace();
     this.mount();
 
-    /* The page may still be building itself. Gate the retry on EXISTENCE,
-       never on a return value — these functions return false both when they
-       cannot run and when they are already done, so "returned false" fires
-       on the success path too and would abandon the retry immediately. */
+    /* The page may still be building itself. Gate the retry on EXISTENCE. */
     if (!$("apsSave")) {
       var tries = 0;
       var timer = window.setInterval(function () {
         self.holdPlace();
         self.mount();
-        if ($("apsSave") || ++tries > 40) { window.clearInterval(timer); }
+        if ($("apsSave") || ++tries > 40) { window.clearInterval(timer); self.afterMount(); }
       }, 500);
+    } else {
+      this.afterMount();
+    }
+  };
+
+  Story.prototype.afterMount = function () {
+    var self = this;
+    if (!this.ui) { return; }
+
+    /* 1. Words waiting on a sign-in he just did: put them back, finish
+          the save he pressed. If he is still signed out, put them back
+          and let him press Save again. */
+    var pending = stashGet(this.cfg.form);
+    if (pending) {
+      this.fill(pending);
+      if (signedIn()) { this.save(this.ui, pending); }
+      else { this.ui.fail("Sign in, then press Save again. Your words are back on the page."); }
+      return;
     }
 
-    /* ?k=<owner>.<id>.<key> — a link with nothing at the other end is the
-       false promise this whole design exists to avoid. */
-    var m = /[?&]k=([0-9a-f]{32})\.([0-9a-f]{32})\.([0-9a-f]{64})/.exec(window.location.search);
-    if (m) {
-      this.restore(m[1], m[2], m[3]).catch(function () {
+    /* 2. Arriving from his page (?open=1): show him his latest piece. */
+    if (/[?&]open=1(&|$)/.test(window.location.search) && signedIn()) {
+      this.restoreLatest().catch(function () {
         var note = $("apsNote");
-        if (note) { note.textContent = "That link did not open anything. Check it was copied in full."; }
+        if (note) { note.textContent = "Your saved piece could not be opened just now. Try again from your page."; }
       });
     }
   };
@@ -594,10 +559,10 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "1",
+    version: "2",
 
     init: function (cfg) {
-      if (!cfg || !cfg.form || !cfg.fields || !cfg.fields.length) {
+      if (!cfg || !cfg.form || !cfg.fields || !cfg.fields.length || !cfg.lw || !cfg.lw.unit || !cfg.lw.blocks) {
         return null;   /* misconfigured: add nothing rather than half a control */
       }
       var s = new Story(cfg);
@@ -610,8 +575,9 @@
     },
 
     /* exposed for the personal page and for testing */
-    _call: call,
-    _owner: ownerId,
+    signedIn: signedIn,
+    latest: lwLatest,
+    _submit: lwSubmit,
     _seekTo: seekTo,
     _scrollerFor: scrollerFor,
     _stash: stash,
