@@ -1,6 +1,15 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v2
+   AP-STORY-MODULE-v3
    Ancient Path — Your Story: the shared save.
+
+   v3 (4 Sept 2026, evening) — three things the first learner walk found:
+     - sign-in now RETURNS TO THE PAGE he saved from (LearnWorlds' own
+       redirect setting, set just before the sign-in box opens), so the
+       finish shows "Saved" instead of the courses page showing nothing.
+     - cfg.onRestored(): a page can put itself back at the finish when his
+       held words come back after sign-in.
+     - APStory.safe(): true when his words are held or saved, so a page's
+       own "leave site?" guard can stand down.
 
    ONE file. Every writing surface on the site loads it and passes a config.
    A new form is a config, not a codebase.
@@ -262,10 +271,29 @@
   /* ======================================================================
      6. THE INSTANCE
      ====================================================================== */
+  var instances = [];
   function Story(cfg) {
     this.cfg = cfg;
     this.saved = null;      /* the LearnWorlds submission once saved */
+    this.savedAnswers = null;
     this.busy = false;
+    instances.push(this);
+  }
+
+  /* Are his words somewhere other than this page? True when they are held
+     for a sign-in he is about to do, or when what is on the page now is
+     exactly what LearnWorlds last said it saved. A page's own "leave
+     site?" guard asks this so it does not cry wolf right after Save. */
+  function safe() {
+    var i;
+    for (i = 0; i < instances.length; i++) {
+      var s = instances[i];
+      if (stashGet(s.cfg.form)) { return true; }
+      if (s.savedAnswers) {
+        try { if (JSON.stringify(s.answers()) === s.savedAnswers) { return true; } } catch (e) {}
+      }
+    }
+    return false;
   }
 
   /* Read the answers straight out of the page. The form's own script is
@@ -349,6 +377,7 @@
         window.clearTimeout(slow);
         self.busy = false;
         self.saved = sub;
+        self.savedAnswers = JSON.stringify(answers);
         stashClear(self.cfg.form);
         /* "Saved" is set ONLY here — when LearnWorlds has said submitted. */
         ui.done(sub);
@@ -366,6 +395,16 @@
      both, the note tells him where to look. */
   Story.prototype.openSignIn = function (ui) {
     var cfg = this.cfg;
+    /* Come BACK here after sign-in. LearnWorlds' sign-in code (measured
+       4 Sept: pages_merged.js, signin → success) goes to
+       `l_settings.redirectUrl` when it is set, otherwise to the school's
+       after-login page. Without this he lands on the courses page with
+       his lament nowhere on it. */
+    try {
+      if (window.l_settings && typeof window.l_settings === "object") {
+        window.l_settings.redirectUrl = window.location.pathname + window.location.search;
+      }
+    } catch (e) {}
     if (typeof cfg.signIn === "function") { cfg.signIn(); return; }
     var btn = cfg.signInSelector ? document.querySelector(cfg.signInSelector) : null;
     if (btn) { btn.click(); return; }
@@ -541,6 +580,11 @@
     var pending = stashGet(this.cfg.form);
     if (pending) {
       this.fill(pending);
+      /* Let the page put itself back where he pressed Save (the finish),
+         so "Saving…" then "Saved" happen where he can see them. */
+      if (typeof this.cfg.onRestored === "function") {
+        try { this.cfg.onRestored(pending); } catch (e) {}
+      }
       if (signedIn()) { this.save(this.ui, pending); }
       else { this.ui.fail("Sign in, then press Save again. Your words are back on the page."); }
       return;
@@ -559,7 +603,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "2",
+    version: "3",
 
     init: function (cfg) {
       if (!cfg || !cfg.form || !cfg.fields || !cfg.fields.length || !cfg.lw || !cfg.lw.unit || !cfg.lw.blocks) {
@@ -576,6 +620,7 @@
 
     /* exposed for the personal page and for testing */
     signedIn: signedIn,
+    safe: safe,
     latest: lwLatest,
     _submit: lwSubmit,
     _seekTo: seekTo,
