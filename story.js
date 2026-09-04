@@ -1,6 +1,13 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v3
+   AP-STORY-MODULE-v4
    Ancient Path — Your Story: the shared save.
+
+   v4 (4 Sept 2026, night) — for Where I'm From and every form after it:
+     - cfg.document(answers): a form whose finished piece is assembled from
+       fragments hands us its own text for `whole`, Copy and the save.
+     - lw.blocks.json: one LearnWorlds question holds every answer as JSON,
+       written on save and read back on ?open=1 — two questions per form,
+       not one per field.
 
    v3 (4 Sept 2026, evening) — three things the first learner walk found:
      - sign-in now RETURNS TO THE PAGE he saved from (LearnWorlds' own
@@ -324,6 +331,13 @@
      between them, the form's own closing line after. */
   Story.prototype.document = function (answers) {
     var a = answers || this.answers(), parts = [];
+    /* v4: a form whose finished piece is not the answers in order (Where I'm
+       From builds lines out of fragments) hands us its own assembly. */
+    if (typeof this.cfg.document === "function") {
+      var own = "";
+      try { own = this.cfg.document(a); } catch (e) { own = ""; }
+      return typeof own === "string" ? own : "";
+    }
     for (var i = 0; i < this.cfg.fields.length; i++) {
       var v = a[this.cfg.fields[i].key];
       if (v) { parts.push(v); }
@@ -345,6 +359,9 @@
       if (lw.blocks[f.key]) { out.push({ blockId: lw.blocks[f.key], value: answers[f.key] || "" }); }
     }
     if (lw.blocks.whole) { out.push({ blockId: lw.blocks.whole, value: this.document(answers) }); }
+    /* v4: one question can hold every answer as JSON, so a form with many
+       small fields needs two questions in LearnWorlds, not thirty. */
+    if (lw.blocks.json) { out.push({ blockId: lw.blocks.json, value: JSON.stringify(answers) }); }
     return out;
   };
 
@@ -418,9 +435,19 @@
     var untouched = interactEpoch;   /* BEFORE the read, not after it returns */
     return lwLatest(this.cfg.lw.unit).then(function (latest) {
       if (!latest) { return null; }
-      var a = {}, blocks = self.cfg.lw.blocks;
-      for (var i = 0; i < self.cfg.fields.length; i++) {
-        var f = self.cfg.fields[i];
+      var a = {}, blocks = self.cfg.lw.blocks, i, f;
+      /* v4: the JSON question, when the form has one, carries every answer. */
+      if (blocks.json && typeof latest.answers[blocks.json] === "string") {
+        try {
+          var j = JSON.parse(latest.answers[blocks.json]);
+          for (i = 0; i < self.cfg.fields.length; i++) {
+            f = self.cfg.fields[i];
+            if (j && typeof j[f.key] === "string") { a[f.key] = j[f.key]; }
+          }
+        } catch (e) {}
+      }
+      for (i = 0; i < self.cfg.fields.length; i++) {
+        f = self.cfg.fields[i];
         if (blocks[f.key] && typeof latest.answers[blocks[f.key]] === "string") { a[f.key] = latest.answers[blocks[f.key]]; }
       }
       self.fill(a);
@@ -603,7 +630,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "3",
+    version: "4",
 
     init: function (cfg) {
       if (!cfg || !cfg.form || !cfg.fields || !cfg.fields.length || !cfg.lw || !cfg.lw.unit || !cfg.lw.blocks) {
