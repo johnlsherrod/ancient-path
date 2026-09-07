@@ -1,6 +1,13 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v4
+   AP-STORY-MODULE-v5
    Ancient Path — Your Story: the shared save.
+
+   v5 (7 Sept 2026) — the way back:
+     - the link to his page ("Your page") is drawn beside the buttons as
+       soon as a signed-in man opens any writing page, not only after a
+       new save. A man arriving from his page to read a saved piece (and a
+       man inside a course, where there is no site menu) always has the
+       way back in front of him.
 
    v4 (4 Sept 2026, night) — for Where I'm From and every form after it:
      - cfg.document(answers): a form whose finished piece is assembled from
@@ -563,14 +570,17 @@
     this.mountEditAll(row);
     row.parentNode.insertBefore(note, row.nextSibling);
     note.parentNode.insertBefore(panel, note.nextSibling);
+    this.renderSaved(panel);   /* v5: the way back, from the start, when he is signed in */
     return true;
   };
 
-  /* Once saved: a quiet link to his page, if the page has told us where. */
+  /* A quiet link to his page, if the page has told us where: drawn for any
+     signed-in man from the start (v5), and after a save for everyone. */
   Story.prototype.renderSaved = function (panel) {
     panel.innerHTML = "";
-    if (!this.saved || !this.cfg.pagePath) { return; }
-    var a = el("a", "aps-page-link", this.cfg.pageLabel || "Go to your page");
+    if (!this.cfg.pagePath) { return; }
+    if (!this.saved && !signedIn()) { return; }
+    var a = el("a", "aps-page-link", this.saved ? (this.cfg.pageLabel || "Go to your page") : (this.cfg.pageLinkLabel || "Your page"));
     a.href = this.cfg.pagePath;
     panel.appendChild(a);
   };
@@ -630,7 +640,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "4",
+    version: "5",
 
     init: function (cfg) {
       if (!cfg || !cfg.form || !cfg.fields || !cfg.fields.length || !cfg.lw || !cfg.lw.unit || !cfg.lw.blocks) {
