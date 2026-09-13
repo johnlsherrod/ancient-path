@@ -1,6 +1,27 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v5
+   AP-STORY-MODULE-v6
    Ancient Path — Your Story: the shared save.
+
+   v6 (13 Sept 2026) — more than one finished piece:
+     - a man can write a piece again and keep the one he already has. Every
+       FINISHED save (not a "Save and stop for now") now also writes an
+       entry into cfg.lw.blocks.history — an array of {id, when, text,
+       answers} — instead of history living only as the one thing
+       LearnWorlds calls the "latest submission."
+     - cfg.lw.blocks.history is OPT IN, one form at a time: a form without
+       it behaves exactly as v5 (nothing changes until the block exists and
+       is added to that form's config). Read the entry-point comment above
+       Story.prototype.save for how a save decides finished vs. not.
+     - a page starts a new piece (rather than continuing the one that was
+       open) by calling `instance.startNew()` before he begins writing
+       again — normally wired to a "Write another" control the page adds
+       near "Open it" on his personal page, or directly on the piece.
+     - opening one specific saved piece (rather than always the newest) is
+       `?open=<entryId>` instead of the existing `?open=1`; `?open=1`
+       keeps meaning exactly what it always has — the latest.
+     - APStory.historyFor(unit, historyBlockId) is a standalone read for a
+       page (like /start) that lists saved pieces without mounting the
+       full writing form for each one.
 
    v5 (7 Sept 2026) — the way back:
      - the link to his page ("Your page") is drawn beside the buttons as
@@ -163,6 +184,77 @@
   }
 
   /* ======================================================================
+     1b. HISTORY — keeping more than one finished piece
+     ------------------------------------------------------------------
+     Everything here reads and writes ONE extra LearnWorlds question,
+     cfg.lw.blocks.history, as a JSON array of finished pieces:
+       [{ id, when, text, answers }, ...]
+     `id` is when he saved it (a millisecond timestamp, as a string — it
+     only has to be unique and to sort). `text` is the finished piece as
+     the form itself assembles it (this.document(answers)), stored ready
+     to show, so a page listing saved pieces (like /start) never has to
+     re-derive the words from raw answers. `answers` is kept too, so the
+     piece can be opened back into the live form for further editing.
+
+     A form with no cfg.lw.blocks.history configured never touches any of
+     this — save() below checks for the block before doing any of it, so
+     adding history to a form is exactly one line in its config, nothing
+     else about the form has to change.
+     ====================================================================== */
+  function parseHistoryList(raw) {
+    if (!raw) { return []; }
+    var v;
+    try { v = JSON.parse(raw); } catch (e) { return []; }
+    if (Array.isArray(v)) { return v.filter(function (e) { return e && typeof e === "object"; }); }
+    return [];   /* a stray non-array value is treated as "no history yet", never thrown */
+  }
+
+  /* Was THIS save a finished piece, or a "Save and stop for now"? Three
+     shapes, because the forms grew that way (see the audit, 13 Sept):
+       - a dedicated meta block (Your Next Step, A Lament): read it raw.
+       - meta folded in as an ordinary field (Where I'm From): it rides
+         inside the same JSON blob as every other answer.
+       - no meta concept at all (Asked of Me, Here I Am, The Man Who
+         Crossed — one screen, nothing to "stop for now" in the middle
+         of): every save is a finished save.
+     A meta value that exists but will not parse counts as NOT finished —
+     safer to leave a questionable save out of history than to add a
+     broken entry to it. */
+  function readMeta(cfg, rawByBlockId, answers) {
+    var raw = null;
+    if (cfg.lw.blocks.meta) { raw = rawByBlockId[cfg.lw.blocks.meta]; }
+    else if (typeof answers.meta === "string") { raw = answers.meta; }
+    else { return null; }   /* no meta concept on this form */
+    try { return JSON.parse(raw); } catch (e) { return { finished: false }; }
+  }
+
+  function isFinishedSave(cfg, rawByBlockId, answers) {
+    var meta = readMeta(cfg, rawByBlockId, answers);
+    return meta === null ? true : !!meta.finished;
+  }
+
+  /* Build the updated history array for one save. `openId`, when set, is
+     the entry THIS sitting has already been updating — matched and
+     replaced in place rather than appended again. */
+  function newEntryId() {
+    /* Date.now() alone collides when two fresh entries are created inside
+       the same millisecond (measured: it happens) — the suffix is what
+       actually makes this unique. */
+    return String(Date.now()) + "-" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function mergeHistory(list, entryAnswers, text, openId) {
+    var id = openId || newEntryId();
+    var entry = { id: id, when: new Date().toISOString(), text: text, answers: entryAnswers };
+    var out = list.slice(), i, replaced = false;
+    for (i = 0; i < out.length; i++) {
+      if (out[i] && out[i].id === id) { out[i] = entry; replaced = true; break; }
+    }
+    if (!replaced) { out.push(entry); }
+    return { list: out, id: id };
+  }
+
+  /* ======================================================================
      2. THE STASH — words waiting on sign-in
      ------------------------------------------------------------------
      Sign-in reloads the page (or lands him elsewhere first). The words
@@ -291,6 +383,9 @@
     this.saved = null;      /* the LearnWorlds submission once saved */
     this.savedAnswers = null;
     this.busy = false;
+    /* v6: which history entry THIS sitting is updating — null means the
+       next finished save starts a NEW entry rather than replacing one. */
+    this.openEntryId = null;
     instances.push(this);
   }
 
@@ -359,7 +454,7 @@
   /* Map answers onto the form's blocks. `blocks` in the config maps each
      field key to its LearnWorlds question, plus `whole` for the assembled
      piece — so LearnWorlds' own view of a saved lament reads as a lament. */
-  Story.prototype.toBlocks = function (answers) {
+  Story.prototype.toBlocks = function (answers, extraBlock) {
     var lw = this.cfg.lw, out = [];
     for (var i = 0; i < this.cfg.fields.length; i++) {
       var f = this.cfg.fields[i];
@@ -369,10 +464,18 @@
     /* v4: one question can hold every answer as JSON, so a form with many
        small fields needs two questions in LearnWorlds, not thirty. */
     if (lw.blocks.json) { out.push({ blockId: lw.blocks.json, value: JSON.stringify(answers) }); }
+    /* v6: the history array, when this form keeps one — computed by the
+       caller (save()) before toBlocks is called, just carried across. */
+    if (extraBlock) { out.push(extraBlock); }
     return out;
   };
 
-  /* ---------------------------------------------------------------- save */
+  /* ---------------------------------------------------------------- save
+     v6: when cfg.lw.blocks.history exists, a FINISHED save also grows
+     that array (§1b) — one extra read before the submit, to fetch
+     whatever history already exists so this save can add to it rather
+     than clobber it. A form without the block skips that read entirely
+     and this is byte-for-byte the v5 save. */
   Story.prototype.save = function (ui, answersOverride) {
     var self = this;
     if (this.busy) { return; }
@@ -396,15 +499,42 @@
     ui.working();
     var slow = window.setTimeout(function () { ui.stillWorking(); }, SLOW_AT);
 
-    lwSubmit(this.cfg.lw.unit, this.toBlocks(answers))
-      .then(function (sub) {
+    var historyBlock = this.cfg.lw.blocks.history;
+    var readFirst = historyBlock
+      ? lwLatest(this.cfg.lw.unit).then(function (latest) { return (latest && latest.answers) || {}; })
+      : window.Promise.resolve(null);
+
+    readFirst
+      .then(function (rawByBlockId) {
+        var extraBlock = null, newEntryId = null;
+        if (rawByBlockId) {
+          if (isFinishedSave(self.cfg, rawByBlockId, answers)) {
+            var priorList = parseHistoryList(rawByBlockId[historyBlock]);
+            var entryAnswers = {};
+            for (var k in answers) { if (k !== "meta") { entryAnswers[k] = answers[k]; } }
+            var merged = mergeHistory(priorList, entryAnswers, self.document(answers), self.openEntryId);
+            extraBlock = { blockId: historyBlock, value: JSON.stringify(merged.list) };
+            newEntryId = merged.id;
+          } else {
+            /* Stopping early: carry whatever history already exists
+               through unchanged. Do not touch openEntryId either — he is
+               still mid-sitting on the same piece. */
+            extraBlock = { blockId: historyBlock, value: rawByBlockId[historyBlock] || JSON.stringify([]) };
+          }
+        }
+        return lwSubmit(self.cfg.lw.unit, self.toBlocks(answers, extraBlock)).then(function (sub) {
+          return { sub: sub, newEntryId: newEntryId };
+        });
+      })
+      .then(function (result) {
         window.clearTimeout(slow);
         self.busy = false;
-        self.saved = sub;
+        self.saved = result.sub;
         self.savedAnswers = JSON.stringify(answers);
+        if (result.newEntryId) { self.openEntryId = result.newEntryId; }
         stashClear(self.cfg.form);
         /* "Saved" is set ONLY here — when LearnWorlds has said submitted. */
-        ui.done(sub);
+        ui.done(result.sub);
       })
       .catch(function (err) {
         window.clearTimeout(slow);
@@ -412,6 +542,42 @@
         var why = (err && err.serviceError) ? err.message : "The connection dropped.";
         ui.fail("It did not save. " + why + " Your words are still here — nothing has been lost. Try again, or copy them before you close the page.");
       });
+  };
+
+  /* Start a new piece rather than continuing the one that was open. A
+     page wires this to a "Write another" control (normally on his
+     personal page, beside "Open it") BEFORE it blanks the fields for
+     him — this is what tells the next Save to add a new history entry
+     instead of replacing the one he had open. */
+  Story.prototype.startNew = function () {
+    this.openEntryId = null;
+    this.saved = null;
+    this.savedAnswers = null;
+    var blank = {}, i;
+    for (i = 0; i < this.cfg.fields.length; i++) { blank[this.cfg.fields[i].key] = ""; }
+    this.fill(blank);
+    if (typeof this.cfg.onStartNew === "function") { try { this.cfg.onStartNew(); } catch (e) {} }
+  };
+
+  /* Open ONE specific saved piece from history — used for `?open=<id>`,
+     as opposed to `?open=1` which still means "the latest" via
+     restoreLatest() below, unchanged from v5. */
+  Story.prototype.restoreEntry = function (entryId) {
+    var self = this;
+    var historyBlock = this.cfg.lw.blocks.history;
+    if (!historyBlock) { return window.Promise.resolve(null); }
+    var untouched = interactEpoch;
+    return lwLatest(this.cfg.lw.unit).then(function (latest) {
+      var raw = (latest && latest.answers) || {};
+      var list = parseHistoryList(raw[historyBlock]);
+      var entry = null, i;
+      for (i = 0; i < list.length; i++) { if (list[i] && list[i].id === entryId) { entry = list[i]; break; } }
+      if (!entry) { return null; }
+      self.fill(entry.answers || {});
+      self.openEntryId = entry.id;
+      onArrival(function () { seekTo(self.host(), {}); }, untouched);
+      return entry;
+    });
   };
 
   /* How he gets to the sign-in screen. The page can pass a function, or a
@@ -458,6 +624,13 @@
         if (blocks[f.key] && typeof latest.answers[blocks[f.key]] === "string") { a[f.key] = latest.answers[blocks[f.key]]; }
       }
       self.fill(a);
+      /* v6: opening "the latest" this way is opening the newest history
+         entry too, when this form keeps one — so a save right after
+         updates it instead of quietly starting a second entry. */
+      if (blocks.history && typeof latest.answers[blocks.history] === "string") {
+        var hist = parseHistoryList(latest.answers[blocks.history]);
+        if (hist.length) { self.openEntryId = hist[hist.length - 1].id; }
+      }
       onArrival(function () { seekTo(self.host(), {}); }, untouched);
       return latest;
     });
@@ -627,9 +800,17 @@
       return;
     }
 
-    /* 2. Arriving from his page (?open=1): show him his latest piece. */
-    if (/[?&]open=1(&|$)/.test(window.location.search) && signedIn()) {
-      this.restoreLatest().catch(function () {
+    /* 2. Arriving from his page: ?open=1 still means "the latest", exactly
+          as always. ?open=<id> (v6) means one specific saved piece — his
+          page links to a particular history entry instead of always the
+          newest one. */
+    var openMatch = /[?&]open=([^&]+)/.exec(window.location.search);
+    if (openMatch && signedIn()) {
+      var openVal = decodeURIComponent(openMatch[1]);
+      var restored = (openVal === "1" || !this.cfg.lw.blocks.history)
+        ? this.restoreLatest()
+        : this.restoreEntry(openVal);
+      restored.catch(function () {
         var note = $("apsNote");
         if (note) { note.textContent = "Your saved piece could not be opened just now. Try again from your page."; }
       });
@@ -640,7 +821,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "5",
+    version: "6",
 
     init: function (cfg) {
       if (!cfg || !cfg.form || !cfg.fields || !cfg.fields.length || !cfg.lw || !cfg.lw.unit || !cfg.lw.blocks) {
@@ -653,6 +834,18 @@
         s.start();
       }
       return s;
+    },
+
+    /* v6: a page like /start lists saved pieces for several forms without
+       mounting the writing form for each one — this is that read alone.
+       Resolves to [] for a form with no history block yet, same as an
+       empty history. */
+    historyFor: function (unit, historyBlockId) {
+      if (!historyBlockId) { return window.Promise.resolve([]); }
+      return lwLatest(unit).then(function (latest) {
+        var raw = (latest && latest.answers) || {};
+        return parseHistoryList(raw[historyBlockId]);
+      });
     },
 
     /* exposed for the personal page and for testing */
