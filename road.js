@@ -412,7 +412,7 @@ var ROAD_PARTS = (function () {
     know: { ask: "What would help you see it more clearly?", label: "What would help me see it", ex: "Asking my wife what she sees that I don't." },
     there: { ask: "What would help you tell the difference?", label: "What would help me tell the difference", ex: "Asking the men in my group where they have seen it in me." },
     believe: { ask: "What do you believe about it today?", label: "What I believe about it today", ex: "Most days I believe it for other men and not for me." },
-    willing: { ask: "What is the honest reason?", help: "Maybe you have already done this work. Maybe you are not ready yet. Both are honest answers.", label: "My honest reason", ex: "I did this work two years ago, with a counselor. Or: I am not ready, and I know it." },
+    willing: { ask: "Have you already done this, or are you not ready to yet? Say which, and one sentence about it.", help: "Both are honest answers.", label: "My honest reason", ex: "I did this work two years ago, with a counselor. Or: I am not ready, and I know it." },
     name: { ask: "Is there none, or none you can name yet?", help: "If there is none, say what is already in place. If you can't name one yet, say what would help you find it.", label: "Where I stand on this", ex: "None left that I know of. I made the last one right in March." }
   };
   var TITLE = "A title only you would understand. Never the story.";
@@ -425,8 +425,8 @@ var ROAD_PARTS = (function () {
         q("Hiding feels safer to me than walking openly with God, even when I know He already sees me.", "F", true, { ask: "What are you hiding in?", label: "Where I have been hiding", ex: "My work. It's the one place nobody asks how I am." }, "know", { lo: { ask: "What does walking openly with Him look like in your week?", label: "How I walk openly with God", grew: true, ex: "I tell Him the truth out loud on the drive in, before I tell anyone else." } }),
         q("There's a place in my life right now that feels more like the trees I'm hiding among than the road I'm walking with Him.", "F", true, { ask: "Where is it? One sentence a man could picture.", label: "The place I am hiding", ex: "The garage, after everyone is asleep." }, "there", { lo: { ask: "Where did you used to hide, and what brought you out?", label: "Where I used to hide", grew: true, ex: "My work, for ten years. A friend asked me one honest question." } }),
         q("I believe the same God who walked toward Adam and Eve in the garden is walking toward me today, wherever I'm hiding.", null, false, { ask: "When did you last live as if He were walking toward you?", label: "When I lived as if He were walking toward me", ex: "Last winter, the week my mother was in the hospital." }, "believe"),
-        q("I'm willing to talk to God about the specific \"hiding tree\" in my life this week, not just think about it.", "F", false, { ask: "When, and where will you be?", label: "When I will talk to God about it", ex: "Tomorrow at six, on the walk to the train." }, "willing"),
-        q("I can name one concrete step — like the literal walk this part invites — that would move me from hiding toward walking with Him.", "F", false, { ask: "Name it, and say when.", label: "This week", ex: "A walk around the block after dinner tonight, phone left at home." }, "name")
+        q("I'm willing to talk to God this week about the place where I am hiding, not just think about it.", "F", false, { ask: "Pick a time and a place this week to talk to Him about it. When, and where?", help: "Only the time and the place. What you say to Him stays between you and Him.", label: "When I will talk to God about where I hide", ex: "Tomorrow at six, on the walk to the train." }, "willing", { lo: { ask: "Do you already talk to Him about it, or are you not ready to yet? Say which, and one sentence about it.", help: "Both are honest answers. So is \"I don't know what I would say.\"", label: "Where I stand on talking to God about where I hide", ex: "I already do, most mornings on the drive in. Or: not yet. I don't know what I would say." } }),
+        q("I can name one concrete step this week, as simple as a walk with God with my phone left at home, that would move me from hiding toward walking with Him.", "F", false, { ask: "Pick one, or write your own. Then say when.", help: "A walk is enough. So is any one of the practices Christians have used for centuries to put themselves where God can reach them.", ops: ["A walk with Him", "Prayer", "Time in Scripture", "Solitude", "Fasting", "Simplicity", "Service", "Confession", "Worship", "Meditation on a verse", "Asking a wise man for guidance", "Celebration"], label: "This week", ex: "A walk with Him: around the block after dinner tonight, phone left at home." }, "name")
       ] },
     { part: "Part Two", name: "Stand at the Crossroads", job: 0, week: 3, ours: "The map only works if you're honest about where you're standing on it.",
       Q: [
@@ -788,6 +788,7 @@ var WRITER = (function () {
         kept = kept.slice(-2);
         if (kept.length) h += '<p class="help">You have done hard things. In your own words:</p>' + kept.map(function (x) { return '<div class="recall"><span>In ' + esc(x.part) + ', you had said: “' + esc(x.said) + '” Then you wrote:</span><p>“' + esc(x.text) + '”</p></div>'; }).join("") + '<p class="help">Now the next one.</p>';
       }
+      if (side.ops) h += '<div class="words">' + side.ops.map(function (o, k) { return '<button class="word" data-qop="' + i + "-" + k + '">' + esc(o) + '</button>'; }).join("") + '</div>';
       h += '<label class="sr" for="t-' + i + '">' + esc(side.ask) + '</label><textarea id="t-' + i + '" data-t="' + i + '" rows="2" placeholder="One sentence is enough.">' + esc(w.t[i] || "") + '</textarea>' +
         '<p class="ex">Something a man could picture. Like: <i>' + esc(side.ex) + '</i></p></div>';
     }
@@ -949,6 +950,7 @@ var WRITER = (function () {
     var a, w = W();
     if ((a = b.getAttribute("data-n"))) { a = a.split("-"); w.n[+a[0]] = w.n[+a[0]] === +a[1] ? null : +a[1]; if (w.mid) w.mid[+a[0]] = null; APP.render(true); }
     else if ((a = b.getAttribute("data-mid"))) { a = a.split("-"); w.mid = w.mid || []; w.mid[+a[0]] = a[1]; APP.render(true); }
+    else if ((a = b.getAttribute("data-qop"))) { a = a.split("-"); var qq = part().Q[+a[0]], sd = qq[band(+a[0])] || qq.hi, op = sd.ops && sd.ops[+a[1]]; if (op) { w.t[+a[0]] = op.replace(/…\s*$/, "") + ": "; APP.render(true); APP.keep(); var tq = document.getElementById("t-" + a[0]); if (tq) { tq.focus(); tq.setSelectionRange(tq.value.length, tq.value.length); } } }
     else if ((a = b.getAttribute("data-root"))) { w.root = w.root === a ? "" : a; APP.render(true); }
     else if ((a = b.getAttribute("data-feel"))) { w.feel = w.feel === a ? "" : a; w.feelOwn = ""; APP.render(true); }
     else if ((a = b.getAttribute("data-bop"))) { w.between = BETWEEN_OPS[+a].replace(/…\s*$/, ""); APP.render(true); var tb = document.getElementById("t-between"); if (tb) { tb.focus(); tb.setSelectionRange(tb.value.length, tb.value.length); } }
@@ -970,7 +972,7 @@ var WRITER = (function () {
   });
 
   return { html: function () { return W().view === "chapter" ? chapterHTML() : stepsHTML(); }, open: function (p) { P = p; var w = W(); if (w.view === "chapter") { w.view = "steps"; w.all = true; } },
-           get state() { return W(); }, get part() { return P; }, dump: function () { return ALL; }, load: function (o) { ALL = o || {}; }, clear: function () { ALL = {}; } };
+           get state() { return W(); }, get part() { return P; }, begun: function (p) { var x = ALL[p]; if (!x) return false; return (x.n || []).some(function (v) { return v; }) || (x.t || []).some(function (v) { return v && String(v).trim(); }) || !!(x.follow && x.follow.trim()); }, dump: function () { return ALL; }, load: function (o) { ALL = o || {}; }, clear: function () { ALL = {}; } };
 })();
 
 /* ---- road_tell.js ---- */
@@ -1551,7 +1553,7 @@ if (typeof module !== "undefined") module.exports = TELL;
 (function () {
   var C = window.AP_ROAD; if (!C) return;
   var STASH = "apStoryPending:road", TTL = 30 * 60 * 1000;
-  var state = "idle", dirtyFlag = false, savedOnce = false, note = "", t5 = null, bar = null;
+  var state = "idle", dirtyFlag = false, typed = false, savedOnce = false, note = "", t5 = null, bar = null;
   var W = {
     beneath: "Saving puts your story on your page, where you can read it, change it or delete it whenever you want. You will be asked to sign in — that is the only thing an account is for here.",
     landed: "Saved to your page. Everything you write here will be waiting there.",
@@ -1596,7 +1598,7 @@ if (typeof module !== "undefined") module.exports = TELL;
     var onChapter = !!document.querySelector('#ap-road-app [data-wgo="story"]');
     var btn = bar.querySelector("button"), nt = bar.querySelector(".savenote"), be = bar.querySelector(".savebeneath");
     btn.textContent = label; btn.disabled = state === "saving" || state === "still"; btn.hidden = onChapter && state !== "saving" && state !== "still";
-    nt.textContent = note || (dirtyFlag && savedOnce ? "You have changes that are not saved yet." : ""); nt.hidden = !nt.textContent;
+    nt.textContent = note || (typed && savedOnce ? "You have written something that is not saved yet." : ""); nt.hidden = !nt.textContent;
     be.hidden = savedOnce || onChapter;
     var link = bar.querySelector(".savelink"); link.hidden = !(state === "saved" && !dirtyFlag);
   }
@@ -1610,13 +1612,13 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (state === "saving" || state === "still") return;
     if (!api()) { set("idle", W.unavailable); return; }
     var snap = APP.snapshot();
-    if (!signedIn()) { if (!stashSet(snap)) { set("idle", W.unavailable); return; } openSignIn(); return; }
+    if (!signedIn()) { if (!stashSet(snap)) { set("idle", W.unavailable); return; } typed = false; /* his words are held on this device; no "leave this page?" box on the way to sign in */ openSignIn(); return; }
     var p = pack(snap);
     set("saving", ""); clearTimeout(t5); t5 = setTimeout(function () { if (state === "saving") set("still"); }, 5000);
     api()._submit(C.lw.unit, p.answers).then(function () { return api().latest(C.lw.unit); }).then(function (latest) {
       var back = latest && latest.answers ? joined(latest.answers) : "";
       if (back !== p.json) { var e = new Error("What came back did not match what was sent."); e.plain = true; throw e; }
-      clearTimeout(t5); stashClear(); savedOnce = true; dirtyFlag = false; set("saved", W.landed);
+      clearTimeout(t5); stashClear(); savedOnce = true; dirtyFlag = false; typed = false; set("saved", W.landed);
     }).catch(function (e) {
       clearTimeout(t5);
       set("idle", W.failed(e && e.plain ? e.message : e && e.serviceError ? "The site did not confirm it." : "The connection dropped or the site did not answer."));
@@ -1626,8 +1628,9 @@ if (typeof module !== "undefined") module.exports = TELL;
     mountBar();
     var done = function () {
       var q = window.location.search, m = /[?&]part=(\d+)/.exec(q), n = (APP.D && APP.D.meCount) || 0;
-      if (m) APP.openPart(+m[1] - 1);
-      else if (/[?&]open=/.test(q) && n) { if (n < 10) APP.openPart(n); else { try { TELL.show(APP.D, "me", "read"); APP.go("tell"); } catch (e) {} } }
+      /* a link from a course section, or "Pick up" from his page, opens his NEXT unwritten chapter: never one already written, never one ahead */
+      var under = typeof WRITER !== "undefined" && WRITER.begun && WRITER.begun(n);
+      if (m || (/[?&]open=/.test(q) && (n || under))) { if (n < 10) APP.openPart(n); else { try { TELL.show(APP.D, "me", "read"); APP.go("tell"); } catch (e) {} } }
       paint();
     };
     var pending = stashGet();
@@ -1648,12 +1651,14 @@ if (typeof module !== "undefined") module.exports = TELL;
     var a = bar.querySelector(".savelink"); a.textContent = C.pageLabel || "Go to your page"; a.href = C.pagePath || "/start";
     host.appendChild(bar);
     bar.addEventListener("click", function (e) { var b = e.target.closest("[data-site=save]"); if (b) save(); });
-    window.addEventListener("beforeunload", function (e) { if (dirtyFlag) { e.preventDefault(); e.returnValue = ""; } });
+    /* the browser's own "leave this page?" box only when he has typed words that are not saved; never for moving between steps */
+    host.addEventListener("input", function (e) { var t = e.target; if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT")) { typed = true; if (state === "saved") { note = ""; } paint(); } });
+    window.addEventListener("beforeunload", function (e) { if (typed && state !== "saving" && state !== "still") { e.preventDefault(); e.returnValue = ""; } });
   }
   window.AP_ROAD_SITE = {
     load: load, save: save, paint: paint,
     dirty: function () { dirtyFlag = true; if (state === "saved") note = ""; paint(); },
-    erased: function () { stashClear(); if (savedOnce && signedIn()) save(); else { dirtyFlag = false; paint(); } },
+    erased: function () { stashClear(); typed = false; if (savedOnce && signedIn()) save(); else { dirtyFlag = false; paint(); } },
     _pack: pack, _unpack: unpack
   };
 })();
@@ -1810,7 +1815,9 @@ if (typeof module !== "undefined") module.exports = TELL;
     var n = chs.length, all = D.chapters.length, next = ROAD_PARTS[n], h = '<div class="sheet"><div class="eyebrow">' + (SITE ? "Your Story" : "Your page") + '</div><h1>Welcome' + (n ? " back" : "") + '.</h1>' +
       '<p class="fixed">This one is yours. Write a chapter after each section of the course, and watch your story grow. ' + (SITE ? '<b>Nothing you write here reaches us unless you choose to save it with us. Everything else stays on your device.</b>' : 'What you write here is kept with your Claude account, private to you.') + '</p>' +
       '<div class="cards"><article class="card main"><div class="eyebrow">Walk With Me</div><h2>' + esc(D.title) + '</h2>';
-    if (!n) h += '<p class="state"><b>Not started</b></p><p class="quiet">Ten sections. Five to ten minutes after each one.</p><div class="row"><button class="btn main" data-do="pickup">Begin</button></div>';
+    var under = SITE && n < all && WRITER.begun && WRITER.begun(n);
+    if (!n && under) h += '<p class="state"><b>In progress</b> — Pick up where you left off</p><p class="quiet">' + esc(next.part + " · " + next.name) + ' is under way.</p><div class="row"><button class="btn main" data-do="pickup">Pick up where you left off</button></div>';
+    else if (!n) h += '<p class="state"><b>Not started</b></p><p class="quiet">Ten sections. Five to ten minutes after each one.</p><div class="row"><button class="btn main" data-do="pickup">Begin</button></div>';
     else if (n < all) h += '<p class="state"><b>In progress</b> — Pick up where you left off</p><p class="quiet">' + n + ' of ' + all + ' sections written. Next: ' + esc(next.part + " · " + next.name) + '</p>' +
       '<div class="row"><button class="btn main" data-do="pickup">Pick up where you left off</button><button class="btn" data-do="readstory">Read</button></div>';
     else h += '<p class="state"><b>Finished</b></p><p class="quiet">Ten sections. Your words, your road.</p><div class="row"><button class="btn main" data-go="tell">Open it</button><button class="btn" data-do="download">Download</button></div>';
