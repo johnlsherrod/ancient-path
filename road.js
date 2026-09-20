@@ -430,9 +430,9 @@ var ROAD_PARTS = (function () {
       ] },
     { part: "Part Two", name: "Stand at the Crossroads", job: 0, week: 3, ours: "The map only works if you're honest about where you're standing on it.",
       Q: [
-        q("I know honestly which corner of the map I tend toward — a full inner life with too little community, or a lot of activity with a thin interior.", "F", false, { ask: "Which corner, and what does it look like in your week?", label: "The corner I lean toward", ex: "A full inner life with too little community. I read for an hour and talk to no one." }, "know", { lo: { ask: "Think of last week. How much of it was alone with God, and how much with other people?", label: "My last week", ex: "An hour a day alone with Him. One conversation with a man, on Sunday." } }),
+        q("I know honestly which way I lean: a full inner life with too little community, or a lot of activity with a thin inner life.", "F", false, { ask: "Which corner, and what does it look like in your week?", label: "The corner I lean toward", ex: "A full inner life with too little community. I read for an hour and talk to no one." }, "know", { lo: { ask: "Think of last week. How much of it was alone with God, and how much with other people?", label: "My last week", ex: "An hour a day alone with Him. One conversation with a man, on Sunday." } }),
         q("There's a \"no more\" I know I need to say this week, even though I haven't said it yet.", "F", true, { ask: "What is the “no more”?", label: "The “no more” I need to say", ex: "No more checking email after the kids are in bed." }, "there", { lo: { ask: "What is a “no more” you have already said, and kept?", label: "A “no more” I have kept", grew: true, ex: "No more phone in the bedroom. Two years now." } }),
-        q("If I've walked away from something sad, like the rich young ruler, I believe the road isn't closed behind me — I can still come back to it.", null, false, { ask: "What did He ask of you? A title is enough.", help: TITLE, label: "What I walked away from", ex: "The trip in 2015." }, "believe"),
+        q("Some men have walked away sad from something Jesus asked of them, like the rich young ruler. If that is me, I believe the road is not closed behind me: I can still come back.", null, false, { ask: "What did He ask of you? A title is enough.", help: TITLE, label: "What I walked away from", ex: "The trip in 2015." }, "believe"),
         q("I'm willing to pick one spiritual discipline this week — not to earn anything, but to put myself where God's action can find me.", "F", false, { ask: "Which one, and when?", label: "This week", ex: "Ten minutes of quiet before work, every morning." }, "willing"),
         q("I can name one ancient path — one road I used to walk with God — that I want to ask for again this week.", "F", false, { ask: "Name the road, and when you last walked it.", label: "The road I want to ask for again", ex: "Praying out loud in the truck. I stopped three years ago." }, "name")
       ] },
@@ -450,10 +450,10 @@ var ROAD_PARTS = (function () {
       ] },
     { part: "Part Four", name: "The Mature Orchard", job: 1, week: 3, ours: "Fruit is never for the tree — it carries seed for someone else.",
       Q: [
-        q("I can honestly sort which truths from this course are still head-knowledge for me, and which ones have become heart — things I live without deciding to.", "F", false, { ask: "Name one truth that has moved from head to heart.", label: "A truth that has moved from head to heart", ex: "That He walks toward me. I noticed I stopped bracing when I pray." }, "know", { lo: { ask: "Name one truth from this course you are still carrying in your head.", label: "A truth still in my head", ex: "That pruning is not punishment. I can say it. I don't feel it yet." } }),
+        q("I can honestly sort which truths I have learned about God are still head-knowledge for me, and which ones have become heart — things I live without deciding to.", "F", false, { ask: "Name one truth that has moved from head to heart.", label: "A truth that has moved from head to heart", ex: "That He walks toward me. I noticed I stopped bracing when I pray." }, "know", { lo: { ask: "Name one truth from this course you are still carrying in your head.", label: "A truth still in my head", ex: "That pruning is not punishment. I can say it. I don't feel it yet." } }),
         q("I recognize the difference between fruit that withers because I never hand it to anyone, and fruit that actually feeds someone else.", "D", false, { ask: "Where did fruit of yours last feed someone, or stay with you?", label: "Where my faith went to work", ex: "My son asked why I was at the pantry. I didn't have a good answer yet." }, "there"),
-        q("Some men have walked away sad from something Jesus asked of them, like the rich young ruler. If that is me, I believe it is a place I can walk out of, not a verdict on my life.", null, false, { ask: "What did He ask of you? A title is enough.", help: TITLE, label: "What I can walk out of", ex: "The offer to lead the Tuesday group." }, "believe"),
-        q("I'm willing to choose one keystone discipline this week — the one that makes me slightly nervous, not the one I'm already comfortable with.", "F", false, { ask: "Which one makes you nervous, and why?", label: "This week", ex: "Service. Saturday mornings at the food pantry. It means other people see me." }, "willing"),
+        q("I believe the fruit God grows in my life is meant for other people, not for me to keep.", null, false, { ask: "What did He ask of you? A title is enough.", help: TITLE, label: "What I can walk out of", ex: "The offer to lead the Tuesday group." }, "believe"),
+        q("I'm willing to choose one spiritual practice I have avoided — the one that makes me slightly nervous, not the one I'm already comfortable with — and start it this week.", "F", false, { ask: "Which one makes you nervous, and why?", label: "This week", ex: "Service. Saturday mornings at the food pantry. It means other people see me." }, "willing"),
         q("I can name one relationship or place where my fruit needs to feed someone else, not just stay filed away as private knowledge.", "D", false, { ask: "Who, and what will you hand them?", label: "Who my fruit is for", ex: "My neighbor. I will offer to help him with the resume on Saturday." }, "name")
       ] },
     { part: "Part Five", name: "Justice, Justice You Shall Pursue", job: 0, week: 3,
@@ -461,8 +461,8 @@ var ROAD_PARTS = (function () {
       Q: [
         q("I know honestly whether I lean toward pressing to be right (din) or yielding for peace (pesharah) in most conflicts.", "F", false, { ask: "Which way, and where did it last show?", label: "Where I pressed on being right", ex: "I was right about the contract and wrong about my partner." }, "know", { lo: { ask: "Think of your last conflict. What did you do?", label: "My last conflict", ex: "I went quiet for two days, then acted like nothing happened." } }),
         q("There's a wrong in my life right now that hasn't been made right, and I've been avoiding it.", "D", true, { ask: "Give it a title.", help: TITLE, label: "A wrong not yet made right", ex: "The Henderson invoice." }, "there", { lo: { ask: "What is the last wrong you made right?", label: "A wrong I made right", grew: true, ex: "I paid my old partner what I owed him, with a letter." } }),
-        q("I believe pursuing justice and mercy together — not one at the expense of the other — is what it means to walk the derek of the Lord.", null, false, { ask: "Where did you last have to hold both?", label: "Where I had to hold justice and mercy together", ex: "Deciding whether to let my foreman go." }, "believe"),
-        q("I'm willing to let go of being fully right in one relationship this week, so both of us can actually get across.", "D", false, { ask: "Which relationship, and what would you let go of?", label: "This week", ex: "My partner. I will let go of being right about the timeline." }, "willing"),
+        q("I believe pursuing justice and mercy together — not one at the expense of the other — is what it means to walk the way (derek) of the Lord.", null, false, { ask: "Where did you last have to hold both?", label: "Where I had to hold justice and mercy together", ex: "Deciding whether to let my foreman go." }, "believe"),
+        q("I'm willing to let go of being fully right in one relationship this week, so the relationship can move forward.", "D", false, { ask: "Which relationship, and what would you let go of?", label: "This week", ex: "My partner. I will let go of being right about the timeline." }, "willing"),
         q("I can name one place where my honest weights — my follow-through on money, time, or promises — wouldn't survive an audit, and I can start making it right.", "D", false, { ask: "Name it, and the first thing you will make right.", label: "Where my weights are off", ex: "I owe my neighbor four hundred dollars. I will pay it Friday." }, "name")
       ] },
     { part: "Part Six", name: "The Thirteen Attributes", job: 0, week: 3, ours: "The same mercy, the same Name, on both sides of your worst moment.",
@@ -476,7 +476,7 @@ var ROAD_PARTS = (function () {
     { part: "Part Seven", name: "The Names Tell a Story", job: 0, week: 4, ours: "Jacob needed three names to become himself: the habit-name, the struggle-name, the destiny-name.",
       Q: [
         q("I can name the \"habit-name\" — the name my worst patterns call me — that I still answer to fastest.", "F", false, { ask: "The name itself.", charge: true, label: "The name I still answer to", ex: "Failure." }, "know", { lo: { ask: "What name do you answer to now?", label: "The name I answer to now", grew: true, ex: "Beloved. It took years." } }),
-        q("There's a \"you meant evil\" chapter in my story that I haven't yet been able to finish with \"God meant it for good.\"", "F", true, { ask: "Give it a title.", help: TITLE, label: "A chapter where someone meant evil", ex: "Eighth grade." }, "there", { lo: { ask: "Give that chapter a title, and say what good came of it.", label: "A chapter God meant for good", grew: true, ex: "Eighth grade. It is why I notice the quiet kid." } }),
+        q("There's a \"you meant evil\" chapter in my story (Joseph's words to his brothers) that I haven't yet been able to finish with \"God meant it for good.\"", "F", true, { ask: "Give it a title.", help: TITLE, label: "A chapter where someone meant evil", ex: "Eighth grade." }, "there", { lo: { ask: "Give that chapter a title, and say what good came of it.", label: "A chapter God meant for good", grew: true, ex: "Eighth grade. It is why I notice the quiet kid." } }),
         q("I believe God is growing me into a new name — a destiny-name — even while I'm still in the middle of wrestling.", null, false, { ask: "What name do you hope it is?", label: "The name I hope for", ex: "Faithful." }, "believe"),
         q("I'm willing to let someone else see me wrestling, instead of hiding it until I have a tidy resolution.", "D", false, { ask: "Who, and when?", label: "Who will see me wrestling", ex: "David. Breakfast on Thursday." }, "willing"),
         q("I can name one place this week where I'll choose to trust that both God's justice and His mercy are true over my situation, even if I can't reconcile them yet.", "F", false, { ask: "Name the place.", label: "This week", ex: "The layoff list. I will trust Him with it on Monday." }, "name")
@@ -497,12 +497,12 @@ var ROAD_PARTS = (function () {
         q("If I answer with my gut and not my doctrine, there's a part of me that pictures the Judge as against me rather than for me.", "F", true, { ask: "Where did that picture come from? A title is enough.", help: TITLE, label: "Where my picture of the Judge came from", ex: "My father's study." }, "there", { lo: { ask: "What is your gut picture of Him now?", label: "How I picture the Judge", grew: true, ex: "Leaning forward, on my side of the table." } }),
         q("I believe I can approach God on the grounds of His mercy, not on the grounds of my recent performance or usefulness.", null, false, { ask: "When did you last come on the grounds of your performance?", label: "When I came on my performance", ex: "After a good month at work, I prayed like I had earned it." }, "believe"),
         q("I'm willing to bring an unpolished, unresolved lament to God this week instead of waiting until I have it figured out.", "F", false, { ask: "What is it about? One line.", label: "My lament", ex: "Why my marriage got quiet." }, "willing"),
-        q("I can name one place where I could let another man hear my honest \"Alas, Adonai — why?\" instead of only my polished version.", "D", false, { ask: "Who, and where?", label: "This week", ex: "Mark. After group on Tuesday, in the parking lot." }, "name")
+        q("I can name one place where I could let another man hear my honest \"Lord, why?\" instead of only my polished version.", "D", false, { ask: "Who, and where?", label: "This week", ex: "Mark. After group on Tuesday, in the parking lot." }, "name")
       ] },
     { part: "Part Nine", name: "Where Justice and Mercy Kiss", job: 4, week: 3, ours: "The space between justice and mercy is not empty — it's a Person.",
       Q: [
         q("I know honestly which half I flinch from more — being fully told the truth about myself, or being freely and fully offered mercy.", "F", false, { ask: "Which half, and what does the flinch look like?", label: "The half I flinch from", ex: "Mercy. I change the subject when someone is kind to me." }, "know", { lo: { ask: "Which half have you learned to receive?", label: "The half I have learned to receive", grew: true, ex: "The truth. I ask for it now." } }),
-        q("There's an \"all that I ever did\" chapter of my story that I've kept hidden rather than let it become a witness.", "D", true, { ask: "Give it a title.", help: TITLE, label: "The chapter I have kept hidden", ex: "The summer of 2009." }, "there", { lo: { ask: "Which chapter have you already let become a witness? A title is enough.", label: "A chapter I have let be told", grew: true, ex: "The summer of 2009. I told it at the men's breakfast." } }),
+        q("Like the woman at the well, there's an \"all that I ever did\" chapter of my story that I've kept hidden rather than let it become a witness.", "D", true, { ask: "Give it a title.", help: TITLE, label: "The chapter I have kept hidden", ex: "The summer of 2009." }, "there", { lo: { ask: "Which chapter have you already let become a witness? A title is enough.", label: "A chapter I have let be told", grew: true, ex: "The summer of 2009. I told it at the men's breakfast." } }),
         q("I believe justice and mercy are not in tension in God — they meet fully in Jesus, and I don't have to choose between them.", null, false, { ask: "Where do they still feel in tension in your own life?", label: "Where justice and mercy still pull apart", ex: "With my father. I want him to pay and I want him back." }, "believe"),
         q("I'm willing to sit still and let God tell me the truth about myself this week, without defending or leaving the conversation.", "F", false, { ask: "When and where will you sit?", label: "This week", ex: "Saturday at dawn, on the back step." }, "willing"),
         q("I can name one place where the very thing I've hidden could become someone else's good news if I let it be told and transfigured.", "D", false, { ask: "Who might need to hear it?", label: "Who my hidden thing could help", ex: "The young man at work whose father just left." }, "name")
@@ -512,10 +512,10 @@ var ROAD_PARTS = (function () {
         seen: "Your own evidence, in your own words",
         ask: "Reading these, what are you ready for now?", help: "One sentence is enough.", label: "What I am ready for", ex: "To say it out loud to the young man at work." },
       Q: [
-        q("Of my three commitments — a rhythm, a stretch, a witness — for the discipline I chose, I know honestly which one I'm already tempted to negotiate down.", "F", false, { ask: "Which one, and what is the bargain you are tempted to make?", label: "The commitment I want to bargain down", ex: "The witness. I tell myself I will tell someone next month." }, "know", { lo: { ask: "What is helping you keep all three?", label: "What helps me keep my commitments", grew: true, ex: "Mark asks me every Tuesday." } }),
+        q("Of the commitments I have made to God this season, I know honestly which one I'm already tempted to negotiate down.", "F", false, { ask: "Which one, and what is the bargain you are tempted to make?", label: "The commitment I want to bargain down", ex: "The witness. I tell myself I will tell someone next month." }, "know", { lo: { ask: "What is helping you keep all three?", label: "What helps me keep my commitments", grew: true, ex: "Mark asks me every Tuesday." } }),
         q("I can name the first three people who come to mind when I ask \"who is the fruit of my life for\" — without arguing with the list.", "D", false, { ask: "Their first names.", label: "Who the fruit of my life is for", ex: "Anna, Ben and my neighbor Carl." }, "name", { lo: { ask: "Who is one person?", label: "One person the fruit of my life is for", ex: "My daughter." } }),
         q("I believe my ordinary work, whatever it is, can be worship and not just labor.", null, false, { ask: "What did that look like at work this week?", label: "Where my work was worship", ex: "I stayed late to fix another man's mistake and didn't mention it." }, "believe"),
-        q("I'm willing to tell one man my discipline plan by name this week, so someone has permission to ask me about it.", "D", false, { ask: "Who, and when?", label: "Who will know my plan", ex: "Mark, on Tuesday." }, "willing"),
+        q("I'm willing to tell one man my plan for one spiritual practice this week, so someone has permission to ask me about it.", "D", false, { ask: "Who, and when?", label: "Who will know my plan", ex: "Mark, on Tuesday." }, "willing"),
         q("I can name one concrete act — time, money, presence, a meal, a repair — that will cost me something to serve one of those three people this week.", "D", false, { ask: "The act, the person, the day.", label: "This week", ex: "Saturday I will fix Carl's fence with him." }, "name")
       ] }
   ];
@@ -525,10 +525,12 @@ var ROAD_PARTS = (function () {
     "label": "What I believe about God walking toward me"
    },
    "1.2.lo": {
-    "label": "What I believe about the road back"
+    "label": "What I believe about the road back",
+    "ask": "What do you believe today about the road back?"
    },
    "3.2.lo": {
-    "label": "What I believe about walking away sad"
+    "label": "What I believe about who my fruit is for",
+    "ex": "Most days I treat what I learn as mine. I have not thought of it as meant for anyone else."
    },
    "4.2.lo": {
     "label": "What I believe about justice and mercy together",
@@ -551,7 +553,9 @@ var ROAD_PARTS = (function () {
     "label": "What I believe about my work"
    },
    "0.3.lo": {
-    "label": "Where I stand on talking to God about where I hide"
+    "label": "Where I stand on talking to God about where I hide",
+    "ask": "Do you already talk to Him about it, is there nothing you are keeping back, or are you not ready yet? Say which, and one sentence about it.",
+    "help": "All three are honest answers. So is \"I don't know what I would say.\""
    },
    "1.3.lo": {
     "label": "Where I stand on choosing a discipline",
@@ -562,12 +566,14 @@ var ROAD_PARTS = (function () {
     "ex": "I don't know any men that well yet. Or: I am not ready, and I know it."
    },
    "3.3.lo": {
-    "label": "Where I stand on the discipline that makes me nervous",
+    "label": "Where I stand on the practice that makes me nervous",
     "ex": "I took on the hard one in the spring and I am still in it. Or: I am not ready, and I know it."
    },
    "4.3.lo": {
     "label": "Where I stand on letting go of being right",
-    "ex": "There is no standoff in my life right now that I know of. Or: I am not ready, and I know it."
+    "ex": "There is no standoff in my life right now that I know of. Or: I am not ready, and I know it.",
+    "ask": "Have you already done this, is there no such standoff in your life right now, or are you not ready to yet? Say which, and one sentence about it.",
+    "help": "All three are honest answers."
    },
    "5.3.lo": {
     "label": "Where I stand on confessing to God",
@@ -632,18 +638,22 @@ var ROAD_PARTS = (function () {
     "label": "Something I walked away from and can come back to"
    },
    "3.2.hi": {
-    "ask": "Is there something you walked away from? If so, give it a title. If not, say so.",
-    "label": "Something I walked away from sad"
+    "ask": "Who was the last person fed by something God grew in you?",
+    "label": "Who my fruit last fed",
+    "ex": "My neighbor. What God taught me about patience is why I spent Saturday on his fence.",
+    "help": "A first name or a role is enough, and one line on what it was. If no one comes to mind, say so."
    },
    "5.2.hi": {
-    "ask": "What do you do in the first hour after you have sinned?",
-    "label": "What I do after I sin",
-    "ex": "I tell Him within the hour now. It used to take me a week."
+    "ask": "Tell one time you came back to Him after you had sinned and found Him the same.",
+    "help": "A title is enough for what you had done. The moment is what matters.",
+    "label": "A time I found Him the same",
+    "ex": "After the worst argument of our marriage. I expected distance, and the prayer felt like the day before."
    },
    "7.2.hi": {
-    "ask": "What do you say first when you come to Him after a bad week?",
-    "label": "How I come to God after a bad week",
-    "ex": "I tell Him it was a bad week and ask for mercy anyway."
+    "ask": "Tell one time you came to Him with nothing to show, and what happened.",
+    "help": "One moment a man could picture.",
+    "label": "A time I came on His mercy",
+    "ex": "The week I lost the account. I had nothing to report, and I prayed anyway."
    },
    "8.2.hi": {
     "ask": "Where did you last see justice and mercy meet in your own life?",
@@ -670,7 +680,7 @@ var ROAD_PARTS = (function () {
    "3.1.hi": {
     "ask": "When did something you have learned last help another person?",
     "label": "When what I learned helped someone",
-    "ex": "I told my son what I had learned about anger, the night he lost his temper."
+    "ex": "I told my son what I had learned about anger, one night when he asked how I had changed."
    },
    "4.0.hi": {
     "label": "The way I lean in conflict",
@@ -691,9 +701,9 @@ var ROAD_PARTS = (function () {
     "grew": false
    },
    "9.0.lo": {
-    "ask": "Which of the three feels most solid right now, and why?",
+    "ask": "Which commitment to God feels most solid right now, and why? If you have made none yet, say so.",
     "label": "The commitment that feels most solid",
-    "ex": "The rhythm. It is already on my calendar and Mark asks about it."
+    "ex": "My morning hour. It is on my calendar and Mark asks about it."
    },
    "0.3.hi": {
     "label": "When I will talk to God about where I hide"
@@ -715,7 +725,7 @@ var ROAD_PARTS = (function () {
     "ex": "Service. Saturday morning at the food pantry, where other people will see me."
    },
    "3.1.lo": {
-    "ask": "Think of the last thing you learned in this course. Who else has heard it from you?",
+    "ask": "What is the last thing you learned about God, and who else has heard it from you?",
     "label": "The last thing I learned, and who has heard it",
     "ex": "That pruning is not punishment. So far only my journal has heard it."
    },
@@ -726,9 +736,30 @@ var ROAD_PARTS = (function () {
     "ask": "What is it about? A title is enough.",
     "help": "A title only you would understand. Never the story.",
     "label": "What my lament is about"
+   },
+   "3.0.lo": {
+    "ask": "Name one truth about God you are still carrying in your head."
+   },
+   "9.0.hi": {
+    "ex": "The one about telling someone. I tell myself I will do it next month."
+   },
+   "1.0.hi": {
+    "ask": "Which way do you lean, and what does it look like in your week?",
+    "label": "The way I lean"
+   },
+   "3.1.say": "I recognize the difference between what God has taught me that withers because I never pass it on to anyone, and what actually feeds someone else.",
+   "8.1.lo": {
+    "ask": "Is there a chapter you have already let become a witness? A title is enough. If there is none, say so."
+   },
+   "9.0.say": "Of the commitments I have made to God, such as a set time to pray or a habit to lay down, I know honestly which one I'm already tempted to negotiate down.",
+   "0.2.hi": {
+    "ask": "Tell one time you were hiding and He came toward you anyway.",
+    "help": "Not when you last prayed. One moment a man could picture.",
+    "label": "A time He came toward me",
+    "ex": "The winter I stopped praying. A friend I had not called in a year showed up with coffee and would not leave."
    }
   };
-  Object.keys(FIX).forEach(function (k) { var a = k.split("."), q = PARTS[+a[0]].Q[+a[1]], o = {}, src = q[a[2]], f = FIX[k], x; for (x in src) o[x] = src[x]; for (x in f) o[x] = f[x]; q[a[2]] = o; });
+  Object.keys(FIX).forEach(function (k) { var a = k.split("."), q = PARTS[+a[0]].Q[+a[1]], o = {}, src = q[a[2]], f = FIX[k], x; if (a[2] === "say") { q.say = f; return; } for (x in src) o[x] = src[x]; for (x in f) o[x] = f[x]; q[a[2]] = o; });
   return PARTS;
 })();
 if (typeof module !== "undefined") module.exports = ROAD_PARTS;
@@ -1553,6 +1584,7 @@ if (typeof module !== "undefined") module.exports = TELL;
 (function () {
   var C = window.AP_ROAD; if (!C) return;
   var STASH = "apStoryPending:road", TTL = 30 * 60 * 1000;
+  var lastSeen = "";
   var state = "idle", dirtyFlag = false, typed = false, savedOnce = false, note = "", t5 = null, bar = null;
   var W = {
     beneath: "Saving puts your story on your page, where you can read it, change it or delete it whenever you want. You will be asked to sign in — that is the only thing an account is for here.",
@@ -1567,8 +1599,9 @@ if (typeof module !== "undefined") module.exports = TELL;
   function stashClear() { try { window.localStorage.removeItem(STASH); } catch (e) {} }
 
   function pack(snap) {
-    /* tag characters and ampersands travel as JSON escapes, so nothing between here and the form can read them as markup */
-    var json = JSON.stringify(snap).replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026");
+    /* His walk travels as plain letters and digits only (base64url of the JSON), so nothing between here and the form can trim it,
+       collapse its spaces, or read any of it as markup. First live failure, Sept 19: what came back did not match what was sent. */
+    var json = "b64." + b64(JSON.stringify(snap));
     var ids = C.lw.blocks.walk, n = ids.length, size = Math.ceil(json.length / n) || 1, out = [], i, from = 0, to;
     for (i = 0; i < n; i++) {
       to = i === n - 1 ? json.length : Math.min(json.length, Math.max(from, (i + 1) * size));
@@ -1584,11 +1617,14 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (C.lw.blocks.meta) out.push({ blockId: C.lw.blocks.meta, value: JSON.stringify({ step: Math.min(done, 9), part: done, of: 10, finished: done >= 10, when: new Date().toISOString() }) });
     return { answers: out, json: json };
   }
+  function b64(str) { return window.btoa(unescape(encodeURIComponent(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+  function unb64(str) { str = str.replace(/-/g, "+").replace(/_/g, "/"); while (str.length % 4) str += "="; return decodeURIComponent(escape(window.atob(str))); }
   function joined(answers) { return C.lw.blocks.walk.map(function (id) { var v = answers[id] || ""; return v === "-" ? "" : v; }).join(""); }
   function unpack(answers) {
     var s = joined(answers);
     if (!s) return null;
-    return JSON.parse(s);
+    lastSeen = s;
+    return JSON.parse(s.indexOf("b64.") === 0 ? unb64(s.slice(4)) : s);
   }
 
   function set(s, n) { state = s; if (n !== undefined) note = n; paint(); }
@@ -1615,10 +1651,22 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (!signedIn()) { if (!stashSet(snap)) { set("idle", W.unavailable); return; } typed = false; /* his words are held on this device; no "leave this page?" box on the way to sign in */ openSignIn(); return; }
     var p = pack(snap);
     set("saving", ""); clearTimeout(t5); t5 = setTimeout(function () { if (state === "saving") set("still"); }, 5000);
-    api()._submit(C.lw.unit, p.answers).then(function () { return api().latest(C.lw.unit); }).then(function (latest) {
-      var back = latest && latest.answers ? joined(latest.answers) : "";
-      if (back !== p.json) { var e = new Error("What came back did not match what was sent."); e.plain = true; throw e; }
-      clearTimeout(t5); stashClear(); savedOnce = true; dirtyFlag = false; typed = false; set("saved", W.landed);
+    /* The site confirms the save itself (_submit rejects unless it answers "submitted"). Then read it back. The read can lag a moment
+       behind the save, so look up to four times; an older save coming back is lag, not loss. Anything else is a real mismatch, and
+       the message carries where it differed so it can be reported. */
+    var before = lastSeen;
+    function readBack(tries) {
+      return api().latest(C.lw.unit).then(function (latest) {
+        var back = latest && latest.answers ? joined(latest.answers) : "";
+        if (back === p.json) return "match";
+        if (tries > 0) return new Promise(function (ok) { setTimeout(ok, 1500); }).then(function () { return readBack(tries - 1); });
+        if (back === before) return "lag";
+        var k = 0; while (k < back.length && k < p.json.length && back.charAt(k) === p.json.charAt(k)) k++;
+        var e = new Error("What came back did not match what was sent (sent " + p.json.length + ", back " + back.length + ", differs at " + k + ")."); e.plain = true; throw e;
+      });
+    }
+    api()._submit(C.lw.unit, p.answers).then(function () { return readBack(3); }).then(function () {
+      clearTimeout(t5); stashClear(); lastSeen = p.json; savedOnce = true; dirtyFlag = false; typed = false; set("saved", W.landed);
     }).catch(function (e) {
       clearTimeout(t5);
       set("idle", W.failed(e && e.plain ? e.message : e && e.serviceError ? "The site did not confirm it." : "The connection dropped or the site did not answer."));
