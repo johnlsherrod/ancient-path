@@ -1584,7 +1584,7 @@ if (typeof module !== "undefined") module.exports = TELL;
 (function () {
   var C = window.AP_ROAD; if (!C) return;
   var STASH = "apStoryPending:road", TTL = 30 * 60 * 1000;
-  var lastSeen = "";
+  var lastSeen = "", blocked = false;
   var state = "idle", dirtyFlag = false, typed = false, savedOnce = false, note = "", t5 = null, bar = null;
   var W = {
     beneath: "Saving puts your story on your page, where you can read it, change it or delete it whenever you want. You will be asked to sign in — that is the only thing an account is for here.",
@@ -1646,6 +1646,8 @@ if (typeof module !== "undefined") module.exports = TELL;
   }
   function save() {
     if (state === "saving" || state === "still") return;
+    /* his saved words did not load: a save now would write an empty road over them */
+    if (blocked) { set("idle", "Your saved words have not loaded yet, so nothing can be saved over them. Reload the page. What you have typed here is still on the screen: copy it first if you want to keep it."); return; }
     if (!api()) { set("idle", W.unavailable); return; }
     var snap = APP.snapshot();
     if (!signedIn()) { if (!stashSet(snap)) { set("idle", W.unavailable); return; } typed = false; /* his words are held on this device; no "leave this page?" box on the way to sign in */ openSignIn(); return; }
@@ -1686,9 +1688,11 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (!signedIn()) { if (pending) { restore(pending); dirtyFlag = true; } done(); return; }
     if (pending) { restore(pending); done(); save(); return; }
     api().latest(C.lw.unit).then(function (latest) {
-      var snap = latest && latest.answers ? unpack(latest.answers) : null;
+      var snap = null;
+      try { snap = latest && latest.answers ? unpack(latest.answers) : null; }
+      catch (e) { note = "Your last save could not be read, so this page is starting fresh. If you save here, it replaces that save."; return; }
       if (snap) { restore(snap); savedOnce = true; state = "saved"; }
-    }).catch(function () { note = "Your saved words could not be loaded just now. Reload the page before you write, so nothing is written over."; }).then(done);
+    }).catch(function () { blocked = true; note = "Your saved words could not be loaded just now. Reload the page before you write. Nothing can be saved until they load, so nothing is written over."; }).then(done);
   }
   function mountBar() {
     if (bar) return;
