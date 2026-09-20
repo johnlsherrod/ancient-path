@@ -957,7 +957,7 @@ var WRITER = (function () {
       }
     } else h += '<p class="quiet center">' + (P < 2 ? "The map begins in Part Three, once your answers reach both sides of it." : "The map appears once there is a number on both sides of it.") + '</p>';
     return h + '<div class="row bar"><button class="btn main" data-wgo="story">Save</button><button class="btn" data-wgo="print">Print</button><button class="btn" data-wgo="all">Edit</button></div>' +
-      '<p class="quiet">' + (window.AP_ROAD ? "Save adds this chapter to your story and puts it on your page, where you can read it, change it or delete it whenever you want. You will be asked to sign in — that is the only thing an account is for here." : APP.stage === "me" ? "Save keeps this chapter with your Claude account, private to you, and adds it to your story." : "In this walk-through nothing is saved. Save puts the chapter into the sample story. In the course it puts the chapter on his page.") + '</p></div>';
+      '<p class="quiet">' + (window.AP_ROAD && window.AP_ROAD.course ? "Save adds this chapter to your story and puts it on your page, where you can read it, change it or delete it whenever you want." : window.AP_ROAD ? "Save adds this chapter to your story and puts it on your page, where you can read it, change it or delete it whenever you want. You will be asked to sign in — that is the only thing an account is for here." : APP.stage === "me" ? "Save keeps this chapter with your Claude account, private to you, and adds it to your story." : "In this walk-through nothing is saved. Save puts the chapter into the sample story. In the course it puts the chapter on his page.") + '</p></div>';
   }
 
   function intoStory() {
@@ -1588,6 +1588,7 @@ if (typeof module !== "undefined") module.exports = TELL;
   var state = "idle", dirtyFlag = false, typed = false, savedOnce = false, note = "", t5 = null, bar = null;
   var W = {
     beneath: "Saving puts your story on your page, where you can read it, change it or delete it whenever you want. You will be asked to sign in — that is the only thing an account is for here.",
+    beneathIn: "Saving puts your story on your page, where you can read it, change it or delete it whenever you want.",
     landed: "Saved to your page. Everything you write here will be waiting there.",
     unavailable: "Saving is not available right now. Your words are still on this page — use Copy and paste them somewhere safe before you close it.",
     failed: function (why) { return "It did not save. " + why + " Your words are still here — nothing has been lost. Try again, or copy them before you close the page."; }
@@ -1637,6 +1638,8 @@ if (typeof module !== "undefined") module.exports = TELL;
     nt.textContent = note || (typed && savedOnce ? "You have written something that is not saved yet." : ""); nt.hidden = !nt.textContent;
     be.hidden = savedOnce || onChapter;
     var link = bar.querySelector(".savelink"); link.hidden = !(state === "saved" && !dirtyFlag);
+    /* inside a course section the card stands alone: no Save bar under it unless something is waiting to be saved or said */
+    if (C.course) bar.hidden = !!document.querySelector("#ap-road-app .coursecard") && !dirtyFlag && !typed && !note;
   }
   function openSignIn() {
     try { if (window.l_settings && typeof window.l_settings === "object") window.l_settings.redirectUrl = window.location.pathname + window.location.search; } catch (e) {}
@@ -1680,7 +1683,7 @@ if (typeof module !== "undefined") module.exports = TELL;
       var q = window.location.search, m = /[?&]part=(\d+)/.exec(q), n = (APP.D && APP.D.meCount) || 0;
       /* a link from a course section, or "Pick up" from his page, opens his NEXT unwritten chapter: never one already written, never one ahead */
       var under = typeof WRITER !== "undefined" && WRITER.begun && WRITER.begun(n);
-      if (m || (/[?&]open=/.test(q) && (n || under))) { if (n < 10) APP.openPart(n); else { try { TELL.show(APP.D, "me", "read"); APP.go("tell"); } catch (e) {} } }
+      if (!C.course && (m || (/[?&]open=/.test(q) && (n || under)))) { if (n < 10) APP.openPart(n); else { try { TELL.show(APP.D, "me", "read"); APP.go("tell"); } catch (e) {} } }
       paint();
     };
     var pending = stashGet();
@@ -1699,8 +1702,8 @@ if (typeof module !== "undefined") module.exports = TELL;
     var host = document.getElementById("ap-road"); if (!host) return;
     bar = document.createElement("div"); bar.className = "savebar";
     bar.innerHTML = '<div class="row"><button class="btn main" data-site="save">Save</button><a class="link savelink" hidden></a></div><p class="say savenote" role="status" hidden></p><p class="quiet savebeneath"></p>';
-    bar.querySelector(".savebeneath").textContent = W.beneath;
-    var a = bar.querySelector(".savelink"); a.textContent = C.pageLabel || "Go to your page"; a.href = C.pagePath || "/start";
+    bar.querySelector(".savebeneath").textContent = C.course && signedIn() ? W.beneathIn : W.beneath;
+    var a = bar.querySelector(".savelink"); a.textContent = C.pageLabel || "Go to your page"; a.href = C.pagePath || "/start"; if (C.course) { a.target = "_blank"; a.rel = "noopener"; }
     host.appendChild(bar);
     bar.addEventListener("click", function (e) { var b = e.target.closest("[data-site=save]"); if (b) save(); });
     /* the browser's own "leave this page?" box only when he has typed words that are not saved; never for moving between steps */
@@ -1767,7 +1770,7 @@ if (typeof module !== "undefined") module.exports = TELL;
 
   function pageScreen() {
     var chs = ROAD.chapters(D, stage), lastCh = chs[chs.length - 1], walking = stage !== "finished";
-    if (stage === "me") return minePage(chs);
+    if (stage === "me") return SITE && SITE.course ? coursePage(chs) : minePage(chs);
     return '<div class="sheet"><div class="eyebrow">Your page</div><h1>Welcome back, Daniel.</h1>' +
       '<p class="fixed">Everything you have written here. Read it, change it, or delete it — any of it, whenever you want.</p>' +
       '<div class="cards"><article class="card main"><div class="eyebrow">Walk With Me</div><h2>' + esc(D.title) + '</h2>' +
@@ -1861,6 +1864,26 @@ if (typeof module !== "undefined") module.exports = TELL;
       h += '<div class="recall"><span>' + esc(x.part) + (x.said ? ' · You had said: “' + esc(x.said) + '”' : ' · ' + esc(x.label)) + '</span><p>“' + esc(x.text) + '”</p></div>';
     });
     return h + '</div><div class="row bar"><button class="btn main" data-go="page">Back</button></div>';
+  }
+
+  /* Inside a course section: one card for this section's chapter. He never leaves the course. His story is written in order,
+     so the button always opens his next unwritten chapter, and the card says so when that is not this section. */
+  function coursePage(chs) {
+    var n = chs.length, all = D.chapters.length, here = Math.max(0, Math.min(all - 1, (SITE.course.part || 1) - 1)), me = ROAD_PARTS[here], next = ROAD_PARTS[n];
+    var under = n < all && WRITER.begun && WRITER.begun(n);
+    var storyLink = '<a class="btn" href="' + esc(SITE.course.storyPath || "/the-road-i-walked") + '" target="_blank" rel="noopener">Open my story</a>';
+    var h = '<div class="sheet coursecard"><div class="eyebrow">Your story · The Road I Walked</div><h1>Five minutes: write this part of your story</h1>';
+    if (n > here) {
+      h += '<p class="state"><b>Written</b></p><p class="fixed">You have written your chapter for ' + esc(me.part + " · " + me.name) + '. It is in your story.</p>' +
+        '<div class="row"><button class="btn main" data-do="readstory">Read my story so far</button>' + storyLink + '</div>' +
+        '<p class="quiet">To change or delete anything you wrote, open your story.' + (n < all ? ' When you are ready, go on to the next section with "next" at the top of this page.' : '') + '</p>';
+    } else {
+      h += '<p class="fixed">Before you go on, take five minutes. Answer five statements honestly and write a few sentences. They become a chapter in your own story, and it will be waiting on your page. <b>Nothing you write here reaches us unless you choose to save it with us. Everything else stays on your device.</b></p>';
+      if (n < here) h += '<p class="say">Your story is written in order, and your next chapter is ' + esc(next.part + " · " + next.name) + '. Write that one first. Then come back here for ' + esc(me.part) + '.</p>';
+      h += (under ? '<p class="state"><b>In progress</b> — Pick up where you left off</p>' : "") +
+        '<div class="row"><button class="btn main" data-do="pickup">' + (under ? "Pick up where you left off" : "Write " + esc(next.part) + " of my story") + '</button>' + (n ? '<button class="btn" data-do="readstory">Read my story so far</button>' : "") + '</div>';
+    }
+    return h + '<p id="say" class="say" hidden></p></div>';
   }
 
   function minePage(chs) {
