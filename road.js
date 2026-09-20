@@ -1591,9 +1591,13 @@ if (typeof module !== "undefined") module.exports = TELL;
     beneathIn: "Saving puts your story on your page, where you can read it, change it or delete it whenever you want.",
     landed: "Saved to your page. Everything you write here will be waiting there.",
     unavailable: "Saving is not available right now. Your words are still on this page — use Copy and paste them somewhere safe before you close it.",
+    owner: "You are signed in as a site owner. The site keeps an owner's answers only as a preview, so nothing was saved. Sign in as a learner to save.",
+    ownerNote: "You are signed in as a site owner. You can write here, but the site keeps an owner's answers only as a preview, so Save will not keep anything. Sign in as a learner to save.",
     failed: function (why) { return "It did not save. " + why + " Your words are still here — nothing has been lost. Try again, or copy them before you close the page."; }
   };
   function api() { return window.APStory && window.APStory._submit && window.APStory.latest ? window.APStory : null; }
+  /* a hint only: the site's own account record says when this is an owner or admin, whose form answers the site never keeps */
+  function owner() { try { var m = window.me || (window.parent && window.parent.me); return !!(m && /admin/i.test(String(m.userRole || "") + String(m.parentRole || ""))); } catch (e) { return false; } }
   function signedIn() { try { return !!(api() && api().signedIn()); } catch (e) { return false; } }
   function stashSet(o) { try { window.localStorage.setItem(STASH, JSON.stringify({ t: Date.now(), a: o })); return true; } catch (e) { return false; } }
   function stashGet() { try { var r = JSON.parse(window.localStorage.getItem(STASH) || "null"); if (!r || !r.t || Date.now() - r.t > TTL) { stashClear(); return null; } return r.a || null; } catch (e) { return null; } }
@@ -1665,7 +1669,8 @@ if (typeof module !== "undefined") module.exports = TELL;
         var back = latest && latest.answers ? joined(latest.answers) : "";
         if (back === p.json) return "match";
         if (tries > 0) return new Promise(function (ok) { setTimeout(ok, 1500); }).then(function () { return readBack(tries - 1); });
-        if (back === before) return "lag";
+        if (!back) { var e0 = new Error(owner() ? W.owner : "The site accepted it but kept nothing."); e0.plain = true; throw e0; }
+        if (back === before) { var e1 = new Error("The site took your save but has not shown it back yet, so it cannot be confirmed. Wait a minute, then press Save again."); e1.plain = true; throw e1; }
         var k = 0; while (k < back.length && k < p.json.length && back.charAt(k) === p.json.charAt(k)) k++;
         var e = new Error("What came back did not match what was sent (sent " + p.json.length + ", back " + back.length + ", differs at " + k + ")."); e.plain = true; throw e;
       });
@@ -1690,6 +1695,7 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (!api()) { if (pending) restore(pending); set("idle", W.unavailable); done(); return; }
     if (!signedIn()) { if (pending) { restore(pending); dirtyFlag = true; } done(); return; }
     if (pending) { restore(pending); done(); save(); return; }
+    if (owner()) note = W.ownerNote;
     api().latest(C.lw.unit).then(function (latest) {
       var snap = null;
       try { snap = latest && latest.answers ? unpack(latest.answers) : null; }
