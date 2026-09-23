@@ -407,7 +407,7 @@ var ROAD = (function () {
       where: near ? "near " + STOPS[k] : "between " + STOPS[lo] + " and " + STOPS[lo + 1] };
   }
 
-  return { evidence: evidence, markPart: markPart, moves: moves, fullPart: fullPart, bendLabel: bendLabel, bendGloss: bendGloss, shown: shown, recallLine: recallLine, mark: mark, roadPt: roadPt, chapters: chapters, onLines: onLines, stageLine: stageLine, thread: thread, listParts: listParts,
+  return { evidence: evidence, markPart: markPart, markFD: markFD, moves: moves, fullPart: fullPart, bendLabel: bendLabel, bendGloss: bendGloss, shown: shown, recallLine: recallLine, mark: mark, roadPt: roadPt, chapters: chapters, onLines: onLines, stageLine: stageLine, thread: thread, listParts: listParts,
            segments: segments, pathD: pathD, thenNow: thenNow, text: text, pdf: pdf, handed: handed, HANDED: HANDED, finished: finished };
 })();
 if (typeof module !== "undefined") module.exports = ROAD;
@@ -1015,6 +1015,22 @@ var WRITER = (function () {
   function opening2(sd, k) { var op = sd.ops2 && sd.ops2[k]; if (op == null) return ""; if (sd.opn2 && sd.opn2[k]) return sd.opn2[k]; return op.replace(/…\s*$/, "") + (/\.$/.test(op) ? " " : ". "); }
   function pick2Of(i) { var w = W(), q = Q()[i], sd = q && (q[band(i)] || q.hi); if (!sd || !sd.ops2 || w.o2[i] == null) return null; var op = opening2(sd, w.o2[i]); return op && (w.t[i] || "").indexOf(op.trim()) >= 0 ? w.o2[i] : null; }
   function pickOf(i) { var w = W(), q = Q()[i], sd = q && (q[band(i)] || q.hi); if (!sd || !sd.ops || w.o[i] == null) return null; var op = opening(sd, w.o[i]); return op && (w.t[i] || "").indexOf(op) === 0 ? w.o[i] : null; }
+  /* v18 · where his answers put him on the map. When a part has no discipleship statement (Parts One and Two), the forced choice
+     on the first statement of Part Two ("which way do you lean") places the mark instead: the man put his X on the map in words, so the map shows it. */
+  function markFor() {
+    var w = W(), m = ROAD.markPart(Q(), w.n);
+    if (m) return m;
+    var lean = leanPick();
+    if (lean === 0) return ROAD.markFD(4, 2);
+    if (lean === 1) return ROAD.markFD(2, 4);
+    return null;
+  }
+  function leanPick() {
+    var w = W(), q = Q()[0], ops = q && q.hi && q.hi.ops;
+    if (!ops || ops.length !== 2 || !/lean/i.test(q.say || "") || band(0) !== "hi") return null;
+    var k = pickOf(0); if (k == null) return null;
+    return k;
+  }
   function part() { return ROAD_PARTS[P]; }
   function Q() { return part().Q; }
   function steps() { var s = ["intro"]; if (lastWeek()) s.push("follow"); if (part().evidence) s.push("witness"); Q().forEach(function (q, i) { s.push("q" + i); }); if (P > 0) s.push("between"); s.push("feel", "stage"); return s; }
@@ -1159,7 +1175,7 @@ var WRITER = (function () {
   }
 
   function chapterHTML() {
-    var w = W(), pt = part(), ls = lines(), m = ROAD.markPart(Q(), w.n), byK = {}, st = ROAD.stageLine({ setOut: w.setOut, camped: w.camped }), sv = pt.stage || STAGE;
+    var w = W(), pt = part(), ls = lines(), m = markFor(), byK = {}, st = ROAD.stageLine({ setOut: w.setOut, camped: w.camped }), sv = pt.stage || STAGE;
     ls.forEach(function (l, i) { l.i = i; byK[l.k] = l; });
     function his(k) { var l = byK[k]; return l ? (l.ctx ? '<div class="recall"><span>' + esc(l.ctx.lead) + '</span><p>“' + esc(l.ctx.quote) + '”</p></div>' : "") + '<p class="his"><span class="lead">' + esc(l.label) + '</span><button class="pickline' + (w.aloud === l.i ? " on" : "") + '" data-aloud="' + l.i + '" aria-pressed="' + (w.aloud === l.i) + '">' + esc(l.text) + '</button></p>' : ""; }
     var h = '<div class="sheet" id="writer"><div class="ch-head"><div class="eyebrow">Walk With Me · chapter ' + NUMS[P] + '</div><div class="t">' + esc(pt.name) + '</div><div class="rule"></div></div>';
@@ -1186,7 +1202,7 @@ var WRITER = (function () {
         h += '<p class="ours left">' + lead + '</p><div class="words">' + set.map(function (s) { return '<button class="word' + (w.disc === s ? " pick" : "") + '" data-disc="' + s + '" aria-pressed="' + (w.disc === s) + '">' + s + '</button>'; }).join("") + '</div>' +
           (w.disc ? '<div class="field"><label for="t-disc">How will you practice ' + esc(w.disc) + ' before the next chapter?</label><input id="t-disc" data-w="discText" value="' + esc(w.discText) + '" placeholder="Saturday mornings at the food pantry with my son."></div>' : "");
       }
-    } else h += '<p class="quiet center">' + (P < 2 ? "The map begins in Part Three, once your answers reach both sides of it." : "The map appears once there is a number on both sides of it.") + '</p>';
+    } else h += '<p class="quiet center">' + (P < 1 ? "The map begins in your next chapter, once you say which way you lean." : P < 2 ? "The map appears once you say which way you lean, under the first statement." : "The map appears once there is a number on both sides of it.") + '</p>';
     return h + '<div class="row bar"><button class="btn main" data-wgo="story">Save</button><button class="btn" data-wgo="print">Print</button><button class="btn" data-wgo="all">Edit</button></div>' +
       '<p class="quiet">' + (window.AP_ROAD && window.AP_ROAD.course ? "Save adds this chapter to your story and puts it on your page, where you can read it, change it or delete it whenever you want." : window.AP_ROAD ? "Save adds this chapter to your story and puts it on your page, where you can read it, change it or delete it whenever you want. You will be asked to sign in — that is the only thing an account is for here." : APP.stage === "me" ? "Save keeps this chapter with your Claude account, private to you, and adds it to your story." : "In this walk-through nothing is saved. Save puts the chapter into the sample story. In the course it puts the chapter on his page.") + '</p></div>';
   }
@@ -1199,7 +1215,7 @@ var WRITER = (function () {
     var ch = D.chapters[P];
     ch.lines = story.map(function (l) { return { label: l.label, text: l.text, first: l.text, ctx: l.ctx, ev: !!l.ev, grew: !!l.grew, pick: l.pick, pick2: l.pick2, charge: !!l.charge, on: l.k === job || l.k === "did" || l.k === "wit", between: l.k === job ? w.between.trim() : "" }; });
     ch.setOut = w.setOut; ch.camped = w.camped; ch.nums = w.n.slice(); ch.picks = Q().map(function (q, i) { return pickOf(i); });
-    var m = ROAD.markPart(Q(), w.n);
+    var m = markFor();
     if (APP.stage === "me") {
       D.marks = D.marks || []; D.marks[P] = m ? [m.x, m.y] : null; D.meCount = Math.max(D.meCount || 0, P + 1); D.trail = D.marks.filter(Boolean);
     } else { D.threeMark = m ? [m.x, m.y] : null; D.threeDone = true; }
@@ -1435,8 +1451,24 @@ var TELL = (function () {
 
   /* ---------- asking ---------- */
   function whole() { return storyParts().map(function (p) { return (p.name ? "[" + p.name + "]\n" : "") + p.text; }).join("\n\n"); }
-  function canRead() { return !window.AP_ROAD || !!window.AP_ROAD.reader; }
-  function reader() { return window.claude && window.claude.use ? window.claude.use("sample") : Promise.resolve(null); }
+  /* v18 · the first reader on the site goes through a relay that holds the key (AP-READER-RELAY, an Apps Script web app).
+     READER_URL is the relay address compiled into this build; AP_ROAD.reader = a string overrides it, false turns the reader off. */
+  var READER_URL = "https://script.google.com/macros/s/AKfycbwhyhcluoAKYVxUoKW6UnoN8Iab80DHLq_2snfTKu9i1gwSCkvBcH41HtNKFdlvGgkp/exec";
+  function relayURL() { var c = window.AP_ROAD; if (!c) return ""; if (c.reader === false) return ""; if (typeof c.reader === "string" && c.reader) return c.reader; return READER_URL; }
+  function canRead() { return !window.AP_ROAD || !!relayURL(); }
+  function relay(url) {
+    return { json: function (input, opts) {
+      var sig = opts && opts.signal, who = ""; try { who = localStorage.getItem("apStoryOwner") || ""; } catch (e) {}
+      /* text/plain keeps this a simple request: Apps Script answers no preflight */
+      return fetch(url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ input: String(input || "").slice(0, 60000), id: who }), signal: sig, credentials: "omit" })
+        .then(function (r) { return r.json(); }, function () { throw { code: "network" }; })
+        .then(function (r) { if (!r || r.ok !== true) throw { code: (r && r.error) || "network" }; return r.data; });
+    } };
+  }
+  function reader() {
+    if (window.claude && window.claude.use) return window.claude.use("sample");
+    var u = relayURL(); return Promise.resolve(u ? relay(u) : null);
+  }
   function copyFor(e) {
     var c = e && e.code;
     if (c === "cancelled") return "";
