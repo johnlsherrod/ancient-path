@@ -113,6 +113,11 @@ var ROAD = (function () {
   function chapters(d, stage) { return stage === "me" ? d.chapters.slice(0, d.meCount || 0) : stage === "walking" ? d.chapters.slice(0, 6) : stage === "three" ? d.chapters.slice(0, d.threeDone ? 3 : 2) : d.chapters; }
 
   function onLines(ch) { return ch.lines.filter(function (l) { return l.on && l.text.trim(); }); }
+  /* the closing of a finished story: what a strong man wrote when a statement was not his struggle, so another man can hear it */
+  var HANDED = "What I could hand another man";
+  /* a story is finished on the walk-through's "finished" stage, and on the site once a man has written all ten chapters */
+  function finished(d, stage) { return stage === "finished" || (stage === "me" && (d.meCount || 0) >= (typeof ROAD_PARTS !== "undefined" ? ROAD_PARTS.length : 10)); }
+  function handed(d, stage) { var out = []; if (!finished(d, stage)) return out; chapters(d, stage).forEach(function (ch) { ch.lines.forEach(function (l) { if (l.grew && l.text && l.text.trim()) out.push({ part: fullPart(ch), label: l.label, text: l.text.trim() }); }); }); return out; }
 
   function stageLine(ch) {
     var a = (ch.setOut || "").trim(), b = (ch.camped || "").trim();
@@ -210,12 +215,13 @@ var ROAD = (function () {
      Gathered from every chapter before part `upto`, whether or not the line is in his story. No count, no praise, nothing of ours. */
   function evidence(d, stage, upto) {
     var out = { charge: null, seen: [] };
-    chapters(d, stage).forEach(function (ch, i) {
+    chapters(d, stage).forEach(function (ch, i, arr) {
       if (upto != null && i >= upto) return;
       ch.lines.forEach(function (l) {
         if (!l.text || !l.text.trim()) return;
         if (l.charge) out.charge = { part: fullPart(ch), label: l.label, text: l.text.trim() };
-        if (l.ev) out.seen.push({ part: fullPart(ch), label: l.label, text: l.text.trim(), said: l.ctx && l.ctx.quote ? l.ctx.quote : "" });
+        /* a commitment he is answering was SAID in the part before the one that holds his answer */
+        if (l.ev) out.seen.push({ part: fullPart(ch), saidPart: i > 0 ? fullPart(arr[i - 1]) : fullPart(ch), label: l.label, text: l.text.trim(), said: l.ctx && l.ctx.quote ? l.ctx.quote : "" });
       });
     });
     return out;
@@ -249,8 +255,10 @@ var ROAD = (function () {
     d.bends.forEach(function (b) { if (b.at < chapters(d, stage).length && b.text.trim()) out.push(bendLabel(d, b) + ". " + bendGloss(d, b), b.text.trim()); });
     var th = thread(d, stage);
     if (th) { out.push("", "A word I keep using: " + th.word); th.where.forEach(function (w) { out.push(w.part + ": " + w.text); }); }
-    if (stage === "finished") out.push("", d.closes);
-    if (stage === "finished" && d.tail.trim()) out.push("", "Today I am camped at " + d.tail.trim());
+    var hd = handed(d, stage);
+    if (hd.length) { out.push("", HANDED); hd.forEach(function (l) { out.push(l.part + " · " + l.label, l.text); }); }
+    if (finished(d, stage)) out.push("", d.closes);
+    if (finished(d, stage) && d.tail.trim()) out.push("", "Today I am camped at " + d.tail.trim());
     out.push("", "Written in Walk With Me · Ancient Path Biblical Coaching");
     return out.join("\n");
   }
@@ -361,8 +369,10 @@ var ROAD = (function () {
       if (st) para(st, { style: "italic", size: 11.5, color: NAVY, after: 0 });
       y += 14;
     });
-    if (stage === "finished") { room(60); para(d.closes, { style: "italic", size: 11.5, color: BRONZE, center: true, width: 380, after: 12 }); }
-    if (stage === "finished" && d.tail.trim() && !story) { room(50); para("Today I am camped at " + d.tail.trim(), { style: "bold", size: 14, color: NAVY, center: true, width: 400, after: 10 }); }
+    var hd = handed(d, stage);
+    if (hd.length && !story) { room(70); para(HANDED, { style: "bold", size: 14, color: NAVY, after: 6 }); hd.forEach(function (l) { room(40); para(l.part + " · " + l.label, { style: "italic", size: 10.5, color: BRONZE, after: 1 }); para(l.text, { size: 13, color: INK, after: 6 }); }); y += 8; }
+    if (finished(d, stage)) { room(60); para(d.closes, { style: "italic", size: 11.5, color: BRONZE, center: true, width: 380, after: 12 }); }
+    if (finished(d, stage) && d.tail.trim() && !story) { room(50); para("Today I am camped at " + d.tail.trim(), { style: "bold", size: 14, color: NAVY, center: true, width: 400, after: 10 }); }
     room(40);
     para("WHERE THESE WORDS COME FROM", { font: "helvetica", style: "bold", size: 7.5, color: SOFT, center: true, after: 1 });
     para(d.refs.join(" · "), { font: "helvetica", size: 8.5, color: SOFT, center: true, after: 0 });
@@ -398,7 +408,7 @@ var ROAD = (function () {
   }
 
   return { evidence: evidence, markPart: markPart, moves: moves, fullPart: fullPart, bendLabel: bendLabel, bendGloss: bendGloss, shown: shown, recallLine: recallLine, mark: mark, roadPt: roadPt, chapters: chapters, onLines: onLines, stageLine: stageLine, thread: thread, listParts: listParts,
-           segments: segments, pathD: pathD, thenNow: thenNow, text: text, pdf: pdf };
+           segments: segments, pathD: pathD, thenNow: thenNow, text: text, pdf: pdf, handed: handed, HANDED: HANDED, finished: finished };
 })();
 if (typeof module !== "undefined") module.exports = ROAD;
 
@@ -562,8 +572,10 @@ var ROAD_PARTS = (function () {
     "ex": "I already keep a morning hour and it is holding. Or: I am not ready, and I know it."
    },
    "2.3.lo": {
+    "ask": "Have you already done this, are you not ready to yet, or have you tried it before and been hurt by it? Say which, and one sentence about it.",
+    "help": "All three are honest answers.",
     "label": "Where I stand on being known by other men",
-    "ex": "I don't know any men that well yet. Or: I am not ready, and I know it."
+    "ex": "I don't know any men that well yet. Or: I told a group once and it was used against me. I am not ready, and I know why."
    },
    "3.3.lo": {
     "label": "Where I stand on the practice that makes me nervous",
@@ -667,10 +679,12 @@ var ROAD_PARTS = (function () {
    "2.1.hi": {
     "label": "The people who would know"
    },
+   "2.3.say": "I'm willing to let two or three trusted men know the truth about my life and ask me about it, even though it means I no longer get the last word on how I'm doing.",
+   "2.3.note": "You choose the men, and you choose the pace. Being known is not being exposed, and no one here gets to run your life. Confession and accountability belong where there is no shaming.",
    "2.3.hi": {
-    "ask": "Which men? First names.",
-    "label": "The men I would be rooted with",
-    "ex": "David and Mark."
+    "ask": "Which men? First names. What makes them safe to tell?",
+    "label": "The men I would let know me",
+    "ex": "David and Mark. They have told me hard things about themselves, and neither one has ever used mine against me."
    },
    "2.4.lo": {
     "ask": "What is already in the light that used to be hidden? A title is enough.",
@@ -759,7 +773,215 @@ var ROAD_PARTS = (function () {
     "ex": "The winter I stopped praying. A friend I had not called in a year showed up with coffee and would not leave."
    }
   };
-  Object.keys(FIX).forEach(function (k) { var a = k.split("."), q = PARTS[+a[0]].Q[+a[1]], o = {}, src = q[a[2]], f = FIX[k], x; if (a[2] === "say") { q.say = f; return; } for (x in src) o[x] = src[x]; for (x in f) o[x] = f[x]; q[a[2]] = o; });
+  /* v17 · Part Five, John's rulings of Sept 21, 2026 (statement 2: "good", unchanged). Drafts of the wording are Claude's except the two practice lines under statement 1, which are John's notes. */
+  var V17_P5 = {
+   "4.0.hi": {
+    "ask": "Which way do you lean? Tap one, then say where it last showed.",
+    "ops": ["Pressing to be right (din)", "Yielding for peace (pesharah)"],
+    "opn": ["When I face a conflict I lean toward pressing to be right. ", "When I face a conflict I lean toward yielding for peace. "],
+    "then": [
+     "If you lean toward din: practice tzimtzum (restriction). Pause, let time pass, and ask: “Even if I am 100% factually correct, will speaking this truth right now build up this person's soul, or am I just gratifying my ego?”",
+     "If you lean toward pesharah: remember that holding a firm, righteous boundary with love is an act of gevurah (strength) that protects the relationship from silent resentment."
+    ],
+    "label": "How I lean in conflict",
+    "ex": "When I face a conflict I lean toward pressing to be right. Last month, over the contract."
+   },
+   "4.2.hi": {
+    "ask": "Where did you last have to hold justice and mercy together?",
+    "help": "Say what happened, then name what you felt while you held them both. One word for the feeling is enough.",
+    "label": "Holding both at once",
+    "ex": "Deciding whether to let my foreman go. I felt torn, and afraid of being the bad guy."
+   },
+   "4.2.lo": {
+    "ask": "Which do you trust more today, justice or mercy? Say why in one sentence.",
+    "ops": ["Justice", "Mercy"], "opn": ["Today I trust justice more, because ", "Today I trust mercy more, because "],
+    "label": "The one I trust more today",
+    "ex": "Today I trust justice more, because mercy still feels like letting people off."
+   },
+   "4.3.lo": {
+    "ask": "Think of the last time you let go of being right, or could not. What did it show you about yourself?",
+    "help": "If there is no standoff in your life right now, say how you got there. If you are not ready yet, say so. Either is an honest answer.",
+    "label": "What letting go showed me",
+    "ex": "Last spring I dropped the argument with my sister over Dad's house. It showed me I would rather win than be close."
+   },
+   "4.4.lo": {
+    "ask": "Suppose you could keep only one of the three fully honest this month: money, time, or promises. Which one, and why?",
+    "ops": ["Money", "Time", "Promises"], "opn": ["The one I would keep honest first is money. ", "The one I would keep honest first is time. ", "The one I would keep honest first is promises. "],
+    "help": "We are being transformed from one degree of glory to another (2 Corinthians 3:18). A man who is strong here still has a next step. Add the habit that keeps it honest; another man may need it.",
+    "label": "What I guard first",
+    "grew": true,
+    "ex": "The one I would keep honest first is promises. I write every one down the day I make it, and I check the list on Fridays."
+   }
+  };
+  Object.keys(V17_P5).forEach(function (k) { var o = FIX[k] || (FIX[k] = {}), f = V17_P5[k], x; for (x in f) o[x] = f[x]; });
+  /* v17 · NO NAMES (John, Sept 21, 2026: "yes"). Never a name on these pages; a role at most, picked from buttons; on a line about someone he holds something against or has wronged, nothing about the other person at all. Plus Part Six as ruled the same day. */
+  var R5 = ["A man in my group", "My group", "A friend", "A family member", "Someone at work", "A neighbor"], R5N = R5.concat(["No one yet."]);
+  var ATTR = ["Compassionate", "Gracious", "Slow to anger", "Abounding in kindness", "Truth", "Bearing iniquity", "Cleansing"];
+  var NONAME = "No names. A role is enough.";
+  var V17_NAMES = {
+   "2.0.lo": { "ex": "Envy, last spring. I told a man in my group the same week." },
+   "2.1.hi": { "ask": "Who would know? No names. Tap one, then say how they would know.", "ops": R5, "ex": "A man in my group. He asks me every Tuesday, and I can't fake it with him." },
+   "2.1.lo": { "ask": "Is there one man you could tell? No names.", "help": NONAME, "ops": R5N, "ex": "A man in my group. He has been honest with me first." },
+   "2.2.hi": { "ex": "When I lost my biggest account, my first thought was that God was done with me." },
+   "2.3.hi": { "ask": "Which men? No names. Tap one, then say what makes them safe to tell.", "ops": R5, "ex": "A man in my group. He has told me hard things about himself, and he has never used mine against me." },
+   "2.4.hi": { "help": "No names, and don't write the thing itself here. It belongs with that man, or in your own journal.", "ops": ["A man in my group", "My group", "A friend", "A family member", "On paper before God"], "opn": ["I will bring it to a man in my group, ", "I will bring it to my group, ", "I will bring it to a friend, ", "I will bring it to a family member, ", "I will bring it on paper before God, "], "ex": "I will bring it to a man in my group, Thursday after we meet. Or: I will bring it on paper before God, Saturday morning, before anyone is up." },
+   "2.4.lo": { "ex": "The debt. It is no longer a secret at home." },
+   "3.2.hi": { "ask": "Who was the last person fed by something God grew in you? No names.", "help": "A role is enough, and one line on what it was. If no one comes to mind, say so.", "ops": R5, "ex": "A neighbor. What God taught me about patience is why I spent Saturday on his fence." },
+   "3.4.hi": { "ask": "Who is it for, and what will you hand them? No names.", "help": NONAME, "ops": R5, "ex": "A neighbor. I will offer to help him with his resume on Saturday." },
+   "4.1.hi": { "help": "A title only you would understand, with no names in it. Never the story.", "ex": "The invoice from March." },
+   "4.1.lo": { "help": "No names.", "ex": "I paid back what I owed, with a letter." },
+   "4.2.hi": { "ex": "A hard decision about a man who works for me. I felt torn, and afraid of being the bad guy." },
+   "4.3.hi": { "ask": "Don't name them. What would you let go of?", "ex": "Being right about the timeline. I will say so on Monday." },
+   "4.3.lo": { "ex": "Last spring I dropped an argument in my family over an inheritance. It showed me I would rather win than be close." },
+   "4.4.hi": { "ask": "Name the place, not the person, and the first thing you will make right.", "ex": "A debt I have let slide. I will pay it Friday." },
+   "5.0.hi": { "ops": ATTR, "opn": ATTR.map(function (a) { return "The one I can't believe for myself is " + a.toLowerCase() + ". "; }), "ex": "The one I can't believe for myself is slow to anger. I expect Him to be short with me." },
+   "5.0.lo": { "ask": "Suppose only one of these could be read over you this season. Which one, and why?", "ops": ATTR, "opn": ATTR.map(function (a) { return "The one I most need read over me is " + a.toLowerCase() + ", because "; }), "label": "The mercy I most need", "grew": false, "ex": "The one I most need read over me is bearing iniquity, because I have carried my own long enough to know I can't." },
+   "5.1.hi": { "ask": "Don't name them here. What would it cost you to want mercy for them?", "help": "No names and nothing that could identify anyone. You know who it is. That is between you and God, and you can deal with it away from this page.", "label": "What mercy for them would cost", "ex": "I would have to stop telling the story where I am the one who was wronged." },
+   "5.1.lo": { "ask": "Don't name anyone. If you once felt that way about someone, what changed in you?", "help": "If there was never anyone, say so.", "label": "How I came to want mercy", "ex": "I started praying for him because I was told to, and one day I meant it." },
+   "5.2.say": "I believe God is compassionate, gracious and slow to anger toward me before I sin, and the same after I sin and repent. He doesn't have two faces.",
+   "5.2.hi": { "ask": "When you come back to Him after you have sinned, what do you find?", "help": "If you have found Him the same, say when. If you are new to this and still sense distance, say that. It is an honest place to be.", "label": "What I find coming back", "ex": "After the worst argument of our marriage I expected distance, and the prayer felt like the day before." },
+   "5.2.lo": { "ask": "After you sin, what do you expect God's face toward you to look like?", "ex": "Tired of me. Most days I believe His mercy for other men and not for myself." },
+   "5.3.note": "Confession is a return, not a trial. Jesus' first message was “Repent, for the kingdom of heaven is at hand” (Matthew 4:17): turn around and walk with Me. Shame tells a man to stay away. Confession is the weapon the Enemy most wants out of your hands.",
+   "5.3.lo": { "ask": "If shame is keeping you away, what does it tell you will happen if you come? If you have already come, what did you find?", "help": "Never what you confessed. Both are honest answers.", "label": "Coming back to Him", "ex": "It tells me He is tired of hearing it. Or: I came on Sunday, and I found Him the same." },
+   "5.4.say": "I can name, to myself, one person or group I've been treating with less mercy than God has shown me, and take a step toward them this week.",
+   "5.4.hi": { "ask": "Don't name them here. What is the step, and when?", "label": "My step toward someone I owe", "ex": "A phone call I have put off since March. Saturday morning." },
+   "5.4.lo": { "ask": "How did you learn to show mercy to someone who had no claim on it? No names.", "help": "We are being transformed from one degree of glory to another (2 Corinthians 3:18). Say what changed in you; another man may need to hear how it happened.", "label": "How I learned mercy", "grew": true, "ex": "I prayed for someone in my family for a year before I could be kind to them. The praying changed me first." },
+   "6.3.hi": { "ask": "Who, and when? No names.", "help": NONAME, "ops": R5, "ex": "A man in my group. Breakfast on Thursday." },
+   "6.3.lo": { "ex": "A man in my group already sees it, every Tuesday. Or: I am not ready, and I know it." },
+   "7.4.hi": { "ask": "Who, and where? No names.", "help": NONAME, "ops": R5, "ex": "A man in my group. After we meet on Tuesday, in the parking lot." },
+   "7.4.lo": { "ask": "Is there a man you might trust with it one day? No names.", "ops": R5N, "ex": "No one yet. Maybe a man in my group, in time." },
+   "8.2.hi": { "ex": "I owned what I had done to a man I worked with, and he forgave the debt anyway." },
+   "8.4.hi": { "ask": "Who might need to hear it? No names.", "help": NONAME, "ops": R5, "ex": "Someone at work: a young man whose father just left." },
+   "9.0.lo": { "ex": "My morning hour. It is on my calendar and a man in my group asks about it." },
+   "9.1.hi": { "ask": "Who are they? No names. Roles are enough.", "ex": "My daughter, a neighbor, and a young man at work." },
+   "9.1.lo": { "ask": "Who is one person the fruit of your life is for? A role is enough." },
+   "9.3.hi": { "ask": "Who, and when? No names.", "help": NONAME, "ops": R5, "ex": "A man in my group. On Tuesday." },
+   "9.3.lo": { "ex": "A man in my group already knows my plan. Or: I am not ready, and I know it." },
+   "9.4.hi": { "ask": "The act, who it is for, and the day. No names.", "ex": "Saturday I will fix a neighbor's fence with him." },
+   "9.4.lo": { "ex": "None I can name yet. I need to ask my neighbor what he actually needs." }
+  };
+  Object.keys(V17_NAMES).forEach(function (k) { var f = V17_NAMES[k], o, x; if (typeof f === "string") { FIX[k] = f; return; } o = FIX[k] || (FIX[k] = {}); for (x in f) o[x] = f[x]; });
+  /* v17 · Part Seven, John's rulings of Sept 21, 2026 ("go"): the first statement in plain words with a line beneath and a word row; "why them", not "when", where the line is not his this-week commitment; "My group" joins the role row everywhere; the forced choice on Jacob's three names; the Part Eight evidence page explains itself. */
+  var V17_P7 = {
+   "6.0.say": "I can name what my worst patterns call me — a name like Failure, Fraud or Not Enough — and I still answer to it faster than to anything God calls me.",
+   "6.0.note": "Jacob's first name meant heel-grabber, deceiver: the name of his worst habits. Later God gave him another (Genesis 32:28). Most men carry a first name like that.",
+   "6.0.hi": { "ask": "What is the name? One or two words.", "ops": ["Failure", "Fraud", "Not enough", "Too much", "Coward", "Alone"], "opn": ["My worst patterns call me Failure. ", "My worst patterns call me Fraud. ", "My worst patterns call me Not Enough. ", "My worst patterns call me Too Much. ", "My worst patterns call me Coward. ", "My worst patterns call me Alone. "], "ex": "My worst patterns call me Failure. I hear it every time a deal falls through." },
+   "6.1.hi": { "help": "A title only you would understand, with no names in it. Never the story." },
+   "6.1.lo": { "help": "A title only you would understand, with no names in it. Never the story." },
+   "6.2.lo": { "ask": "Jacob had three names: the name of his worst habits (Jacob), the name of his struggle (Israel), and the name of his destiny (Yeshurun, the upright one). Which kind do you answer to fastest today? Say why in one sentence.", "ops": ["The name of my worst habits", "The name of my struggle", "The name God is growing me into"], "opn": ["Today I answer fastest to the name of my worst habits, because ", "Today I answer fastest to the name of my struggle, because ", "Today I answer fastest to the name God is growing me into, because "], "label": "The name I answer to", "ex": "Today I answer fastest to the name of my struggle, because I am in the middle of it, and that is most of what I hear." },
+   "6.3.hi": { "ask": "Who will you let see you wrestling? No names. Tap one, then say why them.", "help": "What is it about them that makes them safe? Naming that tells you what to look for in other men.", "ops": ["A man in my group", "My group", "A friend", "A family member", "A counselor or pastor"], "label": "Who will see me wrestling", "ex": "My group, because they have heard worse from each other and nobody left the room." },
+   "6.3.lo": { "ask": "What do you do to keep anyone from seeing you wrestle?", "help": "If someone already sees it, say how that came about. If you are not ready yet, say what you think would happen if they saw. Either is an honest answer.", "label": "How I hide the wrestling", "ex": "I stay busy and I stay funny. Or: a man in my group sees it every Tuesday, because he asked twice." },
+   "6.4.lo": { "ask": "When did you last have to trust both His justice and His mercy at once, and what got you through?", "help": "We are being transformed from one degree of glory to another (2 Corinthians 3:18). Say what you learned; another man may need to hear it.", "label": "How I learned to trust both", "grew": true, "ex": "When the business closed. I stopped asking which one He was being and started asking what He was making of me." },
+   "9.3.hi": { "ask": "Who will you tell, and why them? No names.", "help": "No names. A role is enough. What makes them the right one to ask you about it?", "label": "Who will know my plan", "ex": "A man in my group, because he will actually ask, and he will not let me change the subject." }
+  };
+  Object.keys(V17_P7).forEach(function (k) { var f = V17_P7[k], o, x; if (typeof f === "string") { FIX[k] = f; return; } o = FIX[k] || (FIX[k] = {}); for (x in f) o[x] = f[x]; });
+  var V17_P9 = {
+   "8.0.say": "At the well, Jesus did two things in one conversation: He told the woman the truth about her life, and He offered her living water. I know which of those two is harder for me to receive.",
+   "8.0.hi": { "ask": "Which is harder for you to receive? Tap one, then say what you do when it comes.", "ops": ["The truth about myself", "Mercy I did not earn"], "opn": ["The harder one for me to receive is the truth about myself. ", "The harder one for me to receive is mercy I did not earn. "], "label": "The one I flinch from", "ex": "The harder one for me to receive is mercy I did not earn. I change the subject when someone is kind to me." },
+   "8.0.lo": { "ask": "Think of the last time someone told you a hard truth about yourself, and the last time someone was kind to you for no reason. Which one did you want to end sooner?", "help": "That is the one you flinch from. Now you know.", "label": "The one I wanted to end", "grew": false, "ex": "The kindness. I made a joke and left the room." },
+   "8.1.say": "The woman at the well told her whole town, \"Come, see a man who told me all that I ever did.\" The part of her life she had hidden became the first thing she said. There is a part of my story I still keep hidden rather than let it be told.",
+   "8.1.hi": { "ask": "Give it a title, the way a chapter has a title. Only you need to understand it. No names, never the story. Then tap what keeps it hidden, and say one sentence about that.", "help": "A title only you would understand, with no names in it. Never the story.", "ops": ["Shame", "Who it would hurt", "I'm not finished with it yet", "No one has ever asked"], "opn": ["What keeps it hidden is shame. ", "What keeps it hidden is who it would hurt. ", "What keeps it hidden is that I am not finished with it yet. ", "What keeps it hidden is that no one has ever asked. "], "label": "The chapter I keep hidden", "ex": "The summer of 2009. What keeps it hidden is shame. I still think it makes me a different kind of man." },
+   "8.1.lo": { "ask": "Which part of your story have you already let be told? A title is enough, and one line on what happened when you told it.", "help": "A title only you would understand, with no names in it. Never the story.", "label": "A chapter I let be told", "grew": true, "ex": "The summer of 2009. I told it at the men's breakfast, and two men stayed after." },
+   "8.2.say": "I believe justice and mercy meet in Jesus without either one giving way. In my own life I still have to choose which one to lead with. When I do, I bring the choice to Him first, and I lead with one in a way that honors the other.",
+   "8.2.hi": { "ask": "Think of the last time you had to choose between holding the line and letting it go. A role, not a name. Which did you lead with, and how did you honor the other?", "label": "The last time I chose", "ex": "With my son. I held the line on the car, and I told him why, and that I was not going anywhere." },
+   "8.2.lo": { "ask": "Where are you choosing between them right now? A role, not a name. Which way are you leaning, and what would it look like to honor the other one?", "label": "Where I am choosing now", "ex": "With my father. I lean toward making him pay. Honoring mercy would mean I stop rehearsing the speech." },
+   "8.3.lo": { "ask": "What makes sitting still under the truth hard for you right now? Tap one, then one sentence.", "help": "Naming which one you do is most of the way to not doing it.", "ops": ["I defend", "I leave", "I explain it away", "I'm not ready to hear it"], "opn": ["When the truth comes, I defend. ", "When the truth comes, I leave. ", "When the truth comes, I explain it away. ", "When the truth comes, I am not ready to hear it. "], "label": "What makes sitting still hard", "ex": "When the truth comes, I explain it away. By the time He is done I have three reasons it was not my fault." },
+   "8.4.hi": { "ask": "Who might need to hear it? No names. Tap one, then say why them.", "help": "What is it about them that tells you they need it?", "ops": R5, "label": "Who my hidden thing could help", "ex": "Someone at work, because his father just left, and he thinks he is the only one." },
+   "8.4.lo": { "ask": "Has a hidden thing of yours already become someone's good news? Say what it cost and what it gave. If not yet, say what would have to be true first.", "help": "We are being transformed from one degree of glory to another (2 Corinthians 3:18). Say what you learned; another man may need to hear it.", "label": "What my hidden thing has given", "grew": true, "ex": "Yes. It cost me a friendship for a year, and it gave a younger man a way to say his out loud." }
+  };
+  Object.keys(V17_P9).forEach(function (k) { var f = V17_P9[k], o, x; if (typeof f === "string") { FIX[k] = f; return; } o = FIX[k] || (FIX[k] = {}); for (x in f) o[x] = f[x]; });
+  /* v17 · PART EIGHT statements (John, Sept 21: "go") */
+  var POST = ["Plea", "Lament", "Intercession", "\u201cYou know\u201d", "Confession"];
+  var V17_P8 = {
+   "7.0.hi": { "ask": "Which one is missing? Tap one, then say how long it has been missing.", "ops": POST, "opn": ["The one missing from my prayers is the plea. ", "The one missing from my prayers is lament. ", "The one missing from my prayers is intercession. ", "The one missing from my prayers is \u201cYou know.\u201d ", "The one missing from my prayers is confession. "], "label": "The prayer I don't pray", "ex": "The one missing from my prayers is lament. I don't think I have ever done it." },
+   "7.0.lo": { "ask": "Which of the five comes most easily to you? Tap one, then say why.", "ops": POST, "opn": ["The one that comes easily is the plea, because ", "The one that comes easily is lament, because ", "The one that comes easily is intercession, because ", "The one that comes easily is \u201cYou know,\u201d because ", "The one that comes easily is confession, because "], "label": "The prayer that comes easily", "ex": "The one that comes easily is intercession, because I pray for my kids without thinking." },
+   "7.1.lo": { "ask": "What is your gut picture of Him now, and what changed it?", "help": "Say what changed it; another man may need the how.", "label": "How I picture the Judge now", "grew": true, "ex": "Leaning forward, on my side of the table. What changed it was a year of being met instead of measured." },
+   "7.2.lo": { "ask": "What do you find yourself bringing to Him first, a result or a need? Tap one, then say why.", "ops": ["A result", "A need"], "opn": ["I bring Him a result first, because ", "I bring Him a need first, because "], "label": "What I bring Him first", "ex": "I bring Him a result first, because I want to arrive with something in my hands." },
+   "7.3.lo": { "ask": "What keeps your prayers polished? Tap one, then one sentence.", "help": "Naming which one it is gets you most of the way past it.", "ops": ["I don't want to complain", "I don't think He wants to hear it", "I don't know how", "I am not ready"], "opn": ["What keeps my prayers polished is that I don't want to complain. ", "What keeps my prayers polished is that I don't think He wants to hear it. ", "What keeps my prayers polished is that I don't know how. ", "What keeps my prayers polished is that I am not ready. "], "label": "What keeps my prayers polished", "ex": "What keeps my prayers polished is that I don't know how. Nobody ever showed me a man praying like that." },
+   "7.4.lo": { "ask": "Has a man already heard your honest \u201cLord, why?\u201d Say what it did for him, or for you. If no one yet, tap it and say what would have to be true first. No names.", "help": "We are being transformed from one degree of glory to another (2 Corinthians 3:18). Say what you learned; another man may need to hear it.", "ops": R5N, "label": "Who has heard my honest why", "grew": true, "ex": "A man in my group. He told me his the next week. Or: No one yet. I would need to trust that he would not fix it." }
+  };
+  Object.keys(V17_P8).forEach(function (k) { var f = V17_P8[k], o, x; if (typeof f === "string") { FIX[k] = f; return; } o = FIX[k] || (FIX[k] = {}); for (x in f) o[x] = f[x]; });
+  var FEEL7 = ["Relief", "Dread", "Embarrassment", "Hope", "Fear of being checked on", "I'd rather do it alone", "Nothing much"];
+  var FEEL7_OPN = ["Telling him brings up relief. ", "Telling him brings up dread. ", "Telling him brings up embarrassment. ", "Telling him brings up hope. ", "Telling him brings up the fear of being checked on. ", "Telling him brings up that I would rather do it alone. ", "Telling him brings up nothing much. "];
+  var V17_P10 = {
+   "9.0.say": "This part asks you for three things: a rhythm, a stretch and a witness. I know honestly which of the three I'm already tempted to negotiate down.",
+   "9.0.hi": { "ask": "Which one? Tap it, then say the bargain you are tempted to make.", "ops": ["The rhythm", "The stretch", "The witness"], "opn": ["The one I am negotiating down is the rhythm. ", "The one I am negotiating down is the stretch. ", "The one I am negotiating down is the witness. "], "label": "The one I bargain down", "ex": "The one I am negotiating down is the witness. I tell myself I will tell someone next month." },
+   "9.0.lo": { "ask": "If the three are not written yet, which one will you write first? If all three feel solid, say what is holding them, so another man can borrow it.", "help": "We are being transformed from one degree of glory to another (2 Corinthians 3:18). What holds for you may hold for him.", "label": "Where my three things stand", "grew": true, "ex": "The rhythm is holding because it is stacked on my drive to work. Or: I have not written them yet; the rhythm comes first." },
+   "9.1.hi": { "ask": "Who came to mind first, and why? Tap a role, then the other two as roles.", "help": "Your journal holds the names. Here a role is enough.", "ops": R5, "opn": ["The first who came to mind is a man in my group, because ", "The first who came to mind is my group, because ", "The first who came to mind is a friend, because ", "The first who came to mind is a family member, because ", "The first who came to mind is someone at work, because ", "The first who came to mind is a neighbor, because "], "label": "Who my fruit is for", "ex": "The first who came to mind is a neighbor, because his wife just left and I have not knocked. Then my daughter, and a young man at work." },
+   "9.1.lo": { "ask": "What is in the way of naming them? Tap one, then one sentence.", "help": "Naming what is in the way is most of the way past it.", "ops": ["I don't look up from my own life", "I keep to myself", "Work fills the week", "I don't think my fruit is for anyone"], "opn": ["What is in the way is that I don't look up from my own life. ", "What is in the way is that I keep to myself. ", "What is in the way is that work fills the week. ", "What is in the way is that I don't think my fruit is for anyone. "], "label": "What is in the way", "ex": "What is in the way is that I keep to myself. I could not tell you my neighbor's last name." },
+   "9.2.hi": { "ask": "What did that look like at work this week?", "label": "Where my work was worship", "ex": "I stayed late to fix another man's mistake and didn't mention it." },
+   "9.2.lo": { "ask": "What is your work to you right now, if not worship? Say it plainly, then what would have to change for it to be offered.", "label": "What my work is now", "ex": "A paycheck. I would have to believe God is in the building." },
+   "9.3.hi": { "ask": "Who will you tell? Tap a role, then tap what comes up when you picture telling him, and finish the sentence.", "help": NONAME, "ops": R5, "ask2": "What comes up when you picture telling him:", "ops2": FEEL7, "opn2": FEEL7_OPN, "label": "Who will know my plan", "ex": "A man in my group. Telling him brings up dread. He will actually ask, and I will not be able to change the subject." },
+   "9.3.lo": { "ask": "Is your plan already known to a man, or are you not ready to tell one? Tap a role, or “No one yet.” Then tap what comes up, and say what makes it hard.", "help": NONAME, "ops": R5N, "opn": ["A man in my group already knows my plan. ", "My group already knows my plan. ", "A friend already knows my plan. ", "A family member already knows my plan. ", "Someone at work already knows my plan. ", "A neighbor already knows my plan. ", "No one yet. "], "ask2": "What comes up when you picture telling a man:", "ops2": FEEL7, "opn2": FEEL7_OPN, "label": "Telling a man my plan", "ex": "No one yet. Telling him brings up embarrassment. I have announced plans before and dropped them." },
+   "9.4.say": "I can name one act of kindness or generosity — my time, my money, my presence, a meal, a repair — that will cost me something and serve one of those three people this week.",
+   "9.4.hi": { "ask": "Who is it for? Tap one. Then the act, what you give and what it costs you, and the day.", "help": NONAME, "ops": R5, "opn": ["It is for a man in my group. ", "It is for my group. ", "It is for a friend. ", "It is for a family member. ", "It is for someone at work. ", "It is for a neighbor. "], "label": "This week", "ex": "It is for a neighbor. Saturday I will fix his fence with him; it costs me the morning I wanted for myself." },
+   "9.4.lo": { "ask": "If you already serve one of them regularly, say what it costs you and what it gives. If nothing comes to mind, say what you would need to ask them.", "help": "We are being transformed from one degree of glory to another (2 Corinthians 3:18). Say what you learned; another man may need to hear it.", "label": "Where I stand on a costly act", "grew": true, "ex": "I drive my father to his appointments every Thursday. It costs me the afternoon; it gives us the only hour we talk. Or: nothing yet. I need to ask my neighbor what he actually needs." }
+  };
+  Object.keys(V17_P10).forEach(function (k) { var f = V17_P10[k], o, x; if (typeof f === "string") { FIX[k] = f; return; } o = FIX[k] || (FIX[k] = {}); for (x in f) o[x] = f[x]; });
+  var PRAC = ["A walk with Him", "Prayer", "Time in Scripture", "Solitude", "Fasting", "Simplicity", "Service", "Confession", "Worship", "Meditation on a verse", "Asking a wise man for guidance", "Celebration"];
+  var PRAC_DO = ["take a walk with Him", "set a time to pray", "open the Scriptures", "get alone with Him", "fast", "let go of something", "serve someone", "confess to a man", "worship", "sit with one verse", "ask a wise man for guidance", "celebrate"];
+  var PRAC_IS = ["a walk with Him", "prayer", "time in Scripture", "solitude", "fasting", "simplicity", "service", "confession", "worship", "meditation on a verse", "asking a wise man for guidance", "celebration"];
+  function opnOf(list, pre, post) { return list.map(function (w) { return pre + w + post; }); }
+  var HIDE = ["My work", "Staying busy", "My phone", "“I’m fine”", "Anger", "Silence"];
+  var HIDE_OPN = ["I hide in my work, because ", "I hide in staying busy, because ", "I hide in my phone, because ", "I hide in “I’m fine,” because ", "I hide in anger, because ", "I hide in silence, because "];
+  var V17_P1 = {
+   "0.0.hi": { "ask": "What do you hide in? Tap one, then say what it protects you from.", "ops": HIDE, "opn": HIDE_OPN, "label": "Where I hide", "ex": "I hide in my work, because nobody there asks how I am." },
+   "0.0.lo": { "ask": "What does walking openly with Him look like in your week? Say it so another man could try it.", "help": "We are being transformed from one degree of glory to another (2 Corinthians 3:18). What holds for you may hold for him.", "label": "How I walk openly with God", "grew": true, "ex": "I tell Him the truth out loud on the drive in, before I tell anyone else." },
+   "0.1.hi": { "label": "The place I hide" },
+   "0.2.hi": { "ask": "Think of a time you were avoiding God and something happened that could only have been Him coming after you. How did He come? Tap one, then tell that one time.", "help": "Not when you last prayed. One moment a man could picture.", "ops": ["A person who showed up", "A verse that would not leave me alone", "A prayer answered", "A door that opened", "A hard thing that turned out good"], "opn": ["He came toward me through a person who showed up. ", "He came toward me through a verse that would not leave me alone. ", "He came toward me through a prayer answered. ", "He came toward me through a door that opened. ", "He came toward me through a hard thing that turned out good. "], "label": "A time He came toward me", "ex": "He came toward me through a person who showed up. The winter I stopped praying, a friend I had not called in a year showed up with coffee and would not leave." },
+   "0.2.lo": { "ask": "When you picture God and your hiding place, which is closer to what you actually believe? Tap one, then say where you learned it: a father, a church, a failure.", "ops": ["He is waiting for me to come to Him", "He is done with me", "He is angry with me", "He comes for other men, not me", "I don’t think about it"], "opn": ["Most days I believe He is waiting for me to come to Him. ", "Most days I believe He is done with me. ", "Most days I believe He is angry with me. ", "Most days I believe He comes for other men, not me. ", "Most days I don’t think about it. "], "label": "What I believe about Him", "ex": "Most days I believe He comes for other men, not me. I learned it from a father who only came when I had done something right." },
+   "0.3.hi": { "ask": "This week, how will you bring the thing you hide in to God? Tap one, then say what you will bring.", "help": "Only how, and what. What you say to Him stays between you and Him.", "ops": ["Out loud, alone", "In a journal", "With a man beside me", "In prayer at church", "I’m not sure yet"], "opn": ["I will bring it to Him out loud, alone. ", "I will bring it to Him in a journal. ", "I will bring it to Him with a man beside me. ", "I will bring it to Him in prayer at church. ", "I am not sure yet how I will bring it to Him. "], "label": "How I’ll bring it to Him", "ex": "I will bring it to Him out loud, alone. On the drive in, the fact that I stay late so I don’t have to be at home." },
+   "0.3.lo": { "ask": "The first statement asked what you hide in. Do you already talk to God about that? Tap the honest one, then one sentence.", "help": "All four are honest answers.", "ops": ["I already talk to Him about it", "There is nothing I keep back from Him", "I’m not ready yet", "I don’t know what I would say"], "opn": ["I already talk to Him about it. ", "There is nothing I keep back from Him. ", "I’m not ready yet. ", "I don’t know what I would say. "], "label": "Talking to Him about hiding", "ex": "I’m not ready yet. I know what it is. I am not ready to say it to Him or anyone." },
+   "0.4.hi": { "ask": "Pick one, or write your own. Then say when.", "help": "A walk is enough. So is any one of the practices Christians have used for centuries to put themselves where God can reach them.", "ops": PRAC, "opn": opnOf(PRAC_DO, "This week I will ", ", "), "label": "This week", "ex": "This week I will take a walk with Him, around the block after dinner tonight, phone left at home." },
+   "0.4.lo": { "ask": "If you can’t name a step yet, tap the practice that would be easiest for you to try, and say what makes it easiest. If you already have a rhythm with Him, tap it and say what it is.", "ops": PRAC.concat(["Nothing yet."]), "opn": opnOf(PRAC_IS, "The one I could try is ", ", because ").concat(["Nothing yet. "]), "label": "A next step: where I stand", "ex": "The one I could try is a walk with Him, because I already walk the dog at night, and I could leave the phone at home." }
+  };
+  Object.keys(V17_P1).forEach(function (k) { var f = V17_P1[k], o, x; if (typeof f === "string") { FIX[k] = f; return; } o = FIX[k] || (FIX[k] = {}); for (x in f) o[x] = f[x]; });
+  var ROADS = ["A prayer habit", "A Sunday table", "A psalm or a book", "A man I used to meet", "A walk alone with Him", "Serving somewhere", "Singing"];
+  var ROADS_IS = ["a prayer habit", "a Sunday table", "a psalm or a book", "a man I used to meet", "a walk alone with Him", "serving somewhere", "singing"];
+  var V17_P2 = {
+   "1.0.hi": { "ask": "Which way do you lean? Tap one, then tap who knows you, and say what that looks like in your week.", "ops": ["A full inner life, too little community", "A lot of activity, a thin inner life"], "opn": ["I lean toward a full inner life with too little community. ", "I lean toward a lot of activity with a thin inner life. "], "ask2": "Who knows you:", "ops2": ["My family knows me, my group doesn’t", "My group knows me, my family doesn’t", "Both know me", "Neither does, yet"], "opn2": ["My family knows me, my group doesn’t. ", "My group knows me, my family doesn’t. ", "Both know me. ", "Neither does, yet. "], "label": "The way I lean", "ex": "I lean toward a full inner life with too little community. My family knows me, my group doesn’t. I read for an hour and talk to no one." },
+   "1.0.lo": { "ask": "Think of last week. What did you fill the hours with? Tap what took most of them, then one sentence.", "ops": ["Work", "Screens", "Chores and errands", "Time with God", "People who know me", "People who don’t"], "opn": ["Most of last week went to work. ", "Most of last week went to screens. ", "Most of last week went to chores and errands. ", "Most of last week went to time with God. ", "Most of last week went to people who know me. ", "Most of last week went to people who don’t know me. "], "label": "My last week", "ex": "Most of last week went to work. I was home by seven and on my laptop by eight." },
+   "1.1.note": "A “no more” is an ending you say out loud: one thing you stop so a new beginning can start. It sits beside a “yes, Lord”: the rich young man in Mark 10 could not say it about his money.",
+   "1.2.hi": { "label": "What I walked away from" },
+   "1.2.lo": { "ask": "What do you believe today about the road back? Then the first time you believed it: one moment, a title is enough.", "help": "The first time, not the whole story. Naming where it began is enough.", "label": "The road back: what I believe", "ex": "Most days I believe it for other men and not for me. The first time: the summer I came home from college and nobody at church would look at me." },
+   "1.3.hi": { "ask": "Which one, and when? Tap one, or write your own.", "ops": PRAC, "opn": opnOf(PRAC_IS, "This week I will pick ", ", "), "label": "This week", "ex": "This week I will pick prayer, ten minutes of quiet before work, every morning." },
+   "1.3.lo": { "ask": "If you already keep a discipline, tap what you will add to it this season: something to learn, to understand, to do, or to serve. If you are not ready for one at all, say what you would need.", "help": "Faith without works is dead (James 2:17). From glory to glory (2 Corinthians 3:18) still has a next step.", "ops": ["Learn", "Understand", "Do", "Serve", "Not ready yet"], "opn": ["The next thing I will add is something to learn: ", "The next thing I will add is something to understand: ", "The next thing I will add is something to do: ", "The next thing I will add is something to serve: ", "I am not ready for one yet. "], "label": "The next thing I could add", "grew": true, "ex": "The next thing I will add is something to serve: the Saturday food pantry my son has been asking about." },
+   "1.4.note": "An ancient path is a road you once walked with God and left: praying out loud in the truck, a Sunday table, a psalm you used to read, a man you used to meet with, a walk you took alone.",
+   "1.4.hi": { "ask": "Which road? Tap one, or write your own, then what took you off it.", "ops": ROADS, "opn": opnOf(ROADS_IS, "The road I want back is ", ", "), "label": "The road I want back", "ex": "The road I want back is a prayer habit, praying out loud in the truck. A new job with a long commute and a radio took me off it." },
+   "1.4.lo": { "ask": "Is there none, or none you can name yet? Tap a road that was once yours, or “None yet.”, then one sentence.", "help": "If there is none, say what is already in place. If you can’t name one yet, say what would help you find it.", "ops": ROADS.concat(["None yet."]), "opn": opnOf(ROADS_IS, "One that was once mine is ", ", ").concat(["None yet. "]), "label": "An old road: where I stand", "ex": "None yet. It would help to look back at when prayer was easy." }
+  };
+  Object.keys(V17_P2).forEach(function (k) { var f = V17_P2[k], o, x; if (typeof f === "string") { FIX[k] = f; return; } o = FIX[k] || (FIX[k] = {}); for (x in f) o[x] = f[x]; });
+  var V17_P3 = {
+   "2.0.say": "There is a root growing in me right now that nobody else can see yet, something like bitterness, envy or pride, quietly turning my heart. I can name it.",
+   "2.0.note": "Your first chapter asked where you hide. This asks what is growing in you while you hide there: not the place, the root.",
+   "2.1.say": "When God is pruning me, cutting something out of my life to make room for better fruit, there are people in my life who would know within a week.",
+   "2.1.note": "Pruning is what a vinedresser does to a vine he intends to keep: he cuts back good growth so it bears more. God prunes through a relationship taken away, a sickness, a test, a sorrow. It is never punishment, and it is always painful, and He is never nearer than when He is doing it (John 15:2).",
+   "2.1.lo": { "ask": "Is there one man you could tell? No names. Tap one, then say why him.", "help": NONAME, "ops": R5N, "label": "One man I could tell", "ex": "A man in my group, because he has been honest with me first." },
+   "2.2.say": "I believe pruning is not punishment. It comes in seasons to a man who walks in the Spirit, and it is the Vinedresser\u2019s way of growing more fruit through me for others.",
+   "2.2.hi": { "ask": "Pruning comes in seasons. Which one are you in? Tap one, then say what He cut, or is cutting, and what it is making room for.", "ops": ["Being prepared", "Being cut back", "Bearing fruit from a cut", "Between seasons"], "opn": ["Right now I am being prepared. ", "Right now I am being cut back. ", "Right now I am bearing fruit from a cut. ", "Right now I am between seasons. "], "label": "The season I am in", "ex": "Right now I am being cut back. He took the second job, and the evenings it made room for are the ones my son now talks in." },
+   "2.2.lo": { "ask": "What does being cut back feel like to you today, if not the Vinedresser at work? Then the first time it felt that way: one moment, a title is enough.", "help": "The first time, not the whole story. Naming where it began is enough.", "label": "Being cut back: what I believe", "ex": "Like He is angry with me. The first time: the year my father pruned me with silence." },
+   "2.3.say": "I\u2019m willing to let two or three trusted men know the truth about my life and ask me about it.",
+   "2.3.hi": { "label": "The men I\u2019d let know me" },
+   "2.3.lo": { "label": "Being known: where I stand" },
+   "2.4.hi": { "ask": "Which will it be, and when?", "opn": ["I will bring it to a man in my group, ", "I will bring it to my group, ", "I will bring it to a friend, ", "I will bring it to a family member, ", "I will bring it on paper before God, "], "ex": "I will bring it to a man in my group, Thursday after we meet. Or: I will bring it on paper before God, Saturday morning, before anyone is up." }
+  };
+  Object.keys(V17_P3).forEach(function (k) { var f = V17_P3[k], o, x; if (typeof f === "string") { FIX[k] = f; return; } o = FIX[k] || (FIX[k] = {}); for (x in f) o[x] = f[x]; });
+  var V17_P4 = {
+   "3.0.note": "Head to heart is what Paul calls transformation, the renewing of your mind (Romans 12:2). It is how love works. A man says \u201cI love you\u201d to a bride on one day, and years later the same word holds children and grandchildren. The word did not change; the man did.",
+   "3.0.hi": { "label": "A truth that has moved" },
+   "3.0.lo": { "ask": "Name one truth about God you can say but do not yet live. Tap one, or use your own, then say what it would look like if it moved: one thing you would stop bracing for, or start doing.", "ops": ["He is for me", "He forgives me", "He walks toward me", "Pruning is not punishment", "My fruit is for others"], "opn": ["I can say that He is for me. ", "I can say that He forgives me. ", "I can say that He walks toward me. ", "I can say that pruning is not punishment. ", "I can say that my fruit is for others. "], "label": "A truth still in my head", "ex": "I can say that He is for me. If it moved, I would stop rehearsing my defense on the drive home." },
+   "3.1.lo": { "ask": "What is the last thing you learned about God? Say it. Then tap how you could hand it on, and say it that way in one line.", "help": "A truth you can only say lives in half your brain. Give it a picture, a feeling and a person, and it moves to the half that lives it. That is how God wired you.", "ask2": "Hand it on as:", "ops2": ["A picture", "A story from my week", "A line to my son", "A prayer", "Something I make"], "opn2": ["I could hand it on as a picture: ", "I could hand it on as a story from my week: ", "I could hand it on as a line to my son: ", "I could hand it on as a prayer: ", "I could hand it on as something I make: "], "label": "A truth, handed on", "ex": "That pruning is not punishment. I could hand it on as a picture: the rose bush my father cut to the ground every February, and what it did in June." },
+   "3.2.lo": { "ask": "What do you believe about your fruit instead? Tap the honest one, then the first time you believed it: a title is enough.", "help": "The first time, not the whole story. Naming where it began is enough.", "ops": ["It is mine, I earned it", "It is for my family only", "I don\u2019t have any fruit to give", "Nobody would want it", "I never thought about it"], "opn": ["Most days I believe it is mine, I earned it. ", "Most days I believe it is for my family only. ", "Most days I believe I don\u2019t have any fruit to give. ", "Most days I believe nobody would want it. ", "Most days I never think about it. "], "label": "My fruit: what I believe", "ex": "Most days I believe I don\u2019t have any fruit to give. The first time: the men\u2019s retreat where I had nothing to say." },
+   "3.3.hi": { "ask": "Which one makes you nervous, and when will you start? Tap one, or write your own.", "ops": PRAC, "opn": opnOf(PRAC_IS, "The one that makes me nervous is ", ", "), "label": "This week", "ex": "The one that makes me nervous is service, Saturday morning at the food pantry, where other people will see me." },
+   "3.3.lo": { "label": "The practice I avoid" },
+   "3.4.hi": { "ask": "Who is it for? Tap a role, then what you will hand them, then say why them. No names.", "help": NONAME, "ops": R5, "opn": R5.map(function (r) { return r + ". "; }), "ask2": "What you will hand them:", "ops2": ["A meal", "My time", "A skill I have", "Something I learned about God", "A listening ear", "Money", "A door I can open"], "opn2": ["What I will hand them is a meal. ", "What I will hand them is my time. ", "What I will hand them is a skill I have. ", "What I will hand them is something I learned about God. ", "What I will hand them is a listening ear. ", "What I will hand them is money. ", "What I will hand them is a door I can open. "], "label": "Who my fruit is for", "ex": "A neighbor. What I will hand them is a skill I have. He just lost his job, and I have hired forty people." },
+   "3.4.lo": { "label": "Handing on what I have" }
+  };
+  Object.keys(V17_P4).forEach(function (k) { var f = V17_P4[k], o, x; if (typeof f === "string") { FIX[k] = f; return; } o = FIX[k] || (FIX[k] = {}); for (x in f) o[x] = f[x]; });
+  Object.keys(FIX).forEach(function (k) { var a = k.split("."), q = PARTS[+a[0]].Q[+a[1]], o = {}, src = q[a[2]], f = FIX[k], x; if (a[2] === "say" || a[2] === "note") { q[a[2]] = f; return; } for (x in src) o[x] = src[x]; for (x in f) o[x] = f[x]; q[a[2]] = o; });
+  /* v17: the Part Eight evidence page explains itself to a man who has not read the section */
+  PARTS[7].evidence.frame = "Scripture pictures a courtroom. The Enemy is the accuser, who accuses God's people day and night (Revelation 12:10), and he builds his case from real material: the name you still answer to. Here is that name, and here is what God says back.";
+  PARTS.roleWords = R5N.concat(["A counselor or pastor"]);
   return PARTS;
 })();
 if (typeof module !== "undefined") module.exports = ROAD_PARTS;
@@ -785,8 +1007,14 @@ var WRITER = (function () {
   var NUMS = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 
   var P = 2, ALL = {};
-  function blank() { return { follow: "", step: 1, all: false, view: "steps", n: [null, null, null, null, null], mid: [null, null, null, null, null], t: ["", "", "", "", ""], root: "", feel: "", feelOwn: "", setOut: "", camped: "", aloud: -1, disc: "", discText: "", between: "", witness: "" }; }
-  function W() { return ALL[P] || (ALL[P] = blank()); }
+  function blank() { return { follow: "", step: 1, all: false, view: "steps", n: [null, null, null, null, null], mid: [null, null, null, null, null], t: ["", "", "", "", ""], o: [null, null, null, null, null], o2: [null, null, null, null, null], root: "", feel: "", feelOwn: "", setOut: "", camped: "", aloud: -1, disc: "", discText: "", between: "", witness: "" }; }
+  function W() { var w = ALL[P] || (ALL[P] = blank()); if (!w.o) w.o = [null, null, null, null, null]; if (!w.o2) w.o2 = [null, null, null, null, null]; return w; }
+  /* the words a tapped choice puts in the box: a sentence opening in his voice, never a label with a colon */
+  function opening(sd, k) { var op = sd.ops && sd.ops[k]; if (op == null) return ""; if (sd.opn && sd.opn[k]) return sd.opn[k]; if (ROAD_PARTS.roleWords && ROAD_PARTS.roleWords.indexOf(op) >= 0) return /\.$/.test(op) ? op + " " : op + (/\bwhy\b/i.test(sd.ask || "") ? ", because " : ". "); return op.replace(/…\s*$/, "") + (/\.$/.test(op) ? " " : ": "); }
+  /* a second row of words (ops2): the tap ADDS a sentence to the box instead of replacing its opening, so a man can say who and then what he feels */
+  function opening2(sd, k) { var op = sd.ops2 && sd.ops2[k]; if (op == null) return ""; if (sd.opn2 && sd.opn2[k]) return sd.opn2[k]; return op.replace(/…\s*$/, "") + (/\.$/.test(op) ? " " : ". "); }
+  function pick2Of(i) { var w = W(), q = Q()[i], sd = q && (q[band(i)] || q.hi); if (!sd || !sd.ops2 || w.o2[i] == null) return null; var op = opening2(sd, w.o2[i]); return op && (w.t[i] || "").indexOf(op.trim()) >= 0 ? w.o2[i] : null; }
+  function pickOf(i) { var w = W(), q = Q()[i], sd = q && (q[band(i)] || q.hi); if (!sd || !sd.ops || w.o[i] == null) return null; var op = opening(sd, w.o[i]); return op && (w.t[i] || "").indexOf(op) === 0 ? w.o[i] : null; }
   function part() { return ROAD_PARTS[P]; }
   function Q() { return part().Q; }
   function steps() { var s = ["intro"]; if (lastWeek()) s.push("follow"); if (part().evidence) s.push("witness"); Q().forEach(function (q, i) { s.push("q" + i); }); if (P > 0) s.push("between"); s.push("feel", "stage"); return s; }
@@ -799,7 +1027,7 @@ var WRITER = (function () {
   function leadMe() { var ch = prevCh(); return "In " + ROAD.fullPart(ch) + ", I said what I would do that week. I wrote:"; }
 
   function qHTML(i) {
-    var w = W(), q = Q()[i], b = band(i), side = b ? q[b] : null, h = '<section class="wq"><p class="q">' + esc(q.say) + '</p><div class="scale" role="group" aria-label="One to five">';
+    var w = W(), q = Q()[i], b = band(i), side = b ? q[b] : null, h = '<section class="wq"><p class="q">' + esc(q.say) + '</p>' + (q.note ? '<p class="help">' + esc(q.note) + '</p>' : "") + '<div class="scale" role="group" aria-label="One to five">';
     for (var v = 1; v <= 5; v++) h += '<button class="dot' + (w.n[i] === v ? " on" : "") + '" data-n="' + i + "-" + v + '" aria-pressed="' + (w.n[i] === v) + '">' + v + '</button>';
     h += '</div><div class="ends"><span>Strongly disagree</span><span>Strongly agree</span></div>';
     if (w.n[i] === 3) h += '<div class="beneath"><p class="help">Some of each. Answer whichever is truer for you.</p><div class="words">' +
@@ -817,9 +1045,12 @@ var WRITER = (function () {
         var kept = ROAD.evidence(APP.D, APP.stage, P).seen.filter(function (x) { return x.said; });
         if (w.follow.trim() && lastWeek()) kept.push({ part: ROAD.fullPart(prevCh()), said: lastWeek(), text: w.follow.trim() });
         kept = kept.slice(-2);
-        if (kept.length) h += '<p class="help">You have done hard things. In your own words:</p>' + kept.map(function (x) { return '<div class="recall"><span>In ' + esc(x.part) + ', you had said: “' + esc(x.said) + '” Then you wrote:</span><p>“' + esc(x.text) + '”</p></div>'; }).join("") + '<p class="help">Now the next one.</p>';
+        if (kept.length) h += '<p class="help">You have done hard things. In your own words:</p>' + kept.map(function (x) { return '<div class="recall"><span>In ' + esc(x.saidPart || x.part) + ', you had said: “' + esc(x.said) + '” Then you wrote:</span><p>“' + esc(x.text) + '”</p></div>'; }).join("") + '<p class="help">Now the next one.</p>';
       }
       if (side.ops) h += '<div class="words">' + side.ops.map(function (o, k) { return '<button class="word" data-qop="' + i + "-" + k + '">' + esc(o) + '</button>'; }).join("") + '</div>';
+      /* a tapped option may carry a line of ours (Part Five, the way he leans): shown while his sentence still opens with that option */
+      if (side.ops && side.then) side.ops.forEach(function (o, k) { if (side.then[k] && (w.t[i] || "").indexOf(opening(side, k)) === 0) h += '<p class="ours left">' + esc(side.then[k]) + '</p>'; });
+      if (side.ops2) h += (side.ask2 ? '<p class="help">' + esc(side.ask2) + '</p>' : "") + '<div class="words">' + side.ops2.map(function (o, k) { return '<button class="word" data-qop2="' + i + "-" + k + '">' + esc(o) + '</button>'; }).join("") + '</div>';
       h += '<label class="sr" for="t-' + i + '">' + esc(side.ask) + '</label><textarea id="t-' + i + '" data-t="' + i + '" rows="2" placeholder="One sentence is enough.">' + esc(w.t[i] || "") + '</textarea>' +
         '<p class="ex">Something a man could picture. Like: <i>' + esc(side.ex) + '</i></p></div>';
     }
@@ -867,12 +1098,12 @@ var WRITER = (function () {
   function witnessHTML() {
     var ev = part().evidence, e = ROAD.evidence(APP.D, APP.stage, P), h = '<section class="wq"><p class="q">' + esc(ev.head) + '</p>';
     if (ev.ours) h += '<p class="ours left">' + esc(ev.ours) + '</p>';
-    if (ev.charge && e.charge) h += '<p class="help">' + esc(ev.charge) + '</p><div class="recall"><span>In ' + esc(e.charge.part) + ', under “' + esc(e.charge.label) + '”, you wrote:</span><p>“' + esc(e.charge.text) + '”</p></div>';
+    if (ev.charge && e.charge) h += (ev.frame ? '<p class="fixed">' + esc(ev.frame) + '</p>' : '') + '<p class="help">' + esc(ev.charge) + '</p><div class="recall"><span>In ' + esc(e.charge.part) + ', under “' + esc(e.charge.label) + '”, you wrote:</span><p>“' + esc(e.charge.text) + '”</p></div>';
     if (ev.charge && e.charge && ev.answer) h += '<p class="ours left">' + esc(ev.answer.text) + ' <span class="ref">' + esc(ev.answer.ref) + '</span></p>';
     h += '<p class="help">' + esc(ev.seen) + '</p>';
     if (!e.seen.length) h += '<p class="quiet">Nothing gathered yet. This fills from what you write in your chapters: what you did, and what you have come through.</p>';
     e.seen.forEach(function (x) {
-      h += '<div class="recall"><span>In ' + esc(x.part) + (x.said ? ', you had said: “' + esc(x.said) + '” Then you wrote:' : ', under “' + esc(x.label) + '”, you wrote:') + '</span><p>“' + esc(x.text) + '”</p></div>';
+      h += '<div class="recall"><span>In ' + esc(x.said ? (x.saidPart || x.part) : x.part) + (x.said ? ', you had said: “' + esc(x.said) + '” Then you wrote:' : ', under “' + esc(x.label) + '”, you wrote:') + '</span><p>“' + esc(x.text) + '”</p></div>';
     });
     if (ev.close) h += '<p class="ours left">' + esc(ev.close.text) + ' <span class="ref">' + esc(ev.close.ref) + '</span></p>';
     if (ev.ruling) h += '<p class="ours left">' + esc(ev.ruling.text) + ' <span class="ref">' + esc(ev.ruling.ref) + '</span></p>';
@@ -903,7 +1134,7 @@ var WRITER = (function () {
     Q().forEach(function (q, i) {
       var b = band(i), txt = (w.t[i] || "").trim();
       if (b === "hi" && q.hi.roots && w.root) txt = w.root.charAt(0).toUpperCase() + w.root.slice(1) + "." + (txt ? " " + txt : "");
-      if (b && txt) out.push({ k: "q" + i, label: q[b].label, text: txt, ev: !!q[b].grew, charge: !!q[b].charge });
+      if (b && txt) out.push({ k: "q" + i, label: q[b].label, text: txt, ev: !!q[b].grew, grew: !!q[b].grew, pick: pickOf(i), pick2: pick2Of(i), charge: !!q[b].charge });
     });
     var f = (w.feelOwn.trim() || w.feel);
     if (f) out.push({ k: "feel", label: "The word for what this stirred", text: f.charAt(0).toUpperCase() + f.slice(1) + "." });
@@ -966,8 +1197,8 @@ var WRITER = (function () {
     /* What goes into the story by default is the line that does this chapter's job, plus what he did. */
     var jobK = "q" + pt.job, job = story.some(function (l) { return l.k === jobK; }) ? jobK : (story.filter(function (l) { return l.k.charAt(0) === "q"; })[0] || {}).k;
     var ch = D.chapters[P];
-    ch.lines = story.map(function (l) { return { label: l.label, text: l.text, first: l.text, ctx: l.ctx, ev: !!l.ev, charge: !!l.charge, on: l.k === job || l.k === "did" || l.k === "wit", between: l.k === job ? w.between.trim() : "" }; });
-    ch.setOut = w.setOut; ch.camped = w.camped; ch.nums = w.n.slice();
+    ch.lines = story.map(function (l) { return { label: l.label, text: l.text, first: l.text, ctx: l.ctx, ev: !!l.ev, grew: !!l.grew, pick: l.pick, pick2: l.pick2, charge: !!l.charge, on: l.k === job || l.k === "did" || l.k === "wit", between: l.k === job ? w.between.trim() : "" }; });
+    ch.setOut = w.setOut; ch.camped = w.camped; ch.nums = w.n.slice(); ch.picks = Q().map(function (q, i) { return pickOf(i); });
     var m = ROAD.markPart(Q(), w.n);
     if (APP.stage === "me") {
       D.marks = D.marks || []; D.marks[P] = m ? [m.x, m.y] : null; D.meCount = Math.max(D.meCount || 0, P + 1); D.trail = D.marks.filter(Boolean);
@@ -981,7 +1212,8 @@ var WRITER = (function () {
     var a, w = W();
     if ((a = b.getAttribute("data-n"))) { a = a.split("-"); w.n[+a[0]] = w.n[+a[0]] === +a[1] ? null : +a[1]; if (w.mid) w.mid[+a[0]] = null; APP.render(true); }
     else if ((a = b.getAttribute("data-mid"))) { a = a.split("-"); w.mid = w.mid || []; w.mid[+a[0]] = a[1]; APP.render(true); }
-    else if ((a = b.getAttribute("data-qop"))) { a = a.split("-"); var qq = part().Q[+a[0]], sd = qq[band(+a[0])] || qq.hi, op = sd.ops && sd.ops[+a[1]]; if (op) { w.t[+a[0]] = op.replace(/…\s*$/, "") + ": "; APP.render(true); APP.keep(); var tq = document.getElementById("t-" + a[0]); if (tq) { tq.focus(); tq.setSelectionRange(tq.value.length, tq.value.length); } } }
+    else if ((a = b.getAttribute("data-qop"))) { a = a.split("-"); var qq = part().Q[+a[0]], sd = qq[band(+a[0])] || qq.hi, op = sd.ops && sd.ops[+a[1]]; if (op) { w.t[+a[0]] = opening(sd, +a[1]); w.o[+a[0]] = +a[1]; APP.render(true); APP.keep(); var tq = document.getElementById("t-" + a[0]); if (tq) { tq.focus(); tq.setSelectionRange(tq.value.length, tq.value.length); } } }
+    else if ((a = b.getAttribute("data-qop2"))) { a = a.split("-"); var q2 = part().Q[+a[0]], s2 = q2[band(+a[0])] || q2.hi, o2 = s2.ops2 && s2.ops2[+a[1]]; if (o2) { var cur = (w.t[+a[0]] || ""), prevOp = w.o2[+a[0]] != null ? opening2(s2, w.o2[+a[0]]) : ""; if (prevOp && cur.indexOf(prevOp) >= 0) w.t[+a[0]] = cur.replace(prevOp, opening2(s2, +a[1])); else { cur = cur.replace(/\s+$/, ""); w.t[+a[0]] = (cur ? cur + " " : "") + opening2(s2, +a[1]); } w.o2[+a[0]] = +a[1]; APP.render(true); APP.keep(); var t2 = document.getElementById("t-" + a[0]); if (t2) { t2.focus(); t2.setSelectionRange(t2.value.length, t2.value.length); } } }
     else if ((a = b.getAttribute("data-root"))) { w.root = w.root === a ? "" : a; APP.render(true); }
     else if ((a = b.getAttribute("data-feel"))) { w.feel = w.feel === a ? "" : a; w.feelOwn = ""; APP.render(true); }
     else if ((a = b.getAttribute("data-bop"))) { w.between = BETWEEN_OPS[+a].replace(/…\s*$/, ""); APP.render(true); var tb = document.getElementById("t-between"); if (tb) { tb.focus(); tb.setSelectionRange(tb.value.length, tb.value.length); } }
@@ -1117,7 +1349,9 @@ var TELL = (function () {
       });
       d.bends.forEach(function (b) { if (b.at === i && b.text.trim()) p.bits.push({ label: "Where the road bent toward " + b.side, text: b.text.trim(), ch: i, between: b.between || "" }); });
     });
-    if (stage === "finished" && d.tail.trim() && parts.length) parts[parts.length - 1].bits.push({ label: "Where I am camped today", text: "Today I am camped at " + d.tail.trim(), ch: chs.length - 1, between: "" });
+    var hd = ROAD.handed(d, stage);
+    if (hd.length) { var hp = { name: ROAD.HANDED, bits: [] }; hd.forEach(function (l) { hp.bits.push({ label: l.label, text: l.text, ch: chs.length - 1, between: "" }); }); parts.push(hp); }
+    if (ROAD.finished(d, stage) && d.tail.trim() && parts.length) parts[parts.length - 1].bits.push({ label: "Where I am camped today", text: "Today I am camped at " + d.tail.trim(), ch: chs.length - 1, between: "" });
     return parts.filter(Boolean).map(function (p) {
       var lines = p.bits.map(function (b) { return { label: b.label, text: b.text, ch: b.ch, out: false, answer: b.between, weekly: !!b.between, para: false, q: "", openings: null }; });
       var part = { name: p.name, lines: lines, together: false, text: "", first: "", notes: [], busy: "", err: "", smooth: null, thrown: "" };
@@ -1487,7 +1721,7 @@ var TELL = (function () {
     storyParts().forEach(function (p) {
       h += (p.name ? '<div class="movement"><span>' + esc(p.name) + '</span></div>' : "") + p.text.split(/\n\s*\n/).map(function (para) { return '<p class="his prose-p">' + esc(para.trim()) + '</p>'; }).join("");
     });
-    if (T.stage === "finished") h += '<p class="ours closing">' + esc(d.closes) + '</p>';
+    if (ROAD.finished(d, T.stage)) h += '<p class="ours closing">' + esc(d.closes) + '</p>';
     h += '</div><div class="row bar"><button class="btn main" data-tell="pdf">Download</button><button class="btn" data-tell="copy">Copy</button><button class="btn" data-tell="work">Edit</button><button class="btn" data-go="page">Back</button></div><p id="say" class="say" hidden></p>' +
       '<textarea id="copybox" class="copybox" hidden readonly aria-label="The words of your story, to copy"></textarea>';
     return h;
@@ -1775,7 +2009,7 @@ if (typeof module !== "undefined") module.exports = TELL;
   }
 
   function pageScreen() {
-    var chs = ROAD.chapters(D, stage), lastCh = chs[chs.length - 1], walking = stage !== "finished";
+    var chs = ROAD.chapters(D, stage), lastCh = chs[chs.length - 1], walking = !ROAD.finished(D, stage);
     if (stage === "me") return SITE && SITE.course ? coursePage(chs) : minePage(chs);
     return '<div class="sheet"><div class="eyebrow">Your page</div><h1>Welcome back, Daniel.</h1>' +
       '<p class="fixed">Everything you have written here. Read it, change it, or delete it — any of it, whenever you want.</p>' +
@@ -1801,7 +2035,7 @@ if (typeof module !== "undefined") module.exports = TELL;
   }
 
   function storyScreen() {
-    var chs = ROAD.chapters(D, stage), tn = ROAD.thenNow(D, stage), th = ROAD.thread(D, stage), walking = stage !== "finished";
+    var chs = ROAD.chapters(D, stage), tn = ROAD.thenNow(D, stage), th = ROAD.thread(D, stage), walking = !ROAD.finished(D, stage);
     var h = '<div class="sheet' + (straight ? " straight" : "") + '" id="story"><div class="ch-head"><div class="eyebrow">Walk With Me' + (walking ? " · the road so far" : "") + '</div>' +
       '<div class="t">' + esc(D.title) + '</div><div class="by">' + esc(D.byline) + " · " + esc(D.when) + '</div><div class="rule"></div></div>' +
       '<p class="ours">' + esc(D.opens) + '</p>';
@@ -1826,6 +2060,8 @@ if (typeof module !== "undefined") module.exports = TELL;
         (rc ? recallHTML(rc.lead, rc.text, rc.bridge) : "") +
         ls.map(function (l) { return (l.ctx ? recallHTML(l.ctx.lead, l.ctx.quote, "") : "") + '<p class="his">' + esc(ROAD.shown(l)) + '</p>'; }).join("") + (st ? '<p class="stage">' + esc(st) + '</p>' : "") + '</section>';
     });
+    var hd = ROAD.handed(D, stage);
+    if (hd.length) h += '<div class="movement"><span>' + esc(ROAD.HANDED) + '</span></div><section class="chap">' + hd.map(function (l) { return '<div class="part">' + esc(l.part + " · " + l.label) + '</div><p class="his">' + esc(l.text) + '</p>'; }).join("") + '</section>';
     if (!walking) h += '<p class="ours closing">' + esc(D.closes) + '</p>';
     if (!walking && D.tail.trim()) h += '<p class="tail">Today I am camped at ' + esc(D.tail) + '</p>';
     h += '<div class="refs"><div class="eyebrow">Where these words come from</div><p>' + D.refs.map(esc).join(" · ") + '</p></div></div>' +
@@ -1855,7 +2091,7 @@ if (typeof module !== "undefined") module.exports = TELL;
     D.bends.forEach(function (b, i) {
       if (b.at < chs.length) h += '<div class="field"><label for="bd-' + i + '">' + esc(ROAD.bendLabel(D, b)) + '. ' + esc(ROAD.bendGloss(D, b)) + ' What was happening in your life here?</label><textarea id="bd-' + i + '" data-bd="' + i + '" rows="2">' + esc(b.text) + '</textarea></div>';
     });
-    if (stage === "finished") h += '<div class="field"><label for="f-tail">One closing line. Today I am camped at…</label><input id="f-tail" data-k="tail" value="' + esc(D.tail) + '"></div>';
+    if (ROAD.finished(D, stage)) h += '<div class="field"><label for="f-tail">One closing line. Today I am camped at…</label><input id="f-tail" data-k="tail" value="' + esc(D.tail) + '"></div>';
     return h + '<div class="row bar"><button class="btn main" data-go="story">Done</button></div></div>';
   }
 
@@ -1867,7 +2103,7 @@ if (typeof module !== "undefined") module.exports = TELL;
       '<p class="ours left">And they overcame him by the blood of the Lamb, and by the word of their testimony. <span class="ref">Revelation 12:11</span></p>';
     if (!e.seen.length) h += '<p class="quiet">Nothing gathered yet. This fills as you write your chapters: what you did each week, and what you have come through.</p>';
     e.seen.forEach(function (x) {
-      h += '<div class="recall"><span>' + esc(x.part) + (x.said ? ' · You had said: “' + esc(x.said) + '”' : ' · ' + esc(x.label)) + '</span><p>“' + esc(x.text) + '”</p></div>';
+      h += '<div class="recall"><span>' + esc(x.said ? (x.saidPart || x.part) : x.part) + (x.said ? ' · You had said: “' + esc(x.said) + '”' : ' · ' + esc(x.label)) + '</span><p>“' + esc(x.text) + '”</p></div>';
     });
     return h + '</div><div class="row bar"><button class="btn main" data-go="page">Back</button></div>';
   }
