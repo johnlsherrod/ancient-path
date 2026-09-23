@@ -394,6 +394,10 @@ var ROAD = (function () {
     return markFD(avg(f), avg(dd));
   }
   function mark(nums) { return markFD(avg([nums.root]), avg([nums.known, nums.letin, nums.week])); }
+  /* the paper worksheet (The Road I Walked, PDF): WORKSHEET_URL is the address compiled into this build; AP_ROAD.worksheet = a string overrides it, false hides the line */
+  var WORKSHEET_URL = "https://lwfiles.mycourse.app/69ff74fa031fcc8033475300-public/publicFiles/The_Road_I_Walked_worksheet_v1.pdf";
+  function worksheetURL() { var c = window.AP_ROAD; if (!c) return ""; if (c.worksheet === false) return ""; if (typeof c.worksheet === "string" && c.worksheet) return c.worksheet; return WORKSHEET_URL; }
+  function paperLine() { var u = worksheetURL(); return u ? '<p class="quiet">Prefer paper? <a href="' + u.replace(/"/g, "&quot;") + '" target="_blank" rel="noopener" style="text-decoration:underline">Print the worksheet</a> — the same ten chapters, on paper.</p>' : ""; }
   function markFD(F, Dn) {
     if (F == null || Dn == null) return null;
     var x = 100 + (Dn - 1) / 4 * 440, y = 420 - (F - 1) / 4 * 350, best = 0, bd = 1e9;
@@ -407,7 +411,7 @@ var ROAD = (function () {
       where: near ? "near " + STOPS[k] : "between " + STOPS[lo] + " and " + STOPS[lo + 1] };
   }
 
-  return { evidence: evidence, markPart: markPart, markFD: markFD, moves: moves, fullPart: fullPart, bendLabel: bendLabel, bendGloss: bendGloss, shown: shown, recallLine: recallLine, mark: mark, roadPt: roadPt, chapters: chapters, onLines: onLines, stageLine: stageLine, thread: thread, listParts: listParts,
+  return { evidence: evidence, markPart: markPart, markFD: markFD, worksheetURL: worksheetURL, paperLine: paperLine, moves: moves, fullPart: fullPart, bendLabel: bendLabel, bendGloss: bendGloss, shown: shown, recallLine: recallLine, mark: mark, roadPt: roadPt, chapters: chapters, onLines: onLines, stageLine: stageLine, thread: thread, listParts: listParts,
            segments: segments, pathD: pathD, thenNow: thenNow, text: text, pdf: pdf, handed: handed, HANDED: HANDED, finished: finished };
 })();
 if (typeof module !== "undefined") module.exports = ROAD;
@@ -2155,7 +2159,7 @@ if (typeof module !== "undefined") module.exports = TELL;
       h += '<p class="fixed">Before you go on, take five minutes. Answer five statements honestly and write a few sentences. They become a chapter in your own story, and it will be waiting on your page. <b>Nothing you write here reaches us unless you choose to save it with us. Everything else stays on your device.</b></p>';
       if (n < here) h += '<p class="say">Your story is written in order, and your next chapter is ' + esc(next.part + " · " + next.name) + '. Write that one first. Then come back here for ' + esc(me.part) + '.</p>';
       h += (under ? '<p class="state"><b>In progress</b> — Pick up where you left off</p>' : "") +
-        '<div class="row"><button class="btn main" data-do="pickup">' + (under ? "Pick up where you left off" : "Write " + esc(next.part) + " of my story") + '</button>' + (n ? '<button class="btn" data-do="readstory">Read my story so far</button>' : "") + '</div>';
+        '<div class="row"><button class="btn main" data-do="pickup">' + (under ? "Pick up where you left off" : "Write " + esc(next.part) + " of my story") + '</button>' + (n ? '<button class="btn" data-do="readstory">Read my story so far</button>' : "") + '</div>' + ROAD.paperLine();
     }
     return h + '<p id="say" class="say" hidden></p></div>';
   }
@@ -2166,7 +2170,7 @@ if (typeof module !== "undefined") module.exports = TELL;
       '<div class="cards"><article class="card main"><div class="eyebrow">Walk With Me</div><h2>' + esc(D.title) + '</h2>';
     var under = SITE && n < all && WRITER.begun && WRITER.begun(n);
     if (!n && under) h += '<p class="state"><b>In progress</b> — Pick up where you left off</p><p class="quiet">' + esc(next.part + " · " + next.name) + ' is under way.</p><div class="row"><button class="btn main" data-do="pickup">Pick up where you left off</button></div>';
-    else if (!n) h += '<p class="state"><b>Not started</b></p><p class="quiet">Ten sections. Five to ten minutes after each one.</p><div class="row"><button class="btn main" data-do="pickup">Begin</button></div>';
+    else if (!n) h += '<p class="state"><b>Not started</b></p><p class="quiet">Ten sections. Five to ten minutes after each one.</p><div class="row"><button class="btn main" data-do="pickup">Begin</button></div>' + (SITE ? ROAD.paperLine() : "");
     else if (n < all) h += '<p class="state"><b>In progress</b> — Pick up where you left off</p><p class="quiet">' + n + ' of ' + all + ' sections written. Next: ' + esc(next.part + " · " + next.name) + '</p>' +
       '<div class="row"><button class="btn main" data-do="pickup">Pick up where you left off</button><button class="btn" data-do="readstory">Read</button></div>';
     else h += '<p class="state"><b>Finished</b></p><p class="quiet">Ten sections. Your words, your road.</p><div class="row"><button class="btn main" data-go="tell">Open it</button><button class="btn" data-do="download">Download</button></div>';
