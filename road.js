@@ -3,7 +3,7 @@
 
 if(!window.AP_ROAD||window.__apRoadStarted)return;window.__apRoadStarted=1;
 var host=document.getElementById("ap-road");if(!host)return;
-var st=document.createElement("style");st.id="ap-road-css";st.textContent="#ap-road,#ap-road *{text-align:left;text-transform:none;letter-spacing:normal;box-sizing:border-box;float:none}#ap-road button{text-align:center;border-radius:0;box-shadow:none;text-shadow:none;min-width:0;min-height:0;height:auto;width:auto;line-height:1.3;margin:0;text-decoration:none}#ap-road p{margin:1em 0;padding:0}#ap-road ul,#ap-road ol{margin:1em 0;padding-left:1.4em}#ap-road li{margin:0;padding:0}#ap-road label{display:block;margin:0}#ap-road a{color:inherit}#ap-road svg{max-width:100%;height:auto}#ap-road{--navy:#1F2A44;--bronze:#8C6A3F;--gold:#C9A227;--cream:#FBF7EF;--paper:#FFFFFF;--sand:#F1EADB;--line:#E5DCC8;--ink:#2A2723;--soft:#6B6358;\n  --serif:\"Source Serif 4\",Georgia,\"Times New Roman\",serif;--sans:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif}#ap-road, #ap-road *{box-sizing:border-box}#ap-road{background:var(--cream);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:0 80px}#ap-road .top{max-width:720px;margin:0 auto;padding-block:18px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}#ap-road .top .what{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:0}#ap-road .top .what b{color:var(--ink)}#ap-road .switch{display:flex;flex-wrap:wrap;gap:8px}#ap-road .switch button{font-family:var(--sans);font-size:14px;font-weight:600;padding:8px 14px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer}#ap-road .switch button[aria-pressed=\"true\"]{background:var(--navy);color:#fff}#ap-road #ap-road-app{max-width:720px;margin:28px auto 0}#ap-road .sheet{background:var(--paper);border:1px solid var(--line);box-shadow:0 1px 0 var(--line),0 18px 40px -28px rgba(31,42,68,.35);padding:clamp(20px,5vw,44px)}#ap-road .eyebrow{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze)}#ap-road h1{font-size:clamp(26px,5vw,34px);line-height:1.15;color:var(--navy);margin:6px 0 10px;font-weight:600;text-wrap:balance}#ap-road h2{font-size:22px;line-height:1.2;color:var(--navy);margin:4px 0 6px;font-weight:600}#ap-road .fixed{margin:0 0 22px;max-width:60ch}#ap-road .cards{display:flex;flex-direction:column;gap:14px}#ap-road .card{border:1px solid var(--line);padding:18px 20px;background:var(--cream)}#ap-road .card.main{background:#fff;border:1.5px solid var(--navy)}#ap-road .card.dim{opacity:.62}#ap-road .state{margin:0;font-family:var(--sans);font-size:15px;color:var(--ink)}#ap-road .quiet{margin:2px 0 0;font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}#ap-road .row.bar{margin-top:22px}#ap-road .btn{font-family:var(--sans);font-size:15px;font-weight:600;padding:11px 18px;border:1.5px solid var(--navy);color:var(--navy);background:#fff;cursor:pointer}#ap-road .btn.main{background:var(--navy);color:#fff}#ap-road .btn:focus-visible,#ap-road .switch button:focus-visible,#ap-road .link:focus-visible,#ap-road .toggle:focus-visible,#ap-road input:focus-visible,#ap-road textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#ap-road .links{margin:14px 0 0;display:flex;flex-wrap:wrap;gap:6px 22px}#ap-road .link{font-family:var(--sans);font-size:14px;color:var(--soft);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}#ap-road .say{font-family:var(--sans);font-size:14.5px;color:var(--navy);background:var(--sand);padding:10px 14px;margin:16px 0 0}#ap-road .ch-head{text-align:center;margin-bottom:22px}#ap-road .ch-head .t{font-size:clamp(28px,6vw,38px);color:var(--navy);font-weight:600;line-height:1.12;margin:6px 0 4px;text-wrap:balance}#ap-road .ch-head .by{font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .rule{width:64px;height:3px;background:var(--gold);margin:16px auto 0}#ap-road .ours{font-style:italic;color:var(--bronze);font-size:16px;line-height:1.5;margin:18px 0;text-align:center;text-wrap:balance}#ap-road .ours.left{text-align:left;font-size:15px;margin:2px 0 6px}#ap-road .ours cite{display:block;font-style:normal;font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}#ap-road .his{font-size:20px;line-height:1.45;margin:10px 0}#ap-road .his .lead{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:2px}#ap-road .stage{font-style:italic;color:var(--navy);font-size:17px;margin:6px 0 0}#ap-road .then-now{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin:8px 0}#ap-road .then-now>div{padding:18px}#ap-road .then-now>div+div{border-left:1px solid var(--line);background:var(--cream)}#ap-road .then-now .when{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:6px}#ap-road .then-now p{margin:0;font-size:18px;line-height:1.4}#ap-road .road svg{width:100%;height:auto;display:block}#ap-road .road .cap{font-size:17px;color:var(--navy);margin:8px 0 4px;text-align:center;text-wrap:balance}#ap-road .road .sub{font-family:var(--sans);font-size:14px;color:var(--soft);text-align:center;margin:0 0 14px}#ap-road .divide{height:1px;background:var(--line);margin:26px 0}#ap-road .thread{font-size:18px;color:var(--navy);text-align:center;margin:0;text-wrap:balance}#ap-road .thread b{font-weight:600;border-bottom:2px solid var(--gold)}#ap-road .chap{padding:16px 0;border-bottom:1px solid var(--line)}#ap-road .part{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:4px}#ap-road .movement{display:flex;align-items:center;gap:14px;margin:34px 0 6px;font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--navy)}#ap-road .movement::before,#ap-road .movement::after{content:\"\";flex:1;height:1px;background:var(--gold)}#ap-road .recall{color:var(--soft);margin:6px 0 12px;padding:2px 0 2px 14px;border-left:3px solid var(--gold)}#ap-road .recall span{display:block;font-family:var(--sans);font-size:14.5px;line-height:1.45}#ap-road .recall p{font-style:italic;font-size:17.5px;line-height:1.45;color:var(--ink);margin:4px 0}#ap-road .prose{font-size:18.5px;line-height:1.6;padding:14px 16px}#ap-road .prose-p{font-size:19px;line-height:1.65;margin:0 0 16px}#ap-road .tellpart{margin-bottom:10px}#ap-road .note{border:1px solid var(--line);border-left:3px solid var(--gold);background:var(--cream);padding:16px 18px;margin:16px 0}#ap-road .note .his.quoted{margin-top:4px}#ap-road .note textarea{margin-top:4px}#ap-road .his.bridge{color:var(--navy);margin:6px 0 6px 14px;padding-left:12px;border-left:2px solid var(--gold);font-size:18.5px}#ap-road .his.bridge .link{font-size:13px;margin-left:6px}#ap-road .gaprow{margin:2px 0 2px 14px}#ap-road .gaprow .link{color:var(--bronze)}#ap-road select{font-family:var(--serif);font-size:16px;color:var(--ink);padding:10px 12px;border:1px solid var(--bronze);background:#fff;width:100%;border-radius:0}#ap-road .field .words{margin:4px 0 6px}#ap-road .field .help{margin:4px 0 0}#ap-road .gap{border-left:2px dashed var(--bronze);margin:4px 0 4px 10px;padding:10px 0 10px 16px}#ap-road .gap .ask.small{color:var(--navy);margin:0 0 8px}#ap-road .gap .links{margin:6px 0 0}#ap-road .his.mine{margin:12px 0}#ap-road .ask.small{font-size:16.5px;font-weight:400;margin:0 0 12px}#ap-road .carebox{max-width:720px;margin:18px auto 0;border-left:4px solid var(--navy)}#ap-road .his .gloss{display:block;font-family:var(--sans);font-size:14px;font-style:italic;color:var(--soft);margin-bottom:3px}#ap-road .where{list-style:none;padding:0;margin:14px auto 0;max-width:54ch;display:flex;flex-direction:column;gap:12px}#ap-road .where li{font-size:17.5px;line-height:1.45}#ap-road .where li span{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:1px}#ap-road .where li b{font-weight:600;border-bottom:2px solid var(--gold)}#ap-road .ours.closing{margin-top:34px}#ap-road .straight .movement{margin-top:26px}#ap-road .tail{font-size:22px;font-weight:600;color:var(--navy);text-align:center;margin:30px 0 8px;text-wrap:balance}#ap-road .refs{text-align:center;margin-top:28px}#ap-road .refs p{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:4px 0 0}#ap-road .copybox{width:100%;min-height:180px;margin-top:12px;font-family:var(--sans);font-size:14px;padding:10px;border:1px solid var(--bronze)}#ap-road .field{display:flex;flex-direction:column;gap:4px;margin:0 0 14px}#ap-road .field label,#ap-road .edit-top label{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--soft);letter-spacing:.04em}#ap-road input,#ap-road textarea{font-family:var(--serif);font-size:17px;line-height:1.4;color:var(--ink);padding:10px 12px;border:1px solid var(--bronze);background:#fff;width:100%;border-radius:0}#ap-road textarea{resize:vertical}#ap-road .edit-ch{border-top:1px solid var(--line);padding:18px 0 6px}#ap-road .edit-line{margin:0 0 14px}#ap-road .edit-line.off textarea{color:var(--soft);background:var(--cream);border-color:var(--line)}#ap-road .edit-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}#ap-road .toggle{font-family:var(--sans);font-size:13px;font-weight:700;padding:5px 12px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer}#ap-road .toggle[aria-pressed=\"true\"]{background:var(--navy);color:#fff}#ap-road .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}#ap-road .wq{margin:0 0 8px}#ap-road .q{font-size:20px;line-height:1.4;color:var(--navy);margin:8px 0 12px}#ap-road .scale{display:flex;gap:10px;align-items:center;margin:6px 0}#ap-road .dot{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--bronze);background:#fff;font-family:var(--sans);font-size:16px;color:var(--bronze);cursor:pointer}#ap-road .dot.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}#ap-road .ends{display:flex;justify-content:space-between;max-width:260px;font-family:var(--sans);font-size:12px;color:var(--soft);margin-bottom:18px}#ap-road .beneath{border-top:1px solid var(--line);padding-top:16px;margin-bottom:10px}#ap-road .ask{font-size:19px;color:var(--navy);margin:0 0 4px;font-weight:600}#ap-road .help{font-family:var(--sans);font-size:14.5px;color:var(--soft);margin:0 0 12px}#ap-road .words{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}#ap-road .word{font-family:var(--sans);font-size:14.5px;padding:8px 13px;border:1px solid var(--line);background:var(--cream);color:var(--ink);cursor:pointer}#ap-road .word.pick{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}#ap-road .word:focus-visible,#ap-road .dot:focus-visible,#ap-road .pickline:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#ap-road .verse{font-size:17px;margin:0 0 6px}#ap-road .ref{font-style:normal;font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}#ap-road .care{font-size:15.5px;color:var(--ink);background:var(--sand);padding:10px 12px;margin:6px 0 12px}#ap-road .ex{font-family:var(--sans);font-size:14px;color:var(--soft);margin:6px 0 0}#ap-road .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}#ap-road .pickline{font:inherit;color:inherit;text-align:left;background:none;border:0;padding:2px 6px;margin:0 -6px;cursor:pointer;display:block;width:calc(100% + 12px)}#ap-road .pickline.on{background:var(--sand)}#ap-road .his.quoted{border-left:3px solid var(--gold);padding-left:12px;color:var(--soft);font-size:18px}#ap-road .stage.big{font-size:20px;text-align:center}#ap-road .center{text-align:center}#ap-road .orig{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:6px 0 0}#ap-road .straight .part,#ap-road .straight .ours.left{display:none}#ap-road .straight .chap{border:0;padding:8px 0}#ap-road .straight .chap .stage{margin-bottom:6px}@media (max-width:620px){#ap-road .then-now,#ap-road .pair{grid-template-columns:minmax(0,1fr)}#ap-road .then-now>div+div{border-left:0;border-top:1px solid var(--line)}#ap-road .his{font-size:18.5px}}@media print{#ap-road{background:#fff;padding:0}#ap-road .top,#ap-road .row,#ap-road .say,#ap-road .copybox{display:none!important}#ap-road .sheet{border:0;box-shadow:none;padding:0}#ap-road #ap-road-app{margin:0;max-width:none}}\n#ap-road{display:block;text-align:left;max-width:100%;padding-block:0 40px;border-radius:0}#ap-road .top{display:none}#ap-road .savebar{max-width:720px;margin:18px auto 0}#ap-road [hidden]{display:none!important}@media print{body *{visibility:hidden!important}#ap-road,#ap-road *{visibility:visible!important}#ap-road{position:absolute;left:0;top:0;width:100%}#ap-road .savebar{display:none!important}}";document.head.appendChild(st);
+var st=document.createElement("style");st.id="ap-road-css";st.textContent="#ap-road,#ap-road *{text-align:left;text-transform:none;letter-spacing:normal;box-sizing:border-box;float:none}#ap-road button{text-align:center;border-radius:0;box-shadow:none;text-shadow:none;min-width:0;min-height:0;height:auto;width:auto;line-height:1.3;margin:0;text-decoration:none}#ap-road p{margin:1em 0;padding:0}#ap-road ul,#ap-road ol{margin:1em 0;padding-left:1.4em}#ap-road li{margin:0;padding:0}#ap-road label{display:block;margin:0}#ap-road a{color:inherit}#ap-road svg{max-width:100%;height:auto}#ap-road{--navy:#1F2A44;--bronze:#8C6A3F;--gold:#C9A227;--cream:#FBF7EF;--paper:#FFFFFF;--sand:#F1EADB;--line:#E5DCC8;--ink:#2A2723;--soft:#6B6358;\n  --serif:\"Source Serif 4\",Georgia,\"Times New Roman\",serif;--sans:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif}#ap-road, #ap-road *{box-sizing:border-box}#ap-road{background:var(--cream);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:0 80px}#ap-road .top{max-width:720px;margin:0 auto;padding-block:18px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}#ap-road .top .what{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:0}#ap-road .top .what b{color:var(--ink)}#ap-road .switch{display:flex;flex-wrap:wrap;gap:8px}#ap-road .switch button{font-family:var(--sans);font-size:14px;font-weight:600;padding:8px 14px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer}#ap-road .switch button[aria-pressed=\"true\"]{background:var(--navy);color:#fff}#ap-road #ap-road-app{max-width:720px;margin:28px auto 0}#ap-road .sheet{background:var(--paper);border:1px solid var(--line);box-shadow:0 1px 0 var(--line),0 18px 40px -28px rgba(31,42,68,.35);padding:clamp(20px,5vw,44px)}#ap-road .eyebrow{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze)}#ap-road h1{font-size:clamp(26px,5vw,34px);line-height:1.15;color:var(--navy);margin:6px 0 10px;font-weight:600;text-wrap:balance}#ap-road h2{font-size:22px;line-height:1.2;color:var(--navy);margin:4px 0 6px;font-weight:600}#ap-road .fixed{margin:0 0 22px;max-width:60ch}#ap-road .cards{display:flex;flex-direction:column;gap:14px}#ap-road .card{border:1px solid var(--line);padding:18px 20px;background:var(--cream)}#ap-road .card.main{background:#fff;border:1.5px solid var(--navy)}#ap-road .card.dim{opacity:.62}#ap-road .state{margin:0;font-family:var(--sans);font-size:15px;color:var(--ink)}#ap-road .quiet{margin:2px 0 0;font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}#ap-road .row.bar{margin-top:22px}#ap-road .btn{font-family:var(--sans);font-size:15px;font-weight:600;padding:11px 18px;border:1.5px solid var(--navy);color:var(--navy);background:#fff;cursor:pointer}#ap-road .btn.main{background:var(--navy);color:#fff}#ap-road .btn:focus-visible,#ap-road .switch button:focus-visible,#ap-road .link:focus-visible,#ap-road .toggle:focus-visible,#ap-road input:focus-visible,#ap-road textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#ap-road .links{margin:14px 0 0;display:flex;flex-wrap:wrap;gap:6px 22px}#ap-road .link{font-family:var(--sans);font-size:14px;color:var(--soft);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}#ap-road .say{font-family:var(--sans);font-size:14.5px;color:var(--navy);background:var(--sand);padding:10px 14px;margin:16px 0 0}#ap-road .ch-head{text-align:center;margin-bottom:22px}#ap-road .ch-head .t{font-size:clamp(28px,6vw,38px);color:var(--navy);font-weight:600;line-height:1.12;margin:6px 0 4px;text-wrap:balance}#ap-road .ch-head .by{font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .rule{width:64px;height:3px;background:var(--gold);margin:16px auto 0}#ap-road .ours{font-style:italic;color:var(--bronze);font-size:16px;line-height:1.5;margin:18px 0;text-align:center;text-wrap:balance}#ap-road .ours.left{text-align:left;font-size:15px;margin:2px 0 6px}#ap-road .ours cite{display:block;font-style:normal;font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}#ap-road .his{font-size:20px;line-height:1.45;margin:10px 0}#ap-road .his .lead{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:2px}#ap-road .stage{font-style:italic;color:var(--navy);font-size:17px;margin:6px 0 0}#ap-road .then-now{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin:8px 0}#ap-road .then-now>div{padding:18px}#ap-road .then-now>div+div{border-left:1px solid var(--line);background:var(--cream)}#ap-road .then-now .when{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:6px}#ap-road .then-now p{margin:0;font-size:18px;line-height:1.4}#ap-road .road svg{width:100%;height:auto;display:block}#ap-road .road .cap{font-size:17px;color:var(--navy);margin:8px 0 4px;text-align:center;text-wrap:balance}#ap-road .road .sub{font-family:var(--sans);font-size:14px;color:var(--soft);text-align:center;margin:0 0 14px}#ap-road .divide{height:1px;background:var(--line);margin:26px 0}#ap-road .thread{font-size:18px;color:var(--navy);text-align:center;margin:0;text-wrap:balance}#ap-road .thread b{font-weight:600;border-bottom:2px solid var(--gold)}#ap-road .chap{padding:16px 0;border-bottom:1px solid var(--line)}#ap-road .part{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:4px}#ap-road .movement{display:flex;align-items:center;gap:14px;margin:34px 0 6px;font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--navy)}#ap-road .movement::before,#ap-road .movement::after{content:\"\";flex:1;height:1px;background:var(--gold)}#ap-road .recall{color:var(--soft);margin:6px 0 12px;padding:2px 0 2px 14px;border-left:3px solid var(--gold)}#ap-road .recall span{display:block;font-family:var(--sans);font-size:14.5px;line-height:1.45}#ap-road .recall p{font-style:italic;font-size:17.5px;line-height:1.45;color:var(--ink);margin:4px 0}#ap-road .prose{font-size:18.5px;line-height:1.6;padding:14px 16px}#ap-road .prose-p{font-size:19px;line-height:1.65;margin:0 0 16px}#ap-road .tellpart{margin-bottom:10px}#ap-road .note{border:1px solid var(--line);border-left:3px solid var(--gold);background:var(--cream);padding:16px 18px;margin:16px 0}#ap-road .note .his.quoted{margin-top:4px}#ap-road .note textarea{margin-top:4px}#ap-road .his.bridge{color:var(--navy);margin:6px 0 6px 14px;padding-left:12px;border-left:2px solid var(--gold);font-size:18.5px}#ap-road .his.bridge .link{font-size:13px;margin-left:6px}#ap-road .gaprow{margin:2px 0 2px 14px}#ap-road .gaprow .link{color:var(--bronze)}#ap-road select{font-family:var(--serif);font-size:16px;color:var(--ink);padding:10px 12px;border:1px solid var(--bronze);background:#fff;width:100%;border-radius:0}#ap-road .field .words{margin:4px 0 6px}#ap-road .field .help{margin:4px 0 0}#ap-road .gap{border-left:2px dashed var(--bronze);margin:4px 0 4px 10px;padding:10px 0 10px 16px}#ap-road .gap .ask.small{color:var(--navy);margin:0 0 8px}#ap-road .gap .links{margin:6px 0 0}#ap-road .his.mine{margin:12px 0}#ap-road .ask.small{font-size:16.5px;font-weight:400;margin:0 0 12px}#ap-road .carebox{max-width:720px;margin:18px auto 0;border-left:4px solid var(--navy)}#ap-road .his .gloss{display:block;font-family:var(--sans);font-size:14px;font-style:italic;color:var(--soft);margin-bottom:3px}#ap-road .where{list-style:none;padding:0;margin:14px auto 0;max-width:54ch;display:flex;flex-direction:column;gap:12px}#ap-road .where li{font-size:17.5px;line-height:1.45}#ap-road .where li span{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:1px}#ap-road .where li b{font-weight:600;border-bottom:2px solid var(--gold)}#ap-road .ours.closing{margin-top:34px}#ap-road .straight .movement{margin-top:26px}#ap-road .tail{font-size:22px;font-weight:600;color:var(--navy);text-align:center;margin:30px 0 8px;text-wrap:balance}#ap-road .refs{text-align:center;margin-top:28px}#ap-road .refs p{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:4px 0 0}#ap-road .copybox{width:100%;min-height:180px;margin-top:12px;font-family:var(--sans);font-size:14px;padding:10px;border:1px solid var(--bronze)}#ap-road .field{display:flex;flex-direction:column;gap:4px;margin:0 0 14px}#ap-road .field label,#ap-road .edit-top label{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--soft);letter-spacing:.04em}#ap-road input,#ap-road textarea{font-family:var(--serif);font-size:17px;line-height:1.4;color:var(--ink);padding:10px 12px;border:1px solid var(--bronze);background:#fff;width:100%;border-radius:0}#ap-road textarea{resize:vertical}#ap-road .edit-ch{border-top:1px solid var(--line);padding:18px 0 6px}#ap-road .edit-line{margin:0 0 14px}#ap-road .edit-line.off textarea{color:var(--soft);background:var(--cream);border-color:var(--line)}#ap-road .edit-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}#ap-road .toggle{font-family:var(--sans);font-size:13px;font-weight:700;padding:5px 12px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer}#ap-road .toggle[aria-pressed=\"true\"]{background:var(--navy);color:#fff}#ap-road .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}#ap-road .wq{margin:0 0 8px}#ap-road .q{font-size:20px;line-height:1.4;color:var(--navy);margin:8px 0 12px}#ap-road .scale{display:flex;gap:10px;align-items:center;margin:6px 0}#ap-road .dot{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--bronze);background:#fff;font-family:var(--sans);font-size:16px;color:var(--bronze);cursor:pointer}#ap-road .dot.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}#ap-road .ends{display:flex;justify-content:space-between;max-width:260px;font-family:var(--sans);font-size:12px;color:var(--soft);margin-bottom:18px}#ap-road .beneath{border-top:1px solid var(--line);padding-top:16px;margin-bottom:10px}#ap-road .ask{font-size:19px;color:var(--navy);margin:0 0 4px;font-weight:600}#ap-road .help{font-family:var(--sans);font-size:14.5px;color:var(--soft);margin:0 0 12px}#ap-road .words{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}#ap-road .word{font-family:var(--sans);font-size:14.5px;padding:8px 13px;border:1px solid var(--line);background:var(--cream);color:var(--ink);cursor:pointer}#ap-road .word.pick{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}#ap-road .word:focus-visible,#ap-road .dot:focus-visible,#ap-road .pickline:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#ap-road .verse{font-size:17px;margin:0 0 6px}#ap-road .ref{font-style:normal;font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}#ap-road .care{font-size:15.5px;color:var(--ink);background:var(--sand);padding:10px 12px;margin:6px 0 12px}#ap-road .ex{font-family:var(--sans);font-size:14px;color:var(--soft);margin:6px 0 0}#ap-road .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}#ap-road .pickline{font:inherit;color:inherit;text-align:left;background:none;border:0;padding:2px 6px;margin:0 -6px;cursor:pointer;display:block;width:calc(100% + 12px)}#ap-road .pickline.on{background:var(--sand)}#ap-road .his.quoted{border-left:3px solid var(--gold);padding-left:12px;color:var(--soft);font-size:18px}#ap-road .stage.big{font-size:20px;text-align:center}#ap-road .center{text-align:center}#ap-road .orig{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:6px 0 0}#ap-road .straight .part,#ap-road .straight .ours.left{display:none}#ap-road .straight .chap{border:0;padding:8px 0}#ap-road .straight .chap .stage{margin-bottom:6px}@media (max-width:620px){#ap-road .then-now,#ap-road .pair{grid-template-columns:minmax(0,1fr)}#ap-road .then-now>div+div{border-left:0;border-top:1px solid var(--line)}#ap-road .his{font-size:18.5px}}@media print{#ap-road{background:#fff;padding:0}#ap-road .top,#ap-road .row,#ap-road .say,#ap-road .copybox{display:none!important}#ap-road .sheet{border:0;box-shadow:none;padding:0}#ap-road #ap-road-app{margin:0;max-width:none}}\n#ap-road .map{max-width:520px;margin:12px auto}#ap-road .map.small{max-width:360px}#ap-road .byline{font-family:var(--sans);font-size:13px;color:var(--soft);margin:0 0 14px}#ap-road .line{font-size:19px;line-height:1.5;margin:10px 0}#ap-road .line .his{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);margin-bottom:2px}#ap-road .agency{border-left:3px solid var(--gold);padding-left:12px;color:var(--navy)}#ap-road input[type=text]{font:inherit;font-size:17px;padding:8px 10px;border:1px solid var(--line);background:#fff;width:100%;max-width:360px;margin:0 0 14px}#ap-road label.ask{display:block}#ap-road{display:block;text-align:left;max-width:100%;padding-block:0 40px;border-radius:0}#ap-road .top{display:none}#ap-road .savebar{max-width:720px;margin:18px auto 0}#ap-road [hidden]{display:none!important}@media print{body *{visibility:hidden!important}#ap-road,#ap-road *{visibility:visible!important}#ap-road{position:absolute;left:0;top:0;width:100%}#ap-road .savebar{display:none!important}}";document.head.appendChild(st);
 if(!document.getElementById("ap-road-fonts")){var lk=document.createElement("link");lk.id="ap-road-fonts";lk.rel="stylesheet";lk.href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&family=Source+Sans+3:wght@400;600;700&display=swap";document.head.appendChild(lk);}
 host.innerHTML="<div id=\"ap-road-care\" class=\"care carebox\" role=\"alert\" hidden><b>If you or anyone else is in danger right now, stop here.</b> Call 911, or call or text 988. Then tell one man you trust today. What you have written is still here when you come back.</div><div id=\"ap-road-app\"></div>";
 /* ---- road_data.js ---- */
@@ -384,7 +384,8 @@ var ROAD = (function () {
   var RP = [[120, 405], [250, 400], [370, 140], [525, 95]];
   function roadPt(t) { var a = Math.pow(1 - t, 3), b = 3 * Math.pow(1 - t, 2) * t, c = 3 * (1 - t) * t * t, e = t * t * t;
     return [a * RP[0][0] + b * RP[1][0] + c * RP[2][0] + e * RP[3][0], a * RP[0][1] + b * RP[1][1] + c * RP[2][1] + e * RP[3][1]]; }
-  var STOPS = ["This Is Where We Begin", "We Get Curious", "The Disciplines Go to Work", "The Light Shows Up", "The Mature Orchard"];
+  /* the four stops on the line, in the course's own words (planted, forming, growing, the mature orchard) */
+  var STOPS = ["planted", "forming", "growing", "the mature orchard"];
   /* nums: {root, known, cut, letin, week}, each 1-5 or null. Direction, never rank. */
   function avg(a) { a = a.filter(function (v) { return v != null; }); return a.length ? a.reduce(function (x, y) { return x + y; }, 0) / a.length : null; }
   /* any part: qs carry side ("F", "D" or null for a belief statement, which is left out) and back; ns are his five numbers */
@@ -405,8 +406,8 @@ var ROAD = (function () {
     var rp = roadPt(best), r2 = roadPt(Math.min(1, best + 0.01)), r1 = roadPt(Math.max(0, best - 0.01));
     var cross = (r2[0] - r1[0]) * (y - rp[1]) - (r2[1] - r1[1]) * (x - rp[0]), far = Math.sqrt(bd) > 26 && best > 0.02 && best < 0.98;
     var lean = !far ? "road" : cross < 0 ? "formation" : "discipleship";
-    var k = Math.round(best * 4), near = Math.abs(best * 4 - k) < 0.24;
-    var lo = Math.min(3, Math.floor(best * 4));
+    var k = Math.round(best * 3), near = Math.abs(best * 3 - k) < 0.24;
+    var lo = Math.min(2, Math.floor(best * 3));
     return { x: Math.round(x), y: Math.round(y), F: F, D: Dn, t: best, lean: lean,
       where: near ? "near " + STOPS[k] : "between " + STOPS[lo] + " and " + STOPS[lo + 1] };
   }
@@ -1847,7 +1848,7 @@ var TELL = (function () {
 if (typeof module !== "undefined") module.exports = TELL;
 
 /* ---- road_site.js ---- */
-/* AP-ROAD-SITE-v1 · The Road I Walked on ancientpathcoaching.com.
+/* AP-ROAD-SITE-v1 (v20: AP_ROAD_WHOLE / AP_ROAD_META hooks for a piece such as Where Are You?) · The Road I Walked on ancientpathcoaching.com.
    Only runs when the page sets window.AP_ROAD. Saves through the shared save (story.js: APStory._submit / latest / signedIn).
    Nothing is sent until he presses Save. The whole walk is one JSON document split evenly across the form's "walk" questions;
    the readable story goes in "whole"; where he is goes in "meta". */
@@ -1885,11 +1886,11 @@ if (typeof module !== "undefined") module.exports = TELL;
       out.push({ blockId: ids[i], value: json.slice(from, to) || "-" }); from = to;
     }
     var done = (snap.me && snap.me.meCount) || 0, text = "";
-    try { text = (typeof TELL !== "undefined" && TELL.whole && TELL.whole()) || ROAD.text(APP.D, "me"); } catch (e) { text = ""; }
+    try { text = window.AP_ROAD_WHOLE ? window.AP_ROAD_WHOLE() : ((typeof TELL !== "undefined" && TELL.whole && TELL.whole()) || ROAD.text(APP.D, "me")); } catch (e) { text = ""; }
     /* his page shows the first two lines of "whole" and skips a short first paragraph in capitals: movement names go in that form */
     text = String(text || "").replace(/^\[([^\]\n]{1,60})\]\n/gm, function (m, name) { return name.toUpperCase() + "\n\n"; });
     if (C.lw.blocks.whole) out.push({ blockId: C.lw.blocks.whole, value: text || " " });
-    if (C.lw.blocks.meta) out.push({ blockId: C.lw.blocks.meta, value: JSON.stringify({ step: Math.min(done, 9), part: done, of: 10, finished: done >= 10, when: new Date().toISOString() }) });
+    if (C.lw.blocks.meta) out.push({ blockId: C.lw.blocks.meta, value: JSON.stringify(window.AP_ROAD_META ? window.AP_ROAD_META() : { step: Math.min(done, 9), part: done, of: 10, finished: done >= 10, when: new Date().toISOString() }) });
     return { answers: out, json: json };
   }
   function b64(str) { return window.btoa(unescape(encodeURIComponent(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
@@ -1958,7 +1959,7 @@ if (typeof module !== "undefined") module.exports = TELL;
       var q = window.location.search, m = /[?&]part=(\d+)/.exec(q), n = (APP.D && APP.D.meCount) || 0;
       /* a link from a course section, or "Pick up" from his page, opens his NEXT unwritten chapter: never one already written, never one ahead */
       var under = typeof WRITER !== "undefined" && WRITER.begun && WRITER.begun(n);
-      if (!C.course && (m || (/[?&]open=/.test(q) && (n || under)))) { if (n < 10) APP.openPart(n); else { try { TELL.show(APP.D, "me", "read"); APP.go("tell"); } catch (e) {} } }
+      if (!C.piece && !C.course && (m || (/[?&]open=/.test(q) && (n || under)))) { if (n < 10) APP.openPart(n); else { try { TELL.show(APP.D, "me", "read"); APP.go("tell"); } catch (e) {} } }
       paint();
     };
     var pending = stashGet();
@@ -1994,9 +1995,258 @@ if (typeof module !== "undefined") module.exports = TELL;
   };
 })();
 
+/* ---- road_where.js ---- */
+/* AP-WHERE-v1 · Where Are You? · the free Story Path piece drawn from Walk With Me's map.
+   Runs only when the page sets window.AP_ROAD.piece === "where". Everything a man reads about the map is the course's own wording.
+   He places his own X: two marks, one to five, and the map draws where they meet. Nobody places it for him. */
+var WHERE = (function () {
+  var C = window.AP_ROAD || null;
+  if (!C || C.piece !== "where") return null;
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var FEEL = ["exposed", "relieved", "afraid", "angry", "sad", "ashamed", "hopeful", "grateful", "numb"];
+  var BODY = ["chest", "gut", "throat", "shoulders", "hands", "jaw", "nowhere yet"];
+  var AWAY = ["a conversation I keep putting off", "a habit I have stopped fighting", "a man I owe an answer", "the quiet, honestly", "God, honestly"];
+  var STEPS = ["one honest hour with one man this week", "time alone with Him before the day starts", "the conversation I have been avoiding", "asking somebody to stay for a meal"];
+  /* the four stops on the line and the two corners, in the course's words */
+  var STOP = [
+    { name: "planted", gloss: "Planted is not a verdict, and it is not a rank. It is a place on the way.", who: "Abraham", line: "Abram left his father's house and the river behind on a word from God, the first Ivri." },
+    { name: "forming", gloss: "There is a season for the shears and a season for the fruit, and the Vinedresser has never once confused them.", who: "Jacob at Peniel", line: "He wrestles all night, sees Elohim, the Judge, face to face, and walks away limping and alive with a new name: Israel." },
+    { name: "growing", gloss: "Grow in one and you are growing in all of them.", who: "Joseph", line: "Joseph reads his own story in the names: you meant evil; Elohim meant it for good." },
+    { name: "the mature orchard", gloss: "The mature orchard at the far end, where nobody is needy because the trees are laden.", who: "David", line: "He steps into the verdict himself: let Your hand be against me. Intercession is a king taking the blow." }
+  ];
+  var CORNER = {
+    formation: { name: "Aging Fruit", gloss: "Aging Fruit is the man whose inner life grows while no one is fed by it.", lean: "people", why: "If your mark sits high on the left, rich inside and thin in company, the next step is toward people." },
+    discipleship: { name: "Limited Fruit", gloss: "Limited Fruit is the man who is busy for God and thin inside.", lean: "time alone with Him", why: "If it sits low on the right, busy for God and thin inside, the next step is toward time alone with Him." }
+  };
+  var LEANS = ["people", "time alone with Him", "the next stop up the line"];
+  var SCRIPT = {
+    q: { t: "But the LORD God called to the man and said to him, “Where are you?”", ref: "Genesis 3:9" },
+    walk: { t: "And they heard the sound of the LORD God walking in the garden in the cool of the day, and the man and his wife hid themselves from the presence of the LORD God among the trees of the garden.", ref: "Genesis 3:8" },
+    near: { t: "While they were talking and discussing together, Jesus himself drew near and went with them.", ref: "Luke 24:15" },
+    stand: { t: "Stand by the roads, and look, and ask for the ancient paths, where the good way is; and walk in it, and find rest for your souls.", ref: "Jeremiah 6:16" }
+  };
+  var MAP_WORDS = "Now I want to hand you a map. Not a program, not a performance review. A map. Two axes. The vertical one is spiritual formation, the inward work: is your mind being renewed, your heart being changed, your interior life deepening with God? The horizontal one is discipleship, the outward walk: are you growing in relationship, in community, in service, in sharing your faith with actual people?";
+  var STAND_WORDS = "Do not read this as a chart. Stand in it. Where those two axes cross is not a data point; it is a crossroads, and you are the man standing at it. Nobody is grading this.";
+  var PLACE_WORDS = "Low and honest beats high and flattering; the map only works if it is true.";
+
+  function blank() { return { v: 1, piece: "where", step: 0, finished: false, away: "", awayPick: null, feel: "", feelOwn: "", body: "", F: null, D: null, watch: "", story: "", standing: "", lean: "", step1: "", stepPick: null, going: "", byline: "Your name", when: new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }) }; }
+  var A = blank(), screen = "steps", app = document.getElementById("ap-road-app"), sayText = "";
+  var ORDER = ["intro", "away", "feel", "map", "standing", "step", "going"];
+
+  /* ---------- the mark: the course's own placing, reused ---------- */
+  function mark() { return (A.F && A.D) ? ROAD.markFD(A.F, A.D) : null; }
+  function stopOf(m) { if (!m) return null; var k = Math.min(3, Math.max(0, Math.round(m.t * 3))); return STOP[k]; }
+  function cornerOf(m) { return m && m.lean !== "road" ? CORNER[m.lean] : null; }
+  function suggestedLean(m) { var c = cornerOf(m); if (c) return c.lean; return LEANS[2]; }
+  function whereLine(m) {
+    if (!m) return "";
+    var s = stopOf(m), c = cornerOf(m);
+    return c ? "near " + s.name + ", leaning into the " + c.name + " corner" : "near " + s.name + ", on the line";
+  }
+  function mapSVG(m) {
+    var F = 'font-family="Source Sans 3, Arial, sans-serif"', FS = 'font-family="Source Serif 4, Georgia, serif" font-size="19" font-style="italic" fill="#8C6A3F"';
+    var stops = [0, 1 / 3, 2 / 3, 1].map(function (t) { return ROAD.roadPt ? ROAD.roadPt(t) : null; });
+    return '<svg viewBox="0 0 600 500" role="img" aria-label="The map: formation up the side, discipleship along the bottom, the road from planted to the mature orchard' + (m ? ", and your X " + esc(whereLine(m)) : "") + '.">' +
+      '<rect width="600" height="500" fill="#FFFFFF"/><line x1="70" y1="440" x2="572" y2="440" stroke="#1F2A44" stroke-width="2"/><line x1="70" y1="440" x2="70" y2="44" stroke="#1F2A44" stroke-width="2"/>' +
+      '<text x="321" y="478" text-anchor="middle" ' + F + ' font-size="17" font-weight="700" letter-spacing="2" fill="#1F2A44">DISCIPLESHIP</text>' +
+      '<text transform="translate(40,242) rotate(-90)" text-anchor="middle" ' + F + ' font-size="17" font-weight="700" letter-spacing="2" fill="#1F2A44">FORMATION</text>' +
+      '<text x="88" y="76" ' + FS + '>Aging Fruit</text><text x="560" y="424" text-anchor="end" ' + FS + '>Limited Fruit</text><text x="560" y="62" text-anchor="end" ' + FS + '>Mature Orchard</text>' +
+      '<path d="M120,405 C250,400 370,140 525,95" fill="none" stroke="#1F2A44" stroke-opacity=".28" stroke-width="2" stroke-dasharray="6 7"/>' +
+      stops.map(function (p, i) { return p && i < 3 ? '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="4" fill="#1F2A44" fill-opacity=".5"/><text x="' + (p[0] + (i === 3 ? -10 : 10)).toFixed(1) + '" y="' + (p[1] + (i === 0 ? 24 : i === 3 ? 26 : -12)).toFixed(1) + '" ' + (i === 3 ? 'text-anchor="end" ' : "") + F + ' font-size="13" fill="#6B6358">' + esc(STOP[i].name.replace(/^the /, "")) + '</text>' : ""; }).join("") +
+      (m ? '<circle cx="' + m.x + '" cy="' + m.y + '" r="52" fill="#C9A227" fill-opacity=".28"/><circle cx="' + m.x + '" cy="' + m.y + '" r="9" fill="#C9A227" stroke="#1F2A44" stroke-width="2.5"/><text x="' + (m.x + 16) + '" y="' + (m.y + 6) + '" ' + F + ' font-size="15.5" font-weight="700" fill="#1F2A44">today</text>' : "") +
+      '</svg>';
+  }
+
+  /* ---------- the steps ---------- */
+  function scale(key, label, ask, help) {
+    var v = A[key], h = '<section class="wq"><p class="q">' + esc(label) + '</p><p class="help">' + esc(ask) + (help ? " " + esc(help) : "") + '</p><div class="scale" role="group" aria-label="' + esc(label) + '">';
+    for (var i = 1; i <= 5; i++) h += '<button type="button" class="dot' + (v === i ? " on" : "") + '" data-scale="' + key + '" data-n="' + i + '" aria-pressed="' + (v === i) + '">' + i + '</button>';
+    return h + '</div><div class="ends"><span>Not yet</span><span>True of me</span></div></section>';
+  }
+  function taps(key, words, cur) { return '<div class="words">' + words.map(function (w, i) { return '<button type="button" class="word' + (cur === i ? " pick" : "") + '" data-tap="' + key + '" data-i="' + i + '" aria-pressed="' + (cur === i) + '">' + esc(w) + '</button>'; }).join("") + '</div>'; }
+  function box(key, stem, val, rows) { return '<label class="ask" for="w-' + key + '">' + esc(stem) + '</label><textarea id="w-' + key + '" data-w="' + key + '" rows="' + (rows || 3) + '">' + esc(val) + '</textarea>'; }
+  function verse(v) { return '<p class="verse">' + esc(v.t) + ' <cite class="ref">' + esc(v.ref) + ' ESV</cite></p>'; }
+  function keepLine() { return '<p class="fixed"><b>Nothing you write here reaches us unless you choose to save it with us. Everything else stays on your device.</b></p>'; }
+
+  function intro() {
+    return '<p class="fixed">The first question God ever asked a man was asked to a man hiding. It was not an accusation. He already knew where Adam was. He was asking him to come out of the trees, and He was already walking toward him when He asked.</p>' + verse(SCRIPT.walk) + verse(SCRIPT.q) +
+      '<p class="fixed">This is that question, asked to you, today. Fifteen minutes. You will say what you are walking away from, put your own X on a map, and choose one step. Nobody places the X for you, and nobody grades it.</p>' + keepLine() +
+      '<div class="row bar"><button class="btn main" data-go="1">Begin</button></div>';
+  }
+  function away() {
+    return '<p class="fixed">Adam hid among the trees. Every man has a place he goes to not be seen. Name yours, plainly. Something a man could picture.</p>' +
+      box("away", "What I am walking away from right now is", A.away, 3) + taps("away", AWAY, A.awayPick) +
+      '<p class="quiet">Tap one to start the line, or write your own. Roles, never names, if another person is in it.</p>';
+  }
+  function feel() {
+    return '<p class="fixed">Before you go on, one word for what that costs you, and where it sits. Not what you think about it. What you feel, and where in your body it lives right now.</p>' +
+      '<p class="ask">The word for it is</p>' + taps("feel", FEEL, FEEL.indexOf(A.feel)) + '<input type="text" data-w="feelOwn" value="' + esc(A.feelOwn) + '" placeholder="or your own word" aria-label="Your own word">' +
+      '<p class="ask">and it sits in my</p>' + taps("body", BODY, BODY.indexOf(A.body));
+  }
+  function map() {
+    var m = mark(), s = stopOf(m), c = cornerOf(m);
+    return '<p class="fixed">' + esc(MAP_WORDS) + '</p><p class="fixed">' + esc(STAND_WORDS) + '</p><p class="quiet">' + esc(PLACE_WORDS) + '</p>' +
+      scale("F", "How is it, really, between you and Jesus when no one is watching?", "Formation, the inward walk. One is not yet; five is true of me.") +
+      box("watch", "When no one is watching, it is really", A.watch, 2) +
+      scale("D", "Who actually walks with you, who knows your story, who do you serve?", "Discipleship, the outward walk. One is not yet; five is true of me.") +
+      box("story", "The men who know my story are", A.story, 2) +
+      '<div class="map">' + mapSVG(m) + '</div>' +
+      (m ? '<p class="fixed">Your X is ' + esc(whereLine(m)) + '. <i>' + esc(s.gloss) + '</i>' + (c ? ' <i>' + esc(c.gloss) + '</i>' : "") + '</p><p class="quiet">A man who stood here: ' + esc(s.who) + '. ' + esc(s.line) + '</p>' :
+        '<p class="quiet">Mark both lines and the X appears. You can move it as many times as you like.</p>');
+  }
+  function standing() {
+    var m = mark(), s = stopOf(m), c = cornerOf(m), sug = suggestedLean(m);
+    if (!m) return '<p class="say">Go back and mark both lines first. The X is yours to place.</p>';
+    return '<div class="map small">' + mapSVG(m) + '</div>' +
+      '<p class="fixed">Say it in your own words. The map gave you a name; you say whether it is true.</p>' +
+      box("standing", "Where I am standing today is " + whereLine(m) + ", and the honest reason is", A.standing, 3) +
+      '<p class="fixed">' + esc(c ? c.why : "If it sits on the line, the next stop up the line is already named.") + ' The map suggests <b>' + esc(sug) + '</b>. You decide.</p>' +
+      '<p class="ask">I lean toward</p>' + taps("lean", LEANS, LEANS.indexOf(A.lean || sug)) +
+      '<p class="quiet">The map does not rank you as a believer at one end and a disciple at the other, and that is on purpose. A disciple is a learner who follows, and every stop on the line is one.</p>';
+  }
+  function step() {
+    return '<p class="fixed">He was walking toward Adam before Adam moved. On the Emmaus road it happened again.</p>' + verse(SCRIPT.near) + verse(SCRIPT.stand) +
+      '<p class="fixed">Stand, look, ask, walk. You have stood and looked. Now one step, small enough to take this week, in the direction you lean.</p>' +
+      box("step1", "If He is already on my road, then the one step is", A.step1, 3) + taps("step", STEPS, A.stepPick);
+  }
+  function going() {
+    return '<p class="fixed">Last line. Say where you are going, in one sentence, the way you would say it to a man who asked.</p>' +
+      box("going", "So this is where I am going:", A.going, 3) +
+      '<p class="quiet">When you finish, the page reads it back to you. Change anything you like before you keep it.</p>';
+  }
+  var TITLES = { intro: "Where are you?", away: "Out of the trees", feel: "The word for it", map: "Stand in it", standing: "Where I am standing", step: "He is already on your road", going: "Where I am going" };
+  function gateOK(i) {
+    var k = ORDER[i];
+    if (k === "away") return !!A.away.trim();
+    if (k === "map") return !!(A.F && A.D);
+    if (k === "standing") return !!A.standing.trim();
+    if (k === "step") return !!A.step1.trim();
+    if (k === "going") return !!A.going.trim();
+    return true;
+  }
+  function stepsHTML() {
+    var i = Math.max(0, Math.min(ORDER.length - 1, A.step)), k = ORDER[i];
+    var body = k === "intro" ? intro() : k === "away" ? away() : k === "feel" ? feel() : k === "map" ? map() : k === "standing" ? standing() : k === "step" ? step() : going();
+    var h = '<div class="sheet" id="writer"><div class="eyebrow">Your Story · Where Are You?</div><h1>' + esc(TITLES[k]) + '</h1>' + (i ? '<p class="quiet">Step ' + i + ' of ' + (ORDER.length - 1) + '</p>' : "") + body;
+    if (i) h += '<div class="row bar"><button class="btn" data-go="' + (i - 1) + '">Back</button>' + (i < ORDER.length - 1 ? '<button class="btn main" data-go="' + (i + 1) + '">Next</button>' : '<button class="btn main" data-finish="1">Finish</button>') + '</div>';
+    return h + '<p id="say" class="say"' + (sayText ? "" : " hidden") + '>' + esc(sayText) + '</p></div>';
+  }
+  function lines() {
+    var m = mark(), out = [];
+    if (A.away.trim()) out.push({ label: "What I am walking away from right now is", text: A.away.trim() });
+    var f = (A.feelOwn || A.feel || "").trim(); if (f) out.push({ label: "The word for it is", text: f + (A.body ? ", and it sits in my " + A.body : "") });
+    if (A.watch.trim()) out.push({ label: "When no one is watching, it is really", text: A.watch.trim() });
+    if (A.story.trim()) out.push({ label: "The men who know my story are", text: A.story.trim() });
+    if (m && A.standing.trim()) out.push({ label: "Where I am standing today is " + whereLine(m) + ", and the honest reason is", text: A.standing.trim() });
+    if (m) out.push({ label: "I lean toward", text: A.lean || suggestedLean(m) });
+    if (A.step1.trim()) out.push({ label: "If He is already on my road, then the one step is", text: A.step1.trim() });
+    if (A.going.trim()) out.push({ label: "So this is where I am going:", text: A.going.trim() });
+    return out;
+  }
+  function agency() { return "You put the X there. Nobody placed it for you. You named which way you lean. You chose the step."; }
+  function finishedHTML() {
+    var m = mark(), s = stopOf(m);
+    return '<div class="sheet" id="finished"><div class="eyebrow">Your Story · Where Are You?</div><h1>Where Are You?</h1><p class="byline">' + esc(A.byline) + ' · ' + esc(A.when) + '</p>' +
+      '<div class="map">' + mapSVG(m) + '</div>' + (s ? '<p class="quiet">A man who stood here: ' + esc(s.who) + '. ' + esc(s.line) + '</p>' : "") +
+      lines().map(function (l) { return '<p class="line"><span class="his">' + esc(l.label) + '</span> ' + esc(l.text) + '</p>'; }).join("") +
+      '<p class="fixed agency">' + esc(agency()) + '</p>' +
+      '<p class="quiet">He asked where you are so that you would come out of the trees, and He was already walking toward you when He asked. That is the whole story, and the next name on it is yours.</p>' +
+      '<div class="row bar"><button class="btn" data-do="download">Download</button><button class="btn" data-do="copy">Copy the words</button><button class="btn" data-do="change">Change the words</button></div>' +
+      (C.storyPath ? '<p class="quiet">The road goes on from here. <a href="' + esc(C.storyPath) + '">Walk With Me</a> asks this question ten times over, and the X you placed today is where the road starts.</p>' : "") +
+      '<p id="say" class="say"' + (sayText ? "" : " hidden") + '>' + esc(sayText) + '</p></div>';
+  }
+  function whole() {
+    var m = mark(), t = "WHERE ARE YOU?\n\n" + A.byline + " · " + A.when + "\n\n" + (m ? "My X: " + whereLine(m) + ".\n\n" : "");
+    lines().forEach(function (l) { t += l.label + " " + l.text + "\n\n"; });
+    return t + agency() + "\n";
+  }
+  function render(keepScroll) {
+    if (!app) return;
+    var y = window.scrollY;
+    app.innerHTML = screen === "finished" ? finishedHTML() : stepsHTML();
+    if (keepScroll) window.scrollTo(0, y); else { var top = document.getElementById("ap-road"); if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView(); }
+    if (window.AP_ROAD_SITE) window.AP_ROAD_SITE.paint();
+  }
+  function say(t) { sayText = t || ""; var n = document.getElementById("say"); if (n) { n.textContent = sayText; n.hidden = !sayText; } }
+  function keep() { if (window.AP_ROAD_SITE) window.AP_ROAD_SITE.dirty(); }
+
+  /* ---------- the keepsake ---------- */
+  function pdf() {
+    var J = window.jspdf && window.jspdf.jsPDF; if (!J) { say("The download is not available on this device. Use Copy the words instead."); return; }
+    var doc = new J({ unit: "pt", format: "letter" }), W = 612, H = 792, M = 72, y = M, NAVY = [31, 42, 68], BRONZE = [140, 106, 63], GOLD = [201, 162, 39], INK = [42, 39, 35], SOFT = [107, 99, 88];
+    function para(t, o) { doc.setFont(o.font || "times", o.style || "normal"); doc.setFontSize(o.size); doc.setTextColor(o.color[0], o.color[1], o.color[2]); var ls = doc.splitTextToSize(t, o.width || (W - 2 * M)), lh = o.size * (o.lead || 1.4); if (y + ls.length * lh > H - 64) { doc.addPage(); y = M; } ls.forEach(function (ln) { doc.text(ln, o.center ? W / 2 : M, y + o.size * 0.82, o.center ? { align: "center" } : undefined); y += lh; }); y += (o.after || 0); }
+    para("YOUR STORY · WHERE ARE YOU?", { font: "helvetica", style: "bold", size: 9, color: BRONZE, center: true, after: 6 });
+    para("Where Are You?", { style: "bold", size: 28, color: NAVY, center: true, lead: 1.15, after: 2 });
+    para(A.byline + " · " + A.when, { size: 11, color: SOFT, center: true, after: 8 });
+    doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2]); doc.setLineWidth(2); doc.line(W / 2 - 24, y, W / 2 + 24, y); y += 22;
+    var m = mark(), k = 0.42, ox = (W - 600 * k) / 2, oy = y; function X(v) { return ox + v * k; } function Y(v) { return oy + v * k; }
+    doc.setDrawColor(NAVY[0], NAVY[1], NAVY[2]); doc.setLineWidth(1); doc.line(X(70), Y(440), X(572), Y(440)); doc.line(X(70), Y(440), X(70), Y(44));
+    doc.setFont("times", "italic"); doc.setFontSize(9); doc.setTextColor(BRONZE[0], BRONZE[1], BRONZE[2]);
+    doc.text("Aging Fruit", X(88), Y(76)); doc.text("Limited Fruit", X(560), Y(424), { align: "right" }); doc.text("Mature Orchard", X(560), Y(62), { align: "right" });
+    doc.setFont("helvetica", "bold"); doc.setFontSize(7); doc.setTextColor(NAVY[0], NAVY[1], NAVY[2]);
+    doc.text("DISCIPLESHIP", X(321), Y(472), { align: "center" }); doc.text("FORMATION", X(46), Y(242), { align: "center", angle: 90 });
+    doc.setDrawColor(150, 150, 160); doc.setLineDashPattern([3, 3], 0);
+    var prev = ROAD.roadPt(0); for (var i = 1; i <= 24; i++) { var p = ROAD.roadPt(i / 24); doc.line(X(prev[0]), Y(prev[1]), X(p[0]), Y(p[1])); prev = p; }
+    doc.setLineDashPattern([], 0); doc.setFont("helvetica", "normal"); doc.setFontSize(7); doc.setTextColor(SOFT[0], SOFT[1], SOFT[2]);
+    [0, 1 / 3, 2 / 3].forEach(function (t, i) { var p = ROAD.roadPt(t); doc.text(STOP[i].name.replace(/^the /, ""), X(p[0] + (i === 3 ? -10 : 10)), Y(p[1] + (i === 0 ? 24 : i === 3 ? 26 : -12)), i === 3 ? { align: "right" } : undefined); });
+    if (m) { doc.setFillColor(GOLD[0], GOLD[1], GOLD[2]); doc.setDrawColor(NAVY[0], NAVY[1], NAVY[2]); doc.setLineWidth(1.2); doc.circle(X(m.x), Y(m.y), 4.5, "FD"); doc.setFont("helvetica", "bold"); doc.setFontSize(7.5); doc.setTextColor(NAVY[0], NAVY[1], NAVY[2]); doc.text("today", X(m.x + 16), Y(m.y + 6)); }
+    y = oy + 500 * k + 16;
+    if (m) para("My X: " + whereLine(m) + ".", { style: "italic", size: 10.5, color: BRONZE, after: 10 });
+    lines().forEach(function (l) { para(l.label, { font: "helvetica", size: 8, color: SOFT, after: 1 }); para(l.text, { size: 11.5, color: INK, after: 8 }); });
+    para(agency(), { style: "italic", size: 10.5, color: NAVY, after: 10 });
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(SOFT[0], SOFT[1], SOFT[2]); doc.text("Where Are You? · Walk With Me · Ancient Path Biblical Coaching · ancientpathcoaching.com", W / 2, H - 40, { align: "center" });
+    doc.save("Where-Are-You.pdf");
+  }
+
+  /* ---------- events ---------- */
+  function on(e) {
+    var t = e.target, b;
+    if ((b = t.closest("[data-scale]"))) { A[b.getAttribute("data-scale")] = +b.getAttribute("data-n"); keep(); render(true); return; }
+    if ((b = t.closest("[data-tap]"))) {
+      var key = b.getAttribute("data-tap"), i = +b.getAttribute("data-i");
+      if (key === "away") { A.awayPick = A.awayPick === i ? null : i; if (A.awayPick != null && !A.away.trim()) A.away = AWAY[i]; else if (A.awayPick != null && AWAY.indexOf(A.away.trim()) >= 0) A.away = AWAY[i]; }
+      else if (key === "feel") { A.feel = A.feel === FEEL[i] ? "" : FEEL[i]; A.feelOwn = ""; }
+      else if (key === "body") { A.body = A.body === BODY[i] ? "" : BODY[i]; }
+      else if (key === "lean") { A.lean = LEANS[i]; }
+      else if (key === "step") { A.stepPick = A.stepPick === i ? null : i; if (A.stepPick != null && (!A.step1.trim() || STEPS.indexOf(A.step1.trim()) >= 0)) A.step1 = STEPS[i]; }
+      keep(); render(true); return;
+    }
+    if ((b = t.closest("[data-go]"))) {
+      var to = +b.getAttribute("data-go");
+      if (to > A.step) { for (var j = A.step; j < to; j++) { if (!gateOK(j)) { say(ORDER[j] === "map" ? "Mark both lines before you go on. The X is yours to place." : "Finish the line before you go on. A few words is enough."); return; } } }
+      A.step = to; say(""); keep(); render(); return;
+    }
+    if ((b = t.closest("[data-finish]"))) {
+      for (var g = 1; g < ORDER.length; g++) { if (!gateOK(g)) { say("One line is still empty: " + TITLES[ORDER[g]] + ". Use Back."); return; } }
+      A.finished = true; screen = "finished"; say(""); keep(); render(); return;
+    }
+    if ((b = t.closest("[data-do]"))) {
+      var act = b.getAttribute("data-do");
+      if (act === "download") pdf();
+      else if (act === "copy") { var txt = whole(); try { navigator.clipboard.writeText(txt).then(function () { say("Copied. Paste it anywhere you keep things."); }, function () { say("Your device would not copy it. Select the words and copy them yourself."); }); } catch (x) { say("Your device would not copy it. Select the words and copy them yourself."); } }
+      else if (act === "change") { A.finished = false; screen = "steps"; A.step = 1; render(); }
+    }
+  }
+  function onInput(e) { var t = e.target, k = t && t.getAttribute && t.getAttribute("data-w"); if (!k) return; A[k] = t.value; if (k === "feelOwn" && t.value.trim()) A.feel = ""; keep(); }
+
+  /* ---------- what the site save needs: a snapshot, a restore, the readable whole, and the meta line ---------- */
+  function snapshot() { return { v: 1, piece: "where", a: A }; }
+  function restore(o) { if (!o || !o.a || o.piece !== "where") return; A = o.a; if (!A.when) A.when = blank().when; screen = A.finished ? "finished" : "steps"; render(true); }
+  window.AP_ROAD_WHOLE = whole;
+  window.AP_ROAD_META = function () { return { piece: "where", step: A.step, of: ORDER.length - 1, finished: !!A.finished, when: new Date().toISOString() }; };
+  window.APP = { get D() { return { meCount: A.finished ? 1 : 0, chapters: [] }; }, get stage() { return "me"; }, esc: esc, say: say, render: render, keep: keep, snapshot: snapshot, restore: restore, openPart: function () {}, go: function () {} };
+  app.addEventListener("click", on); app.addEventListener("input", onInput);
+  render();
+  if (window.AP_ROAD_SITE) window.AP_ROAD_SITE.load(restore);
+  return { render: render, snapshot: snapshot, restore: restore, whole: whole, lines: lines, mark: mark, whereLine: whereLine, _A: function () { return A; } };
+})();
+
+window.AP_WHERE = WHERE;
+
 /* ---- road_ui.js ---- */
 /* AP-ROAD-WALKTHROUGH-v1 · page logic. State lives in memory only. */
 (function () {
+  if (window.AP_ROAD && window.AP_ROAD.piece) return; /* a piece page (Where Are You?) has its own module */
   var SAMPLE = JSON.parse(JSON.stringify(ROAD_DATA));
   SAMPLE.chapters.forEach(function (ch) { ch.lines.forEach(function (l) { l.first = l.text; }); ch.firstOut = ch.setOut; ch.firstCamp = ch.camped; });
   SAMPLE.bends.forEach(function (b) { b.first = b.text; });
