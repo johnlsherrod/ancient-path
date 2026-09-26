@@ -1,4 +1,4 @@
-/* AP-ROAD-v1 (v25: after the last map, the Lower Still plate — the road back down, with the act named; the road on the story page; the last line of a finished story; the plate on the last page of the PDF. v24: the map is cumulative and a low answer that is good news is left out; the Numbers 33 chain replaces the between step; short choices on a 3; The Word for It feeling words; Read more under pruning; the story page opens on the newest chapter; his name as byline; one button size) · The Road I Walked · Walk With Me. One file: styles, the ten chapters, the story, the save. Built from the walk-through modules. */
+/* AP-ROAD-v1 (v26: the Lower Still page after the plate at the end of a finished story's PDF, John's notes set as teaching. v25: after the last map, the Lower Still plate — the road back down, with the act named; the road on the story page; the last line of a finished story; the plate on the last page of the PDF. v24: the map is cumulative and a low answer that is good news is left out; the Numbers 33 chain replaces the between step; short choices on a 3; The Word for It feeling words; Read more under pruning; the story page opens on the newest chapter; his name as byline; one button size) · The Road I Walked · Walk With Me. One file: styles, the ten chapters, the story, the save. Built from the walk-through modules. */
 (function(){
 
 if(!window.AP_ROAD||window.__apRoadStarted)return;window.__apRoadStarted=1;
@@ -392,6 +392,20 @@ var ROAD = (function () {
         foot();
       } catch (e) {}
     }
+    if (finished(d, stage)) {
+      doc.addPage(); y = M;
+      para("WALK WITH ME", { font: "helvetica", style: "bold", size: 9, color: BRONZE, center: true, after: 6 });
+      para("Lower Still", { style: "bold", size: 24, color: NAVY, center: true, lead: 1.15, after: 4 });
+      doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2]); doc.setLineWidth(2); doc.line(W / 2 - 24, y, W / 2 + 24, y); y += 18;
+      para(LOWER_PAGE.open, { style: "italic", size: 11, color: BRONZE, center: true, width: 380, after: 10 });
+      LOWER_PAGE.paras.forEach(function (t) { para(t, { size: 10.5, color: INK, lead: 1.36, after: 7 }); });
+      y += 2;
+      LOWER_PAGE.verses.forEach(function (v) { para(v.t, { style: "italic", size: 9.8, color: NAVY, lead: 1.34, after: 1 }); para(v.ref.toUpperCase(), { font: "helvetica", style: "bold", size: 7, color: SOFT, after: 6 }); });
+      y += 2; room(80);
+      para(LOWER_PAGE.act, { size: 10.5, color: INK, lead: 1.36, after: 22 });
+      doc.setDrawColor(BRONZE[0], BRONZE[1], BRONZE[2]); doc.setLineWidth(0.8); doc.line(M, y, W - M, y); y += 8;
+      foot();
+    }
     return doc;
   }
 
@@ -419,6 +433,22 @@ var ROAD = (function () {
   var PLATE_FILE = "road-lower-still.jpg", PLATE_W = 1200, PLATE_H = 2191;
   var PLATE_ALT = "Lower Still: a man comes down the road from a mature orchard carrying a basket of fruit toward men planting young staked trees; one of them looks up at him.";
   var PLATE_LINE = "Wherever your mark sits, the road from here runs lower still: back down to someone just planted. Take one man with you this week \u2014 a meal, a walk, the thing you know that he does not know yet. Fruit is never for the tree.";
+  /* v26 · the Lower Still page: the last page of a finished story's PDF (and of the workbook), after the plate. John's notes, Sept 26, 2026. */
+  var LOWER_PAGE = {
+    open: "Everything on the map runs up and to the right. This last page runs the other way.",
+    paras: [
+      "Lower still is a shift in your reference point: from \u201cHow does this reflect on me?\u201d to \u201cHow does this serve God and others?\u201d That shift is what the words mean, and it is the last thing this course asks of you.",
+      "Scripture inverts the measures of success you were raised on: descending in service raises your spiritual stature. This is not self-deprecation. It is a reorientation. The map measured how far up the road you had come. Lower still measures how far back down it you will walk for another man, because the question is no longer how the road reflects on you but whom it serves.",
+      "Humility is a servant-hearted orientation rooted in who God is and what He has done. It develops through practice, like a muscle that strengthens as you love and serve other men, and the serving itself shapes you toward Christ\u2019s likeness. Christ\u2019s own self-emptying, His humbling unto death on a cross, is the foundation that makes your humility possible. This is not weakness. It is alignment with divine power operating through surrender.",
+      "Growth and service feed each other. When you serve, you show Christ\u2019s love, you understand God\u2019s compassion more deeply, and you grow in your relationship with Him. The more you mature, the more naturally you descend into service, because you are increasingly freed from self-protection and status-seeking."
+    ],
+    verses: [
+      { t: "\u201cThe greatest among you shall be your servant. Whoever exalts himself will be humbled, and whoever humbles himself will be exalted.\u201d", ref: "Matthew 23:11\u201312" },
+      { t: "\u201cWhoever would be great among you must be your servant, and whoever would be first among you must be your slave, even as the Son of Man came not to be served but to serve, and to give his life as a ransom for many.\u201d", ref: "Matthew 20:26\u201328" },
+      { t: "\u201cHave this mind among yourselves, which is yours in Christ Jesus, who, though he was in the form of God, did not count equality with God a thing to be grasped, but emptied himself, by taking the form of a servant, being born in the likeness of men. And being found in human form, he humbled himself by becoming obedient to the point of death, even death on a cross. Therefore God has highly exalted him.\u201d", ref: "Philippians 2:5\u20139" }
+    ],
+    act: "The road back down begins with one man. This week, take one man who is just planted into something you already do: a meal, a walk, your group, the thing you know that he does not know yet. Write who he is to you (a man in my group, a friend, a neighbor, someone at work) and the day you will ask him. Not his name; this page may be read by others."
+  };
   var LOWER = "And the road back runs lower still: He emptied Himself and took the form of a servant (Philippians 2:7).";
   function plateURL() {
     var c = window.AP_ROAD || {}; if (c.plate === false) return ""; if (typeof c.plate === "string" && c.plate) return c.plate;
@@ -516,7 +546,7 @@ var ROAD = (function () {
 
   return { chapterProse: chapterProse, proseText: proseText, bridgeFor: bridgeFor, lineKind: lineKind, evidence: evidence, markPart: markPart, markFD: markFD, avg: avg, tidy: tidy, endTidy: endTidy, stageParts: stageParts, worksheetURL: worksheetURL, paperLine: paperLine, moves: moves, fullPart: fullPart, bendLabel: bendLabel, bendGloss: bendGloss, shown: shown, recallLine: recallLine, mark: mark, roadPt: roadPt, chapters: chapters, onLines: onLines, stageLine: stageLine, thread: thread, listParts: listParts,
            segments: segments, pathD: pathD, thenNow: thenNow, text: text, pdf: pdf, handed: handed, HANDED: HANDED, finished: finished,
-           plateURL: plateURL, plateHTML: plateHTML, loadPlate: loadPlate, plateData: function () { return plateData; }, whereTxt: whereTxt, LOWER: LOWER, PLATE_ALT: PLATE_ALT, trailSVG: trailSVG };
+           plateURL: plateURL, plateHTML: plateHTML, loadPlate: loadPlate, plateData: function () { return plateData; }, whereTxt: whereTxt, LOWER: LOWER, LOWER_PAGE: LOWER_PAGE, PLATE_ALT: PLATE_ALT, trailSVG: trailSVG };
 })();
 if (typeof module !== "undefined") module.exports = ROAD;
 
