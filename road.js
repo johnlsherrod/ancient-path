@@ -1,4 +1,4 @@
-/* AP-ROAD-v1 (v26: the Lower Still page after the plate at the end of a finished story's PDF, John's notes set as teaching. v25: after the last map, the Lower Still plate — the road back down, with the act named; the road on the story page; the last line of a finished story; the plate on the last page of the PDF. v24: the map is cumulative and a low answer that is good news is left out; the Numbers 33 chain replaces the between step; short choices on a 3; The Word for It feeling words; Read more under pruning; the story page opens on the newest chapter; his name as byline; one button size) · The Road I Walked · Walk With Me. One file: styles, the ten chapters, the story, the save. Built from the walk-through modules. */
+/* AP-ROAD-v1 (v27: one PDF from every Download button — the story first, flowing beginning to end under its three movements, then the road, the plate and the Lower Still page; the plate is fetched before the PDF is made. v26: the Lower Still page after the plate at the end of a finished story's PDF, John's notes set as teaching. v25: after the last map, the Lower Still plate — the road back down, with the act named; the road on the story page; the last line of a finished story; the plate on the last page of the PDF. v24: the map is cumulative and a low answer that is good news is left out; the Numbers 33 chain replaces the between step; short choices on a 3; The Word for It feeling words; Read more under pruning; the story page opens on the newest chapter; his name as byline; one button size) · The Road I Walked · Walk With Me. One file: styles, the ten chapters, the story, the save. Built from the walk-through modules. */
 (function(){
 
 if(!window.AP_ROAD||window.__apRoadStarted)return;window.__apRoadStarted=1;
@@ -269,6 +269,19 @@ var ROAD = (function () {
   }
 
   /* The keepsake. Letter page, points. */
+  /* v27 · the story as prose for the PDF: the same chapterProse his story page reads, chapter by chapter, with the movement each belongs to */
+  function storyParts(d, stage) {
+    var out = [];
+    chapters(d, stage).forEach(function (ch, i) {
+      var pt = typeof ROAD_PARTS !== "undefined" ? ROAD_PARTS[i] : null, paras = chapterProse(d, i, ch, { passages: false });
+      (d.bends || []).forEach(function (b) { if (b.at === i && b.text.trim()) paras.push([{ kind: "bridge", text: "Where the road bent toward " + b.side + ":" }, { kind: "his", text: b.text.trim(), li: -1 }]); });
+      out.push({ mv: ch.mv, movement: d.movements[ch.mv], label: (pt ? pt.part : ch.part) + " \u00b7 " + (pt ? pt.name : ch.name), ours: pt ? pt.ours : (ch.ours || ""), text: proseText(paras) });
+    });
+    var hd = handed(d, stage);
+    if (hd.length) out.push({ mv: -1, movement: null, label: HANDED, ours: "", text: hd.map(function (l) { return l.text; }).join("\n\n") });
+    if (finished(d, stage) && d.tail.trim()) out.push({ mv: -1, movement: null, label: "", ours: "", text: "Today I am camped at " + d.tail.trim() });
+    return out;
+  }
   function pdf(JsPDF, d, stage, story) {
     var doc = new JsPDF({ unit: "pt", format: "letter" }), W = 612, H = 792, M = 72, y = M;
     var NAVY = [31, 42, 68], BRONZE = [140, 106, 63], GOLD = [201, 162, 39], INK = [42, 39, 35], SOFT = [107, 99, 88];
@@ -291,9 +304,29 @@ var ROAD = (function () {
     doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2]); doc.setLineWidth(2); doc.line(W / 2 - 24, y, W / 2 + 24, y); y += 26;
     para(d.opens, { style: "italic", size: 11.5, color: BRONZE, center: true, width: 380, after: 18 });
 
-    /* the map */
-    var chs = chapters(d, stage), pts = d.trail.slice(0, chs.length), k = 0.52, ox = (W - 600 * k) / 2, oy = y;
-    room(500 * k + 30); oy = y;
+    /* v27 · the story first, beginning to end: the same prose as his story page, under its three movements */
+    var chs = chapters(d, stage), parts = storyParts(d, stage), lastMv = -1;
+    parts.forEach(function (part) {
+      var paras = part.text.split(/\n\s*\n/).map(function (p) { return p.replace(/\s+/g, " ").trim(); }).filter(Boolean);
+      if (!paras.length) return;
+      if (part.movement && part.mv !== lastMv) {
+        lastMv = part.mv; room(120); y += 10;
+        para(part.movement.toUpperCase(), { font: "helvetica", style: "bold", size: 10, color: NAVY, center: true, after: 4 });
+        doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2]); doc.setLineWidth(1.5); doc.line(W / 2 - 18, y, W / 2 + 18, y); y += 18;
+      }
+      room(80);
+      if (part.label) para(part.label.toUpperCase(), { font: "helvetica", style: "bold", size: 7.5, color: BRONZE, after: 3 });
+      if (part.ours) para(part.ours, { style: "italic", size: 10.5, color: BRONZE, after: 4 });
+      paras.forEach(function (p) { para(p, { size: 12.5, color: INK, lead: 1.5, after: 8 }); });
+      y += 8;
+    });
+    if (finished(d, stage)) { room(70); y += 6; para(d.closes, { style: "italic", size: 11.5, color: BRONZE, center: true, width: 380, after: 6 }); para(LOWER, { style: "italic", size: 11.5, color: BRONZE, center: true, width: 380, after: 12 }); }
+
+    /* then the road: one mark for each chapter */
+    var pts = d.trail.slice(0, chs.length), k = 0.52, ox = (W - 600 * k) / 2, oy = y;
+    room(500 * k + 60); y += 6;
+    para(finished(d, stage) ? "THE ROAD I WALKED" : "THE ROAD SO FAR", { font: "helvetica", style: "bold", size: 8, color: BRONZE, center: true, after: 8 });
+    oy = y;
     function X(v) { return ox + v * k; } function Y(v) { return oy + v * k; }
     doc.setDrawColor(NAVY[0], NAVY[1], NAVY[2]); doc.setLineWidth(1);
     doc.line(X(70), Y(440), X(572), Y(440)); doc.line(X(70), Y(440), X(70), Y(44));
@@ -324,64 +357,12 @@ var ROAD = (function () {
       doc.circle(X(p[0]), Y(p[1]), lastOne ? 4.2 : 2.4, lastOne ? "FD" : "F");
     });
     y = oy + 500 * k + 6;
-    para(pts.length ? "This is the road I walked, one mark for each section. The faint line is the road on the map. It shows direction, never rank."
+    para(pts.length ? "One mark for each chapter, the newest in gold. The faint line is the road on the map. It shows direction, never rank."
       : "The faint line is the road on the map. My mark appears once both sides of the map have an answer. It shows direction, never rank.", { font: "helvetica", size: 8.5, color: SOFT, center: true, after: 6 });
-    para("“Moses wrote down their starting places, stage by stage, by command of the LORD.”  Numbers 33:2", { style: "italic", size: 10, color: BRONZE, center: true, width: 400, after: 10 });
-    if (story) {
-      y += 8;
-      story.forEach(function (part) {
-        var paras = part.text.split(/\n\s*\n/).map(function (p) { return p.replace(/\s+/g, " ").trim(); }).filter(Boolean);
-        if (!paras.length) return;
-        room(110); y += 6;
-        para(part.name.toUpperCase(), { font: "helvetica", style: "bold", size: 10, color: NAVY, center: true, after: 4 });
-        doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2]); doc.setLineWidth(1.5); doc.line(W / 2 - 18, y, W / 2 + 18, y); y += 16;
-        paras.forEach(function (p) { para(p, { size: 12.5, color: INK, lead: 1.5, after: 10 }); });
-      });
-    }
-    if (!story) d.bends.forEach(function (b) {
-      if (b.at >= chs.length || !b.text.trim()) return;
-      para(bendLabel(d, b).toUpperCase(), { font: "helvetica", style: "bold", size: 7.5, color: SOFT, after: 0 });
-      if (bendGloss(d, b)) para(bendGloss(d, b), { style: "italic", size: 9.5, color: SOFT, after: 1 });
-      para(b.text.trim(), { size: 12.5, color: INK, after: 8 });
-    });
-    var th = story ? null : thread(d, stage);
-    if (th) {
-      room(30 + 26 * th.where.length); y += 4;
-      para("A word I keep using: " + th.word, { size: 12.5, color: NAVY, center: true, after: 5 });
-      th.where.forEach(function (w) {
-        para(w.part.toUpperCase(), { font: "helvetica", style: "bold", size: 7, color: SOFT, center: true, after: 0 });
-        para(w.text, { style: "italic", size: 10.5, color: INK, center: true, width: 400, after: 4 });
-      });
-    }
-    y += 8;
-
-    var lastMv = 0;
-    (story ? [] : chs).forEach(function (ch) {
-      var ls = onLines(ch), st = stageLine(ch), rc = recallLine(d, ch);
-      if (!ls.length && !st) return;
-      if (ch.mv !== lastMv) {
-        lastMv = ch.mv; room(110); y += 6;
-        para(d.movements[ch.mv].toUpperCase(), { font: "helvetica", style: "bold", size: 10, color: NAVY, center: true, after: 4 });
-        doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2]); doc.setLineWidth(1.5); doc.line(W / 2 - 18, y, W / 2 + 18, y); y += 16;
-      }
-      room(70);
-      para((ch.part + (ch.name ? " · " + ch.name : "")).toUpperCase(), { font: "helvetica", style: "bold", size: 8, color: BRONZE, after: 2 });
-      if (ch.ours) para(ch.ours, { style: "italic", size: 10.5, color: BRONZE, after: 3 });
-      if (rc) { para(rc.lead + " “" + rc.text + "”", { style: "italic", size: 10.5, color: SOFT, after: 1 }); if (rc.bridge) para(rc.bridge, { style: "italic", size: 10.5, color: SOFT, after: 4 }); }
-      ls.forEach(function (l) {
-        if (l.ctx) para(l.ctx.lead + " “" + l.ctx.quote + "”", { style: "italic", size: 10.5, color: SOFT, after: 1 });
-        para(shown(l), { size: 13, color: INK, after: 2 });
-      });
-      if (st) para(st, { style: "italic", size: 11.5, color: NAVY, after: 0 });
-      y += 14;
-    });
-    var hd = handed(d, stage);
-    if (hd.length && !story) { room(70); para(HANDED, { style: "bold", size: 14, color: NAVY, after: 6 }); hd.forEach(function (l) { room(40); para(l.part + " · " + l.label, { style: "italic", size: 10.5, color: BRONZE, after: 1 }); para(l.text, { size: 13, color: INK, after: 6 }); }); y += 8; }
-    if (finished(d, stage)) { room(60); para(d.closes, { style: "italic", size: 11.5, color: BRONZE, center: true, width: 380, after: 6 }); para(LOWER, { style: "italic", size: 11.5, color: BRONZE, center: true, width: 380, after: 12 }); }
-    if (finished(d, stage) && d.tail.trim() && !story) { room(50); para("Today I am camped at " + d.tail.trim(), { style: "bold", size: 14, color: NAVY, center: true, width: 400, after: 10 }); }
+    para("\u201cMoses wrote down their starting places, stage by stage, by command of the LORD.\u201d  Numbers 33:2", { style: "italic", size: 10, color: BRONZE, center: true, width: 400, after: 10 });
     room(40);
     para("WHERE THESE WORDS COME FROM", { font: "helvetica", style: "bold", size: 7.5, color: SOFT, center: true, after: 1 });
-    para(d.refs.join(" · "), { font: "helvetica", size: 8.5, color: SOFT, center: true, after: 0 });
+    para(d.refs.join(" \u00b7 "), { font: "helvetica", size: 8.5, color: SOFT, center: true, after: 0 });
     foot();
     /* v25 · a finished story ends on the plate: the road back down, on a page of its own */
     if (finished(d, stage) && plateData) {
@@ -2168,7 +2149,9 @@ var TELL = (function () {
     else if (act === "pdf") {
       APP.say("Preparing your PDF…");
       var use = window.claude && window.claude.use ? window.claude.use("downloads") : Promise.resolve(null);
-      Promise.resolve(use).then(function (dl) {
+      /* v27 · the plate is fetched before the PDF is made, so a finished story always ends on it */
+      var ready = new Promise(function (res) { ROAD.loadPlate(function () { res(); }); });
+      Promise.all([Promise.resolve(use), ready]).then(function (r) { var dl = r[0];
         if (window.AP_ROAD && window.jspdf) { APP.saveFile(ROAD.pdf(window.jspdf.jsPDF, D, T.stage, bridgedParts(D)).output("blob"), "the-road-i-walked.pdf"); APP.say("Downloaded."); return; }
         if (!dl || !window.jspdf) { APP.say("Download is not available in this view."); return; }
         var blob = ROAD.pdf(window.jspdf.jsPDF, D, T.stage, bridgedParts(D)).output("blob");
@@ -2824,6 +2807,7 @@ window.AP_WHERE = WHERE;
 
   function render(keep) {
     var y = window.scrollY;
+    try { if (ROAD.finished(D, stage)) ROAD.loadPlate(); } catch (e) {}
     app.innerHTML = screen === "page" ? pageScreen() : screen === "story" ? storyScreen() : screen === "write" ? WRITER.html() : screen === "tell" ? TELL.html(D, stage) : screen === "evidence" ? evidenceScreen() : editScreen();
     document.querySelectorAll("[data-stage]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-stage") === stage); });
     if (SITE) { if (!keep && app.scrollIntoView && app.getBoundingClientRect().top < 0) app.scrollIntoView(); if (window.AP_ROAD_SITE) window.AP_ROAD_SITE.paint(); }
@@ -2834,9 +2818,11 @@ window.AP_WHERE = WHERE;
   function download() {
     say("Preparing your PDF…");
     if (D.mine) D.trail = WRITER.trail(ROAD.chapters(D, stage).length);
-    if (SITE) { if (!window.jspdf) { say("The PDF could not be made just now. Print still works."); return; } saveFile(ROAD.pdf(window.jspdf.jsPDF, D, stage).output("blob"), "the-road-i-walked.pdf"); say("Downloaded."); return; }
+    /* v27 · the plate is fetched before the PDF is made, so a finished story always ends on it */
+    var ready = new Promise(function (res) { ROAD.loadPlate(function () { res(); }); });
+    if (SITE) { if (!window.jspdf) { say("The PDF could not be made just now. Print still works."); return; } ready.then(function () { saveFile(ROAD.pdf(window.jspdf.jsPDF, D, stage).output("blob"), "the-road-i-walked.pdf"); say("Downloaded."); }); return; }
     var use = window.claude && window.claude.use ? window.claude.use("downloads") : Promise.resolve(null);
-    Promise.resolve(use).then(function (dl) {
+    Promise.all([Promise.resolve(use), ready]).then(function (r) { var dl = r[0];
       if (!dl || !window.jspdf) { say("Download is not available in this view. The same PDF is attached in our chat."); return; }
       var blob = ROAD.pdf(window.jspdf.jsPDF, D, stage).output("blob");
       return dl.save({ filename: "the-road-i-walked.pdf", data: blob }).then(function () { say("Downloaded."); });
