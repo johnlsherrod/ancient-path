@@ -1,6 +1,29 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v11
+   AP-STORY-MODULE-v14
    Ancient Path — the Chronicle: the shared save and the story assistant.
+
+   v14 (28 Sept 2026) — the walk. Everything to look at is one numbered
+     list in the order it comes in his piece; "Walk through them" takes him
+     to each line's box in turn with a card under it (which one, the part
+     he is in, the line, the question, one opening), Next carries him on,
+     stepping to another part when it is there; a changed line reads
+     "Changed."; at the end, the count, Read it again, Save. "A reader",
+     never "a stranger", wherever a man reads it.
+
+   v13 (28 Sept 2026) — one button on a poem. Read it back does it all:
+     what a stranger hears · what still needs a look (the checks, each with
+     Go to this line) · any real person named. Check it is gone from the
+     poem pages; the Road keeps its own four.
+
+   v12 (28 Sept 2026) — the assistant moves a man toward finishing (John):
+     each button says what it does, beside it; every note and every person
+     it names carries "Go to this line", which brings the box those words
+     came from on screen and opens it (stepping there on a stepped page),
+     and once he has changed that line the item reads "Changed." with
+     "Check it again" offered; "Real people named" lists only a person who
+     could be recognized (a name, or a role plus something private or wrong)
+     and never a brand, product, place or public figure — the second reader
+     now checks the people list as it checks the notes.
 
    v11 (28 Sept 2026) — what John saw on Where I'm From after the first save:
      the rows get a cushion left and right (18px; the finish 20px); the
@@ -927,6 +950,7 @@
   function finishOrder(node, slot) {
     if (node.classList.contains("aps-status")) { return 5; }
     if (node.classList.contains("aps-assist")) { return 8; }
+    if (node.classList.contains("aps-act")) { return 10; }
     if (node.classList.contains("aps-read")) { return 16; }
     if (node.classList.contains("aps-break")) { return node.getAttribute("data-at") === "a" ? 15 : 25; }
     if (slot === 8) { return 10; }
@@ -1025,6 +1049,65 @@
     if (rowA && how && how.parentNode !== rowA) { rowA.appendChild(how); }
     if (rowA && out && out.parentNode !== rowA) { rowA.appendChild(out); }
     if (rowA) { arrange(rowA, true); }
+  };
+
+  /* v12: from a note to the box it came from. A page builds a line out of one or more boxes ("From " + prod1 +
+     " and " + prod2 + "."), so the box is the one whose words sit inside the quoted line; the longest wins. On a page
+     that shows one step at a time the step row's own Back/Next carry him there. Nothing here changes a word. */
+  Story.prototype.goToLine = function (quote) { var box = this.findBox(quote); if (!box) { return false; } this.bring(box); return true; };
+  Story.prototype.findBox = function (quote) {
+    var cfg = this.cfg, q = String(quote || "").toLowerCase(), boxes = [], best = null, bestAt = -1, bestLen = 0;
+    for (var i = 0; i < cfg.fields.length; i++) {
+      var f = cfg.fields[i]; if (f.key === "meta") { continue; }
+      var node = $(f.id); if (!node || node.type === "hidden") { continue; }
+      boxes.push(node);
+      var v = String(node.value || "").trim(), at = v.length >= 2 ? q.indexOf(v.toLowerCase()) : -1;
+      /* the box whose words come first in the line wins; the same start, the longer */
+      if (at >= 0 && (best === null || at < bestAt || (at === bestAt && v.length > bestLen))) { best = node; bestAt = at; bestLen = v.length; }
+    }
+    if (!best) {   /* no box sits whole inside the line: the box that shares the most words with it */
+      var qw = {}; (q.match(/[a-z\u2019']{3,}/g) || []).forEach(function (w) { qw[w] = 1; });
+      var bestHits = 0;
+      boxes.forEach(function (node) { var hits = 0; (String(node.value || "").toLowerCase().match(/[a-z\u2019']{3,}/g) || []).forEach(function (w) { if (qw[w]) { hits++; } }); if (hits > bestHits) { best = node; bestHits = hits; } });
+    }
+    return best;
+  };
+  Story.prototype.boxes = function () {
+    var cfg = this.cfg, boxes = [];
+    for (var i = 0; i < cfg.fields.length; i++) { var f = cfg.fields[i]; if (f.key === "meta") { continue; } var node = $(f.id); if (node && node.type !== "hidden") { boxes.push(node); } }
+    return boxes;
+  };
+  /* bring a box on screen and open it; on a page that shows one step at a time the step row's own Back/Next carry him there; then cb(box) */
+  Story.prototype.bring = function (best, cb) {
+    var boxes = this.boxes();
+    var visible = function (n) { var r = n.getBoundingClientRect(); return r.height > 0 && r.width > 0; };
+    var land = function () {
+      try { best.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+      try { best.focus({ preventScroll: true }); } catch (e) { try { best.focus(); } catch (e2) {} }
+      try { if (best.setSelectionRange && best.value) { best.setSelectionRange(0, best.value.length); } } catch (e) {}
+      best.classList.add("aps-here"); window.setTimeout(function () { best.classList.remove("aps-here"); }, 2500);
+      if (typeof cb === "function") { cb(best); }
+    };
+    var walk = function (tries) {
+      if (visible(best) || tries <= 0) { land(); return; }
+      var idx = boxes.indexOf(best), seen = -1;
+      for (var k = 0; k < boxes.length; k++) { if (visible(boxes[k])) { seen = k; break; } }
+      var want = seen >= 0 && idx < seen ? /^(back)/i : /^(next|finish)/i, btn = null;
+      Array.prototype.forEach.call(document.querySelectorAll(".aps-row button"), function (b) { if (!btn && want.test((b.textContent || "").trim()) && visible(b)) { btn = b; } });
+      if (!btn) { land(); return; }
+      btn.click(); window.setTimeout(function () { walk(tries - 1); }, 120);
+    };
+    walk(14);
+  };
+  /* the name of the part a box sits in: the nearest heading above it inside its own section */
+  Story.prototype.partOf = function (box) {
+    var root = document.querySelector(this.cfg.root) || document.body, e = box.parentElement;
+    while (e && e !== root) {
+      var hs = e.querySelectorAll("h1,h2,h3,h4,[class*='title']");
+      for (var i = 0; i < hs.length; i++) { var h = hs[i]; if (!h.contains(box) && (h.compareDocumentPosition(box) & 4)) { var t = (h.textContent || "").replace(/\s+/g, " ").trim(); if (t) { return t.slice(0, 60); } } }
+      e = e.parentElement;
+    }
+    return "";
   };
 
   /* v11: a page may style ".aps-page-link" as a quiet underlined link with !important; once it is the dark button
@@ -1223,15 +1306,16 @@
       return [
         "YOUR TASK NOW: read the whole story and return three things.",
         "\"heard\": at most sixty words, beginning \"A reader will hear\". Do not retell the story " + u + " by " + u + ". Say what a stranger would take this story to be about, what is different between its first " + u + " and its last, and the one thing a stranger still could not tell. Report only what is on the page. No praise, no verdict, no advice, no interpretation, and nothing about what he is.",
-        "\"open\": anything from the " + (prof(p).kind === "poem" ? "" : "six ") + "checks that still stands anywhere in the story, at most four, each with the exact " + u + " and one question.",
-        "\"people\": every real person or named business other than the writer who appears in the story (not groups like \"three men\"), each with the way the story names them and the first " + u + " they appear in, copied exactly.",
+        "\"open\": anything from the " + (prof(p).kind === "poem" ? "" : "six ") + "checks that still stands anywhere in the story, at most four, the most important first, each with \"check\", the exact " + u + " copied character for character, and one question. For half-said give \"options\": [one " + u + " opening in his voice] and leave the question empty; for exposes leave the question empty and give no options." + (prof(p).checks.length < ALL_CHECKS.length ? " Run only these checks: " + prof(p).checks.join(", ") + "." : ""),
+        "\"people\": every real person other than the writer who could be recognized from the page: someone given a name, or a role plus details that would let a person who knows the writer know who is meant AND about whom the page says something private or wrong. A brand, product, company, food, drink, animal, place or public figure is not a person (Folgers is coffee). A relative or friend mentioned only by role with nothing private or wrong said about them is not listed. Each with the way the story names them and the first " + u + " they appear in, copied exactly. If none, an empty list.",
         "Reply with only a JSON object: {\"stop\": false, \"heard\": \"…\", \"open\": [{\"check\": \"…\", \"quote\": \"…\", \"question\": \"…\"}], \"people\": [{\"who\": \"…\", \"quote\": \"…\"}]}"
       ].join("\n");
     }
     var ASK_CHECK_HEARD = [
       "You are the second reader. You did not write this read-back. Try to break it.",
       "Reject the \"heard\" text if it says anything that is not on the page, praises or judges him, gives advice, interprets him, or says what he is. Reject an \"open\" item on the same grounds as any note: a quote not in the story, a question that tells instead of asks, an implied connection he did not state, a request for details of harm or a written confession, or a plain misreading.",
-      "Reply with only a JSON object: {\"heardOk\": true, \"heardWhy\": \"a few words\", \"verdicts\": [{\"i\": 0, \"keep\": true, \"why\": \"a few words\"}]}"
+      "Reject a \"people\" item if it is not a person at all (a brand, product, company, food, drink, animal, place or public figure), or a person mentioned only by role with nothing private or wrong said about them, or a quote not in the story.",
+      "Reply with only a JSON object: {\"heardOk\": true, \"heardWhy\": \"a few words\", \"verdicts\": [{\"i\": 0, \"keep\": true, \"why\": \"a few words\"}], \"people\": [{\"i\": 0, \"keep\": true, \"why\": \"a few words\"}]} with one verdict per open item and one per people item, in order."
     ].join("\n");
     var ASK_GAPS = [
       "YOUR TASK NOW: his sentences below are set side by side. That is a list, not yet a story. A story lives in what happened BETWEEN the sentences. For each gap between one numbered sentence and the next, write the one question whose answer, in his words, would carry a reader across.",
@@ -1387,14 +1471,19 @@
         var input = H + "\n\nTHE WHOLE STORY:\n" + story + (about ? "\n\nHE SAYS THE STORY IS ABOUT: " + about + "\nAdd a fourth key, \"beside\": one sentence that sets what he says it is about beside what a stranger would take it to be about, without judging either and without advice." : "") + "\n\n" + askHeard(o.profile);
         return sample.json(input, { signal: o.signal, cache: false }).then(function (r) {
           if (r && r.stop) { return { stop: true }; }
-          var open = ((r && r.open) || []).filter(function (n) { return n && n.question && has(story, n.quote); }).slice(0, 4);
+          var checks = prof(o.profile).checks;
+          var open = ((r && r.open) || []).filter(function (n) { return n && KIND[n.check] && checks.indexOf(n.check) >= 0 && (n.question || n.check === "half-said" || n.check === "exposes") && has(story, n.quote); }).slice(0, 4);
+          open.forEach(function (n) { if (n.check === "exposes") { n.question = EXPOSE_Q; n.options = []; } });
+          open.forEach(function (n) { if (n.check === "half-said") { n.question = HALF_Q; n.options = [String((n.options || [])[0] || "What happened was…"), "I won’t repeat it here. What it cost me was…", "Remove this sentence"]; } });
           var people = ((r && r.people) || []).filter(function (n) { return n && n.who && has(story, n.quote); });
           step(o, "Checking its own reading…");
-          var check = H + "\n\nTHE WHOLE STORY:\n" + story + "\n\nTHE READ-BACK:\n" + JSON.stringify({ heard: String(r.heard || "") + (about && r.beside ? " " + r.beside : ""), open: open }) + "\n\n" + ASK_CHECK_HEARD;
+          var check = H + "\n\nTHE WHOLE STORY:\n" + story + "\n\nTHE READ-BACK:\n" + JSON.stringify({ heard: String(r.heard || "") + (about && r.beside ? " " + r.beside : ""), open: open, people: people }) + "\n\n" + ASK_CHECK_HEARD;
           return sample.json(check, { signal: o.signal, cache: false }).then(function (v) {
             var keep = {}; ((v && v.verdicts) || []).forEach(function (x) { if (x && x.keep === true) { keep[x.i] = 1; } });
+            /* v12: a person is listed only when the second reader agrees he is a person who could be recognized (Folgers is coffee) */
+            var pk = {}; ((v && v.people) || []).forEach(function (x) { if (x && x.keep === true) { pk[x.i] = 1; } });
             open.forEach(function (n) { n.label = KIND[n.check] || ""; });
-            return { heard: { about: about, beside: v && v.heardOk === true && about ? String(r.beside || "") : "", text: v && v.heardOk === true ? String(r.heard || "") : "", open: open.filter(function (n, k) { return keep[k]; }), people: people } };
+            return { heard: { about: about, beside: v && v.heardOk === true && about ? String(r.beside || "") : "", text: v && v.heardOk === true ? String(r.heard || "") : "", open: open.filter(function (n, k) { return keep[k]; }), people: people.filter(function (n, k) { return pk[k]; }) } };
           });
         });
       });
@@ -1403,8 +1492,8 @@
     /* the circled i text: every sentence is something the page enforces */
     function howText(p) {
       p = prof(p);
-      if (p.kind === "poem") { return "How the story assistant helps. Claude, an AI, reads what you wrote and does two things: checks it for what is half-said or for a real person named, and reads the whole piece back the way a stranger would hear it. It never adds a fact, a name, a time or a feeling. It never changes a word: what you wrote stays as you wrote it, and any change is yours to make. Nothing is sent until you press a button. Ancient Path reads only what you choose to publish."; }
-      return "How the story assistant helps. Claude, an AI, reads what you wrote and does four things: asks better questions about your own lines, checks a part for what is half-said or for a real person named, smooths a part for clarity and flow, and reads the whole story back the way a stranger would hear it. It never adds a fact, a name, a time or a feeling. It never changes what you mean. Every suggestion sits beside your original, and nothing changes until you press Use this. If a suggestion uses a word you did not write, the page throws it away. Nothing is sent until you press a button. Ancient Path reads only what you choose to publish.";
+      if (p.kind === "poem") { return "How the story assistant helps. Claude, an AI, reads the whole piece once and comes back with three things: what a reader would hear in it, any line that is still half-said or names a real person who could be recognized, and a walk to each of those lines, one at a time, in the order they come in your piece. It never adds a fact, a name, a time or a feeling. It never changes a word: what you wrote stays as you wrote it, and any change is yours to make. Nothing is sent until you press the button. Ancient Path reads only what you choose to publish."; }
+      return "How the story assistant helps. Claude, an AI, reads what you wrote and does four things: asks better questions about your own lines, checks a part for what is half-said or for a real person named, smooths a part for clarity and flow, and reads the whole story back the way a reader would hear it. It never adds a fact, a name, a time or a feeling. It never changes what you mean. Every suggestion sits beside your original, and nothing changes until you press Use this. If a suggestion uses a word you did not write, the page throws it away. Nothing is sent until you press a button. Ancient Path reads only what you choose to publish.";
     }
 
     return {
@@ -1430,7 +1519,7 @@
      ====================================================================== */
   Story.prototype.mountAssistant = function (row) {
     var self = this, cfg = this.cfg, p = cfg.assistant;
-    if (!p || $("apsCheck")) { return false; }
+    if (!p || $("apsHeard")) { return false; }
     if (!ASSIST.canRead()) { return false; }
     var profile = ASSIST.profile(typeof p === "object" ? p : { kind: "poem" });
     if (!profile.name) { profile.name = cfg.title || cfg.form || ""; }
@@ -1445,28 +1534,95 @@
     function show(html) { out.innerHTML = html; out.hidden = !html; if (html) { try { out.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) {} } }
     var pressed = null, idle = {};
     function working(on) {
-      [check, hear].forEach(function (b) { if (on) { idle[b.id] = b.textContent; b.disabled = true; } else { b.disabled = false; if (idle[b.id]) { b.textContent = idle[b.id]; } } });
+      [hear].forEach(function (b) { if (on) { idle[b.id] = b.textContent; b.disabled = true; } else { b.disabled = false; if (idle[b.id]) { b.textContent = idle[b.id]; } } });
       if (on && pressed) { pressed.textContent = "Reading…"; pressed.setAttribute("aria-busy", "true"); }
-      if (!on) { [check, hear].forEach(function (b) { b.removeAttribute("aria-busy"); }); pressed = null; }
+      if (!on) { [hear].forEach(function (b) { b.removeAttribute("aria-busy"); }); pressed = null; }
     }
     function status(msg) { show(msg ? '<p class="aps-busy"><span class="aps-dot" aria-hidden="true"></span>' + esc(msg) + ' <button type="button" class="aps-stop">Stop</button></p>' : ""); var s = out.querySelector(".aps-stop"); if (s) { s.addEventListener("click", function () { if (busy) { busy.abort(); } busy = null; working(false); show(""); }); } }
     function text() { return self.document(); }
     function begin(btn, msg) { if (!text()) { show('<p class="aps-note">There is nothing written yet. Write something first.</p>'); return null; } pressed = btn; working(true); busy = new AbortController(); status(msg); return busy.signal; }
     function stopBox() { return '<p class="aps-note">If you or anyone else is in danger right now, call 911, or 988 to talk to someone. And tell one man you trust today.</p>'; }
-    function noteHTML(n) { return '<article class="aps-noteitem"><div class="aps-kind">' + esc(n.label || ASSIST.KIND[n.check] || "") + '</div><p class="aps-quoted">' + esc(n.quote) + '</p><p class="aps-ask">' + esc(n.question) + '</p>' + (n.check === "half-said" && n.options && n.options[0] ? '<p class="aps-help">One way to say it, in your voice: ' + esc(n.options[0]) + '</p>' : "") + '<p class="aps-help">The change is yours to make, above, in your own words.</p></article>'; }
-
-    var check = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""), "Check it"); check.id = "apsCheck"; check.type = "button";
-    var hear = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""), "Read it back"); hear.id = "apsHeard"; hear.type = "button";
-    check.addEventListener("click", function () {
-      var sig = begin(check, "Reading it…"); if (!sig) { return; }
-      var t = text();
-      ASSIST.notes({ whole: t, name: profile.name, text: t, profile: profile, signal: sig, onStep: status }).then(function (r) {
-        busy = null; working(false);
-        if (r.stop) { show(stopBox()); return; }
-        if (!r.notes.length) { show('<p class="aps-note">Read. Nothing to raise' + (r.dropped ? " (a second read threw " + r.dropped + " out)" : "") + '. You can ask again after you change something.</p>'); return; }
-        show('<p class="aps-note">Read. ' + r.notes.length + (r.notes.length === 1 ? " thing" : " things") + " to look at" + (r.dropped ? ", after a second read threw " + r.dropped + " out" : "") + '.</p>' + r.notes.map(noteHTML).join(""));
-      }).catch(function (e) { busy = null; working(false); show(ASSIST.copyFor(e) ? '<p class="aps-note">' + esc(ASSIST.copyFor(e)) + '</p>' : ""); });
+    /* v12: everything shown carries the way back to its box: "Go to this line" opens the box the words came from,
+       and once he has changed that line the item reads "Changed." — the page moves him toward finishing, never leaves him at a verdict */
+    /* v14 (John, 28 Sept): "a navigation sequence through them that is logical and easy to follow… moving from one
+       part of the story to the next". Everything to look at is ONE list in the order it comes in his piece (not by
+       importance), numbered; "Walk through them" takes him to the first line's box and sets a small card under it —
+       which one this is, the part he is in, the line, the question, one opening in his voice — and Next carries him
+       to the next, stepping to another part when it is there and saying so. A line he changes reads "Changed."; at
+       the end he is back at the finish with the count, Read it again and Save. "Go to this line" on any item starts
+       the walk there. */
+    var shown = [], walk = null, guide = null;
+    function items(h) {
+      var doc = text(), list = [];
+      h.open.forEach(function (n) { list.push({ quote: n.quote, kind: n.label || ASSIST.KIND[n.check] || "", question: n.question, help: (n.check === "half-said" && n.options && n.options[0]) ? "One way to say it, in your voice: " + n.options[0] : "", done: false }); });
+      h.people.forEach(function (x) { list.push({ quote: x.quote, kind: "A real person is named", question: x.who + " is named here, and could recognize this one day. Keep it, change how they are described, or take the line out.", help: "", done: false }); });
+      list.forEach(function (it) { it.at = doc.indexOf(it.quote); if (it.at < 0) { it.at = 1e9; } });
+      list.sort(function (a, b) { return a.at - b.at; });
+      return list;
+    }
+    function itemHTML(it, i) { return '<article class="aps-noteitem" data-note="' + i + '"><div class="aps-kind"><span class="aps-num">' + (i + 1) + '</span> ' + esc(it.kind) + '</div><p class="aps-quoted">' + esc(it.quote) + '</p><p class="aps-ask">' + esc(it.question) + '</p>' + (it.help ? '<p class="aps-help">' + esc(it.help) + '</p>' : "") + '<p class="aps-help aps-way"><button type="button" class="aps-goto" data-i="' + i + '">Go to this line</button></p></article>'; }
+    function listHTML() { return '<p class="aps-kind">' + shown.length + (shown.length === 1 ? " thing" : " things") + ' to look at, in the order they come</p><p class="aps-note aps-walkrow"><button type="button" class="aps-walk">Walk through them</button> <span>One at a time. Change a line or leave it, then Next.</span></p>' + shown.map(itemHTML).join(""); }
+    function endGuide() { if (guide && guide.parentNode) { guide.parentNode.removeChild(guide); } guide = null; }
+    function markDone(i) {
+      var it = shown[i]; if (!it || it.done) { return; }
+      it.done = true;
+      var item = out.querySelector('[data-note="' + i + '"]');
+      if (item) { item.classList.add("is-done"); var g = item.querySelector(".aps-goto"); if (g) { g.parentNode.replaceChild(el("span", "aps-done", "Changed."), g); } }
+      if (guide && walk && walk.i === i) { var st = guide.querySelector(".aps-guide-state"); if (st) { st.textContent = "Changed."; st.classList.add("aps-done"); } }
+      if (!out.querySelector(".aps-again")) { var p = el("p", "aps-note", ""); var a = el("button", "aps-again", "Read it again"); a.type = "button"; p.appendChild(a); out.appendChild(p); }
+    }
+    function showGuide(box, i) {
+      endGuide();
+      var it = shown[i], n = shown.length, part = self.partOf(box), last = i + 1 >= n;
+      guide = el("div", "aps-guide", ""); guide.id = "apsGuide";
+      var top = el("div", "aps-guide-top", ""); top.innerHTML = '<b>' + (i + 1) + ' of ' + n + '</b> \u00b7 ' + esc(it.kind) + (part ? ' \u00b7 <span class="aps-guide-part">' + esc(part) + '</span>' : ""); guide.appendChild(top);
+      var q = el("p", "aps-quoted", it.quote); guide.appendChild(q);
+      var ask = el("p", "aps-ask", it.question); guide.appendChild(ask);
+      if (it.help) { guide.appendChild(el("p", "aps-help", it.help)); }
+      var rowEl = el("div", "aps-guide-row", "");
+      var next = el("button", (cfg.buttonClass || "") + " " + (cfg.primaryClass || "") + " aps-guide-next", last ? "Finish" : "Next"); next.type = "button";
+      next.addEventListener("click", function () { stepWalk(); });
+      rowEl.appendChild(next);
+      var stt = el("span", "aps-guide-state", it.done ? "Changed." : "Change it here if you want to, or leave it."); if (it.done) { stt.classList.add("aps-done"); }
+      rowEl.appendChild(stt);
+      var quit = el("button", "aps-guide-quit", "Stop here"); quit.type = "button"; quit.addEventListener("click", function () { finishWalk(true); });
+      rowEl.appendChild(quit);
+      guide.appendChild(rowEl);
+      box.parentNode.insertBefore(guide, box.nextSibling);
+    }
+    function stepWalk() {
+      if (!walk) { return; }
+      walk.i++;
+      while (walk.i < shown.length && !self.findBox(shown[walk.i].quote)) { walk.i++; }
+      if (walk.i >= shown.length) { finishWalk(false); return; }
+      var i = walk.i, box = self.findBox(shown[i].quote);
+      self.bring(box, function (b) { if (walk && walk.i === i) { showGuide(b, i); } });
+    }
+    function startWalk(from) { endGuide(); walk = { i: (from || 0) - 1 }; stepWalk(); }
+    function finishWalk(early) {
+      endGuide(); walk = null;
+      var changed = 0; shown.forEach(function (it) { if (it.done) { changed++; } });
+      var old = out.querySelector(".aps-walked"); if (old) { old.parentNode.removeChild(old); }
+      var p = el("p", "aps-note aps-walked", (early ? "Stopped. " : "Walked through " + shown.length + ". ") + (changed ? changed + " changed." : "Nothing changed.") + (changed ? " Save keeps it." : ""));
+      var wr = out.querySelector(".aps-walkrow"); if (wr) { wr.parentNode.insertBefore(p, wr.nextSibling); } else { out.appendChild(p); }
+      try { row.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
+    }
+    out.addEventListener("click", function (e) {
+      var c = e.target && e.target.closest ? e.target.closest : null; if (!c) { return; }
+      var g = e.target.closest(".aps-goto"); if (g) { startWalk(+g.getAttribute("data-i")); return; }
+      if (e.target.closest(".aps-walk")) { startWalk(0); return; }
+      if (e.target.closest(".aps-again")) { endGuide(); walk = null; hear.click(); }
     });
+    document.addEventListener("input", function (e) {
+      var t = e.target; if (!t || !t.id || !self._fieldIds || !self._fieldIds[t.id] || out.hidden) { return; }
+      var doc = text();
+      shown.forEach(function (it, i) { if (!it.done && !ASSIST.has(doc, it.quote)) { markDone(i); } });
+    }, true);
+
+    /* v13: one button (John, 28 Sept: "is there really a need for both buttons?"). One press, one answer, in the
+       order a writer needs it: what a stranger hears · what still needs a look, each with the way back to its line ·
+       any real person named. The checks Check it ran are the "open" items of this one read. */
+    var hear = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""), "Read it back"); hear.id = "apsHeard"; hear.type = "button";
     hear.addEventListener("click", function () {
       var sig = begin(hear, "Reading the whole piece…"); if (!sig) { return; }
       ASSIST.heard({ story: text(), about: "", profile: profile, signal: sig, onStep: status }).then(function (r) {
@@ -1474,8 +1630,9 @@
         if (r.stop) { show(stopBox()); return; }
         var h = r.heard, html = "";
         html += h.text ? '<p class="aps-heard">' + esc(h.text) + '</p>' : '<p class="aps-note">The read-back did not hold up to a second read, so it was thrown away. You can ask again.</p>';
-        if (h.open.length) { html += '<p class="aps-kind">Still open</p>' + h.open.map(noteHTML).join(""); }
-        if (h.people.length) { html += '<p class="aps-kind">Real people named</p><ul class="aps-people">' + h.people.map(function (x) { return '<li><b>' + esc(x.who) + '</b> — “' + esc(x.quote) + '”</li>'; }).join("") + '</ul><p class="aps-help">They may read this one day. Keep each one, change how they are described, or take the line out, above.</p>'; }
+        endGuide(); walk = null; shown = items(h);
+        if (shown.length) { html += listHTML(); }
+        else if (h.text) { html += '<p class="aps-note">Nothing to raise. You can ask again after you change something.</p>'; }
         show(html);
       }).catch(function (e) { busy = null; working(false); show(ASSIST.copyFor(e) ? '<p class="aps-note">' + esc(ASSIST.copyFor(e)) + '</p>' : ""); });
     });
@@ -1483,10 +1640,17 @@
     if (!$("aps-read-css")) {
       var st = el("style"); st.id = "aps-read-css";
       st.textContent = ".aps-read{max-width:62ch;margin:14px 0 0;font-size:16px;line-height:1.5}.aps-read .aps-busy{font-family:inherit;color:#1F2A44;display:flex;align-items:center;gap:10px;margin:0}.aps-read .aps-dot{width:10px;height:10px;border-radius:50%;background:#C9A227;animation:aps-pulse 1s ease-in-out infinite}@keyframes aps-pulse{0%,100%{opacity:.3}50%{opacity:1}}.aps-read .aps-stop{margin-left:10px;font:inherit;font-size:14px;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:#8C6A3F}.aps-read .aps-note{margin:0}.aps-read .aps-noteitem{border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:14px 16px;margin:14px 0}.aps-read .aps-kind{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:14px 0 4px}.aps-read .aps-noteitem .aps-kind{margin-top:0}.aps-read .aps-quoted{border-left:3px solid #C9A227;padding-left:12px;color:#6B6358;margin:6px 0;white-space:pre-wrap}.aps-read .aps-ask{color:#1F2A44;font-weight:600;margin:6px 0}.aps-read .aps-help{font-size:14.5px;color:#6B6358;margin:4px 0 0}.aps-read .aps-heard{border-left:3px solid #C9A227;padding-left:12px;margin:8px 0}.aps-read .aps-people{margin:6px 0;padding-left:1.2em}" +
+        ".aps-row.aps-finish > .aps-act{flex:1 1 100%;display:flex;align-items:center;gap:14px;margin:0}.aps-act-what{font-size:14.5px;line-height:1.4;color:#6B6358;max-width:52ch}.aps-row.aps-finish > .aps-act > button{flex:0 0 auto;order:0}" +
+        ".aps-read .aps-way{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.aps-goto,.aps-again{font:inherit;font-size:14px;font-weight:600;color:#1F2A44;background:#fff;border:1px solid #C9A227;border-radius:2px;padding:6px 12px;cursor:pointer}.aps-goto:hover,.aps-again:hover{background:#FBF7EF}.aps-read .is-done{opacity:.55}.aps-read .aps-done{color:#8C6A3F;font-weight:600}.aps-here{outline:2px solid #C9A227!important;outline-offset:2px}" +
+        ".aps-read .aps-num{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:50%;background:#C9A227;color:#1F2A44;font-size:12px;font-weight:700;letter-spacing:0;margin-right:6px}.aps-read .aps-walkrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 4px}.aps-read .aps-walkrow span{font-size:14.5px;color:#6B6358}.aps-walk{font:inherit;font-size:14px;font-weight:700;color:#fff;background:#1F2A44;border:1px solid #1F2A44;border-radius:2px;padding:10px 18px;cursor:pointer}.aps-walk:hover{background:#2B3856}" +
+        ".aps-guide{margin:10px 0 14px;border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px;font-size:15.5px;line-height:1.5;max-width:62ch}.aps-guide .aps-guide-top{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:0 0 6px}.aps-guide .aps-guide-top b{color:#1F2A44}.aps-guide .aps-guide-part{color:#1F2A44}.aps-guide .aps-quoted{border-left:3px solid #C9A227;padding-left:12px;color:#6B6358;margin:6px 0;white-space:pre-wrap}.aps-guide .aps-ask{color:#1F2A44;font-weight:600;margin:6px 0}.aps-guide .aps-help{font-size:14.5px;color:#6B6358;margin:4px 0 0}.aps-guide .aps-guide-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0 0}.aps-guide .aps-guide-state{font-size:14.5px;color:#6B6358}.aps-guide .aps-guide-state.aps-done{color:#8C6A3F;font-weight:600}.aps-guide .aps-guide-quit{font:inherit;font-size:14px;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:#8C6A3F;margin-left:auto}" +
+        "@media (max-width:620px){.aps-row.aps-finish > .aps-act{flex-wrap:wrap;gap:8px 14px}}" +
         ".aps-assist{margin:10px 0 0}.aps-assist summary{display:inline-flex;align-items:center;gap:8px;color:#6B6358;font-size:14px;cursor:pointer;list-style:none}.aps-assist summary::-webkit-details-marker{display:none}.aps-assist .aps-assist-name{font-weight:700;color:#1F2A44}.aps-assist .aps-info{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid #8C6A3F;color:#8C6A3F;font-family:Georgia,serif;font-style:italic;font-size:12px;font-weight:700;line-height:1}.aps-assist .aps-how{color:#8C6A3F;text-decoration:underline}.aps-assist p{margin:10px 0 0;max-width:62ch;font-size:15.5px;line-height:1.5;border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px}";
       document.head.appendChild(st);
     }
-    row.appendChild(check); row.appendChild(hear);
+    /* v12: each button says what it does, beside it, so a man knows before he presses (John, 28 Sept: "it's not clear what check it does or read it back") */
+    function act(btn, what) { var w = el("div", "aps-act", ""); btn.style.order = ""; w.appendChild(btn); w.appendChild(el("span", "aps-act-what", what)); return w; }
+    row.appendChild(act(hear, "Tells you what a reader would hear, what still needs a look, and any real person named \u2014 then walks you to each line."));
     row.appendChild(how); row.appendChild(out);   /* v9: the ⓘ line and the results are tiers of the finish row; oneRow orders them */
     return true;
   };
@@ -1495,7 +1659,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "11",
+    version: "14",
     assistant: ASSIST,
 
     init: function (cfg) {
