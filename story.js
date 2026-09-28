@@ -1,6 +1,20 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v6
+   AP-STORY-MODULE-v7
    Ancient Path — Your Story: the shared save.
+
+   v7 (27 Sept 2026) — the fix pass from the Story Hub QA sweep, one rule
+   for every piece that loads this file:
+     - ONE ROW. The page's step row and its finish row are put in the one
+       order every piece keeps — Back or Edit · Download · Copy or Print ·
+       Save · the next step · Your page — and the row stays at the foot of
+       the screen on a phone, so Save is never off to the right or a scroll
+       away. The page's own "Save and stop for now" becomes plain "Save".
+     - NO "LEAVE THIS PAGE?" BOX. What he types is held on this device as
+       he types (a day) and put back and saved when he returns, unless a
+       newer save exists on the site. APStory.safe() is true while words
+       are held, so a page's own guard stands down on its own.
+     - THE WAY BACK opens in the full window when the piece runs inside a
+       course player's frame (Here I Am, The Man Who Crossed).
 
    v6 (13 Sept 2026) — more than one finished piece:
      - a man can write a piece again and keep the one he already has. Every
@@ -77,7 +91,8 @@
 
   var SLOW_AT   = 5000;             /* when the wait message changes */
   var STASH_KEY = "apStoryPending"; /* localStorage: words waiting on sign-in */
-  var STASH_TTL = 30 * 60 * 1000;   /* half an hour, then it is stale */
+  var STASH_TTL = 30 * 60 * 1000;   /* a Save he pressed while signed out: half an hour, then it is stale */
+  var HELD_TTL  = 24 * 60 * 60 * 1000; /* v7: words he typed and did not save: a day */
 
   /* ======================================================================
      1. TALKING TO LEARNWORLDS
@@ -262,18 +277,20 @@
      half an hour, only to finish a Save he already pressed, and is wiped
      the moment that save lands or he starts over.
      ====================================================================== */
-  function stashSet(form, answers) {
-    try { window.localStorage.setItem(STASH_KEY + ":" + form, JSON.stringify({ t: Date.now(), a: answers })); } catch (e) {}
+  function stashSet(form, answers, press) {
+    try { window.localStorage.setItem(STASH_KEY + ":" + form, JSON.stringify({ t: Date.now(), a: answers, press: !!press })); } catch (e) {}
   }
-  function stashGet(form) {
+  /* v7: {t, a, press} — press is a Save he pressed while signed out; otherwise it is what he typed */
+  function stashRaw(form) {
     try {
       var raw = window.localStorage.getItem(STASH_KEY + ":" + form);
       if (!raw) { return null; }
       var v = JSON.parse(raw);
-      if (!v || !v.a || (Date.now() - (v.t || 0)) > STASH_TTL) { stashClear(form); return null; }
-      return v.a;
+      if (!v || !v.a || (Date.now() - (v.t || 0)) > (v.press ? STASH_TTL : HELD_TTL)) { stashClear(form); return null; }
+      return v;
     } catch (e) { return null; }
   }
+  function stashGet(form) { var v = stashRaw(form); return v ? v.a : null; }
   function stashClear(form) {
     try { window.localStorage.removeItem(STASH_KEY + ":" + form); } catch (e) {}
   }
@@ -366,6 +383,7 @@
      5. SMALL HELPERS
      ====================================================================== */
   function $(id) { return document.getElementById(id); }
+  function inFrame() { try { return window.top !== window.self; } catch (e) { return true; } }
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -489,7 +507,7 @@
     /* THE DOOR. Not signed in: keep his words, send him to sign in.
        When he comes back, start() finds the stash and finishes this save. */
     if (!signedIn()) {
-      stashSet(this.cfg.form, answers);
+      stashSet(this.cfg.form, answers, true);
       ui.signingIn();
       this.openSignIn(ui);
       return;
@@ -744,18 +762,94 @@
     row.parentNode.insertBefore(note, row.nextSibling);
     note.parentNode.insertBefore(panel, note.nextSibling);
     this.renderSaved(panel);   /* v5: the way back, from the start, when he is signed in */
+    this.holdTyping();         /* v7 */
+    this.oneRow();             /* v7 */
     return true;
+  };
+
+  /* ======================================================================
+     8b. v7 — WHAT HE TYPES IS HELD, SO NO PAGE NEEDS A "LEAVE?" BOX
+     ====================================================================== */
+  Story.prototype.holdTyping = function () {
+    var self = this, timer = null, ids = {};
+    for (var i = 0; i < this.cfg.fields.length; i++) { ids[this.cfg.fields[i].id] = true; }
+    document.addEventListener("input", function (e) {
+      var t = e.target; if (!t || !t.id || !ids[t.id]) { return; }
+      window.clearTimeout(timer);
+      timer = window.setTimeout(function () {
+        var a = self.answers();
+        if (self.savedAnswers && JSON.stringify(a) === self.savedAnswers) { stashClear(self.cfg.form); return; }
+        if (self.document(a)) { stashSet(self.cfg.form, a, false); }
+      }, 700);
+    }, true);
+  };
+
+  /* ======================================================================
+     8c. v7 — ONE ROW, ONE ORDER, AT THE FOOT OF THE SCREEN
+     ------------------------------------------------------------------
+     The page keeps its own buttons and handlers. This only puts them in
+     the house order and keeps the row in view. Order:
+       1 Back · Edit · Go back · Back to the …    2 Download · Save image
+       3 Copy · Print                              4 Save
+       5 Next · Finish · anything else            6 Your page   7 notes
+     ====================================================================== */
+  var ORDER = [[/^(back|edit|cancel|go back|change the words|done editing)/i, 1], [/^(download|save image)/i, 2], [/^(copy|print)/i, 3], [/^(save|saving|still saving|saved)$/i, 4], [/^save and stop/i, 4]];
+  function slotFor(node) {
+    if (node.tagName === "A") { return 6; }
+    if (node.tagName !== "BUTTON") { return 7; }
+    var t = (node.textContent || "").replace(/\s+/g, " ").trim();
+    for (var i = 0; i < ORDER.length; i++) { if (ORDER[i][0].test(t)) { return ORDER[i][1]; } }
+    return 5;
+  }
+  function arrange(row) {
+    if (!row) { return; }
+    row.classList.add("aps-row");
+    for (var i = 0; i < row.children.length; i++) {
+      var c = row.children[i];
+      if (c.tagName === "BUTTON" && /^save and stop/i.test((c.textContent || "").trim())) { c.textContent = "Save"; }
+      if (c.tagName === "SPAN" && !(c.textContent || "").trim() && !c.id) { c.style.display = "none"; }   /* a spacer that pushed Save to the far right */
+      c.style.order = String(slotFor(c));
+    }
+  }
+  Story.prototype.oneRow = function () {
+    var cfg = this.cfg, self = this;
+    if (!$("aps-row-css")) {
+      var st = el("style"); st.id = "aps-row-css";
+      st.textContent = ".aps-row{display:flex!important;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;bottom:0;z-index:3;background:#fff;padding:12px 0;border-top:1px solid #E5DCC8}" +
+        ".aps-row .aps-page-link{margin-left:auto}" +
+        "@media (max-width:620px){.aps-row>button{flex:1 1 auto}.aps-row .aps-page-link{flex:1 1 100%;text-align:center;margin:4px 0 0}}" +
+        "@media print{.aps-row{position:static}}";
+      document.head.appendChild(st);
+    }
+    /* the step row is wherever the page keeps its Next: pages name navHost "…Off" to keep holdPlace quiet, so find the row itself */
+    var root = document.querySelector(cfg.root) || document, stepRow = null;
+    Array.prototype.forEach.call(root.querySelectorAll("button"), function (b) {
+      if (!stepRow && /^(save and stop|next)\b/i.test((b.textContent || "").trim()) && b.parentNode !== document.querySelector(cfg.actionsRow)) { stepRow = b.parentNode; }
+    });
+    var rows = [document.querySelector(cfg.actionsRow), stepRow];
+    rows.forEach(arrange);
+    /* a page may redraw its row's words as it steps; keep the order after any press in it */
+    rows.forEach(function (r) { if (r) { r.addEventListener("click", function () { window.setTimeout(function () { arrange(r); }, 0); }); } });
+    /* the way back sits in the row, not under it */
+    var panel = $("apsPanel"), rowA = rows[0];
+    if (panel && rowA) {
+      var move = function () { var a = panel.querySelector("a"); if (a && a.parentNode !== rowA) { rowA.appendChild(a); arrange(rowA); } };
+      move(); self._moveLink = move;
+    }
   };
 
   /* A quiet link to his page, if the page has told us where: drawn for any
      signed-in man from the start (v5), and after a save for everyone. */
   Story.prototype.renderSaved = function (panel) {
     panel.innerHTML = "";
+    var old = document.querySelector(this.cfg.actionsRow + " .aps-page-link"); if (old) { old.parentNode.removeChild(old); }
     if (!this.cfg.pagePath) { return; }
     if (!this.saved && !signedIn()) { return; }
     var a = el("a", "aps-page-link", this.saved ? (this.cfg.pageLabel || "Go to your page") : (this.cfg.pageLinkLabel || "Your page"));
     a.href = this.cfg.pagePath;
+    if (inFrame()) { a.target = "_top"; }   /* v7: from inside a course frame his page opens in the full window */
     panel.appendChild(a);
+    if (this._moveLink) { this._moveLink(); }
   };
 
   /* ======================================================================
@@ -787,8 +881,8 @@
     /* 1. Words waiting on a sign-in he just did: put them back, finish
           the save he pressed. If he is still signed out, put them back
           and let him press Save again. */
-    var pending = stashGet(this.cfg.form);
-    if (pending) {
+    var held = stashRaw(this.cfg.form), pending = held ? held.a : null;
+    if (pending && held.press) {
       this.fill(pending);
       /* Let the page put itself back where he pressed Save (the finish),
          so "Saving…" then "Saved" happen where he can see them. */
@@ -797,6 +891,18 @@
       }
       if (signedIn()) { this.save(this.ui, pending); }
       else { this.ui.fail("Sign in, then press Save again. Your words are back on the page."); }
+      return;
+    }
+    /* v7: words he typed and did not save come back — and are saved — unless
+       he has saved something newer since, here or on another device. */
+    if (pending) {
+      if (!signedIn()) { this.fill(pending); return; }
+      lwLatest(this.cfg.lw.unit).then(function (latest) {
+        var when = latest && latest.when ? Date.parse(latest.when) : 0;
+        if (when && when > held.t) { stashClear(self.cfg.form); self.afterMount(); return; }
+        self.fill(pending);
+        self.save(self.ui, pending);
+      }).catch(function () { self.fill(pending); });
       return;
     }
 
@@ -821,7 +927,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "6",
+    version: "7",
 
     init: function (cfg) {
       if (!cfg || !cfg.form || !cfg.fields || !cfg.fields.length || !cfg.lw || !cfg.lw.unit || !cfg.lw.blocks) {
