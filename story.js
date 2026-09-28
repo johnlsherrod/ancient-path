@@ -1,6 +1,19 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v9
+   AP-STORY-MODULE-v10
    Ancient Path — the Chronicle: the shared save and the story assistant.
+
+   v10 (28 Sept 2026) — less on the page, a better writing experience
+   (John's ruling on what matters to a man after he saves, in order):
+     1 that it was saved: "Saved to your page · 2:14 pm." first, with
+       2 what is left ("4 of 7 parts written" or "Finished") under it;
+       the Save button goes quiet and Go to your page is the dark button;
+     3 support: the Story assistant line and its two buttons;
+     4 his draft, above the row; 5 the way out; 6 the quiet things.
+     Nothing else below the finish: cfg.closing folds a page's own
+     closing sections (where this came from, the example, the collection
+     line) into one collapsed line ABOVE the writing, gone once he has
+     written. The step row is one group with even gaps, and Save carries
+     the same weight as Back.
 
    v9 (28 Sept 2026) — John's first walk of Check it on Where I'm From:
      - the step row (Back · Save · Next) is pinned to the foot of the
@@ -460,6 +473,19 @@
     return out;
   };
 
+  /* v10: where he stands: how many of the piece's parts carry words, and whether the page calls it finished */
+  Story.prototype.progress = function () {
+    var a = this.answers(), written = 0, total = 0, meta = null;
+    for (var i = 0; i < this.cfg.fields.length; i++) {
+      var f = this.cfg.fields[i]; if (f.key === "meta") { continue; }
+      var node = $(f.id); if (node && node.type === "hidden") { continue; }
+      total++; if ((a[f.key] || "").trim()) { written++; }
+    }
+    if (typeof a.meta === "string") { try { meta = JSON.parse(a.meta); } catch (e) { meta = null; } }
+    var finished = meta && typeof meta.finished === "boolean" ? meta.finished : (total > 0 && written === total);
+    return { written: written, total: total, finished: !!finished };
+  };
+
   /* Fill the fields and TELL THE FORM: the sealed script listens for
      `input`, so a synthetic event is what makes it re-render. */
   Story.prototype.fill = function (answers) {
@@ -771,10 +797,28 @@
       done: function () {
         btn.disabled = true;
         btn.textContent = "Saved";
-        note.textContent = "Saved to your page. Everything you write here will be waiting there.";
+        /* v10: after a save the first things he reads are that it is saved and what is left; the Save button goes quiet and the way out is the dark button */
+        if (cfg.primaryClass) { btn.classList.remove(cfg.primaryClass); }
+        if (cfg.ghostClass) { btn.classList.add(cfg.ghostClass); }
+        var pr = self.progress(), when = "";
+        try { when = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).toLowerCase(); } catch (e) {}
+        note.innerHTML = "";
+        var l1 = el("b", "aps-saved", "Saved to your page" + (when ? " \u00b7 " + when : "") + ".");
+        var l2 = el("span", "aps-left", pr.finished ? "Finished. It is on your page." : pr.written + " of " + pr.total + " " + (cfg.parts || "parts") + " written. Save keeps your place.");
+        note.appendChild(l1); note.appendChild(l2);
+        note.classList.add("aps-status");
+        row.appendChild(note); note.style.order = "5";
         self.renderSaved(panel);
         /* let him save again after he edits */
-        var rearm = function () { btn.disabled = false; btn.textContent = "Save"; note.textContent = cfg.noteBefore || ""; document.removeEventListener("input", rearm, true); };
+        var rearm = function () {
+          btn.disabled = false; btn.textContent = "Save";
+          if (cfg.ghostClass) { btn.classList.remove(cfg.ghostClass); }
+          if (cfg.primaryClass) { btn.classList.add(cfg.primaryClass); }
+          note.classList.remove("aps-status"); note.innerHTML = ""; note.textContent = cfg.noteBefore || ""; note.style.order = "";
+          row.parentNode.insertBefore(note, row.nextSibling);
+          self.renderSaved(panel);
+          document.removeEventListener("input", rearm, true);
+        };
         document.addEventListener("input", rearm, true);
       },
       fail: function (msg) { btn.disabled = false; btn.textContent = "Save"; note.textContent = msg; }
@@ -790,6 +834,37 @@
     this.renderSaved(panel);   /* v5: the way back, from the start, when he is signed in */
     this.holdTyping();         /* v7 */
     this.oneRow();             /* v7 */
+    this.foldClosing();        /* v10 */
+    return true;
+  };
+
+  /* ======================================================================
+     8d. v10 — NOTHING BELOW THE FINISH BUT HIS PIECE AND THE FOOT
+     ------------------------------------------------------------------
+     cfg.closing names the page's own sections that sat after the finish
+     (where this came from, the example poem, the collection line, the
+     way back to the poetry pages). They fold into one collapsed line
+     above the writing — an example is a model before he writes — and
+     once he has written a line they are gone from the page.
+     ====================================================================== */
+  Story.prototype.foldClosing = function () {
+    var cfg = this.cfg, self = this, sels = cfg.closing;
+    if (!sels || !sels.length || $("apsAbout")) { return false; }
+    var found = [];
+    for (var i = 0; i < sels.length; i++) { var list = document.querySelectorAll(sels[i]); for (var j = 0; j < list.length; j++) { found.push(list[j]); } }
+    if (!found.length) { return false; }
+    var f0 = $(cfg.fields[0] && cfg.fields[0].id), root = document.querySelector(cfg.root);
+    if (!f0 || !root) { return false; }
+    var host = f0; while (host.parentElement && host.parentElement !== root) { host = host.parentElement; }
+    if (host.parentElement !== root) { return false; }
+    var d = el("details", "aps-about", ""); d.id = "apsAbout";
+    var sm = el("summary", "", cfg.closingLabel || "About this piece, and an example"); d.appendChild(sm);
+    var box = el("div", "", ""); d.appendChild(box);
+    for (var k = 0; k < found.length; k++) { box.appendChild(found[k]); }
+    root.insertBefore(d, host);
+    var tuck = function () { var a = self.answers(); for (var key in a) { if (key !== "meta" && (a[key] || "").trim()) { d.hidden = true; return; } } d.hidden = false; };
+    tuck();
+    document.addEventListener("input", function (e) { var t = e.target; if (t && t.id && self._fieldIds && self._fieldIds[t.id]) { tuck(); } }, true);
     return true;
   };
 
@@ -799,6 +874,7 @@
   Story.prototype.holdTyping = function () {
     var self = this, timer = null, ids = {};
     for (var i = 0; i < this.cfg.fields.length; i++) { ids[this.cfg.fields[i].id] = true; }
+    this._fieldIds = ids;
     document.addEventListener("input", function (e) {
       var t = e.target; if (!t || !t.id || !ids[t.id]) { return; }
       window.clearTimeout(timer);
@@ -837,9 +913,10 @@
     for (var i = 0; i < ORDER.length; i++) { if (ORDER[i][0].test(t)) { return ORDER[i][1]; } }
     return 5;
   }
-  /* the finish: slot → tier order. 0 the ⓘ line · 10 Check it/Read it back · 15 break · 16 results · 20 Save · 21 Your page · 25 break · 30 the quiet things */
+  /* the finish: slot → tier order. 5 saved + what's left (after a save) · 8 the ⓘ line · 10 Check it/Read it back · 15 break · 16 results · 20 Save · 21 Your page · 25 break · 30 the quiet things */
   function finishOrder(node, slot) {
-    if (node.classList.contains("aps-assist")) { return 0; }
+    if (node.classList.contains("aps-status")) { return 5; }
+    if (node.classList.contains("aps-assist")) { return 8; }
     if (node.classList.contains("aps-read")) { return 16; }
     if (node.classList.contains("aps-break")) { return node.getAttribute("data-at") === "a" ? 15 : 25; }
     if (slot === 8) { return 10; }
@@ -867,6 +944,12 @@
       } else {
         c.style.order = String(slot === 8 ? 3 : slot);
       }
+    }
+    if (!finish) {
+      row.classList.add("aps-step");
+      var back = null, save = null;
+      for (var j = 0; j < row.children.length; j++) { var k = row.children[j]; if (k.tagName !== "BUTTON") { continue; } var sl = slotFor(k); if (sl === 1 && !back) { back = k; } if (sl === 4 && !save) { save = k; } }
+      if (back && save && save.className !== back.className) { save.className = back.className; }   /* v10: Save carries the same weight as Back, never greyed */
     }
   }
   /* a page that shows every field at once is stacked; one that shows a few at a time is stepped */
@@ -897,6 +980,11 @@
         ".aps-row.aps-finish > .aps-quiet:hover{color:#1F2A44!important}" +
         ".aps-row.aps-finish > .aps-page-link{margin-left:0;font-size:15px}" +
         ".aps-row > button[disabled]{opacity:.7;cursor:progress}" +
+        ".aps-row.aps-step{justify-content:flex-start;gap:12px}.aps-row.aps-step > *{margin-left:0!important;margin-right:0!important}" +
+        ".aps-row.aps-finish .aps-status{flex:1 1 100%;margin:0 0 4px;font-size:16px;line-height:1.5}.aps-row.aps-finish .aps-status .aps-saved{display:block;color:#1F2A44}.aps-row.aps-finish .aps-status .aps-left{display:block;color:#6B6358;font-size:15px}" +
+        ".aps-row.aps-finish > .aps-page-btn{text-decoration:none;display:inline-block}.aps-row.aps-finish > button[disabled].aps-quiet{opacity:1}" +
+        ".aps-about{margin:0 0 22px}.aps-about summary{cursor:pointer;color:#8C6A3F;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;list-style:none}.aps-about summary::-webkit-details-marker{display:none}.aps-about[hidden]{display:none!important}.aps-about > div{margin-top:12px;border-left:3px solid #C9A227;padding-left:14px}" +
+        "@media (max-width:620px){.aps-row.aps-step > button{flex:1 1 0}}" +
         "@media (max-width:620px){.aps-row>button{flex:1 1 auto}.aps-row .aps-page-link{flex:1 1 100%;text-align:center;margin:4px 0 0}.aps-row.aps-finish > .aps-quiet{flex:0 1 auto}.aps-row.aps-finish > .aps-page-link{flex:0 1 auto;text-align:left;margin:0}}" +
         "@media print{.aps-row{position:static}}";
       document.head.appendChild(st);
@@ -934,7 +1022,7 @@
     var old = document.querySelector(this.cfg.actionsRow + " .aps-page-link"); if (old) { old.parentNode.removeChild(old); }
     if (!this.cfg.pagePath) { return; }
     if (!this.saved && !signedIn()) { return; }
-    var a = el("a", "aps-page-link", this.saved ? (this.cfg.pageLabel || "Go to your page") : (this.cfg.pageLinkLabel || "Your page"));
+    var a = el("a", "aps-page-link" + (this.saved ? " " + (this.cfg.buttonClass || "") + " " + (this.cfg.primaryClass || "") + " aps-page-btn" : ""), this.saved ? (this.cfg.pageLabel || "Go to your page") : (this.cfg.pageLinkLabel || "Your page"));
     a.href = this.cfg.pagePath;
     if (inFrame()) { a.target = "_top"; }   /* v7: from inside a course frame his page opens in the full window */
     panel.appendChild(a);
@@ -1365,7 +1453,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "9",
+    version: "10",
     assistant: ASSIST,
 
     init: function (cfg) {
