@@ -1,6 +1,16 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v10
+   AP-STORY-MODULE-v11
    Ancient Path — the Chronicle: the shared save and the story assistant.
+
+   v11 (28 Sept 2026) — what John saw on Where I'm From after the first save:
+     the rows get a cushion left and right (18px; the finish 20px); the
+     results box takes the whole width so nothing sits beside it; Go to your
+     page is dressed in the page's own dark-button colors inline, so a page
+     rule for quiet links cannot paint its words over; the eighteen-and-older
+     line at the top comes down and the tick box shows only if Save is
+     pressed before it is ticked (John, 17 Sept: said once is enough); an
+     answer from Claude that comes back empty or unreadable is asked for
+     once more before he is told.
 
    v10 (28 Sept 2026) — less on the page, a better writing experience
    (John's ruling on what matters to a man after he saves, in order):
@@ -967,13 +977,13 @@
     var cfg = this.cfg, self = this;
     if (!$("aps-row-css")) {
       var st = el("style"); st.id = "aps-row-css";
-      st.textContent = ".aps-row{display:flex!important;flex-wrap:wrap;gap:12px 14px;align-items:center;background:#fff;padding:16px 0;border-top:1px solid #E5DCC8}" +
+      st.textContent = ".aps-row{display:flex!important;flex-wrap:wrap;gap:12px 14px;align-items:center;background:#fff;padding:16px 18px;border-top:1px solid #E5DCC8}" +
         ".aps-row.aps-pin{position:sticky;bottom:0;z-index:3}" +
         ".aps-row .aps-page-link{margin-left:auto}" +
         ".aps-row .aps-break{flex:1 1 100%;height:0;margin:0;padding:0}" +
-        ".aps-row.aps-finish{padding:20px 0 12px;gap:14px 16px}" +
+        ".aps-row.aps-finish{padding:22px 20px 16px;gap:14px 16px}" +
         ".aps-row.aps-finish .aps-assist{flex:1 1 100%;margin:0 0 2px}" +
-        ".aps-row.aps-finish .aps-read{flex:1 1 100%;margin:0}" +
+        ".aps-row.aps-finish .aps-read{flex:1 1 100%;width:100%;max-width:none;margin:0}.aps-row.aps-finish .aps-read > *{max-width:62ch}" +
         ".aps-row.aps-finish .aps-read[hidden]{display:none!important}" +
         ".aps-row.aps-finish > .aps-break[data-at=\"b\"]{height:1px;background:#E5DCC8;margin:10px 0 2px}" +
         ".aps-row.aps-finish > .aps-quiet{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-height:0!important;height:auto!important;font-size:14px!important;font-weight:400!important;color:#6B6358!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-right:6px}" +
@@ -982,7 +992,9 @@
         ".aps-row > button[disabled]{opacity:.7;cursor:progress}" +
         ".aps-row.aps-step{justify-content:flex-start;gap:12px}.aps-row.aps-step > *{margin-left:0!important;margin-right:0!important}" +
         ".aps-row.aps-finish .aps-status{flex:1 1 100%;margin:0 0 4px;font-size:16px;line-height:1.5}.aps-row.aps-finish .aps-status .aps-saved{display:block;color:#1F2A44}.aps-row.aps-finish .aps-status .aps-left{display:block;color:#6B6358;font-size:15px}" +
-        ".aps-row.aps-finish > .aps-page-btn{text-decoration:none;display:inline-block}.aps-row.aps-finish > button[disabled].aps-quiet{opacity:1}" +
+        ".aps-row.aps-finish > .aps-page-btn{text-decoration:none!important;display:inline-block}.aps-row.aps-finish > button[disabled].aps-quiet{opacity:1}" +
+        /* v11: the eighteen-and-older line at the top comes down (John, 17 Sept); the tick box shows only if Save is pressed before it is ticked */
+        ".ap-age-line{display:none!important}.ap-age:not(.is-blocked){display:none!important}" +
         ".aps-about{margin:0 0 22px}.aps-about summary{cursor:pointer;color:#8C6A3F;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;list-style:none}.aps-about summary::-webkit-details-marker{display:none}.aps-about[hidden]{display:none!important}.aps-about > div{margin-top:12px;border-left:3px solid #C9A227;padding-left:14px}" +
         "@media (max-width:620px){.aps-row.aps-step > button{flex:1 1 0}}" +
         "@media (max-width:620px){.aps-row>button{flex:1 1 auto}.aps-row .aps-page-link{flex:1 1 100%;text-align:center;margin:4px 0 0}.aps-row.aps-finish > .aps-quiet{flex:0 1 auto}.aps-row.aps-finish > .aps-page-link{flex:0 1 auto;text-align:left;margin:0}}" +
@@ -1015,6 +1027,27 @@
     if (rowA) { arrange(rowA, true); }
   };
 
+  /* v11: a page may style ".aps-page-link" as a quiet underlined link with !important; once it is the dark button
+     the words must read. Copy the look of the page's own dark button onto it, inline and important. */
+  Story.prototype.dressLink = function (a) {
+    var cfg = this.cfg, from = cfg.primaryClass ? document.querySelector("button." + cfg.primaryClass) : null, cs = null;
+    try { cs = from ? window.getComputedStyle(from) : null; } catch (e) { cs = null; }
+    var put = function (k, v) { try { a.style.setProperty(k, v, "important"); } catch (e) {} };
+    put("color", cs && cs.color ? cs.color : "#fff");
+    put("text-decoration", "none");
+    if (cs) {
+      if (cs.fontFamily) { put("font-family", cs.fontFamily); }
+      if (cs.fontSize) { put("font-size", cs.fontSize); }
+      if (cs.fontWeight) { put("font-weight", cs.fontWeight); }
+      if (cs.lineHeight) { put("line-height", cs.lineHeight); }
+      if (cs.backgroundColor && cs.backgroundColor !== "rgba(0, 0, 0, 0)") { put("background-color", cs.backgroundColor); }
+      if (cs.padding) { put("padding", cs.padding); }
+      if (cs.borderRadius) { put("border-radius", cs.borderRadius); }
+    }
+    put("display", "inline-block");
+    put("box-sizing", "border-box");
+  };
+
   /* A quiet link to his page, if the page has told us where: drawn for any
      signed-in man from the start (v5), and after a save for everyone. */
   Story.prototype.renderSaved = function (panel) {
@@ -1025,6 +1058,7 @@
     var a = el("a", "aps-page-link" + (this.saved ? " " + (this.cfg.buttonClass || "") + " " + (this.cfg.primaryClass || "") + " aps-page-btn" : ""), this.saved ? (this.cfg.pageLabel || "Go to your page") : (this.cfg.pageLinkLabel || "Your page"));
     a.href = this.cfg.pagePath;
     if (inFrame()) { a.target = "_top"; }   /* v7: from inside a course frame his page opens in the full window */
+    if (this.saved) { this.dressLink(a); }   /* v11: the page's own link rules must not paint the button's words over */
     panel.appendChild(a);
     if (this._moveLink) { this._moveLink(); }
   };
@@ -1246,11 +1280,19 @@
     }
     function canRead() { return !!(window.claude && window.claude.use) || !!relayURL(); }
     function relay(url) {
-      return { json: function (input, opts) {
-        var sig = opts && opts.signal, who = ""; try { who = window.localStorage.getItem("apStoryOwner") || ""; } catch (e) {}
+      var once = function (input, sig) {
+        var who = ""; try { who = window.localStorage.getItem("apStoryOwner") || ""; } catch (e) {}
         return window.fetch(url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ input: String(input || "").slice(0, 60000), id: who }), signal: sig, credentials: "omit" })
-          .then(function (r) { return r.json(); }, function () { throw { code: "network" }; })
+          .then(function (r) { return r.json(); }, function (e) { throw (e && e.name === "AbortError") ? e : { code: "network" }; })
           .then(function (r) { if (!r || r.ok !== true) { throw { code: (r && r.error) || "network" }; } return r.data; });
+      };
+      return { json: function (input, opts) {
+        var sig = opts && opts.signal;
+        /* v11: an answer that came back empty or unreadable is asked for once more before he is told */
+        return once(input, sig).then(null, function (e) {
+          if (e && (e.code === "invalid_json" || e.code === "empty_completion") && !(sig && sig.aborted)) { return once(input, sig); }
+          throw e;
+        });
       } };
     }
     function reader() {
@@ -1453,7 +1495,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "10",
+    version: "11",
     assistant: ASSIST,
 
     init: function (cfg) {
