@@ -1,6 +1,20 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v8
+   AP-STORY-MODULE-v9
    Ancient Path — the Chronicle: the shared save and the story assistant.
+
+   v9 (28 Sept 2026) — John's first walk of Check it on Where I'm From:
+     - the step row (Back · Save · Next) is pinned to the foot of the
+       screen ONLY on a page that shows one step at a time; a page that
+       stacks every step on one long page keeps it in flow, so it never
+       floats over the next section.
+     - the finish is a clear path in three tiers with room between them:
+       have it read (Check it · Read it back, results right under them),
+       keep it (Save · Your page), then the quiet things (Back · Edit ·
+       Print · Save image · Copy) as small links. The finish row is not
+       pinned.
+     - pressing Check it or Read it back turns that button into
+       "Reading…", disables both until the answer is back, and the
+       results appear under the buttons and scroll into view.
 
    v8 (28 Sept 2026) — one engine. The Story assistant that lived in
    road.js (the house document, the four asks and their second reads,
@@ -797,15 +811,25 @@
   };
 
   /* ======================================================================
-     8c. v7 — ONE ROW, ONE ORDER, AT THE FOOT OF THE SCREEN
+     8c. v7 — ONE ROW, ONE ORDER · v9 — A CLEAR PATH AT THE FINISH
      ------------------------------------------------------------------
      The page keeps its own buttons and handlers. This only puts them in
-     the house order and keeps the row in view. Order:
-       1 Back · Edit · Go back · Back to the …    2 Download · Save image
-       3 Copy · Print                              4 Save
-       5 Next · Finish · anything else            6 Your page   7 notes
+     the house order and keeps the right row in view.
+
+     THE STEP ROW (Back · Save · Next) is pinned to the foot of the screen
+     only on a page that shows one step at a time. A page that stacks all
+     its steps on one long page (Where I'm From, Write a Lament) keeps the
+     row in flow at the foot of the form, or it floats over the next
+     section and looks like it belongs there (John, Sept 28).
+
+     THE FINISH ROW is never pinned; it is the end of the piece. It reads
+     as three tiers with room between them, in the order a man acts:
+       tier 1  have it read     Check it · Read it back  (+ results under)
+       tier 2  keep it          Save · Your page
+       tier 3  the quiet things Back · Edit · Print · Save image · Copy,
+                                as small links, not buttons
      ====================================================================== */
-  var ORDER = [[/^(back|edit|cancel|go back|change the words|done editing)/i, 1], [/^(download|save image)/i, 2], [/^(copy|print|check it|read it back)/i, 3], [/^(save|saving|still saving|saved)$/i, 4], [/^save and stop/i, 4]];
+  var ORDER = [[/^(back|edit|cancel|go back|change the words|done editing)/i, 1], [/^(download|save image)/i, 2], [/^(copy|print)/i, 3], [/^(check it|read it back|reading)/i, 8], [/^(save|saving|still saving|saved)$/i, 4], [/^save and stop/i, 4]];
   function slotFor(node) {
     if (node.tagName === "A") { return 6; }
     if (node.tagName !== "BUTTON") { return 7; }
@@ -813,23 +837,67 @@
     for (var i = 0; i < ORDER.length; i++) { if (ORDER[i][0].test(t)) { return ORDER[i][1]; } }
     return 5;
   }
-  function arrange(row) {
+  /* the finish: slot → tier order. 0 the ⓘ line · 10 Check it/Read it back · 15 break · 16 results · 20 Save · 21 Your page · 25 break · 30 the quiet things */
+  function finishOrder(node, slot) {
+    if (node.classList.contains("aps-assist")) { return 0; }
+    if (node.classList.contains("aps-read")) { return 16; }
+    if (node.classList.contains("aps-break")) { return node.getAttribute("data-at") === "a" ? 15 : 25; }
+    if (slot === 8) { return 10; }
+    if (slot === 4) { return 20; }
+    if (slot === 6) { return 21; }
+    return 30;
+  }
+  function breakEl(at) { var b = el("span", "aps-break", ""); b.setAttribute("data-at", at); b.setAttribute("aria-hidden", "true"); return b; }
+  function arrange(row, finish) {
     if (!row) { return; }
     row.classList.add("aps-row");
+    if (finish) {
+      row.classList.add("aps-finish");
+      if (!row.querySelector('.aps-break[data-at="a"]')) { row.appendChild(breakEl("a")); row.appendChild(breakEl("b")); }
+    }
     for (var i = 0; i < row.children.length; i++) {
       var c = row.children[i];
       if (c.tagName === "BUTTON" && /^save and stop/i.test((c.textContent || "").trim())) { c.textContent = "Save"; }
-      if (c.tagName === "SPAN" && !(c.textContent || "").trim() && !c.id) { c.style.display = "none"; }   /* a spacer that pushed Save to the far right */
-      c.style.order = String(slotFor(c));
+      if (c.tagName === "SPAN" && !(c.textContent || "").trim() && !c.id && !c.classList.contains("aps-break")) { c.style.display = "none"; }   /* a spacer that pushed Save to the far right */
+      var slot = slotFor(c);
+      if (finish) {
+        var o = finishOrder(c, slot);
+        c.style.order = String(o);
+        if (o === 30 && c.tagName === "BUTTON") { c.classList.add("aps-quiet"); }
+      } else {
+        c.style.order = String(slot === 8 ? 3 : slot);
+      }
     }
   }
+  /* a page that shows every field at once is stacked; one that shows a few at a time is stepped */
+  Story.prototype.stacked = function () {
+    var total = 0, shown = 0;
+    for (var i = 0; i < this.cfg.fields.length; i++) {
+      var node = $(this.cfg.fields[i].id); if (!node) { continue; }
+      total++;
+      var r = node.getBoundingClientRect(), cs = window.getComputedStyle(node);
+      if (cs.display !== "none" && cs.visibility !== "hidden" && r.height > 0) { shown++; }
+    }
+    return total > 3 && shown >= total * 0.8;
+  };
   Story.prototype.oneRow = function () {
     var cfg = this.cfg, self = this;
     if (!$("aps-row-css")) {
       var st = el("style"); st.id = "aps-row-css";
-      st.textContent = ".aps-row{display:flex!important;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;bottom:0;z-index:3;background:#fff;padding:12px 0;border-top:1px solid #E5DCC8}" +
+      st.textContent = ".aps-row{display:flex!important;flex-wrap:wrap;gap:12px 14px;align-items:center;background:#fff;padding:16px 0;border-top:1px solid #E5DCC8}" +
+        ".aps-row.aps-pin{position:sticky;bottom:0;z-index:3}" +
         ".aps-row .aps-page-link{margin-left:auto}" +
-        "@media (max-width:620px){.aps-row>button{flex:1 1 auto}.aps-row .aps-page-link{flex:1 1 100%;text-align:center;margin:4px 0 0}}" +
+        ".aps-row .aps-break{flex:1 1 100%;height:0;margin:0;padding:0}" +
+        ".aps-row.aps-finish{padding:20px 0 12px;gap:14px 16px}" +
+        ".aps-row.aps-finish .aps-assist{flex:1 1 100%;margin:0 0 2px}" +
+        ".aps-row.aps-finish .aps-read{flex:1 1 100%;margin:0}" +
+        ".aps-row.aps-finish .aps-read[hidden]{display:none!important}" +
+        ".aps-row.aps-finish > .aps-break[data-at=\"b\"]{height:1px;background:#E5DCC8;margin:10px 0 2px}" +
+        ".aps-row.aps-finish > .aps-quiet{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-height:0!important;height:auto!important;font-size:14px!important;font-weight:400!important;color:#6B6358!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-right:6px}" +
+        ".aps-row.aps-finish > .aps-quiet:hover{color:#1F2A44!important}" +
+        ".aps-row.aps-finish > .aps-page-link{margin-left:0;font-size:15px}" +
+        ".aps-row > button[disabled]{opacity:.7;cursor:progress}" +
+        "@media (max-width:620px){.aps-row>button{flex:1 1 auto}.aps-row .aps-page-link{flex:1 1 100%;text-align:center;margin:4px 0 0}.aps-row.aps-finish > .aps-quiet{flex:0 1 auto}.aps-row.aps-finish > .aps-page-link{flex:0 1 auto;text-align:left;margin:0}}" +
         "@media print{.aps-row{position:static}}";
       document.head.appendChild(st);
     }
@@ -838,16 +906,25 @@
     Array.prototype.forEach.call(root.querySelectorAll("button"), function (b) {
       if (!stepRow && /^(save and stop|next)\b/i.test((b.textContent || "").trim()) && b.parentNode !== document.querySelector(cfg.actionsRow)) { stepRow = b.parentNode; }
     });
-    var rows = [document.querySelector(cfg.actionsRow), stepRow];
-    rows.forEach(arrange);
+    var finishRow = document.querySelector(cfg.actionsRow);
+    arrange(finishRow, true);
+    arrange(stepRow, false);
+    /* v9: pin the step row to the foot of the screen only when the page shows one step at a time */
+    if (stepRow) { if (this.stacked()) { stepRow.classList.remove("aps-pin"); } else { stepRow.classList.add("aps-pin"); } }
     /* a page may redraw its row's words as it steps; keep the order after any press in it */
-    rows.forEach(function (r) { if (r) { r.addEventListener("click", function () { window.setTimeout(function () { arrange(r); }, 0); }); } });
+    if (finishRow) { finishRow.addEventListener("click", function () { window.setTimeout(function () { arrange(finishRow, true); }, 0); }); }
+    if (stepRow) { stepRow.addEventListener("click", function () { window.setTimeout(function () { arrange(stepRow, false); }, 0); }); }
     /* the way back sits in the row, not under it */
-    var panel = $("apsPanel"), rowA = rows[0];
+    var panel = $("apsPanel"), rowA = finishRow;
     if (panel && rowA) {
-      var move = function () { var a = panel.querySelector("a"); if (a && a.parentNode !== rowA) { rowA.appendChild(a); arrange(rowA); } };
+      var move = function () { var a = panel.querySelector("a"); if (a && a.parentNode !== rowA) { rowA.appendChild(a); arrange(rowA, true); } };
       move(); self._moveLink = move;
     }
+    /* v9: the ⓘ line and the results live inside the finish row, in their tiers */
+    var how = document.querySelector(".aps-assist"), out = $("apsRead");
+    if (rowA && how && how.parentNode !== rowA) { rowA.appendChild(how); }
+    if (rowA && out && out.parentNode !== rowA) { rowA.appendChild(out); }
+    if (rowA) { arrange(rowA, true); }
   };
 
   /* A quiet link to his page, if the page has told us where: drawn for any
@@ -1235,49 +1312,52 @@
     how.querySelector("p").textContent = ASSIST.howText(profile);
 
     function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
-    function show(html) { out.innerHTML = html; out.hidden = !html; }
-    function status(msg) { show(msg ? '<p class="aps-busy">' + esc(msg) + ' <button type="button" class="aps-stop">Stop</button></p>' : ""); var s = out.querySelector(".aps-stop"); if (s) { s.addEventListener("click", function () { if (busy) { busy.abort(); } busy = null; show(""); }); } }
+    function show(html) { out.innerHTML = html; out.hidden = !html; if (html) { try { out.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) {} } }
+    var pressed = null, idle = {};
+    function working(on) {
+      [check, hear].forEach(function (b) { if (on) { idle[b.id] = b.textContent; b.disabled = true; } else { b.disabled = false; if (idle[b.id]) { b.textContent = idle[b.id]; } } });
+      if (on && pressed) { pressed.textContent = "Reading…"; pressed.setAttribute("aria-busy", "true"); }
+      if (!on) { [check, hear].forEach(function (b) { b.removeAttribute("aria-busy"); }); pressed = null; }
+    }
+    function status(msg) { show(msg ? '<p class="aps-busy"><span class="aps-dot" aria-hidden="true"></span>' + esc(msg) + ' <button type="button" class="aps-stop">Stop</button></p>' : ""); var s = out.querySelector(".aps-stop"); if (s) { s.addEventListener("click", function () { if (busy) { busy.abort(); } busy = null; working(false); show(""); }); } }
     function text() { return self.document(); }
-    function begin(msg) { if (!text()) { show('<p class="aps-note">There is nothing written yet. Write something first.</p>'); return null; } busy = new AbortController(); status(msg); return busy.signal; }
+    function begin(btn, msg) { if (!text()) { show('<p class="aps-note">There is nothing written yet. Write something first.</p>'); return null; } pressed = btn; working(true); busy = new AbortController(); status(msg); return busy.signal; }
     function stopBox() { return '<p class="aps-note">If you or anyone else is in danger right now, call 911, or 988 to talk to someone. And tell one man you trust today.</p>'; }
     function noteHTML(n) { return '<article class="aps-noteitem"><div class="aps-kind">' + esc(n.label || ASSIST.KIND[n.check] || "") + '</div><p class="aps-quoted">' + esc(n.quote) + '</p><p class="aps-ask">' + esc(n.question) + '</p>' + (n.check === "half-said" && n.options && n.options[0] ? '<p class="aps-help">One way to say it, in your voice: ' + esc(n.options[0]) + '</p>' : "") + '<p class="aps-help">The change is yours to make, above, in your own words.</p></article>'; }
 
     var check = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""), "Check it"); check.id = "apsCheck"; check.type = "button";
     var hear = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""), "Read it back"); hear.id = "apsHeard"; hear.type = "button";
     check.addEventListener("click", function () {
-      var sig = begin("Reading…"); if (!sig) { return; }
+      var sig = begin(check, "Reading it…"); if (!sig) { return; }
       var t = text();
       ASSIST.notes({ whole: t, name: profile.name, text: t, profile: profile, signal: sig, onStep: status }).then(function (r) {
-        busy = null;
+        busy = null; working(false);
         if (r.stop) { show(stopBox()); return; }
         if (!r.notes.length) { show('<p class="aps-note">Read. Nothing to raise' + (r.dropped ? " (a second read threw " + r.dropped + " out)" : "") + '. You can ask again after you change something.</p>'); return; }
         show('<p class="aps-note">Read. ' + r.notes.length + (r.notes.length === 1 ? " thing" : " things") + " to look at" + (r.dropped ? ", after a second read threw " + r.dropped + " out" : "") + '.</p>' + r.notes.map(noteHTML).join(""));
-      }).catch(function (e) { busy = null; show(ASSIST.copyFor(e) ? '<p class="aps-note">' + esc(ASSIST.copyFor(e)) + '</p>' : ""); });
+      }).catch(function (e) { busy = null; working(false); show(ASSIST.copyFor(e) ? '<p class="aps-note">' + esc(ASSIST.copyFor(e)) + '</p>' : ""); });
     });
     hear.addEventListener("click", function () {
-      var sig = begin("Reading the whole piece…"); if (!sig) { return; }
+      var sig = begin(hear, "Reading the whole piece…"); if (!sig) { return; }
       ASSIST.heard({ story: text(), about: "", profile: profile, signal: sig, onStep: status }).then(function (r) {
-        busy = null;
+        busy = null; working(false);
         if (r.stop) { show(stopBox()); return; }
         var h = r.heard, html = "";
         html += h.text ? '<p class="aps-heard">' + esc(h.text) + '</p>' : '<p class="aps-note">The read-back did not hold up to a second read, so it was thrown away. You can ask again.</p>';
         if (h.open.length) { html += '<p class="aps-kind">Still open</p>' + h.open.map(noteHTML).join(""); }
         if (h.people.length) { html += '<p class="aps-kind">Real people named</p><ul class="aps-people">' + h.people.map(function (x) { return '<li><b>' + esc(x.who) + '</b> — “' + esc(x.quote) + '”</li>'; }).join("") + '</ul><p class="aps-help">They may read this one day. Keep each one, change how they are described, or take the line out, above.</p>'; }
         show(html);
-      }).catch(function (e) { busy = null; show(ASSIST.copyFor(e) ? '<p class="aps-note">' + esc(ASSIST.copyFor(e)) + '</p>' : ""); });
+      }).catch(function (e) { busy = null; working(false); show(ASSIST.copyFor(e) ? '<p class="aps-note">' + esc(ASSIST.copyFor(e)) + '</p>' : ""); });
     });
 
     if (!$("aps-read-css")) {
       var st = el("style"); st.id = "aps-read-css";
-      st.textContent = ".aps-read{max-width:62ch;margin:14px 0 0;font-size:16px;line-height:1.5}.aps-read .aps-busy{font-family:inherit;color:#1F2A44}.aps-read .aps-stop{margin-left:10px;font:inherit;font-size:14px;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:#8C6A3F}.aps-read .aps-note{margin:0}.aps-read .aps-noteitem{border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:14px 16px;margin:14px 0}.aps-read .aps-kind{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:14px 0 4px}.aps-read .aps-noteitem .aps-kind{margin-top:0}.aps-read .aps-quoted{border-left:3px solid #C9A227;padding-left:12px;color:#6B6358;margin:6px 0;white-space:pre-wrap}.aps-read .aps-ask{color:#1F2A44;font-weight:600;margin:6px 0}.aps-read .aps-help{font-size:14.5px;color:#6B6358;margin:4px 0 0}.aps-read .aps-heard{border-left:3px solid #C9A227;padding-left:12px;margin:8px 0}.aps-read .aps-people{margin:6px 0;padding-left:1.2em}" +
+      st.textContent = ".aps-read{max-width:62ch;margin:14px 0 0;font-size:16px;line-height:1.5}.aps-read .aps-busy{font-family:inherit;color:#1F2A44;display:flex;align-items:center;gap:10px;margin:0}.aps-read .aps-dot{width:10px;height:10px;border-radius:50%;background:#C9A227;animation:aps-pulse 1s ease-in-out infinite}@keyframes aps-pulse{0%,100%{opacity:.3}50%{opacity:1}}.aps-read .aps-stop{margin-left:10px;font:inherit;font-size:14px;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:#8C6A3F}.aps-read .aps-note{margin:0}.aps-read .aps-noteitem{border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:14px 16px;margin:14px 0}.aps-read .aps-kind{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:14px 0 4px}.aps-read .aps-noteitem .aps-kind{margin-top:0}.aps-read .aps-quoted{border-left:3px solid #C9A227;padding-left:12px;color:#6B6358;margin:6px 0;white-space:pre-wrap}.aps-read .aps-ask{color:#1F2A44;font-weight:600;margin:6px 0}.aps-read .aps-help{font-size:14.5px;color:#6B6358;margin:4px 0 0}.aps-read .aps-heard{border-left:3px solid #C9A227;padding-left:12px;margin:8px 0}.aps-read .aps-people{margin:6px 0;padding-left:1.2em}" +
         ".aps-assist{margin:10px 0 0}.aps-assist summary{display:inline-flex;align-items:center;gap:8px;color:#6B6358;font-size:14px;cursor:pointer;list-style:none}.aps-assist summary::-webkit-details-marker{display:none}.aps-assist .aps-assist-name{font-weight:700;color:#1F2A44}.aps-assist .aps-info{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid #8C6A3F;color:#8C6A3F;font-family:Georgia,serif;font-style:italic;font-size:12px;font-weight:700;line-height:1}.aps-assist .aps-how{color:#8C6A3F;text-decoration:underline}.aps-assist p{margin:10px 0 0;max-width:62ch;font-size:15.5px;line-height:1.5;border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px}";
       document.head.appendChild(st);
     }
     row.appendChild(check); row.appendChild(hear);
-    check.style.order = "3"; hear.style.order = "3";
-    var note = $("apsNote"), anchor = note || row;
-    anchor.parentNode.insertBefore(how, anchor.nextSibling);
-    how.parentNode.insertBefore(out, how.nextSibling);
+    row.appendChild(how); row.appendChild(out);   /* v9: the ⓘ line and the results are tiers of the finish row; oneRow orders them */
     return true;
   };
 
@@ -1285,7 +1365,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "8",
+    version: "9",
     assistant: ASSIST,
 
     init: function (cfg) {
