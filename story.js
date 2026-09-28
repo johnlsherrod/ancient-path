@@ -1,6 +1,17 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v7
-   Ancient Path — Your Story: the shared save.
+   AP-STORY-MODULE-v8
+   Ancient Path — the Chronicle: the shared save and the story assistant.
+
+   v8 (28 Sept 2026) — one engine. The Story assistant that lived in
+   road.js (the house document, the four asks and their second reads,
+   the relay to Claude, the page-side guards) now lives HERE, once, as
+   APStory.assistant, and road.js calls it. A piece plugs in with a
+   profile ({kind: "story" | "poem"}); a poem, a lament or a prayer gets
+   Check it and Read it back in its finish row from cfg.assistant, and
+   nothing in them changes a word he wrote. The relay address can be set
+   for any page with window.AP_READER (a string) or turned off (false);
+   AP_ROAD.reader still governs the Road pages. A page that runs without
+   this file (the published walk-through) must inline it before road.js.
 
    v7 (27 Sept 2026) — the fix pass from the Story Hub QA sweep, one rule
    for every piece that loads this file:
@@ -759,6 +770,7 @@
 
     row.appendChild(btn);
     this.mountEditAll(row);
+    this.mountAssistant(row);   /* v8 */
     row.parentNode.insertBefore(note, row.nextSibling);
     note.parentNode.insertBefore(panel, note.nextSibling);
     this.renderSaved(panel);   /* v5: the way back, from the start, when he is signed in */
@@ -793,7 +805,7 @@
        3 Copy · Print                              4 Save
        5 Next · Finish · anything else            6 Your page   7 notes
      ====================================================================== */
-  var ORDER = [[/^(back|edit|cancel|go back|change the words|done editing)/i, 1], [/^(download|save image)/i, 2], [/^(copy|print)/i, 3], [/^(save|saving|still saving|saved)$/i, 4], [/^save and stop/i, 4]];
+  var ORDER = [[/^(back|edit|cancel|go back|change the words|done editing)/i, 1], [/^(download|save image)/i, 2], [/^(copy|print|check it|read it back)/i, 3], [/^(save|saving|still saving|saved)$/i, 4], [/^save and stop/i, 4]];
   function slotFor(node) {
     if (node.tagName === "A") { return 6; }
     if (node.tagName !== "BUTTON") { return 7; }
@@ -924,10 +936,357 @@
   };
 
   /* ======================================================================
+     9b. v8 — THE STORY ASSISTANT, SHARED (moved here from road.js v32)
+     ------------------------------------------------------------------
+     One engine (John, Sept 27): the functional capability under every
+     piece is written once, here, and a piece plugs its prompts into it
+     with a short profile. What lives here: the house document (what a
+     first reader is and may never do), the four asks and their second
+     reads, the relay to Claude, and the page-side guards no instruction
+     can be trusted with. road.js calls these; a poem or a prayer gets
+     the two it may have (Check it · Read it back) from mountAssistant.
+
+     A profile says which piece this is:
+       { kind: "story" | "poem",     story: chapters of prose (default)
+         unit: "sentence" | "line",  what a quote must be one whole of
+         name: "Where I'm From",     the piece's name, for the reader
+         checks: [...] }             which checks run (poem: fewer)
+     ====================================================================== */
+  var ASSIST = (function () {
+    var HOUSE_HEAD = "You are \"a first reader\" for Ancient Path Biblical Coaching. ";
+    var HOUSE_STORY = "A man has finished a formation course and is turning his own short answers into a story he may one day offer as testimony.";
+    var HOUSE_POEM = "A man has written a short piece in his own words on the site — a poem, a lament or a prayer — that he may one day offer as testimony.";
+    var HOUSE_BODY = [
+      " You read the way a good listener in a men's group listens: you say what you heard, you ask one curious question at a time, you give no advice, you do not interpret him, and you never tell him what he is or what he feels.",
+      "",
+      "THE STORY STAYS HIS. Every fact, name, time, place and event comes from him. You never supply one, not even a small one (\"that spring\", \"years later\", \"at thirty\").",
+      "",
+      "A JOINING WORD IS A CLAIM ABOUT HIS LIFE. \"So\", \"because\", \"the same way\", \"ever since\", \"then\", \"by then\" each say that one thing caused, resembled or followed another. Never propose or imply such a link unless his own words already state it. When two sentences sit side by side and you cannot tell whether they are connected, ask him. Never bridge them for him.",
+      "",
+      "THE CHECKS. Read the whole story for context, then run these on the part you are given:",
+      "0. exposes: a real person other than the writer who can be recognized (a name, or a role plus details) AND who is said to have done wrong, or whose private matter is told (an affair, an illness, a debt, a sin, a diagnosis). A person who is only mentioned is not exposed. Quote the sentence, leave \"question\" as an empty string and give no options: the page asks him, in its own fixed words, whether to keep it, change how the person is described, or remove it.",
+      "1. belongs: a sentence about something different from the sentences around it. To find these, first say to yourself in two or three words what EACH sentence is about (work, money, his father, his son…). A sentence whose subject appears nowhere else in the part is a candidate even when it sounds like it fits the mood. Ask whether it is connected, and how, or where it belongs. Do not invent the connection, and do not skip this check because the sentences share a feeling.",
+      "2. link: a joining word or phrase in his text that claims a cause, a likeness or an order his words do not support.",
+      "3. half-said: something pointed at but never said (\"what my father said\", \"what happens in the car\", \"the thing I hid\"). A reader is left outside. For this check give exactly ONE option: the sentence opening that would let him say it in his own voice (\"What he said was…\", \"What happens in the car is…\"). The page adds his other two choices itself (say what it cost without repeating it; take the sentence out) and writes the question, so leave \"question\" as an empty string for this check.",
+      "4. disagree: two statements that cannot both be true as written: who knew, who said what to whom, what came first, how long, how many. For every sentence about saying, hearing, telling or knowing, work out who was there and who therefore already knows; a thing said TO him is a thing the speaker knows he heard.",
+      "5. stranger: a person, place or event that a reader who was not there cannot follow at its first mention.",
+      "6. gap: a place where cause, cost or change is missing: what happened, what it cost him, what he did, what changed. Ask about HIM: what he did, felt, wanted, feared or chose.",
+      "",
+      "LIMITS. Never ask for more about what another person did wrong, or how he found it out; the story is about him, so ask what he did, felt, wanted or chose. Never ask for the details of harm done to him. Never ask him to write out a sin he has confessed or means to confess; ask what he did with it, what it cost, or who knows. If the text suggests that he or anyone else is in danger now, return no notes and set \"stop\" to true.",
+      "",
+      "QUESTIONS. One sentence. Plain words, second person. No church language, and never the word \"brother\". A question that contains its own answer is not a question. When a question is the one the whole story turns on, ask it and offer NO options: it is his to find.",
+      "OPTIONS. Up to three sentence openings in his voice that he finishes himself, each ending with \"…\". They carry no facts: no names, numbers, times, places or events that are not already in his text."
+    ].join("\n");
+    var HOUSE_POEM_RULES = "\n\nTHIS IS A POEM, A LAMENT OR A PRAYER. Its line breaks are his. A line need not be a full sentence, and a plain or rough line is his voice, not a fault: never suggest smoother wording, and never judge it as writing. Where these rules say \"sentence\", read \"line\".";
+
+    var ALL_CHECKS = ["exposes", "belongs", "link", "half-said", "disagree", "stranger", "gap"];
+    var POEM_CHECKS = ["exposes", "half-said", "disagree", "stranger"];
+    var KIND = {
+      "exposes": "A real person is named", "belongs": "Does this belong here?", "link": "A joining word that claims something", "half-said": "Half-said",
+      "disagree": "These don’t agree", "stranger": "A reader hasn’t met this yet", "gap": "Something is missing here"
+    };
+    var HALF_Q = "A reader is left outside here. You can say it, say what it cost you without repeating it, or remove the sentence.";
+    var EXPOSE_Q = "This names a real person, and someone who knows them could recognize them here. They may read this one day. Keep it, change how they are described, or remove the sentence.";
+    var HOUSE_OPENINGS = ["What happened next was…", "While that was going on, …", "Around the same time, …"];
+
+    function prof(p) { p = p || {}; var poem = p.kind === "poem"; return { kind: poem ? "poem" : "story", unit: p.unit || (poem ? "line" : "sentence"), name: p.name || "", checks: p.checks || (poem ? POEM_CHECKS : ALL_CHECKS) }; }
+    function house(p) { p = prof(p); return HOUSE_HEAD + (p.kind === "poem" ? HOUSE_POEM : HOUSE_STORY) + HOUSE_BODY + (p.kind === "poem" ? HOUSE_POEM_RULES : ""); }
+    function unitOf(p) { return prof(p).unit; }
+
+    function askNotes(p) {
+      var u = unitOf(p), checks = prof(p).checks.join("|");
+      return [
+        "YOUR TASK NOW: read the part marked PART TO READ and return notes on it.",
+        "Reply with only a JSON object of this shape:",
+        "{\"stop\": false, \"subjects\": [{\"starts\": \"first three words of the " + u + "\", \"about\": \"two or three words\"}], \"notes\": [{\"check\": \"" + checks + "\", \"quote\": \"one " + u + " copied character for character from the part\", \"question\": \"…\", \"options\": [\"…\"]}]}",
+        "List \"subjects\" for every " + u + " in the part first; it is your working, and the page does not show it. Then at most four notes, the most important first. Importance runs in this order: exposes, disagree, link, belongs, half-said, then stranger and gap. Report every \"exposes\" you find, up to four, before anything else. He can ask again after he has worked on these. If the part already reads well, return fewer, or none. Each \"quote\" must be one whole " + u + " copied exactly from PART TO READ, so the page can find it." + (checks.indexOf("|") > 0 && prof(p).checks.length < ALL_CHECKS.length ? " Run only these checks: " + prof(p).checks.join(", ") + "." : "")
+      ].join("\n");
+    }
+    var ASK_CHECK_NOTES = [
+      "You are the second reader. You did not write these notes. Your job is to try to break each one, using the rules above.",
+      "Reject a note if: its quote is not in the part; it tells him something about himself instead of asking; it asserts or implies a connection he did not state; it asks for the details of harm done to him or for a confession to be written out; its question contains its own answer; any option carries a fact that is not in his text; it is advice; it uses church language or the word \"brother\"; it asks for more about another person's wrongdoing; it marks as \"exposes\" a person who is only mentioned and not accused or made private; or it is simply wrong about what the text says (for example, it claims a contradiction that is not one).",
+      "Reply with only a JSON object: {\"verdicts\": [{\"i\": 0, \"keep\": true, \"why\": \"a few words\"}]} with one verdict per note, in order."
+    ].join("\n");
+    var ASK_SMOOTH = [
+      "YOUR TASK NOW: smooth the part marked PART TO READ so it reads clearly and flows. This is for clarity and flow, nothing else.",
+      "You may: fix grammar, tense agreement and punctuation; split or join sentences; remove a repeated word; move a sentence only if no meaning changes.",
+      "You may not: add any fact, detail, name, time or feeling; add a joining word that claims cause, likeness or order unless his own words already state that connection; change what he means; make it sound like a writer instead of like him. Keep his words. If the part already reads well, return it unchanged.",
+      "Keep his paragraph breaks.",
+      "Reply with only a JSON object: {\"stop\": false, \"text\": \"the whole part, smoothed\", \"changed\": [\"a few words on each change you made\"]}. If the text suggests that he or anyone else is in danger now, set \"stop\" to true and return an empty \"text\"."
+    ].join("\n");
+    var ASK_CHECK_SMOOTH = [
+      "You are the second reader. You did not write the smoothed version. Compare it with his original and try to break it.",
+      "Reject it if: it adds any fact, detail, name, time or feeling he did not write; it adds or keeps a joining word that claims a cause, likeness or order his words do not support; two statements in it cannot both be true; his meaning changed anywhere; or it no longer sounds like the same man.",
+      "Reply with only a JSON object: {\"ok\": true, \"problems\": [\"exact words at fault, and why\"]}"
+    ].join("\n");
+    function askHeard(p) {
+      var u = unitOf(p);
+      return [
+        "YOUR TASK NOW: read the whole story and return three things.",
+        "\"heard\": at most sixty words, beginning \"A reader will hear\". Do not retell the story " + u + " by " + u + ". Say what a stranger would take this story to be about, what is different between its first " + u + " and its last, and the one thing a stranger still could not tell. Report only what is on the page. No praise, no verdict, no advice, no interpretation, and nothing about what he is.",
+        "\"open\": anything from the " + (prof(p).kind === "poem" ? "" : "six ") + "checks that still stands anywhere in the story, at most four, each with the exact " + u + " and one question.",
+        "\"people\": every real person or named business other than the writer who appears in the story (not groups like \"three men\"), each with the way the story names them and the first " + u + " they appear in, copied exactly.",
+        "Reply with only a JSON object: {\"stop\": false, \"heard\": \"…\", \"open\": [{\"check\": \"…\", \"quote\": \"…\", \"question\": \"…\"}], \"people\": [{\"who\": \"…\", \"quote\": \"…\"}]}"
+      ].join("\n");
+    }
+    var ASK_CHECK_HEARD = [
+      "You are the second reader. You did not write this read-back. Try to break it.",
+      "Reject the \"heard\" text if it says anything that is not on the page, praises or judges him, gives advice, interprets him, or says what he is. Reject an \"open\" item on the same grounds as any note: a quote not in the story, a question that tells instead of asks, an implied connection he did not state, a request for details of harm or a written confession, or a plain misreading.",
+      "Reply with only a JSON object: {\"heardOk\": true, \"heardWhy\": \"a few words\", \"verdicts\": [{\"i\": 0, \"keep\": true, \"why\": \"a few words\"}]}"
+    ].join("\n");
+    var ASK_GAPS = [
+      "YOUR TASK NOW: his sentences below are set side by side. That is a list, not yet a story. A story lives in what happened BETWEEN the sentences. For each gap between one numbered sentence and the next, write the one question whose answer, in his words, would carry a reader across.",
+      "A good gap question: names what each of the two sentences is about, using his own words; asks how he got from the one to the other; and leaves room for the honest answer that they are not connected. Prefer a question whose answer is something that HAPPENED (a day, a place, something said or done, how long it took) over a question whose answer is an idea or a feeling word. Never state or hint at the connection yourself. The LIMITS and the rules for QUESTIONS and OPTIONS above all apply.",
+      "Where he has already written something between two sentences, read it: if it carries a reader across, ask what is still missing from it, or return an empty question for that gap.",
+      "Give two or three openings for each gap. His answer will sit between the two sentences, so every opening must lead a reader INTO the second sentence. Do not offer an opening that says the two are separate: the page gives him his own button for that (\"They are separate. Start a new paragraph here\"), and a sentence that comments on both lines reads backwards when it sits between them.",
+      "Reply with only a JSON object: {\"stop\": false, \"gaps\": [{\"before\": 1, \"question\": \"…\", \"openings\": [\"…\"]}]} where \"before\" is the number of the sentence the gap comes before. One entry for every gap, in order."
+    ].join("\n");
+    var ASK_CHECK_GAPS = [
+      "You are the second reader. You did not write these gap questions. Try to break each one, using the rules above.",
+      "Reject a question if: it states, hints at or assumes the connection between the two sentences; it tells him something about himself; it asks for the details of harm done to him or for a confession to be written out; it contains its own answer; it misreads either sentence; it is advice; it uses church language or the word \"brother\"; or any opening carries a fact that is not in his text.",
+      "Reply with only a JSON object: {\"verdicts\": [{\"i\": 0, \"keep\": true, \"why\": \"a few words\"}]} with one verdict per question, in order."
+    ].join("\n");
+
+    /* ---------- page-side guards: what no instruction can be trusted with ---------- */
+    var SMALL = ("a an and the but or nor so yet for of to in on at by with from as is was were be been being am are it its this that these those there here he him his she her they them their we us our you your i me my mine not no never ever still even only also just then than when while where who whom whose which what how why if because since until after before into onto over under up down out off about again more most less very too had has have having do does did done would could should will can may might must").split(" ");
+    function words(s) { return (String(s).toLowerCase().match(/[a-z’']+/g) || []).map(function (w) { return w.replace(/[’']s$/, "").replace(/[’']/g, ""); }); }
+    function stem(w) { return w.replace(/(ing|ed|es|s|ly)$/, ""); }
+    /* every word in a suggestion must already be his, or be one of the small words of the language */
+    function added(original, suggestion) {
+      var have = {}; words(original).forEach(function (w) { have[w] = 1; have[stem(w)] = 1; });
+      var out = [];
+      words(suggestion).forEach(function (w) { if (!have[w] && !have[stem(w)] && SMALL.indexOf(w) < 0 && out.indexOf(w) < 0) out.push(w); });
+      return out;
+    }
+    /* an option may not carry a name or a number that is not already in his text */
+    function optionClean(opt, text) {
+      var t = String(opt), body = t.replace(/^[^A-Za-z]*[A-Za-z’']+/, "");
+      var caps = body.match(/\b[A-Z][a-z]+/g) || [], ok = true;
+      caps.forEach(function (c) { if (c !== "I" && c !== "God" && text.indexOf(c) < 0) ok = false; });
+      if (/\d/.test(t)) ok = false;
+      return ok;
+    }
+    function has(text, quote) { return !!(quote && text.indexOf(quote) >= 0); }
+
+    /* ---------- the relay: the key stays in the relay, never on a page ---------- */
+    var READER_URL = "https://script.google.com/macros/s/AKfycbwhyhcluoAKYVxUoKW6UnoN8Iab80DHLq_2snfTKu9i1gwSCkvBcH41HtNKFdlvGgkp/exec";
+    function relayURL() {
+      var c = window.AP_ROAD;
+      if (c && c.reader === false) { return ""; }
+      if (c && typeof c.reader === "string" && c.reader) { return c.reader; }
+      var g = window.AP_READER;
+      if (g === false) { return ""; }
+      if (typeof g === "string" && g) { return g; }
+      return READER_URL;
+    }
+    function canRead() { return !!(window.claude && window.claude.use) || !!relayURL(); }
+    function relay(url) {
+      return { json: function (input, opts) {
+        var sig = opts && opts.signal, who = ""; try { who = window.localStorage.getItem("apStoryOwner") || ""; } catch (e) {}
+        return window.fetch(url, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ input: String(input || "").slice(0, 60000), id: who }), signal: sig, credentials: "omit" })
+          .then(function (r) { return r.json(); }, function () { throw { code: "network" }; })
+          .then(function (r) { if (!r || r.ok !== true) { throw { code: (r && r.error) || "network" }; } return r.data; });
+      } };
+    }
+    function reader() {
+      if (window.claude && window.claude.use) { return window.claude.use("sample"); }
+      var u = relayURL(); return window.Promise.resolve(u ? relay(u) : null);
+    }
+    function copyFor(e) {
+      var c = e && e.code;
+      if (c === "cancelled" || (e && e.name === "AbortError")) { return ""; }
+      if (c === "no_reader") { return "Claude can’t be reached in this view."; }
+      if (c === "not_granted" || c === "sampling_disabled" || c === "not_declared" || c === "capability_disabled" || c === "capability_removed") { return "Claude isn’t allowed in this view. Your story is still here, and still yours to work on."; }
+      if (c === "rate_limited") { return "Claude is busy, or you have reached your limit for now. Try again later."; }
+      if (c === "session_expired") { return "You have been signed out. Sign in again, then ask."; }
+      if (c === "refused") { return "Claude would not read this part as it is written."; }
+      if (c === "invalid_json" || c === "empty_completion") { return "The answer came back unreadable, so it was thrown away. You can ask again."; }
+      return "Claude could not be reached just now. You can ask again.";
+    }
+    function withReader() { return reader().then(function (s) { if (!s) { throw { code: "no_reader" }; } return s; }); }
+    function step(o, m) { if (o && typeof o.onStep === "function") { try { o.onStep(m); } catch (e) {} } }
+
+    /* ---------- the four asks, each with its second read ---------- */
+    /* notes: o = { whole, name, text, profile, signal, onStep } → {stop:true} | {notes:[...], dropped} */
+    function notes(o) {
+      var H = house(o.profile), checks = prof(o.profile).checks;
+      return withReader().then(function (sample) {
+        var input = H + "\n\nTHE WHOLE STORY SO FAR:\n" + o.whole + "\n\nPART TO READ: [" + o.name + "]\n" + o.text + "\n\n" + askNotes(o.profile);
+        return sample.json(input, { signal: o.signal, cache: false }).then(function (r) {
+          if (r && r.stop) { return { stop: true }; }
+          var ns = ((r && r.notes) || []).filter(function (n) { return n && KIND[n.check] && checks.indexOf(n.check) >= 0 && (n.question || n.check === "half-said" || n.check === "exposes") && has(o.text, n.quote); }).slice(0, 4);
+          ns.forEach(function (n) { if (n.check === "exposes") { n.question = EXPOSE_Q; n.options = []; } });
+          ns.forEach(function (n) { if (n.check === "half-said") { n.question = HALF_Q; n.options = [String((n.options || [])[0] || "What happened was…"), "I won’t repeat it here. What it cost me was…", "Remove this sentence"]; } });
+          if (!ns.length) { return { notes: [], dropped: 0 }; }
+          step(o, "Checking its own notes…");
+          var check = H + "\n\nTHE WHOLE STORY SO FAR:\n" + o.whole + "\n\nPART THE NOTES ARE ABOUT: [" + o.name + "]\n" + o.text + "\n\nTHE NOTES:\n" + JSON.stringify(ns) + "\n\n" + ASK_CHECK_NOTES;
+          return sample.json(check, { signal: o.signal, cache: false }).then(function (v) {
+            var keep = {}; ((v && v.verdicts) || []).forEach(function (x) { if (x && x.keep === true) { keep[x.i] = 1; } });
+            var dropped = 0;
+            ns = ns.filter(function (n, k) { if (!keep[k]) { dropped++; return false; } return true; });
+            ns.forEach(function (n) { n.label = KIND[n.check]; n.options = (n.options || []).filter(function (x) { return n.check === "half-said" || optionClean(x, o.text); }).slice(0, 3); n.answer = ""; });
+            return { notes: ns, dropped: dropped };
+          });
+        });
+      });
+    }
+    /* gaps: o = { whole, name, numbered, count, all, profile, signal, onStep } → {stop} | {bad:true} | {gaps:[{before, question, openings}], dropped} */
+    function gaps(o) {
+      var H = house(o.profile);
+      return withReader().then(function (sample) {
+        var input = H + "\n\nTHE WHOLE STORY SO FAR:\n" + o.whole + "\n\nHIS SENTENCES IN [" + o.name + "], NUMBERED:\n" + o.numbered + "\n\n" + ASK_GAPS;
+        return sample.json(input, { signal: o.signal, cache: false }).then(function (r) {
+          if (r && r.stop) { return { stop: true }; }
+          var gs = ((r && r.gaps) || []).filter(function (g) { return g && String(g.question || "").trim() && g.before >= 2 && g.before <= o.count; });
+          if (!gs.length) { return { bad: true }; }
+          step(o, "Checking its own questions…");
+          var check = H + "\n\nHIS SENTENCES IN [" + o.name + "], NUMBERED:\n" + o.numbered + "\n\nTHE GAP QUESTIONS:\n" + JSON.stringify(gs) + "\n\n" + ASK_CHECK_GAPS;
+          return sample.json(check, { signal: o.signal, cache: false }).then(function (v) {
+            var keep = {}, dropped = 0, out = []; ((v && v.verdicts) || []).forEach(function (x) { if (x && x.keep === true) { keep[x.i] = 1; } });
+            gs.forEach(function (g, n) {
+              if (!keep[n]) { dropped++; return; }
+              out.push({ before: g.before, question: String(g.question), openings: (g.openings || []).filter(function (x) { return optionClean(x, o.all || o.whole); }).slice(0, 3) });
+            });
+            return { gaps: out, dropped: dropped };
+          });
+        });
+      });
+    }
+    /* smooth: o = { whole, name, text, profile, signal, onStep } → {stop} | {thrown} | {text, changed} */
+    function smooth(o) {
+      var H = house(o.profile);
+      return withReader().then(function (sample) {
+        var input = H + "\n\nTHE WHOLE STORY SO FAR:\n" + o.whole + "\n\nPART TO READ: [" + o.name + "]\n" + o.text + "\n\n" + ASK_SMOOTH;
+        return sample.json(input, { signal: o.signal, cache: false }).then(function (r) {
+          if (r && r.stop) { return { stop: true }; }
+          var text = r && typeof r.text === "string" ? r.text.trim() : "";
+          if (!text) { return { thrown: "The answer came back unreadable, so it was thrown away." }; }
+          if (text === o.text.trim()) { return { thrown: "Read. Not a word needs to change." }; }
+          var extra = added(o.text, text);
+          if (extra.length) { return { thrown: "The suggestion used words you did not write (" + extra.slice(0, 6).join(", ") + "), so it was thrown away. Nothing was changed." }; }
+          step(o, "Checking its own suggestion…");
+          var check = H + "\n\nHIS ORIGINAL:\n" + o.text + "\n\nTHE SMOOTHED VERSION:\n" + text + "\n\n" + ASK_CHECK_SMOOTH;
+          return sample.json(check, { signal: o.signal, cache: false }).then(function (v) {
+            if (v && v.ok === true) { return { text: text, changed: (r.changed || []).slice(0, 6) }; }
+            return { thrown: "A second read found a problem with the suggestion" + (v && v.problems && v.problems[0] ? " (" + String(v.problems[0]).slice(0, 160) + ")" : "") + ", so it was thrown away. Nothing was changed." };
+          });
+        });
+      });
+    }
+    /* heard: o = { story, about, profile, signal, onStep } → {stop} | {heard:{about, beside, text, open, people}} */
+    function heard(o) {
+      var H = house(o.profile), about = String(o.about || "").trim(), story = o.story;
+      return withReader().then(function (sample) {
+        var input = H + "\n\nTHE WHOLE STORY:\n" + story + (about ? "\n\nHE SAYS THE STORY IS ABOUT: " + about + "\nAdd a fourth key, \"beside\": one sentence that sets what he says it is about beside what a stranger would take it to be about, without judging either and without advice." : "") + "\n\n" + askHeard(o.profile);
+        return sample.json(input, { signal: o.signal, cache: false }).then(function (r) {
+          if (r && r.stop) { return { stop: true }; }
+          var open = ((r && r.open) || []).filter(function (n) { return n && n.question && has(story, n.quote); }).slice(0, 4);
+          var people = ((r && r.people) || []).filter(function (n) { return n && n.who && has(story, n.quote); });
+          step(o, "Checking its own reading…");
+          var check = H + "\n\nTHE WHOLE STORY:\n" + story + "\n\nTHE READ-BACK:\n" + JSON.stringify({ heard: String(r.heard || "") + (about && r.beside ? " " + r.beside : ""), open: open }) + "\n\n" + ASK_CHECK_HEARD;
+          return sample.json(check, { signal: o.signal, cache: false }).then(function (v) {
+            var keep = {}; ((v && v.verdicts) || []).forEach(function (x) { if (x && x.keep === true) { keep[x.i] = 1; } });
+            open.forEach(function (n) { n.label = KIND[n.check] || ""; });
+            return { heard: { about: about, beside: v && v.heardOk === true && about ? String(r.beside || "") : "", text: v && v.heardOk === true ? String(r.heard || "") : "", open: open.filter(function (n, k) { return keep[k]; }), people: people } };
+          });
+        });
+      });
+    }
+
+    /* the circled i text: every sentence is something the page enforces */
+    function howText(p) {
+      p = prof(p);
+      if (p.kind === "poem") { return "How the story assistant helps. Claude, an AI, reads what you wrote and does two things: checks it for what is half-said or for a real person named, and reads the whole piece back the way a stranger would hear it. It never adds a fact, a name, a time or a feeling. It never changes a word: what you wrote stays as you wrote it, and any change is yours to make. Nothing is sent until you press a button. Ancient Path reads only what you choose to publish."; }
+      return "How the story assistant helps. Claude, an AI, reads what you wrote and does four things: asks better questions about your own lines, checks a part for what is half-said or for a real person named, smooths a part for clarity and flow, and reads the whole story back the way a stranger would hear it. It never adds a fact, a name, a time or a feeling. It never changes what you mean. Every suggestion sits beside your original, and nothing changes until you press Use this. If a suggestion uses a word you did not write, the page throws it away. Nothing is sent until you press a button. Ancient Path reads only what you choose to publish.";
+    }
+
+    return {
+      version: "1",
+      profile: prof, house: house, howText: howText,
+      canRead: canRead, relayURL: relayURL, reader: reader, copyFor: copyFor,
+      notes: notes, gaps: gaps, smooth: smooth, heard: heard,
+      added: added, optionClean: optionClean, has: has, words: words,
+      KIND: KIND, HALF_Q: HALF_Q, EXPOSE_Q: EXPOSE_Q, HOUSE_OPENINGS: HOUSE_OPENINGS,
+      prompts: function (p) { return { HOUSE: house(p), ASK_NOTES: askNotes(p), ASK_CHECK_NOTES: ASK_CHECK_NOTES, ASK_SMOOTH: ASK_SMOOTH, ASK_CHECK_SMOOTH: ASK_CHECK_SMOOTH, ASK_HEARD: askHeard(p), ASK_GAPS: ASK_GAPS, ASK_CHECK_GAPS: ASK_CHECK_GAPS, ASK_CHECK_HEARD: ASK_CHECK_HEARD }; }
+    };
+  })();
+
+  /* ======================================================================
+     9c. v8 — CHECK IT · READ IT BACK ON A POEM, A LAMENT OR A PRAYER
+     ------------------------------------------------------------------
+     cfg.assistant = { kind: "poem", name: "Where I'm From" } gives a piece
+     the two buttons a poem may have (never Smooth it: its roughness is
+     his voice; never Better questions: the stems already are the
+     questions). Nothing here changes a word he wrote: a note shows him
+     the line and one question, and the change is his to make in his
+     own words above. Mounted into the finish row beside Save.
+     ====================================================================== */
+  Story.prototype.mountAssistant = function (row) {
+    var self = this, cfg = this.cfg, p = cfg.assistant;
+    if (!p || $("apsCheck")) { return false; }
+    if (!ASSIST.canRead()) { return false; }
+    var profile = ASSIST.profile(typeof p === "object" ? p : { kind: "poem" });
+    if (!profile.name) { profile.name = cfg.title || cfg.form || ""; }
+    var busy = null;
+
+    var out = el("div", "aps-read", ""); out.id = "apsRead"; out.hidden = true;
+    var how = el("details", "aps-assist", "");
+    how.innerHTML = '<summary><span class="aps-assist-name">Story assistant</span> <span class="aps-info" aria-hidden="true">i</span> <span class="aps-how">How it helps</span></summary><p></p>';
+    how.querySelector("p").textContent = ASSIST.howText(profile);
+
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+    function show(html) { out.innerHTML = html; out.hidden = !html; }
+    function status(msg) { show(msg ? '<p class="aps-busy">' + esc(msg) + ' <button type="button" class="aps-stop">Stop</button></p>' : ""); var s = out.querySelector(".aps-stop"); if (s) { s.addEventListener("click", function () { if (busy) { busy.abort(); } busy = null; show(""); }); } }
+    function text() { return self.document(); }
+    function begin(msg) { if (!text()) { show('<p class="aps-note">There is nothing written yet. Write something first.</p>'); return null; } busy = new AbortController(); status(msg); return busy.signal; }
+    function stopBox() { return '<p class="aps-note">If you or anyone else is in danger right now, call 911, or 988 to talk to someone. And tell one man you trust today.</p>'; }
+    function noteHTML(n) { return '<article class="aps-noteitem"><div class="aps-kind">' + esc(n.label || ASSIST.KIND[n.check] || "") + '</div><p class="aps-quoted">' + esc(n.quote) + '</p><p class="aps-ask">' + esc(n.question) + '</p>' + (n.check === "half-said" && n.options && n.options[0] ? '<p class="aps-help">One way to say it, in your voice: ' + esc(n.options[0]) + '</p>' : "") + '<p class="aps-help">The change is yours to make, above, in your own words.</p></article>'; }
+
+    var check = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""), "Check it"); check.id = "apsCheck"; check.type = "button";
+    var hear = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""), "Read it back"); hear.id = "apsHeard"; hear.type = "button";
+    check.addEventListener("click", function () {
+      var sig = begin("Reading…"); if (!sig) { return; }
+      var t = text();
+      ASSIST.notes({ whole: t, name: profile.name, text: t, profile: profile, signal: sig, onStep: status }).then(function (r) {
+        busy = null;
+        if (r.stop) { show(stopBox()); return; }
+        if (!r.notes.length) { show('<p class="aps-note">Read. Nothing to raise' + (r.dropped ? " (a second read threw " + r.dropped + " out)" : "") + '. You can ask again after you change something.</p>'); return; }
+        show('<p class="aps-note">Read. ' + r.notes.length + (r.notes.length === 1 ? " thing" : " things") + " to look at" + (r.dropped ? ", after a second read threw " + r.dropped + " out" : "") + '.</p>' + r.notes.map(noteHTML).join(""));
+      }).catch(function (e) { busy = null; show(ASSIST.copyFor(e) ? '<p class="aps-note">' + esc(ASSIST.copyFor(e)) + '</p>' : ""); });
+    });
+    hear.addEventListener("click", function () {
+      var sig = begin("Reading the whole piece…"); if (!sig) { return; }
+      ASSIST.heard({ story: text(), about: "", profile: profile, signal: sig, onStep: status }).then(function (r) {
+        busy = null;
+        if (r.stop) { show(stopBox()); return; }
+        var h = r.heard, html = "";
+        html += h.text ? '<p class="aps-heard">' + esc(h.text) + '</p>' : '<p class="aps-note">The read-back did not hold up to a second read, so it was thrown away. You can ask again.</p>';
+        if (h.open.length) { html += '<p class="aps-kind">Still open</p>' + h.open.map(noteHTML).join(""); }
+        if (h.people.length) { html += '<p class="aps-kind">Real people named</p><ul class="aps-people">' + h.people.map(function (x) { return '<li><b>' + esc(x.who) + '</b> — “' + esc(x.quote) + '”</li>'; }).join("") + '</ul><p class="aps-help">They may read this one day. Keep each one, change how they are described, or take the line out, above.</p>'; }
+        show(html);
+      }).catch(function (e) { busy = null; show(ASSIST.copyFor(e) ? '<p class="aps-note">' + esc(ASSIST.copyFor(e)) + '</p>' : ""); });
+    });
+
+    if (!$("aps-read-css")) {
+      var st = el("style"); st.id = "aps-read-css";
+      st.textContent = ".aps-read{max-width:62ch;margin:14px 0 0;font-size:16px;line-height:1.5}.aps-read .aps-busy{font-family:inherit;color:#1F2A44}.aps-read .aps-stop{margin-left:10px;font:inherit;font-size:14px;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:#8C6A3F}.aps-read .aps-note{margin:0}.aps-read .aps-noteitem{border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:14px 16px;margin:14px 0}.aps-read .aps-kind{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:14px 0 4px}.aps-read .aps-noteitem .aps-kind{margin-top:0}.aps-read .aps-quoted{border-left:3px solid #C9A227;padding-left:12px;color:#6B6358;margin:6px 0;white-space:pre-wrap}.aps-read .aps-ask{color:#1F2A44;font-weight:600;margin:6px 0}.aps-read .aps-help{font-size:14.5px;color:#6B6358;margin:4px 0 0}.aps-read .aps-heard{border-left:3px solid #C9A227;padding-left:12px;margin:8px 0}.aps-read .aps-people{margin:6px 0;padding-left:1.2em}" +
+        ".aps-assist{margin:10px 0 0}.aps-assist summary{display:inline-flex;align-items:center;gap:8px;color:#6B6358;font-size:14px;cursor:pointer;list-style:none}.aps-assist summary::-webkit-details-marker{display:none}.aps-assist .aps-assist-name{font-weight:700;color:#1F2A44}.aps-assist .aps-info{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid #8C6A3F;color:#8C6A3F;font-family:Georgia,serif;font-style:italic;font-size:12px;font-weight:700;line-height:1}.aps-assist .aps-how{color:#8C6A3F;text-decoration:underline}.aps-assist p{margin:10px 0 0;max-width:62ch;font-size:15.5px;line-height:1.5;border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px}";
+      document.head.appendChild(st);
+    }
+    row.appendChild(check); row.appendChild(hear);
+    check.style.order = "3"; hear.style.order = "3";
+    var note = $("apsNote"), anchor = note || row;
+    anchor.parentNode.insertBefore(how, anchor.nextSibling);
+    how.parentNode.insertBefore(out, how.nextSibling);
+    return true;
+  };
+
+  /* ======================================================================
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "7",
+    version: "8",
+    assistant: ASSIST,
 
     init: function (cfg) {
       if (!cfg || !cfg.form || !cfg.fields || !cfg.fields.length || !cfg.lw || !cfg.lw.unit || !cfg.lw.blocks) {
