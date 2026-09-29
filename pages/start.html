@@ -1,4 +1,4 @@
-<div class="learnworlds-main-text learnworlds-element learnworlds-main-text-large lw-element-selected" data-magic="description" data-node-type="text" id="el_1600361776628_11" contenteditable="" tabindex="0">
+<div class="learnworlds-main-text learnworlds-element learnworlds-main-text-large" data-magic="description" data-node-type="text" id="el_1600361776628_11" contenteditable="" tabindex="0">
     <!-- AP-HOME-v23 (v23, 24 Sept: Where Are You? — SURFACES where + a card hidden until something is saved; six steps, once) (v22, 19 Sept: The Road I Walked, Walk With Me — SURFACES road + a card hidden until something is saved; a surface marked once gets no Write another) (v21, 17 Sept: the What Kind of Light card no longer says to take it to someone) (v20, 17 Sept: What Kind of Light — SURFACES wkl + a card hidden until something is saved; direct() and the offer layer count it) (v19, 12 Sept: Asked of Me has six parts; card link) (v18, 12 Sept: wha is Asked of Me at /asked-of-me) (v17, 12 Sept: What He Asked Me — SURFACES wha + a card hidden until something is saved; direct() and the offer layer count it) (v16: story pieces open in their own clean page from Your Page, not inside the course player — one click there and one click back) (v15: story cards titled by the piece a man made (Here I Am, The Man Who Crossed, Your Next Step), course name as the small label) (v14: on Open it / Pick up, leave a short note in the browser so the poem page can restore his saved work even though the course player drops the open flag from its address) (v13, 7 Sept: the two open courses are named in the page; enrolment read from /api/user_stats + /api/products/mine, which answer learners; /api/courses is admin-only) — his page, the home for story work (C25). 4 Sept 2026.
      Replaces the template "Welcome, {{user.username}}" heading on the After Login page (/start).
      Reads what he has written straight from LearnWorlds (same-origin, his own session):
@@ -1011,7 +1011,7 @@
             }, true);
         })();
     </script>
-    <!-- AP-OFFER-v1 : the "Offer it as testimony" step on a man's page. Additive layer for the After Login block (el_1600361776628_11). Reads a finished piece, opens a consent panel, and quietly records the offer to the team's Google Form (email + sheet). Team-generic voice; the only name shown is the author's own. -->
+    <!-- AP-OFFER-v2 (29 Sept 2026): one control at the foot of every finished piece — Kept · Offered · Published · Taken down — read from the review sheet through the script; the offer goes to the script and is called Offered only once the row has landed; Pull it back / Take it down one press. Replaces the first offer layer (the Google Form post and the on-device "offered" note are gone). Additive layer for the After Login block. -->
     <hr style="border:0;margin:0;height:0" data-apo="guard">
     <style id="apoStyle">
         /* AP-OFFER fix v4: John — the boxed pull-back threw the card off balance; revert to plain words in a highlight color (bronze), no boxes. Higher specificity (.ap-card) so it beats v3. */
@@ -1371,155 +1371,120 @@
             font-size: 14px;
             color: #6B7280
         }
+        /* offer layer v2: the one control at the foot of a finished piece */
+        .ap-card .apo-foot { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--ap-rule, #E2DCD1); color: #2B3040 !important; }
+        .ap-card .apo-foot.is-offered { color: #3d7a52 !important; }
+        .ap-card .apo-foot.is-published { color: #1F2A44 !important; }
+        .ap-card .apo-foot.is-taken-down { color: #6B7280 !important; }
+        .ap-card .apo-foot .apo-sub { margin-top: 8px; }
+        .ap-card .apo-foot .apo-offer-btn { margin: 2px 0 0; }
+        .ap-card .apo-foot .apo-read { color: #B8945F !important; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+        .ap-card .apo-foot .apo-read:hover { color: #1F2A44 !important; }
+        .ap-card .apo-foot .apo-dot { color: #6B7280; margin: 0 8px; }
+        .ap-card .apo-foot .apo-confirm a { white-space: nowrap; }
     </style>
     <script>
         (function() {
             "use strict";
             if (window.__apOfferInit) return;
             window.__apOfferInit = true;
-            var GFORM = {
-                action: "https://docs.google.com/forms/d/e/1FAIpQLScE801lnjAhflnCaNOjaij-YC4DGZXC4qNvXc4ThZwRgDOsXA/formResponse",
-                e: {
-                    name: "1052351623",
-                    attribution: "1222982064",
-                    title: "8421213",
-                    from: "1268512254",
-                    email: "1595657143",
-                    testimony: "15268568",
-                    consent: "1370687300",
-                    notes: "764545999"
-                }
-            };
+            /* offer layer v2 (29 Sept 2026): one control at the foot of every finished piece — Kept · Offered · Published · Taken down —
+               read from the review sheet through the script (never from this browser's memory); the offer goes to the script and is
+               called "Offered" only once the script says the row landed; Pull it back / Take it down are one press, confirmed in words. */
+            var SCRIPT = "https://script.google.com/macros/s/AKfycbxTfzmFY7NuXaGZIsPqxRDKpqakwXs5heeEGcp07aiTUG6Pzk9wJ0m8qubveVZoRCO3/exec";
+            var STORIES = "/your-story";
             var SURF = {
-                lament: {
-                    unit: "6a9acf1a4a65fe7bd70c9743",
-                    whole: "openEnded1788512593217_295",
-                    title: "A Lament",
-                    from: "Write a Lament"
-                },
-                wif: {
-                    unit: "6a9b1bd66f53d6a78c00a895",
-                    whole: "openEnded1788532124536_276",
-                    title: "Where I’m From",
-                    from: "Where I’m From"
-                },
-                nxs: {
-                    unit: "6a9ec39ba4b37ac12a0fd698",
-                    whole: "openEnded1788771837959_288",
-                    title: "Your Next Step",
-                    from: "Do Hard Things"
-                },
-                arc: {
-                    unit: "6a9eda1465bd64a422053e4f",
-                    whole: "openEnded1788777451885_276",
-                    title: "The Man Who Crossed",
-                    from: "Do Hard Things"
-                },
-                hia: {
-                    unit: "6a9ee0560b663e59d00f52fa",
-                    whole: "openEnded6a9ee0561523c",
-                    title: "Here I Am",
-                    from: "Known by Jesus"
-                },
-                knx: {
-                    unit: "6a9ee071812147198209a574",
-                    whole: "openEnded6a9ee0718a150",
-                    title: "Your Next Step",
-                    from: "Known by Jesus"
-                },
-                wha: {
-                    unit: "6aa495c7401787900c017193",
-                    whole: "openEnded6aa495c762c85",
-                    title: "Asked of Me",
-                    from: "Asked of Me"
-                },
-                wkl: {
-                    unit: "6aac317b65698408f804bf64",
-                    whole: "openEnded6aac317bb8dc6",
-                    title: "What Kind of Light",
-                    from: "What Kind of Light"
-                }
+                lament: { unit: "6a9acf1a4a65fe7bd70c9743", whole: "openEnded1788512593217_295", title: "A Lament", from: "Write a Lament" },
+                wif: { unit: "6a9b1bd66f53d6a78c00a895", whole: "openEnded1788532124536_276", title: "Where I’m From", from: "Where I’m From" },
+                nxs: { unit: "6a9ec39ba4b37ac12a0fd698", whole: "openEnded1788771837959_288", title: "Your Next Step", from: "Do Hard Things" },
+                arc: { unit: "6a9eda1465bd64a422053e4f", whole: "openEnded1788777451885_276", title: "The Man Who Crossed", from: "Do Hard Things" },
+                hia: { unit: "6a9ee0560b663e59d00f52fa", whole: "openEnded6a9ee0561523c", title: "Here I Am", from: "Known by Jesus" },
+                knx: { unit: "6a9ee071812147198209a574", whole: "openEnded6a9ee0718a150", title: "Your Next Step", from: "Known by Jesus" },
+                wha: { unit: "6aa495c7401787900c017193", whole: "openEnded6aa495c762c85", title: "Asked of Me", from: "Asked of Me" },
+                wkl: { unit: "6aac317b65698408f804bf64", whole: "openEnded6aac317bb8dc6", title: "What Kind of Light", from: "What Kind of Light" },
+                road: { unit: "6aaf030c329c182cee08bcb2", whole: "openEnded6aaf030c844ed", title: "The Road I Walked", from: "Walk With Me" },
+                where: { unit: "6ab526197d249596ce0b3104", whole: "openEnded6ab526194f23b", title: "Where Are You?", from: "Walk With Me" }
             };
+            var STATE = {};        /* unit → {rid, state, read} from the sheet */
+            var ready = false;     /* feet are drawn only once the sheet has answered (or failed), so a state never flickers */
 
-            function lsGet(k) {
-                try {
-                    return window.localStorage.getItem(k);
-                } catch (e) {
-                    return null;
+            function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+            function track(name, key) { try { if (typeof window.gtag === "function") window.gtag("event", name, { piece: key }); } catch (e) {} }
+            function lsDel(k) { try { window.localStorage.removeItem(k); } catch (e) {} }
+            /* v1 remembered "offered" on the device; the sheet is the truth now, so those notes are cleared */
+            for (var k0 in SURF) { lsDel("ap_offered_" + SURF[k0].unit); }
+
+            // ---- who he is to the sheet: a hash of his LearnWorlds id, never the id itself ----
+            function hexOf(buf) { return Array.prototype.map.call(new Uint8Array(buf), function(b) { return ("0" + b.toString(16)).slice(-2); }).join(""); }
+            function fnv(s, seed) { var h = seed >>> 0; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return ("00000000" + h.toString(16)).slice(-8); }
+            function whoFor(id) {
+                var s = "ap:" + id;
+                if (window.crypto && window.crypto.subtle && window.TextEncoder) {
+                    try { return window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)).then(hexOf).catch(function() { return fnv(s, 2166136261) + fnv(s, 84696351); }); } catch (e) {}
                 }
+                return Promise.resolve(fnv(s, 2166136261) + fnv(s, 84696351));
+            }
+            function getJSON(path) {
+                return fetch(path, { credentials: "include", headers: { "Accept": "application/json" } }).then(function(r) { return r.ok ? r.json() : null; }).catch(function() { return null; });
+            }
+            var _author = null;
+            function authorInfo() {
+                if (_author) return Promise.resolve(_author);
+                return getJSON("/api/user_stats").then(function(j) {
+                    var me = (j && j.me) || {};
+                    var a = { id: me.id || me._id || me.user_id || "", name: ((me.first_name || "") + " " + (me.last_name || "")).trim() || me.username || "", email: me.email || me.user_email || "" };
+                    if (a.id && a.email) { _author = a; return a; }
+                    return getJSON("/api/user/me").then(function(m) {
+                        var u = (m && m.user) || m || {};
+                        if (!a.id) a.id = u.id || u._id || "";
+                        if (!a.email) a.email = u.email || u.user_email || "";
+                        if (!a.name) a.name = ((u.first_name || "") + " " + (u.last_name || "")).trim() || u.username || "";
+                        _author = a; return a;
+                    });
+                });
+            }
+            function whoAmI() { return authorInfo().then(function(a) { return a.id ? whoFor(String(a.id)) : ""; }); }
+
+            // ---- talking to the script ----
+            function send(o) {
+                return fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(o), credentials: "omit" })
+                    .then(function(r) { return r.json(); })
+                    .then(function(r) { if (!r || r.ok !== true) { throw { code: (r && r.error) || "failed" }; } return r; });
+            }
+            function readStatus(who) {
+                if (!who) return Promise.resolve(null);
+                return fetch(SCRIPT + "?status=" + encodeURIComponent(who), { credentials: "omit", cache: "no-store" })
+                    .then(function(r) { return r.json(); })
+                    .then(function(j) { var m = {}; ((j && j.pieces) || []).forEach(function(p) { if (p && p.unit) m[p.unit] = { rid: p.rid || "", state: p.state || "kept", read: !!p.read }; }); return m; })
+                    .catch(function() { return null; });
             }
 
-            function lsSet(k, v) {
-                try {
-                    window.localStorage.setItem(k, v);
-                } catch (e) {}
-            }
-
-            function lsDel(k) {
-                try {
-                    window.localStorage.removeItem(k);
-                } catch (e) {}
-            }
-
-            function offeredKey(unit) {
-                return "ap_offered_" + unit;
-            }
-            // ---- read the finished piece text for a unit ----
-            function apoLooksLikeProse(t) {
-                if (typeof t !== "string" || t.length < 12) return false;
-                if (!/\s/.test(t)) return false;
-                if (/^openEnded/i.test(t)) return false;
-                return /[a-zA-Z]/.test(t);
-            }
-
+            // ---- reading the finished piece, unchanged from v1 ----
+            function apoLooksLikeProse(t) { if (typeof t !== "string" || t.length < 12) return false; if (!/\s/.test(t)) return false; if (/^openEnded/i.test(t)) return false; return /[a-zA-Z]/.test(t); }
             function apoLongestProse(scope) {
-                var best = "",
-                    seen = (typeof WeakSet !== "undefined") ? new WeakSet() : null;
+                var best = "", seen = (typeof WeakSet !== "undefined") ? new WeakSet() : null;
                 (function walk(o, d) {
                     if (o == null || d > 12) return;
-                    if (typeof o === "string") {
-                        if (o.length > best.length && apoLooksLikeProse(o)) best = o;
-                        return;
-                    }
+                    if (typeof o === "string") { if (o.length > best.length && apoLooksLikeProse(o)) best = o; return; }
                     if (typeof o !== "object") return;
-                    if (seen) {
-                        if (seen.has(o)) return;
-                        seen.add(o);
-                    }
-                    for (var k in o) {
-                        try {
-                            walk(o[k], d + 1);
-                        } catch (e) {}
-                    }
+                    if (seen) { if (seen.has(o)) return; seen.add(o); }
+                    for (var k in o) { try { walk(o[k], d + 1); } catch (e) {} }
                 })(scope, 0);
                 return best;
             }
-
             function apoFindSubmission(state) {
                 function grab(re) {
-                    var found = null,
-                        seen = (typeof WeakSet !== "undefined") ? new WeakSet() : null;
+                    var found = null, seen = (typeof WeakSet !== "undefined") ? new WeakSet() : null;
                     (function walk(o, d) {
                         if (found || o == null || typeof o !== "object" || d > 8) return;
-                        if (seen) {
-                            if (seen.has(o)) return;
-                            seen.add(o);
-                        }
-                        for (var k in o) {
-                            if (re.test(k) && o[k] && typeof o[k] === "object") {
-                                found = o[k];
-                                return;
-                            }
-                        }
-                        for (var k2 in o) {
-                            if (!found) walk(o[k2], d + 1);
-                        }
+                        if (seen) { if (seen.has(o)) return; seen.add(o); }
+                        for (var k in o) { if (re.test(k) && o[k] && typeof o[k] === "object") { found = o[k]; return; } }
+                        for (var k2 in o) { if (!found) walk(o[k2], d + 1); }
                     })(state, 0);
                     return found;
                 }
                 return grab(/latestSubmission|userSubmission|(^|_)submission$/i) || grab(/(^|_)answers$|responses/i);
             }
-
             function apoAssemble(raw) {
                 if (!raw) return "";
                 var t = ("" + raw).trim();
@@ -1528,331 +1493,130 @@
                         var obj = JSON.parse(t);
                         if (obj && typeof obj === "object" && !(obj instanceof Array)) {
                             var parts = [];
-                            for (var k in obj) {
-                                var v = obj[k];
-                                if (typeof v === "string" && v.trim()) parts.push(v.trim());
-                            }
+                            for (var k in obj) { var v = obj[k]; if (typeof v === "string" && v.trim()) parts.push(v.trim()); }
                             if (parts.length) return parts.join("\n\n");
                         }
                     } catch (e) {}
                 }
                 return t;
             }
-
-            function findAnswerFor(root, blockId) {
-                var sub = apoFindSubmission(root);
-                var text = apoLongestProse(sub || root);
-                text = apoAssemble(text);
-                return (text && text.trim()) ? text : null;
-            }
-
-            function readWhole(unit, wholeId) {
-                return fetch("/api/assessment/state?sourceType=unit&objectId=" + unit, {
-                    credentials: "include",
-                    headers: {
-                        "Accept": "application/json"
-                    }
-                }).then(function(r) {
-                    return r.json();
-                }).then(function(j) {
-                    return findAnswerFor(j, wholeId);
-                }).catch(function() {
-                    return null;
+            function readWhole(unit) {
+                return getJSON("/api/assessment/state?sourceType=unit&objectId=" + unit).then(function(j) {
+                    var sub = apoFindSubmission(j), text = apoAssemble(apoLongestProse(sub || j));
+                    return (text && text.trim()) ? text : null;
                 });
             }
-            // ---- who is the author ----
-            var _author = null;
 
-            function authorInfo() {
-                if (_author) return Promise.resolve(_author);
-                return fetch("/api/user_stats", {
-                    credentials: "include",
-                    headers: {
-                        "Accept": "application/json"
-                    }
-                }).then(function(r) {
-                    return r.json();
-                }).then(function(j) {
-                    var me = (j && j.me) || {};
-                    var name = ((me.first_name || "") + " " + (me.last_name || "")).trim() || me.username || "";
-                    var email = me.email || me.user_email || me.mail || "";
-                    _author = {
-                        name: name,
-                        email: email
-                    };
-                    if (!_author.email) {
-                        return fetch("/api/user/me", {
-                            credentials: "include",
-                            headers: {
-                                "Accept": "application/json"
-                            }
-                        }).then(function(r) {
-                            return r.json();
-                        }).then(function(m) {
-                            _author.email = (m && (m.email || m.user_email)) || "";
-                            if (!_author.name) _author.name = ((m.first_name || "") + " " + (m.last_name || "")).trim() || (m && m.username) || "";
-                            return _author;
-                        }).catch(function() {
-                            return _author;
-                        });
-                    }
-                    return _author;
-                }).catch(function() {
-                    _author = {
-                        name: "",
-                        email: ""
-                    };
-                    return _author;
-                });
-            }
-            // ---- the quiet submit (email + sheet) ----
-            function post(fields) {
-                var ifr = document.getElementById("apoSink");
-                if (!ifr) {
-                    ifr = document.createElement("iframe");
-                    ifr.id = "apoSink";
-                    ifr.name = "apoSink";
-                    ifr.style.display = "none";
-                    document.body.appendChild(ifr);
-                }
-                var f = document.createElement("form");
-                f.method = "POST";
-                f.action = GFORM.action;
-                f.target = "apoSink";
-                f.style.display = "none";
-                f.acceptCharset = "utf-8";
-                Object.keys(fields).forEach(function(k) {
-                    if (!GFORM.e[k]) return;
-                    var i = document.createElement("input");
-                    i.type = "hidden";
-                    i.name = "entry." + GFORM.e[k];
-                    i.value = fields[k] == null ? "" : String(fields[k]);
-                    f.appendChild(i);
-                });
-                document.body.appendChild(f);
-                f.submit();
-                setTimeout(function() {
-                    try {
-                        f.parentNode && f.parentNode.removeChild(f);
-                    } catch (e) {}
-                }, 5000);
-            }
             // ---- the consent panel ----
-            var overlay = null,
-                panel = null;
-
+            var overlay = null, panel = null;
             function buildOverlay() {
                 if (overlay) return;
-                overlay = document.createElement("div");
-                overlay.className = "apo-overlay";
-                overlay.hidden = true;
-                overlay.addEventListener("click", function(ev) {
-                    if (ev.target === overlay) closePanel();
-                });
-                document.addEventListener("keydown", function(ev) {
-                    if (ev.key === "Escape" && overlay && !overlay.hidden) closePanel();
-                });
-                panel = document.createElement("div");
-                panel.className = "apo-panel";
-                overlay.appendChild(panel);
-                document.body.appendChild(overlay);
+                overlay = document.createElement("div"); overlay.className = "apo-overlay"; overlay.hidden = true;
+                overlay.addEventListener("click", function(ev) { if (ev.target === overlay) closePanel(); });
+                document.addEventListener("keydown", function(ev) { if (ev.key === "Escape" && overlay && !overlay.hidden) closePanel(); });
+                panel = document.createElement("div"); panel.className = "apo-panel";
+                overlay.appendChild(panel); document.body.appendChild(overlay);
             }
-
-            function closePanel() {
-                if (overlay) {
-                    overlay.hidden = true;
-                }
-            }
-
-            function esc(s) {
-                return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-            }
-
+            function closePanel() { if (overlay) overlay.hidden = true; }
             function openPanel(key, card) {
                 buildOverlay();
-                var s = SURF[key];
-                if (!s) return;
+                var s = SURF[key]; if (!s) return;
                 panel.innerHTML = '<div class="apo-busy">One moment…</div>';
                 overlay.hidden = false;
                 authorInfo().then(function(a) {
-                    var full = a.name || "";
-                    var first = full ? full.split(/\s+/)[0] : "";
-                    var opts = "";
+                    var full = a.name || "", first = full ? full.split(/\s+/)[0] : "", opts = "";
                     if (full) {
                         opts += '<label class="apo-opt"><input type="radio" name="apoNm" value="Full name" checked><span class="apo-t"><b>' + esc(full) + '</b><span class="apo-s">Your full name</span></span></label>';
                         opts += '<label class="apo-opt"><input type="radio" name="apoNm" value="First name only"><span class="apo-t"><b>' + esc(first) + '</b><span class="apo-s">First name only</span></span></label>';
                     }
-                    opts += '<label class="apo-opt"><input type="radio" name="apoNm" value="Do not show name"' + (full ? "" : " checked") + '><span class="apo-t"><b>Don’t show my name</b><span class="apo-s">Shared without a name</span></span></label>';
+                    opts += '<label class="apo-opt"><input type="radio" name="apoNm" value="Do not show name"' + (full ? "" : " checked") + '><span class="apo-t"><b>Don’t show my name</b><span class="apo-s">Without a name</span></span></label>';
                     panel.innerHTML = '<h2>Offer this as testimony</h2>' + '<p class="apo-frame">Your story can help the next man — that is why we ask you to offer it.</p>' + '<p class="apo-err" id="apoErr"></p>' + '<p class="apo-lab">How would you like your name to appear?</p>' + opts + '<p class="apo-lab">Before it goes up</p>' + '<label class="apo-opt"><input type="checkbox" id="apoYes" checked><span class="apo-t">Yes — Ancient Path can publish this on the site.<span class="apo-s">You can take it down whenever you want.</span></span></label>' + '<p class="apo-onlysite">This is only about the site. If we ever want to print your words — in a booklet, or on a card — we’ll ask you first.</p>' + '<p class="apo-assure">We read every piece before it goes up. If anything gives us pause, we will talk with you first — nothing is published without that.</p>' + '<div class="apo-actions"><button type="button" class="apo-btn-primary" id="apoGo">Offer it</button><button type="button" class="apo-btn-ghost" id="apoNo">Not now</button></div>';
-                    var goBtn = panel.querySelector("#apoGo");
-                    var yes = panel.querySelector("#apoYes");
-
-                    function sync() {
-                        goBtn.disabled = !yes.checked;
-                    }
-                    yes.addEventListener("change", sync);
-                    sync();
+                    var goBtn = panel.querySelector("#apoGo"), yes = panel.querySelector("#apoYes"), err = panel.querySelector("#apoErr");
+                    function sync() { goBtn.disabled = !yes.checked; }
+                    yes.addEventListener("change", sync); sync();
                     panel.querySelector("#apoNo").addEventListener("click", closePanel);
+                    function fail(msg) { err.textContent = msg; err.style.display = "block"; goBtn.disabled = false; goBtn.textContent = "Offer it"; }
                     goBtn.addEventListener("click", function() {
                         if (!yes.checked) return;
                         var attribution = (panel.querySelector('input[name="apoNm"]:checked') || {}).value || "Do not show name";
-                        goBtn.disabled = true;
-                        goBtn.textContent = "Offering…";
-                        readWhole(s.unit, s.whole).then(function(text) {
-                            if (!text || !text.trim()) {
-                                var err = panel.querySelector("#apoErr");
-                                err.textContent = "We couldn’t read your piece just now. Open it once, then try offering it again.";
-                                err.style.display = "block";
-                                goBtn.disabled = false;
-                                goBtn.textContent = "Offer it";
-                                return;
-                            }
-                            post({
-                                name: a.name || "",
-                                attribution: attribution,
-                                title: s.title,
-                                from: s.from,
-                                email: a.email || "",
-                                testimony: text,
-                                consent: "Yes",
-                                notes: "Offered from the man’s page · " + key + " · unit " + s.unit
-                            });
-                            lsSet(offeredKey(s.unit), new Date().toISOString());
-                            closePanel();
-                            renderOffered(card, key);
+                        goBtn.disabled = true; goBtn.textContent = "Offering…"; err.style.display = "none";
+                        Promise.all([readWhole(s.unit), whoAmI()]).then(function(res) {
+                            var text = res[0], who = res[1];
+                            if (!text || !text.trim()) { fail("We couldn’t read your piece just now. Open it once, then try offering it again."); return; }
+                            if (!who) { fail("We couldn’t tell who you are just now. Sign out, sign in, and try again."); return; }
+                            return send({ op: "offer", who: who, key: key, unit: s.unit, name: a.name || "", attribution: attribution, title: s.title, from: s.from, email: a.email || "", testimony: text, consent: "Yes" })
+                                .then(function(r) {
+                                    STATE[s.unit] = { rid: r.rid || "", state: "offered", read: false };
+                                    closePanel(); renderFoot(card, key); track("story_offer", key);
+                                }, function() { fail("It didn’t send. Your piece is still here — try again."); });
                         });
                     });
-                });
-            }
-            // ---- the card, once offered ----
-            function renderOffered(card, key) {
-                var s = SURF[key];
-                var actions = card.querySelector(".ap-card-actions");
-                // remove the offer button
-                var btn = card.querySelector(".apo-offer-btn");
-                if (btn) btn.parentNode.removeChild(btn);
-                // remove any prior offered note
-                var old = card.querySelector(".apo-offered");
-                if (old) old.parentNode.removeChild(old);
-                var note = document.createElement("div");
-                note.className = "apo-offered";
-                note.innerHTML = '<b>Offered.</b> It’s with our team for a read — you’ll hear back before it goes up.' + '<span class="apo-sub">Changed your mind? <button type="button" class="apo-pull">Pull it back</button></span>';
-                (actions ? actions.parentNode : card).appendChild(note);
-                note.querySelector(".apo-pull").addEventListener("click", function() {
-                    askPull(card, key, note);
                 });
             }
 
-            function askPull(card, key, note) {
-                var sub = note.querySelector(".apo-sub");
-                sub.innerHTML = '<span class="apo-confirm"><span class="apo-q">Pull it back from our team?</span> <a class="apo-yes">Yes, pull it back</a> <a class="apo-no">Keep it offered</a></span>';
-                sub.querySelector(".apo-no").addEventListener("click", function() {
-                    sub.innerHTML = 'Changed your mind? <button type="button" class="apo-pull">Pull it back</button>';
-                    sub.querySelector(".apo-pull").addEventListener("click", function() {
-                        askPull(card, key, note);
-                    });
-                });
+            // ---- the one control at the foot of a finished piece ----
+            function stateFor(key) { var e = STATE[SURF[key].unit]; return e || { rid: "", state: "kept", read: false }; }
+            function offerBtn(label) { return '<button type="button" class="apo-offer-btn">' + label + '</button>'; }
+            function footHTML(key) {
+                var e = stateFor(key);
+                if (e.state === "offered") return '<b>Offered.</b> With our team for a read — you’ll hear back before it goes up.<span class="apo-sub">Changed your mind? <button type="button" class="apo-pull">Pull it back</button></span>';
+                if (e.state === "published") return '<b>Published.</b> On Our Stories, for the men who come after you.<span class="apo-sub"><a class="apo-read" href="' + STORIES + '?p=' + encodeURIComponent(e.rid) + '">Read it there</a><span class="apo-dot">·</span><button type="button" class="apo-pull">Take it down</button></span>';
+                if (e.state === "taken down") return '<b>Taken down.</b> It stays yours.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
+                if (e.read) return '<b>Kept.</b> Our team read it. It stays yours.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
+                return '<b>Kept.</b> Only you can read it.<span class="apo-sub">' + offerBtn("Offer it as testimony") + '</span>';
+            }
+            function renderFoot(card, key) {
+                var e = stateFor(key), old = card.querySelector(".apo-foot");
+                var foot = document.createElement("div");
+                foot.className = "apo-foot apo-offered is-" + e.state.replace(/\s+/g, "-");
+                foot.innerHTML = footHTML(key);
+                if (old) old.parentNode.replaceChild(foot, old);
+                else { var actions = card.querySelector(".ap-card-actions"); (actions ? actions.parentNode : card).appendChild(foot); }
+                var ob = foot.querySelector(".apo-offer-btn"); if (ob) ob.addEventListener("click", function() { openPanel(key, card); });
+                var pb = foot.querySelector(".apo-pull"); if (pb) pb.addEventListener("click", function() { askPull(card, key); });
+            }
+            function askPull(card, key) {
+                var e = stateFor(key), foot = card.querySelector(".apo-foot"), sub = foot && foot.querySelector(".apo-sub");
+                if (!sub) return;
+                var up = e.state === "published";
+                sub.innerHTML = '<span class="apo-confirm"><span class="apo-q">' + (up ? "Take it down from Our Stories?" : "Pull it back from our team?") + '</span> <a class="apo-yes">' + (up ? "Yes, take it down" : "Yes, pull it back") + '</a> <a class="apo-no">' + (up ? "Leave it up" : "Keep it offered") + '</a></span>';
+                sub.querySelector(".apo-no").addEventListener("click", function() { renderFoot(card, key); });
                 sub.querySelector(".apo-yes").addEventListener("click", function() {
-                    var s = SURF[key];
-                    authorInfo().then(function(a) {
-                        post({
-                            name: a.name || "",
-                            attribution: "Withdrawn",
-                            title: s.title,
-                            from: s.from,
-                            email: a.email || "",
-                            testimony: "(withdrawal notice — the author pulled this back)",
-                            consent: "Withdrawn",
-                            notes: "⚠ PULLED BACK by the author — please do not publish, or take it down if it is already up."
-                        });
-                        lsDel(offeredKey(s.unit));
-                        note.parentNode && note.parentNode.removeChild(note);
-                        // let enhance() put the Offer button back
-                        enhance();
-                        // brief acknowledgement
-                        var ack = document.createElement("div");
-                        ack.className = "apo-offered";
-                        ack.style.color = "#6B7280";
-                        ack.innerHTML = "You pulled this back. It won’t be published.";
-                        var actions = card.querySelector(".ap-card-actions");
-                        (actions ? actions.parentNode : card).appendChild(ack);
-                        setTimeout(function() {
-                            try {
-                                ack.parentNode.removeChild(ack);
-                            } catch (e) {}
-                        }, 6000);
+                    sub.innerHTML = '<span class="apo-q">' + (up ? "Taking it down…" : "Pulling it back…") + '</span>';
+                    whoAmI().then(function(who) { return send({ op: "withdraw", who: who, rid: e.rid }); }).then(function(r) {
+                        STATE[SURF[key].unit] = { rid: e.rid, state: r.state || (up ? "taken down" : "kept"), read: false };
+                        renderFoot(card, key); track(up ? "story_takedown" : "story_withdraw", key);
+                    }, function() {
+                        renderFoot(card, key);
+                        var f2 = card.querySelector(".apo-foot .apo-sub"); if (f2) { var n = document.createElement("span"); n.className = "apo-q"; n.textContent = " It didn’t go through — try again."; f2.appendChild(n); }
                     });
                 });
             }
-            // ---- add the Offer action to every finished, offerable card ----
+            /* every finished, openable card gets the control; a card in progress or not saved gets none */
             function enhance() {
+                if (!ready) return;
                 var cards = document.querySelectorAll(".ap-card[data-story]");
                 for (var i = 0; i < cards.length; i++) {
                     (function(card) {
-                        var key = card.getAttribute("data-story");
-                        if (!SURF[key]) return;
-                        if (getComputedStyle(card).display === "none") return; // not saved yet
-                        var unit = SURF[key].unit;
-                        // already offered on this device?
-                        if (lsGet(offeredKey(unit))) {
-                            if (!card.querySelector(".apo-offered")) {
-                                var b0 = card.querySelector(".apo-offer-btn");
-                                if (b0) b0.parentNode.removeChild(b0);
-                                renderOffered(card, key);
-                            }
-                            return;
+                        var key = card.getAttribute("data-story"); if (!SURF[key]) return;
+                        var actions = card.querySelector(".ap-card-actions"), openable = false;
+                        if (actions && getComputedStyle(card).display !== "none") {
+                            var links = actions.querySelectorAll("a,button");
+                            for (var k = 0; k < links.length; k++) { if (/open it/i.test(links[k].textContent || "")) { openable = true; break; } }
                         }
-                        var actions = card.querySelector(".ap-card-actions");
-                        if (!actions) return;
-                        // only on a finished, openable piece (an "Open it" action is present)
-                        var links = actions.querySelectorAll("a,button");
-                        var openable = false;
-                        for (var k = 0; k < links.length; k++) {
-                            if (/open it/i.test(links[k].textContent || "")) {
-                                openable = true;
-                                break;
-                            }
-                        }
-                        if (!openable) return;
-                        if (card.querySelector(".apo-offer-btn")) return; // already added
-                        var btn = document.createElement("button");
-                        btn.type = "button";
-                        btn.className = "apo-offer-btn";
-                        btn.textContent = "Offer it as testimony";
-                        btn.addEventListener("click", function() {
-                            openPanel(key, card);
-                        });
-                        actions.appendChild(btn);
+                        var foot = card.querySelector(".apo-foot");
+                        if (!openable) { if (foot) foot.parentNode.removeChild(foot); return; }
+                        if (!foot) renderFoot(card, key);
                     })(cards[i]);
                 }
             }
-            // ---- run now, on repaint, and as a short safety net ----
             var t = null;
-
-            function schedule() {
-                if (t) return;
-                t = setTimeout(function() {
-                    t = null;
-                    enhance();
-                }, 120);
-            }
-
+            function schedule() { if (t) return; t = setTimeout(function() { t = null; enhance(); }, 120); }
             function start() {
-                enhance();
+                whoAmI().then(readStatus, function() { return null; }).then(function(m) { if (m) STATE = m; ready = true; enhance(); });
                 var host = document.getElementById("apStories");
-                if (host && window.MutationObserver) {
-                    new MutationObserver(schedule).observe(host, {
-                        childList: true,
-                        subtree: true,
-                        attributes: true,
-                        attributeFilter: ["style", "class"]
-                    });
-                }
-                var n = 0,
-                    iv = setInterval(function() {
-                        enhance();
-                        if (++n > 12) clearInterval(iv);
-                    }, 1500);
+                if (host && window.MutationObserver) { new MutationObserver(schedule).observe(host, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class"] }); }
+                var n = 0, iv = setInterval(function() { enhance(); if (++n > 12) clearInterval(iv); }, 1500);
             }
             if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
             else start();
