@@ -1,5 +1,5 @@
-<div class="learnworlds-main-text learnworlds-element learnworlds-main-text-large lw-element-selected" data-magic="description" data-node-type="text" id="el_1788781991119_340" contenteditable="" tabindex="0">
-    <!-- AP-YS-v7 (v7, 12 Sept: What He Asked Me card in the Write band; the band goes two by two on wide screens) — one element, two views: the hub (no ?p) or one story (?p=id). -->
+<div class="learnworlds-main-text learnworlds-element learnworlds-main-text-large" data-magic="description" data-node-type="text" id="el_1788781991119_340" contenteditable="" tabindex="0">
+    <!-- AP-YS-v8 (v8, 29 Sept: the hub band carries the promise — Tell your story. Offer your testimony. Be known in community. — with the three stones, Told · Offered · Known, the same as Your Page) (v7, 12 Sept: What He Asked Me card in the Write band; the band goes two by two on wide screens) — one element, two views: the hub (no ?p) or one story (?p=id). -->
     <script>
         (function() {
             if (/[?&]p=/.test(location.search)) document.documentElement.className += " ap-story";
@@ -14,7 +14,7 @@
             display: none !important;
         }
     </style>
-    <!-- AP-HUB-v13 (v13, 17 Sept: the What Kind of Light card names the source of the light) (v12, 17 Sept: the What Kind of Light card no longer says to go and ask) (v11, 17 Sept: What Kind of Light card; the Write band is five paths) (v10, 12 Sept: the Asked of Me card says twenty-two lines) (v9, 12 Sept: the Asked of Me card describes the one-question story) (v8, 12 Sept: the card is Asked of Me, nineteen lines, /asked-of-me) (v7, 12 Sept: Write band sub-line now "Four paths, one life. A poem, a prayer, a conversation, and the piece you write at the end of a course." — the What He Asked Me card made it four) (v6) — Your Story hub, two bands: Write your story, then Read their stories. 9 Sept 2026. One box, one action; every story opens on its own page (/story). -->
+    <!-- AP-HUB-v14 (v14, 29 Sept: the band lede is the promise with the three stones under it) (v13, 17 Sept: the What Kind of Light card names the source of the light) (v12, 17 Sept: the What Kind of Light card no longer says to go and ask) (v11, 17 Sept: What Kind of Light card; the Write band is five paths) (v10, 12 Sept: the Asked of Me card says twenty-two lines) (v9, 12 Sept: the Asked of Me card describes the one-question story) (v8, 12 Sept: the card is Asked of Me, nineteen lines, /asked-of-me) (v7, 12 Sept: Write band sub-line now "Four paths, one life. A poem, a prayer, a conversation, and the piece you write at the end of a course." — the What He Asked Me card made it four) (v6) — Your Story hub, two bands: Write your story, then Read their stories. 9 Sept 2026. One box, one action; every story opens on its own page (/story). -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
 
@@ -105,6 +105,57 @@
         .aph .aph-band-lede b {
             color: #F3EDE3 !important;
             font-weight: 400;
+        }
+
+        /* a sentence of the promise never breaks inside itself */
+        .aph .aph-s {
+            display: inline-block;
+        }
+
+        /* the three stones under the promise (the same mark as Your Page) */
+        .aph .aph-stones {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 26px auto 0;
+            max-width: 760px;
+            position: relative;
+        }
+        .aph .aph-stones::before {
+            content: "";
+            position: absolute;
+            left: 16.6%;
+            right: 16.6%;
+            top: 5px;
+            border-top: 1px solid rgba(184, 148, 95, 0.45);
+        }
+        .aph .aph-stone {
+            flex: 1 1 0;
+            position: relative;
+            padding: 0 8px;
+        }
+        .aph .aph-stone-dot {
+            display: block;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--aph-bronze);
+            margin: 0 auto 10px;
+            box-shadow: 0 0 0 4px #1B2A3A;
+        }
+        .aph .aph-stone-word {
+            display: block;
+            font: 600 15px/1.3 var(--aph-sans) !important;
+            letter-spacing: 1.5px !important;
+            text-transform: uppercase;
+            color: #F3EDE3 !important;
+        }
+        .aph .aph-stone-what {
+            display: block;
+            font: 400 14px/1.5 var(--aph-sans) !important;
+            color: #B7AFA4 !important;
+            margin-top: 4px;
+            text-wrap: balance;
         }
 
         /* ---- wide stage (breaks out of the 700px column) ---- */
@@ -432,6 +483,10 @@
                 font-size: 18px !important;
             }
 
+            .aph .aph-stone-what {
+                display: none;
+            }
+
             .aph .aph-wide {
                 padding: 0 16px;
             }
@@ -477,8 +532,13 @@
             <div class="aph-band-in">
                 <p class="aph-band-eyebrow">Ancient Path</p>
                 <h1 class="aph-band-t">Your Story</h1>
-                <p class="aph-band-lede">Your story, told. <b>You, known.</b> Your testimony, offered.</p>
-                <p class="aph-band-storypath" style="font:400 16px/1.5 var(--aph-sans) !important;color:#D8CFC0;margin:14px auto 0;max-width:640px;text-align:center;">Want to walk all nine as one path? <a href="/course/the-story-path" style="font-weight:600;color:var(--aph-bronze);text-decoration:none;border-bottom:2px solid var(--aph-bronze);padding-bottom:1px;">The Story Path →</a></p>
+                <p class="aph-band-lede"><span class="aph-s">Tell your story.</span> <span class="aph-s">Offer your testimony.</span> <span class="aph-s">Be known in community.</span></p>
+                <div class="aph-stones" aria-label="The three stops">
+                    <div class="aph-stone"><span class="aph-stone-dot"></span><span class="aph-stone-word">Told</span><span class="aph-stone-what">Written down and kept.<br>Only you can read it.</span></div>
+                    <div class="aph-stone"><span class="aph-stone-dot"></span><span class="aph-stone-word">Offered</span><span class="aph-stone-what">Read by our team<br>before it goes up.</span></div>
+                    <div class="aph-stone"><span class="aph-stone-dot"></span><span class="aph-stone-word">Known</span><span class="aph-stone-what">Published on Our Stories.<br>Other men can read it now.</span></div>
+                </div>
+                <p class="aph-band-storypath" style="font:400 16px/1.5 var(--aph-sans) !important;color:#D8CFC0;margin:30px auto 0;max-width:640px;text-align:center;">Want to walk all nine as one path? <a href="/course/the-story-path" style="font-weight:600;color:var(--aph-bronze);text-decoration:none;border-bottom:2px solid var(--aph-bronze);padding-bottom:1px;">The Story Path →</a></p>
             </div>
         </div>
         <div class="aph-wide">
