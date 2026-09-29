@@ -1,5 +1,5 @@
 <div class="learnworlds-main-text learnworlds-element learnworlds-main-text-large" data-magic="description" data-node-type="text" id="el_1600361776628_11" contenteditable="" tabindex="0">
-    <!-- AP-HOME-v23 (v23, 24 Sept: Where Are You? — SURFACES where + a card hidden until something is saved; six steps, once) (v22, 19 Sept: The Road I Walked, Walk With Me — SURFACES road + a card hidden until something is saved; a surface marked once gets no Write another) (v21, 17 Sept: the What Kind of Light card no longer says to take it to someone) (v20, 17 Sept: What Kind of Light — SURFACES wkl + a card hidden until something is saved; direct() and the offer layer count it) (v19, 12 Sept: Asked of Me has six parts; card link) (v18, 12 Sept: wha is Asked of Me at /asked-of-me) (v17, 12 Sept: What He Asked Me — SURFACES wha + a card hidden until something is saved; direct() and the offer layer count it) (v16: story pieces open in their own clean page from Your Page, not inside the course player — one click there and one click back) (v15: story cards titled by the piece a man made (Here I Am, The Man Who Crossed, Your Next Step), course name as the small label) (v14: on Open it / Pick up, leave a short note in the browser so the poem page can restore his saved work even though the course player drops the open flag from its address) (v13, 7 Sept: the two open courses are named in the page; enrolment read from /api/user_stats + /api/products/mine, which answer learners; /api/courses is admin-only) — his page, the home for story work (C25). 4 Sept 2026.
+    <!-- AP-HOME-v24 (v24, 29 Sept: the promise and the three stones — Told · Offered · Known — at the top of the page; the shelf is Your chronicle; the phone-width fix for the Why paragraph) (v23, 24 Sept: Where Are You? — SURFACES where + a card hidden until something is saved; six steps, once) (v22, 19 Sept: The Road I Walked, Walk With Me — SURFACES road + a card hidden until something is saved; a surface marked once gets no Write another) (v21, 17 Sept: the What Kind of Light card no longer says to take it to someone) (v20, 17 Sept: What Kind of Light — SURFACES wkl + a card hidden until something is saved; direct() and the offer layer count it) (v19, 12 Sept: Asked of Me has six parts; card link) (v18, 12 Sept: wha is Asked of Me at /asked-of-me) (v17, 12 Sept: What He Asked Me — SURFACES wha + a card hidden until something is saved; direct() and the offer layer count it) (v16: story pieces open in their own clean page from Your Page, not inside the course player — one click there and one click back) (v15: story cards titled by the piece a man made (Here I Am, The Man Who Crossed, Your Next Step), course name as the small label) (v14: on Open it / Pick up, leave a short note in the browser so the poem page can restore his saved work even though the course player drops the open flag from its address) (v13, 7 Sept: the two open courses are named in the page; enrolment read from /api/user_stats + /api/products/mine, which answer learners; /api/courses is admin-only) — his page, the home for story work (C25). 4 Sept 2026.
      Replaces the template "Welcome, {{user.username}}" heading on the After Login page (/start).
      Reads what he has written straight from LearnWorlds (same-origin, his own session):
      the Lament and Where I'm From forms in the hidden Your Story course. Nothing is sent.
@@ -125,7 +125,7 @@
         }
 
         @media (max-width: 720px) {
-            .ap-why p {
+            .ap-home .ap-why p {
                 columns: 1;
             }
         }
@@ -439,10 +439,111 @@
             max-width: 600px;
         }
 
+        .ap-home .ap-band .ap-promise {
+            font: 600 23px/1.4 var(--ap-serif) !important;
+            color: #F3EDE3 !important;
+            max-width: 700px;
+        }
+        .ap-home .ap-band .ap-line-small {
+            font-size: 16px !important;
+            margin-top: 22px;
+        }
+        .ap-home .ap-stones {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 0;
+            margin: 26px auto 0;
+            max-width: 640px;
+            position: relative;
+        }
+        .ap-home .ap-stones::before {
+            content: "";
+            position: absolute;
+            left: 16.6%;
+            right: 16.6%;
+            top: 5px;
+            border-top: 1px solid rgba(184, 148, 95, 0.45);
+        }
+        .ap-home .ap-stone {
+            flex: 1 1 0;
+            position: relative;
+            padding: 0 8px;
+        }
+        .ap-home .ap-stone-dot {
+            display: block;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--ap-bronze);
+            margin: 0 auto 10px;
+            box-shadow: 0 0 0 4px #1B2A3A;
+        }
+        .ap-home .ap-stone-word {
+            display: block;
+            font: 600 15px/1.3 var(--ap-sans) !important;
+            letter-spacing: 1.5px !important;
+            text-transform: uppercase;
+            color: #F3EDE3 !important;
+        }
+        .ap-home .ap-stone-what {
+            display: block;
+            font: 400 14px/1.5 var(--ap-sans) !important;
+            color: #B7AFA4 !important;
+            margin-top: 4px;
+        }
+
+        /* the road on every finished piece: where this one stands (offer layer v2.3) */
+        .ap-home .ap-card .apo-road {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin: 0 0 10px;
+            position: relative;
+        }
+        .ap-home .ap-card .apo-road::before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            right: 5px;
+            top: 5px;
+            border-top: 1px solid #D9D2C6;
+        }
+        .ap-home .ap-card .apo-stop {
+            flex: 1 1 0;
+            position: relative;
+            font: 600 11px/1.3 var(--ap-sans) !important;
+            letter-spacing: 1.2px !important;
+            text-transform: uppercase;
+            color: #A39B8F !important;
+        }
+        .ap-home .ap-card .apo-stop:nth-child(2) { text-align: center; }
+        .ap-home .ap-card .apo-stop:last-child { text-align: right; }
+        .ap-home .ap-card .apo-stop::before {
+            content: "";
+            display: block;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1.5px solid #C9C2B6;
+            box-sizing: border-box;
+            margin: 0 0 6px;
+        }
+        .ap-home .ap-card .apo-stop:nth-child(2)::before { margin-left: auto; margin-right: auto; }
+        .ap-home .ap-card .apo-stop:last-child::before { margin-left: auto; }
+        .ap-home .ap-card .apo-stop.is-here,
+        .ap-home .ap-card .apo-stop.is-past { color: #1F2A44 !important; }
+        .ap-home .ap-card .apo-stop.is-here::before,
+        .ap-home .ap-card .apo-stop.is-past::before { background: var(--ap-bronze); border-color: var(--ap-bronze); }
+        .ap-home .ap-card .apo-stop.is-here::before { box-shadow: 0 0 0 3px rgba(184, 148, 95, 0.25); }
+
         @media (max-width: 640px) {
             .ap-home .ap-band-in {
                 padding: 48px 20px;
             }
+            .ap-home .ap-band .ap-promise { font-size: 20px !important; }
+            .ap-home .ap-stone-what { display: none; }
 
             .ap-home .ap-band .ap-hello {
                 font-size: 34px !important;
@@ -475,7 +576,13 @@
             <div class="ap-band-in">
                 <p class="ap-eyebrow">Your page</p>
                 <h1 class="ap-hello" id="apHello">Welcome back.</h1>
-                <p class="ap-line">This is the home for your story work — what you have written, where you left off, and what might come next. There is no order to keep. All of it is open to you.</p>
+                <p class="ap-line ap-promise">Tell your story. Offer your testimony. Be known in community.</p>
+                <div class="ap-stones" aria-label="The three stops">
+                    <div class="ap-stone"><span class="ap-stone-dot"></span><span class="ap-stone-word">Told</span><span class="ap-stone-what">Written down and kept. Only you can read it.</span></div>
+                    <div class="ap-stone"><span class="ap-stone-dot"></span><span class="ap-stone-word">Offered</span><span class="ap-stone-what">Read by our team before it goes up.</span></div>
+                    <div class="ap-stone"><span class="ap-stone-dot"></span><span class="ap-stone-word">Known</span><span class="ap-stone-what">Published. Other men can read it now.</span></div>
+                </div>
+                <p class="ap-line ap-line-small">There is no order to keep. All of it is open to you.</p>
             </div>
         </div>
         <p id="apPrimaryRow"><a class="ap-primary" id="apPrimary" href="/write-a-lament">Write a lament</a><span class="ap-primary-note" id="apPrimaryNote">The oldest form there is for saying that something is wrong.</span></p>
@@ -485,7 +592,7 @@
         </div>
         <div class="ap-sec">
             <div class="ap-sec-head">
-                <h2 class="ap-h2" id="apStoriesHead">Your story work</h2>
+                <h2 class="ap-h2" id="apStoriesHead">Your chronicle</h2>
                 <p class="ap-sec-note" id="apStoriesNote">Nothing saved yet. Start with either one — there is no order to keep.</p>
             </div>
             <div class="ap-grid" id="apStories">
@@ -996,7 +1103,7 @@
                 paint(r[9]);
                 direct(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]);
                 if (r[0].status !== "none" || r[1].status !== "none" || r[6].status !== "none" || r[7].status !== "none" || r[8].status !== "none" || r[9].status !== "none") {
-                    $("apStoriesHead").textContent = "Your stories";
+                    $("apStoriesHead").textContent = "Your chronicle";
                     $("apStoriesNote").textContent = "Saved to your page. Open one to read it or change it.";
                 }
             });
@@ -1011,7 +1118,7 @@
             }, true);
         })();
     </script>
-    <!-- AP-OFFER-v2.2 (29 Sept 2026: the piece is read from its own block, never the longest text; the decision lines say what happens next): one control at the foot of every finished piece — Kept · Offered · Published · Taken down — read from the review sheet through the script; the offer goes to the script and is called Offered only once the row has landed; Pull it back / Take it down one press. Replaces the first offer layer (the Google Form post and the on-device "offered" note are gone). Additive layer for the After Login block. -->
+    <!-- AP-OFFER-v2.3 (29 Sept 2026: every finished piece shows where it stands on the road — Told · Offered · Known; Published reads "where other men can read it"; the slow press says so) (v2.2: the piece is read from its own block, never the longest text; the decision lines say what happens next): one control at the foot of every finished piece — Kept · Offered · Published · Taken down — read from the review sheet through the script; the offer goes to the script and is called Offered only once the row has landed; Pull it back / Take it down one press. Additive layer for the After Login block. -->
     <hr style="border:0;margin:0;height:0" data-apo="guard">
     <style id="apoStyle">
         /* AP-OFFER fix v4: John — the boxed pull-back threw the card off balance; revert to plain words in a highlight color (bronze), no boxes. Higher specificity (.ap-card) so it beats v3. */
@@ -1557,7 +1664,7 @@
                     goBtn.addEventListener("click", function() {
                         if (!yes.checked) return;
                         var attribution = (panel.querySelector('input[name="apoNm"]:checked') || {}).value || "Do not show name";
-                        goBtn.disabled = true; goBtn.textContent = "Offering…"; err.style.display = "none";
+                        goBtn.disabled = true; goBtn.textContent = "Offering… this takes a moment"; err.style.display = "none";
                         Promise.all([readWhole(s.unit, s.whole), whoAmI()]).then(function(res) {
                             var text = res[0], who = res[1];
                             if (!text || !text.trim()) { fail("We couldn’t read your piece just now. Open it once, then try offering it again."); return; }
@@ -1578,16 +1685,23 @@
             function footHTML(key) {
                 var e = stateFor(key);
                 if (e.state === "offered") return '<b>Offered.</b> With our team for a read — you’ll hear back before it goes up.<span class="apo-sub">Changed your mind? <button type="button" class="apo-pull">Pull it back</button></span>';
-                if (e.state === "published") return '<b>Published.</b> On Our Stories, for the men who come after you.<span class="apo-sub"><a class="apo-read" href="' + STORIES + '?p=' + encodeURIComponent(e.rid) + '">Read it there</a><span class="apo-dot">·</span><button type="button" class="apo-pull">Take it down</button></span>';
+                if (e.state === "published") return '<b>Published.</b> On Our Stories, where other men can read it.<span class="apo-sub"><a class="apo-read" href="' + STORIES + '?p=' + encodeURIComponent(e.rid) + '">Read it there</a><span class="apo-dot">·</span><button type="button" class="apo-pull">Take it down</button></span>';
                 if (e.state === "taken down") return '<b>Taken down.</b> It is off Our Stories.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
                 if (e.read) return '<b>Kept.</b> We read it and did not publish it.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
                 return '<b>Kept.</b> Only you can read it.<span class="apo-sub">' + offerBtn("Offer it as testimony") + '</span>';
+            }
+            /* where this piece stands on the road: Told (kept, pulled back, taken down, declined) · Offered (offered or held) · Known (published) */
+            function roadHTML(e) {
+                var at = e.state === "published" ? 3 : e.state === "offered" ? 2 : 1;
+                var w = ["Told", "Offered", "Known"], h = '<div class="apo-road" aria-label="Where this piece stands">';
+                for (var i = 0; i < 3; i++) { h += '<span class="apo-stop' + (i + 1 < at ? " is-past" : i + 1 === at ? " is-here" : "") + '">' + w[i] + '</span>'; }
+                return h + '</div>';
             }
             function renderFoot(card, key) {
                 var e = stateFor(key), old = card.querySelector(".apo-foot");
                 var foot = document.createElement("div");
                 foot.className = "apo-foot apo-offered is-" + e.state.replace(/\s+/g, "-");
-                foot.innerHTML = footHTML(key);
+                foot.innerHTML = roadHTML(e) + footHTML(key);
                 if (old) old.parentNode.replaceChild(foot, old);
                 else { var actions = card.querySelector(".ap-card-actions"); (actions ? actions.parentNode : card).appendChild(foot); }
                 var ob = foot.querySelector(".apo-offer-btn"); if (ob) ob.addEventListener("click", function() { openPanel(key, card); });
