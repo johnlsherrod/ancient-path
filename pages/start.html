@@ -1011,7 +1011,7 @@
             }, true);
         })();
     </script>
-    <!-- AP-OFFER-v2 (29 Sept 2026): one control at the foot of every finished piece — Kept · Offered · Published · Taken down — read from the review sheet through the script; the offer goes to the script and is called Offered only once the row has landed; Pull it back / Take it down one press. Replaces the first offer layer (the Google Form post and the on-device "offered" note are gone). Additive layer for the After Login block. -->
+    <!-- AP-OFFER-v2.1 (29 Sept 2026, the piece is read from its own block, never the longest text): one control at the foot of every finished piece — Kept · Offered · Published · Taken down — read from the review sheet through the script; the offer goes to the script and is called Offered only once the row has landed; Pull it back / Take it down one press. Replaces the first offer layer (the Google Form post and the on-device "offered" note are gone). Additive layer for the After Login block. -->
     <hr style="border:0;margin:0;height:0" data-apo="guard">
     <style id="apoStyle">
         /* AP-OFFER fix v4: John — the boxed pull-back threw the card off balance; revert to plain words in a highlight color (bronze), no boxes. Higher specificity (.ap-card) so it beats v3. */
@@ -1388,7 +1388,7 @@
             "use strict";
             if (window.__apOfferInit) return;
             window.__apOfferInit = true;
-            /* offer layer v2 (29 Sept 2026): one control at the foot of every finished piece — Kept · Offered · Published · Taken down —
+            /* offer layer v2.1 (29 Sept 2026): one control at the foot of every finished piece — Kept · Offered · Published · Taken down —
                read from the review sheet through the script (never from this browser's memory); the offer goes to the script and is
                called "Offered" only once the script says the row landed; Pull it back / Take it down are one press, confirmed in words. */
             var SCRIPT = "https://script.google.com/macros/s/AKfycbxTfzmFY7NuXaGZIsPqxRDKpqakwXs5heeEGcp07aiTUG6Pzk9wJ0m8qubveVZoRCO3/exec";
@@ -1460,7 +1460,7 @@
             }
 
             // ---- reading the finished piece, unchanged from v1 ----
-            function apoLooksLikeProse(t) { if (typeof t !== "string" || t.length < 12) return false; if (!/\s/.test(t)) return false; if (/^openEnded/i.test(t)) return false; return /[a-zA-Z]/.test(t); }
+            function apoLooksLikeProse(t) { if (typeof t !== "string" || t.length < 12) return false; if (!/\s/.test(t)) return false; if (/^openEnded/i.test(t)) return false; if (/^\s*[\[{]/.test(t)) return false; return /[a-zA-Z]/.test(t); }
             function apoLongestProse(scope) {
                 var best = "", seen = (typeof WeakSet !== "undefined") ? new WeakSet() : null;
                 (function walk(o, d) {
@@ -1500,9 +1500,27 @@
                 }
                 return t;
             }
-            function readWhole(unit) {
+            /* v2.1 (29 Sept): the piece is read from ITS OWN block (the "whole" question), never as "the longest text in the
+               submission" — since the saved-pieces record was added to every form (13 Sept) that record is a JSON array longer
+               than the piece, and the longest-text read sent the record to the review page instead of the poem. The longest-text
+               read is kept only as a fallback for a form with no whole block, and it never accepts a JSON array or object. */
+            function answersById(j) {
+                var by = {}, sub = j && j.latestSubmission;
+                if (sub && sub.answers && sub.answers.length) { for (var i = 0; i < sub.answers.length; i++) { var a = sub.answers[i]; if (a && a.blockId && a.answer && typeof a.answer.value === "string") by[a.blockId] = a.answer.value; } return by; }
+                var found = apoFindSubmission(j); var list = found && (found.answers || found);
+                if (list && list.length) { for (var k = 0; k < list.length; k++) { var b = list[k]; if (b && b.blockId && b.answer && typeof b.answer.value === "string") by[b.blockId] = b.answer.value; } }
+                return by;
+            }
+            function isRecord(t) { var x = String(t || "").trim(); return x.charAt(0) === "[" || (x.charAt(0) === "{" && /"(id|when|text|answers|finished|step)"\s*:/.test(x.slice(0, 80)) && x.indexOf('"text"') >= 0); }
+            function readWhole(unit, wholeId) {
                 return getJSON("/api/assessment/state?sourceType=unit&objectId=" + unit).then(function(j) {
-                    var sub = apoFindSubmission(j), text = apoAssemble(apoLongestProse(sub || j));
+                    var by = answersById(j), text = "";
+                    if (wholeId && typeof by[wholeId] === "string" && by[wholeId].trim() && !isRecord(by[wholeId])) text = by[wholeId];
+                    if (!text) {
+                        var best = "";
+                        for (var id in by) { var v = by[id]; if (apoLooksLikeProse(v) && !isRecord(v) && v.length > best.length) best = v; }
+                        text = apoAssemble(best);
+                    }
                     return (text && text.trim()) ? text : null;
                 });
             }
@@ -1540,7 +1558,7 @@
                         if (!yes.checked) return;
                         var attribution = (panel.querySelector('input[name="apoNm"]:checked') || {}).value || "Do not show name";
                         goBtn.disabled = true; goBtn.textContent = "Offering…"; err.style.display = "none";
-                        Promise.all([readWhole(s.unit), whoAmI()]).then(function(res) {
+                        Promise.all([readWhole(s.unit, s.whole), whoAmI()]).then(function(res) {
                             var text = res[0], who = res[1];
                             if (!text || !text.trim()) { fail("We couldn’t read your piece just now. Open it once, then try offering it again."); return; }
                             if (!who) { fail("We couldn’t tell who you are just now. Sign out, sign in, and try again."); return; }
