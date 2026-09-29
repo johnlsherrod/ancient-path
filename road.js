@@ -1,4 +1,4 @@
-/* AP-ROAD-v1 (v35: The Word for It is read from the engine (story.js v15, APStory.wordForIt) on the Road's feel step and on Where Are You?; road.js keeps one fallback copy, identical, for a page whose engine predates v15. v34: "a reader", never "a stranger", wherever a man reads it (John, 28 Sept). v33: one engine — the Story assistant (the house document, the four asks and their second reads, the relay, the page-side guards) now lives in story.js as APStory.assistant and this file calls it with the Road profile; a page that runs without story.js must inline it first. v32: one row on every screen — Back or Edit · Download · Copy · Save · Next · Your page — the screen's own bottom row, kept at the foot of the screen; no "leave this page?" box: what he types is held on this device (a day) and put back and saved when he returns, unless a newer save exists; his page opens in the full window from inside a course frame. v31: on Your story a man can edit any of his lines where it sits (Edit beside the line, Done, Cancel); the chapter keeps its wording and "Changed from your chapter · Undo" puts it back; the edited line is what Put it together, Better questions, the turn picker and the story page use. v30: the Story assistant line is small and plainly pressable — "Story assistant ⓘ How it helps" in the sheet's small-link style; the cream box appears only when it is open. v29: Story assistant — the four Claude buttons (Better questions · Check it · Smooth it · Read it back) named once as one helper at the top of Your story, with a circled i that opens what it does and what it never does; the "Four buttons send your story to Claude" paragraph retired. v28: the story he makes in Make it one story — the answers between his lines, each movement put together, smoothed, with where it starts and where God was — is the story his page and his PDF carry; a finished story that is still a list invites him to make it one. v27: one PDF from every Download button — the story first, flowing beginning to end under its three movements, then the road, the plate and the Lower Still page; the plate is fetched before the PDF is made. v26: the Lower Still page after the plate at the end of a finished story's PDF, John's notes set as teaching. v25: after the last map, the Lower Still plate — the road back down, with the act named; the road on the story page; the last line of a finished story; the plate on the last page of the PDF. v24: the map is cumulative and a low answer that is good news is left out; the Numbers 33 chain replaces the between step; short choices on a 3; The Word for It feeling words; Read more under pruning; the story page opens on the newest chapter; his name as byline; one button size) · The Road I Walked · Walk With Me. One file: styles, the ten chapters, the story, the save. Built from the walk-through modules. */
+/* AP-ROAD-v1 (v36: the count — story_start · story_save · story_finish through APStory.track (story.js v16), the piece named road or where, nothing of what he wrote) (v35: The Word for It is read from the engine (story.js v15, APStory.wordForIt) on the Road's feel step and on Where Are You?; road.js keeps one fallback copy, identical, for a page whose engine predates v15. v34: "a reader", never "a stranger", wherever a man reads it (John, 28 Sept). v33: one engine — the Story assistant (the house document, the four asks and their second reads, the relay, the page-side guards) now lives in story.js as APStory.assistant and this file calls it with the Road profile; a page that runs without story.js must inline it first. v32: one row on every screen — Back or Edit · Download · Copy · Save · Next · Your page — the screen's own bottom row, kept at the foot of the screen; no "leave this page?" box: what he types is held on this device (a day) and put back and saved when he returns, unless a newer save exists; his page opens in the full window from inside a course frame. v31: on Your story a man can edit any of his lines where it sits (Edit beside the line, Done, Cancel); the chapter keeps its wording and "Changed from your chapter · Undo" puts it back; the edited line is what Put it together, Better questions, the turn picker and the story page use. v30: the Story assistant line is small and plainly pressable — "Story assistant ⓘ How it helps" in the sheet's small-link style; the cream box appears only when it is open. v29: Story assistant — the four Claude buttons (Better questions · Check it · Smooth it · Read it back) named once as one helper at the top of Your story, with a circled i that opens what it does and what it never does; the "Four buttons send your story to Claude" paragraph retired. v28: the story he makes in Make it one story — the answers between his lines, each movement put together, smoothed, with where it starts and where God was — is the story his page and his PDF carry; a finished story that is still a list invites him to make it one. v27: one PDF from every Download button — the story first, flowing beginning to end under its three movements, then the road, the plate and the Lower Still page; the plate is fetched before the PDF is made. v26: the Lower Still page after the plate at the end of a finished story's PDF, John's notes set as teaching. v25: after the last map, the Lower Still plate — the road back down, with the act named; the road on the story page; the last line of a finished story; the plate on the last page of the PDF. v24: the map is cumulative and a low answer that is good news is left out; the Numbers 33 chain replaces the between step; short choices on a 3; The Word for It feeling words; Read more under pruning; the story page opens on the newest chapter; his name as byline; one button size) · The Road I Walked · Walk With Me. One file: styles, the ten chapters, the story, the save. Built from the walk-through modules. */
 (function(){
 
 if(!window.AP_ROAD||window.__apRoadStarted)return;window.__apRoadStarted=1;
@@ -2061,6 +2061,7 @@ if (typeof module !== "undefined") module.exports = TELL;
   var STASH = "apStoryPending:road", TTL = 30 * 60 * 1000, HELD_TTL = 24 * 60 * 60 * 1000;
   var lastSeen = "", blocked = false, tHold = null;
   var state = "idle", dirtyFlag = false, typed = false, savedOnce = false, note = "", t5 = null, bar = null;
+  var startSent = false, finishSent = false, opened = false;   /* v36 · the count */
   var W = {
     beneath: "Saving puts your story on your page, where you can read it, change it or delete it whenever you want. You will be asked to sign in — that is the only thing an account is for here.",
     beneathIn: "Saving puts your story on your page, where you can read it, change it or delete it whenever you want.",
@@ -2174,6 +2175,12 @@ if (typeof module !== "undefined") module.exports = TELL;
     }
     api()._submit(C.lw.unit, p.answers).then(function () { return readBack(3); }).then(function () {
       clearTimeout(t5); stashClear(); lastSeen = p.json; savedOnce = true; dirtyFlag = false; typed = false; set("saved", W.landed);
+      /* v36 · the count: a confirmed save, and a finished piece once per page (finished is read from the meta this save carried) */
+      try {
+        var fin = false, mb = C.lw.blocks.meta;
+        for (var qi = 0; qi < p.answers.length; qi++) { if (p.answers[qi].blockId === mb) { fin = !!JSON.parse(p.answers[qi].value).finished; } }
+        if (api().track) { api().track("story_save", C.piece || "road"); if (fin && !finishSent) { finishSent = true; api().track("story_finish", C.piece || "road"); } }
+      } catch (e) {}
     }).catch(function (e) {
       clearTimeout(t5);
       set("idle", W.failed(e && e.plain ? e.message : e && e.serviceError ? "The site did not confirm it." : "The connection dropped or the site did not answer."));
@@ -2189,12 +2196,14 @@ if (typeof module !== "undefined") module.exports = TELL;
       paint();
     };
     var held = stashRaw(), pending = held ? held.a : null;
+    if (pending) { opened = true; }   /* v36: words held on this device were started before */
     if (!api()) { if (pending) restore(pending); set("idle", W.unavailable); done(); return; }
     if (!signedIn()) { if (pending) { restore(pending); dirtyFlag = true; typed = !held.press; } done(); return; }
     if (pending && held.press) { restore(pending); done(); save(); return; }
     if (owner()) note = W.ownerNote;
     api().latest(C.lw.unit).then(function (latest) {
       var snap = null;
+      if (latest && latest.answers) { opened = true; }   /* v36: a save on the site, readable or not, means this piece was started before */
       try { snap = latest && latest.answers ? unpack(latest.answers) : null; }
       catch (e) { note = "Your last save could not be read, so this page is starting fresh. If you save here, it replaces that save."; return; }
       /* v32 · words he typed here and did not save come back, unless he saved something newer since (on this device or another) */
@@ -2218,7 +2227,10 @@ if (typeof module !== "undefined") module.exports = TELL;
     host.appendChild(bar);
     bar.saveBtn.addEventListener("click", function () { save(); });
     /* v32 · no "leave this page?" box. What he types is held on this device as he types and put back when he returns. */
-    host.addEventListener("input", function (e) { var t = e.target; if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT")) { typed = true; if (state === "saved") { note = ""; } paint(); holdSoon(); } });
+    host.addEventListener("input", function (e) { var t = e.target; if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT")) {
+      /* v36 · the count: the first words into a piece that had no save and nothing held on this device */
+      if (!startSent && !opened && !savedOnce) { startSent = true; try { if (api() && api().track) { api().track("story_start", C.piece || "road"); } } catch (e2) {} }
+      typed = true; if (state === "saved") { note = ""; } paint(); holdSoon(); } });
   }
   function inFrame() { try { return window.top !== window.self; } catch (e) { return true; } }
   window.AP_ROAD_SITE = {
