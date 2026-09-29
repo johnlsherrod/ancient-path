@@ -1,6 +1,19 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v17
+   AP-STORY-MODULE-v18
 
+   v18 (29 Sept 2026) — the finish, reshaped. Under his piece: "Tap any
+     line to change it" — a tap takes him to that line's box (and on a
+     phone, to that question). Then one row: Edit · Save. Then one quiet
+     line: Read it back · Hear it · Five questions (the five taps' button
+     now says what it does; "Now that it's written" stays their heading).
+     Then Your page. Print and Copy stay small at the foot. After a save,
+     "Saved to your page. Finished." is the first line and Edit is still
+     right there. John, Sept 29: "after saving I'm presented a screen that
+     offers read it back, hear it, now that it's written… what if I want
+     to edit what I'm reading?"
+
+   v17.1 (29 Sept 2026) — one listener per page, one stretch of speech per tap, no
+     keyboard raised: the second question's tap now works on a phone.
    v17 (29 Sept 2026) — Speak it, phone-first, and the handoff. On every
      piece, decided by what the device can do: Tap and talk by every box
      (the device turns his voice into words; nothing recorded, nothing
@@ -923,11 +936,12 @@
     note.parentNode.insertBefore(panel, note.nextSibling);
     this.renderSaved(panel);   /* v5: the way back, from the start, when he is signed in */
     this.holdTyping();         /* v7 */
+    this.mountVoice();         /* v17 · before oneRow, so Hear it takes its tier */
     this.oneRow();             /* v7 */
     this.foldClosing();        /* v10 */
-    this.mountVoice();         /* v17 */
     this.oneQuestion();        /* v17 */
     this.mountHandoff();       /* v17 */
+    this.mountTapLines();      /* v18 */
     return true;
   };
 
@@ -1008,16 +1022,17 @@
     for (var i = 0; i < ORDER.length; i++) { if (ORDER[i][0].test(t)) { return ORDER[i][1]; } }
     return 5;
   }
-  /* the finish: slot → tier order. 5 saved + what's left (after a save) · 8 the ⓘ line · 10 Read it back · 15 break · 16 results and the walk · 17 Now that it's written (v15) · 20 Save · 21 Your page · 25 break · 30 the quiet things */
+  /* the finish, v18: 5 saved + what's left · 6 Edit · 7 Save · 10 break · 11 the ⓘ line · 12 the quiet line (Read it back · Hear it · Five questions) · 16 results and the walk · 17 the five cards · 21 Your page · 25 break · 30 the quiet things (Print · Copy · Save image · Edit the whole thing) */
   function finishOrder(node, slot) {
     if (node.classList.contains("aps-status")) { return 5; }
-    if (node.classList.contains("aps-assist")) { return 8; }
-    if (node.classList.contains("aps-act")) { return 10; }
+    if (node.classList.contains("aps-edit-main")) { return 6; }
+    if (node.classList.contains("aps-assist")) { return 11; }
+    if (node.classList.contains("aps-act")) { return 12; }
     if (node.classList.contains("aps-read")) { return 16; }
-    if (node.classList.contains("aps-after")) { return 17; }
-    if (node.classList.contains("aps-break")) { return node.getAttribute("data-at") === "a" ? 15 : 25; }
-    if (slot === 8) { return 10; }
-    if (slot === 4) { return 20; }
+    if (node.classList.contains("aps-after")) { return 12; }
+    if (node.classList.contains("aps-break")) { return node.getAttribute("data-at") === "a" ? 10 : 25; }
+    if (slot === 8) { return 12; }
+    if (slot === 4) { return 7; }
     if (slot === 6) { return 21; }
     return 30;
   }
@@ -1028,6 +1043,12 @@
     if (finish) {
       row.classList.add("aps-finish");
       if (!row.querySelector('.aps-break[data-at="a"]')) { row.appendChild(breakEl("a")); row.appendChild(breakEl("b")); }
+    }
+    if (finish && !row.querySelector(".aps-edit-main")) {
+      /* v18: the first of the page's own Back / Edit controls (never the engine's Edit the whole thing) is the Edit button, beside Save */
+      var saveBtn = null, editBtn = null;
+      for (var e0 = 0; e0 < row.children.length; e0++) { var cb = row.children[e0]; if (cb.tagName !== "BUTTON") { continue; } var sl0 = slotFor(cb); if (sl0 === 4 && !saveBtn) { saveBtn = cb; } if (sl0 === 1 && !editBtn && cb.id !== "apsEdit") { editBtn = cb; } }
+      if (editBtn) { editBtn.classList.add("aps-edit-main"); editBtn.setAttribute("data-aps-label", editBtn.textContent); editBtn.textContent = "Edit"; if (saveBtn) { editBtn.className = saveBtn.className + " aps-edit-main"; } }
     }
     for (var i = 0; i < row.children.length; i++) {
       var c = row.children[i];
@@ -1086,6 +1107,13 @@
         ".aps-about{margin:0 0 22px}.aps-about summary{cursor:pointer;color:#8C6A3F;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;list-style:none}.aps-about summary::-webkit-details-marker{display:none}.aps-about[hidden]{display:none!important}.aps-about > div{margin-top:12px;border-left:3px solid #C9A227;padding-left:14px}" +
         "@media (max-width:620px){.aps-row.aps-step > button{flex:1 1 0}}" +
         "@media (max-width:620px){.aps-row>button{flex:1 1 auto}.aps-row .aps-page-link{flex:1 1 100%;text-align:center;margin:4px 0 0}.aps-row.aps-finish > .aps-quiet{flex:0 1 auto}.aps-row.aps-finish > .aps-page-link{flex:0 1 auto;text-align:left;margin:0}}" +
+        /* v18: the quiet line: Read it back, Hear it, Five questions read as links, not buttons; on a phone the words beside them come off */
+        ".aps-row.aps-finish > .aps-act{flex:0 1 auto;display:flex;align-items:center;gap:10px;margin:0 18px 0 0}.aps-row.aps-finish .aps-act-what{font-size:13.5px;line-height:1.4;color:#6B6358;max-width:40ch}.aps-row.aps-finish > .aps-act > button{flex:0 0 auto;order:0}" +
+        ".aps-row.aps-finish > .aps-act > button,.aps-row.aps-finish .aps-after .aps-after-open{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-height:0!important;height:auto!important;font-size:15px!important;font-weight:600!important;color:#8C6A3F!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:0!important;width:auto!important}" +
+        ".aps-row.aps-finish > .aps-act > button:hover,.aps-row.aps-finish .aps-after .aps-after-open:hover{color:#1F2A44!important}" +
+        ".aps-row.aps-finish .aps-after{flex:0 1 auto;width:auto;margin:0}.aps-row.aps-finish .aps-after .aps-after-row{margin:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.aps-row.aps-finish .aps-after .aps-after-what{font-size:13.5px;color:#6B6358;max-width:40ch}.aps-row.aps-finish .aps-after > .aps-after-card,.aps-row.aps-finish .aps-after > .aps-after-done,.aps-row.aps-finish .aps-after > .aps-note:not(.aps-after-row){flex:1 1 100%}" +
+        "@media (max-width:620px){.aps-row.aps-finish .aps-act-what,.aps-row.aps-finish .aps-after .aps-after-what{display:none}.aps-row.aps-finish > .aps-act{margin-right:14px;flex:0 1 auto}}" +
+        ".aps-row.aps-finish > .aps-edit-main{order:6}" +
         "@media print{.aps-row{position:static}}";
       document.head.appendChild(st);
     }
@@ -1143,9 +1171,10 @@
   };
   /* bring a box on screen and open it; on a page that shows one step at a time the step row's own Back/Next carry him there; then cb(box) */
   Story.prototype.bring = function (best, cb) {
-    var boxes = this.boxes();
+    var self = this, boxes = this.boxes();
     var visible = function (n) { var r = n.getBoundingClientRect(); return r.height > 0 && r.width > 0; };
     var land = function () {
+      try { if (self._oneQuestion && self._oneQuestion.show) { self._oneQuestion.show(best); } } catch (e) {}
       try { best.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
       try { best.focus({ preventScroll: true }); } catch (e) { try { best.focus(); } catch (e2) {} }
       try { if (best.setSelectionRange && best.value) { best.setSelectionRange(0, best.value.length); } } catch (e) {}
@@ -1668,7 +1697,7 @@
       endGuide(); walk = null;
       var changed = 0; shown.forEach(function (it) { if (it.done) { changed++; } });
       var old = out.querySelector(".aps-walked"); if (old) { old.parentNode.removeChild(old); }
-      var onward = $("apsAfter") && $("apsAfter").querySelector(".aps-after-open") ? " Next: Now that it\u2019s written, below." : "";
+      var onward = $("apsAfter") && $("apsAfter").querySelector(".aps-after-open") ? " Next: the five questions, below." : "";
       var p = el("p", "aps-note aps-walked", (early ? "Stopped. " : "Walked through " + shown.length + ". ") + (changed ? changed + " changed." : "Nothing changed.") + (changed ? " Save keeps it." : "") + onward);
       var wr = out.querySelector(".aps-walkrow"); if (wr) { wr.parentNode.insertBefore(p, wr.nextSibling); } else { out.appendChild(p); }
       try { row.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
@@ -1765,7 +1794,7 @@
     function offer(note) {
       clear();
       var p = el("p", "aps-note aps-after-row", "");
-      var b = el("button", "aps-after-open", wasDone ? "Go through them again" : "Now that it\u2019s written"); b.type = "button";
+      var b = el("button", "aps-after-open", wasDone ? "Go through them again" : "Five questions"); b.type = "button";
       b.addEventListener("click", open);
       p.appendChild(b);
       p.appendChild(el("span", "aps-after-what", "Five questions about what you just wrote. Most of them are one tap, and you can skip any."));
@@ -1932,6 +1961,54 @@
   /* the voice controls for a set of boxes: Tap and talk beside each, Read it to me under its question, the note once per page.
      Used by the engine for a piece's own boxes and by road.js for the boxes it draws (APStory.voice.attach). */
   var VOICE_CSS_DONE = false, VOICE_NOTE_DONE = false, VOICE_LIVE = null;
+  /* v17.1 · ONE listener per page. The first cut made a new listener on every tap, and a phone (Safari above all) will not start a
+     second one while the first is still winding down — so the second question's tap did nothing. Now one listener is made once,
+     a tap points it at that box, a pause or a second tap ends it, and a tap on another box waits for the first to end before it
+     starts. It listens for one stretch of speech at a time (no "continuous" mode: phones cut it off unpredictably), and it never
+     raises the keyboard. John, Sept 29: "lots of pop ups and things happening between the phone and webpage". */
+  var LISTEN = (function () {
+    var rec = null, btn = null, land = null, on = false, want = null, ending = false;
+    function reset(b) { if (b) { b.classList.remove("is-on"); b.textContent = "Tap and talk"; } }
+    function make() {
+      var SR = VOICE.SR(); if (!SR) { return null; }
+      var r = new SR();
+      r.lang = document.documentElement.lang || "en-US"; r.continuous = false; r.interimResults = false; r.maxAlternatives = 1;
+      r.onresult = function (ev) {
+        var out = "";
+        for (var k = ev.resultIndex || 0; k < ev.results.length; k++) { if (ev.results[k].isFinal) { out += (out ? " " : "") + (ev.results[k][0].transcript || ""); } }
+        if (land) { land(out); }
+      };
+      r.onerror = function (ev) {
+        var why = ev && ev.error;
+        if (why === "not-allowed" || why === "service-not-allowed") {
+          VOICE.denied(true); finish();
+          Array.prototype.forEach.call(document.querySelectorAll(".aps-voice .aps-talk"), function (b) { b.parentNode.removeChild(b); });
+          Array.prototype.forEach.call(document.querySelectorAll(".aps-voice-note"), function (n) { n.parentNode.removeChild(n); });
+          return;
+        }
+        finish();
+      };
+      r.onend = finish;
+      return r;
+    }
+    function finish() {
+      on = false; ending = false; reset(btn); btn = null; land = null; VOICE_LIVE = null;
+      if (want) { var w = want; want = null; window.setTimeout(function () { start(w.b, w.l); }, 150); }
+    }
+    function start(b, l) {
+      if (!rec) { rec = make(); if (!rec) { return; } }
+      btn = b; land = l; on = true; VOICE_LIVE = b;
+      b.classList.add("is-on"); b.textContent = "Listening\u2026";
+      try { rec.start(); } catch (e) { /* a phone still winding the last one down: try once more shortly */ window.setTimeout(function () { try { rec.start(); } catch (e2) { finish(); } }, 250); }
+    }
+    function stop() { if (!on || ending) { return; } ending = true; try { rec.stop(); } catch (e) { finish(); } }
+    function toggle(b, l) {
+      if (on && btn === b) { stop(); return; }
+      if (on) { want = { b: b, l: l }; stop(); return; }
+      start(b, l);
+    }
+    return { toggle: toggle, stop: stop, listening: function () { return on; } };
+  })();
   function voiceCSS() {
     if (VOICE_CSS_DONE || $("aps-voice-css")) { VOICE_CSS_DONE = true; return; }
     VOICE_CSS_DONE = true;
@@ -1996,8 +2073,6 @@
       }
       if (SR && !VOICE.denied()) {
         var tb = el("button", "aps-talk", "Tap and talk"); tb.type = "button";
-        var rec = null, on = false;
-        var idle = function () { on = false; tb.classList.remove("is-on"); tb.textContent = "Tap and talk"; if (VOICE_LIVE === tb) { VOICE_LIVE = null; } };
         var land = function (text) {
           text = String(text || "").trim(); if (!text) { return; }
           var v = String(node.value || ""), tail = v.replace(/\s+$/, "");
@@ -2006,28 +2081,8 @@
           node.value = tail + (tail ? " " : "") + text;
           node.dispatchEvent(new window.Event("input", { bubbles: true }));
         };
-        tb.addEventListener("click", function () {
-          if (on) { on = false; try { rec.stop(); } catch (e) {} idle(); return; }
-          if (VOICE_LIVE && VOICE_LIVE !== tb) { VOICE_LIVE.click(); }
-          try {
-            rec = new SR();
-            rec.lang = document.documentElement.lang || "en-US"; rec.continuous = true; rec.interimResults = false; rec.maxAlternatives = 1;
-            rec.onresult = function (ev) {
-              var out = "";
-              for (var k = ev.resultIndex || 0; k < ev.results.length; k++) { if (ev.results[k].isFinal) { out += (out ? " " : "") + (ev.results[k][0].transcript || ""); } }
-              land(out);
-            };
-            rec.onerror = function (ev) {
-              var why = ev && ev.error;
-              if (why === "not-allowed" || why === "service-not-allowed") { VOICE.denied(true); idle(); Array.prototype.forEach.call(document.querySelectorAll(".aps-voice .aps-talk"), function (b) { b.parentNode.removeChild(b); }); Array.prototype.forEach.call(document.querySelectorAll(".aps-voice-note"), function (n) { n.parentNode.removeChild(n); }); return; }
-              idle();
-            };
-            rec.onend = idle;
-            rec.start();
-            on = true; VOICE_LIVE = tb; tb.classList.add("is-on"); tb.textContent = "Listening\u2026 tap to stop";
-            try { node.focus({ preventScroll: true }); } catch (e) {}
-          } catch (e) { idle(); }
-        });
+        /* v17.1 · one listener for the whole page (LISTEN): a tap starts it for this box, a pause or a second tap ends it; no keyboard is raised */
+        tb.addEventListener("click", function () { LISTEN.toggle(tb, land); });
         row.appendChild(tb);
       }
       if (!row.children.length) { return; }
@@ -2041,13 +2096,76 @@
   };
   if (!VOICE._hidden) {
     VOICE._hidden = true;
-    document.addEventListener("visibilitychange", function () { if (document.hidden) { VOICE.stop(); if (VOICE_LIVE) { VOICE_LIVE.click(); } } });
+    document.addEventListener("visibilitychange", function () { if (document.hidden) { VOICE.stop(); LISTEN.stop(); } });
   }
 
   Story.prototype.askFor = function (node) {
     var cfg = this.cfg;
     if (typeof cfg.askFor === "function") { try { var t0 = cfg.askFor(node.id); if (t0) { return String(t0); } } catch (e) {} }
     return askOf(node);
+  };
+
+  /* ======================================================================
+     9g. v18 — TAP ANY LINE TO CHANGE IT
+     ------------------------------------------------------------------
+     The finished piece the page shows is the way back into it: a tap on a
+     line takes him to that line's box (v12's goToLine), and on a phone to
+     that question. The page names its piece with cfg.pieceSelector; else
+     the engine finds the smallest element whose words hold the first line
+     of the piece. A one-line hint sits under it. The page may redraw its
+     piece at any time, so the hint is kept in place by a short watch and
+     the tap is caught on the root, never on the piece itself.
+     ====================================================================== */
+  Story.prototype.findPiece = function () {
+    var cfg = this.cfg, root = document.querySelector(cfg.root) || document.body;
+    if (cfg.pieceSelector) { return document.querySelector(cfg.pieceSelector); }
+    var doc = this.document(); if (!doc) { return null; }
+    var lines = doc.split("\n").map(function (l) { return l.replace(/\s+/g, " ").trim(); }).filter(function (l) { return l.length >= 4; });
+    if (!lines.length) { return null; }
+    /* the piece holds its first line and its last: the smallest such element (a single line's own element holds only one) */
+    var first = lines[0].toLowerCase(), last = lines[lines.length - 1].toLowerCase();
+    var best = null, all = root.querySelectorAll("p,div,blockquote,pre,section,article");
+    for (var i = 0; i < all.length; i++) {
+      var e = all[i]; if (e.querySelector("input,textarea,button,select")) { continue; }
+      if (e.classList.contains("aps-read") || e.classList.contains("aps-after") || e.classList.contains("aps-row")) { continue; }
+      var t = (e.textContent || "").replace(/\s+/g, " ").toLowerCase();
+      if (t.indexOf(first) < 0 || t.indexOf(last) < 0) { continue; }
+      var r = e.getBoundingClientRect(); if (!(r.height > 0) && e.style.display !== "") { continue; }
+      if (!best || (e.textContent || "").length <= (best.textContent || "").length) { best = e; }   /* the same words deeper in wins: the piece, not the panel around it */
+    }
+    return best;
+  };
+  Story.prototype.mountTapLines = function () {
+    var self = this, cfg = this.cfg, root = document.querySelector(cfg.root) || document.body;
+    if (cfg.tapLines === false || this._tapLines) { return false; }
+    this._tapLines = true;
+    if (!$("aps-tap-css")) { var st = el("style"); st.id = "aps-tap-css"; st.textContent = ".aps-tap-hint{font-size:14px;line-height:1.4;color:#6B6358;margin:8px 0 0}.aps-can-tap{cursor:pointer}.aps-can-tap:hover{outline:1px dashed #C9A227;outline-offset:6px}"; document.head.appendChild(st); }
+    var lineAt = function (x, y, piece) {
+      var node = null, off = 0;
+      try { if (document.caretPositionFromPoint) { var cp = document.caretPositionFromPoint(x, y); if (cp) { node = cp.offsetNode; off = cp.offset; } } else if (document.caretRangeFromPoint) { var cr = document.caretRangeFromPoint(x, y); if (cr) { node = cr.startContainer; off = cr.startOffset; } } } catch (e) {}
+      if (!node || !piece.contains(node)) { return ""; }
+      var text = node.nodeType === 3 ? node.nodeValue : (node.textContent || "");
+      if (/\n/.test(text)) { var upto = text.slice(0, off), ln = upto.split("\n").length - 1; text = text.split("\n")[ln] || ""; }
+      else if (node.nodeType !== 3) { text = (node.textContent || "").split("\n")[0]; }
+      return String(text).replace(/\s+/g, " ").trim();
+    };
+    var dress = function () {
+      var piece = self.findPiece(); if (!piece) { return; }
+      if (piece.classList.contains("aps-can-tap")) { return; }
+      piece.classList.add("aps-can-tap");
+      var hint = el("p", "aps-tap-hint", "Tap any line to change it.");
+      piece.parentNode.insertBefore(hint, piece.nextSibling);
+    };
+    root.addEventListener("click", function (e) {
+      var piece = self.findPiece(); if (!piece || !e.target || !piece.contains(e.target)) { return; }
+      var line = lineAt(e.clientX, e.clientY, piece);
+      if (!line && e.target !== piece) { line = (e.target.textContent || "").split("\n")[0].trim(); }
+      if (!line) { return; }
+      self.goToLine(line);
+    });
+    var n = 0, iv = window.setInterval(function () { dress(); if (++n > 20) { window.clearInterval(iv); } }, 1200);
+    dress();
+    return true;
   };
 
   Story.prototype.mountVoice = function () {
@@ -2114,7 +2232,7 @@
     /* the page's own steps change underneath (its Back and Next): when the set of visible boxes changes, paint again */
     var sig = function () { return groups.map(function (g) { return visible(g) ? "1" : "0"; }).join(""); }, last = sig();
     var tick = window.setInterval(function () { if (!on) { window.clearInterval(tick); return; } var now = sig(); if (now !== last) { last = now; paint(null); } }, 350);
-    this._oneQuestion = { off: function () { on = false; paint(null); }, groups: groups };
+    this._oneQuestion = { off: function () { on = false; paint(null); }, groups: groups, show: function (node) { if (!on) { return; } for (var i = 0; i < groups.length; i++) { if (groups[i].box === node || groups[i].box.contains(node)) { paint(groups[i]); return; } } } };
     return true;
   };
 
@@ -2193,7 +2311,7 @@
   };
 
   window.APStory = {
-    version: "17",
+    version: "18",
     assistant: ASSIST,
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
