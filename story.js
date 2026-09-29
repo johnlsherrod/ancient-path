@@ -1,6 +1,16 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v15
+   AP-STORY-MODULE-v16
    Ancient Path — the Chronicle: the shared save and the story assistant.
+
+   v16 (29 Sept 2026) — the count. Every piece now tells Analytics three
+     things, and nothing else: story_start (the first words typed into a
+     fresh piece on this device), story_save (a save the site confirmed),
+     story_finish (a confirmed save of a finished piece). Each carries
+     only the piece's key (cfg.form). No text, no name, no answer ever
+     leaves the page this way. APStory.track is the one sender, so
+     road.js reports the same three for The Road and Where Are You?.
+     The Friday count reads these four numbers — starts, finishes,
+     saves, offers — from Analytics.
 
    v15 (28 Sept 2026) — "Now that it's written". The five questions that
      sat on Where I'm From and Write a Lament as a section of their own
@@ -212,6 +222,18 @@
   /* Signed in means: LearnWorlds rendered this page for an account.
      Both values exist only then (measured on the logged-out markup). */
   function signedIn() { return !!(sessionToken() && csrf()); }
+
+  /* v16 · the count. One sender for every piece: an event name and the
+     piece's key, nothing of what he wrote. Silent when Analytics is not
+     on the page. Returns whether anything was sent (for the tests). */
+  function track(name, piece, extra) {
+    try {
+      var p = { piece: String(piece || "") };
+      if (extra) { for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) { p[k] = extra[k]; } } }
+      if (typeof window.gtag === "function") { window.gtag("event", name, p); return true; }
+    } catch (e) {}
+    return false;
+  }
 
   function headers() {
     var h = { "Content-Type": "application/json", "Accept": "application/json" };
@@ -524,8 +546,8 @@
   };
 
   /* v10: where he stands: how many of the piece's parts carry words, and whether the page calls it finished */
-  Story.prototype.progress = function () {
-    var a = this.answers(), written = 0, total = 0, meta = null;
+  Story.prototype.progress = function (answersGiven) {
+    var a = answersGiven || this.answers(), written = 0, total = 0, meta = null;
     for (var i = 0; i < this.cfg.fields.length; i++) {
       var f = this.cfg.fields[i]; if (f.key === "meta") { continue; }
       var node = $(f.id); if (node && node.type === "hidden") { continue; }
@@ -652,6 +674,9 @@
         self.savedAnswers = JSON.stringify(answers);
         if (result.newEntryId) { self.openEntryId = result.newEntryId; }
         stashClear(self.cfg.form);
+        /* v16 · the count: a confirmed save, and a finished piece once per page */
+        track("story_save", self.cfg.form);
+        if (self.progress(answers).finished && !self._finishSent) { self._finishSent = true; track("story_finish", self.cfg.form); }
         /* "Saved" is set ONLY here — when LearnWorlds has said submitted. */
         ui.done(result.sub);
       })
@@ -682,6 +707,7 @@
      as opposed to `?open=1` which still means "the latest" via
      restoreLatest() below, unchanged from v5. */
   Story.prototype.restoreEntry = function (entryId) {
+    this._opened = true;   /* v16: opening a saved piece is not a start */
     var self = this;
     var historyBlock = this.cfg.lw.blocks.history;
     if (!historyBlock) { return window.Promise.resolve(null); }
@@ -724,6 +750,7 @@
   /* Arriving from his page: put his latest piece back into the form. */
   Story.prototype.restoreLatest = function () {
     var self = this;
+    this._opened = true;   /* v16: opening a saved piece is not a start */
     var untouched = interactEpoch;   /* BEFORE the read, not after it returns */
     return lwLatest(this.cfg.lw.unit).then(function (latest) {
       if (!latest) { return null; }
@@ -930,6 +957,8 @@
     this._fieldIds = ids;
     document.addEventListener("input", function (e) {
       var t = e.target; if (!t || !t.id || !ids[t.id]) { return; }
+      /* v16 · the count: the first words into a piece that was not opened from a save and had nothing held on this device */
+      if (!self._startSent && !self._opened) { self._startSent = true; track("story_start", self.cfg.form); }
       window.clearTimeout(timer);
       timer = window.setTimeout(function () {
         var a = self.answers();
@@ -1198,6 +1227,7 @@
           the save he pressed. If he is still signed out, put them back
           and let him press Save again. */
     var held = stashRaw(this.cfg.form), pending = held ? held.a : null;
+    if (pending) { this._opened = true; }   /* v16: words held on this device were started before */
     if (pending && held.press) {
       this.fill(pending);
       /* Let the page put itself back where he pressed Save (the finish),
@@ -1837,7 +1867,7 @@
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "15",
+    version: "16",
     assistant: ASSIST,
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
@@ -1868,6 +1898,7 @@
 
     /* exposed for the personal page and for testing */
     signedIn: signedIn,
+    track: track,   /* v16: the one sender for the count */
     safe: safe,
     latest: lwLatest,
     _submit: lwSubmit,
