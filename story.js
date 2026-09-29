@@ -1,6 +1,18 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v14
+   AP-STORY-MODULE-v15
    Ancient Path — the Chronicle: the shared save and the story assistant.
+
+   v15 (28 Sept 2026) — "Now that it's written". The five questions that
+     sat on Where I'm From and Write a Lament as a section of their own
+     (how do you feel, now that it's written · where do you feel it ·
+     which line surprised you · if someone read only one line · how much
+     of this had you said out loud) now come from the engine, in the
+     finish, after Read it back and the walk and before Save, so every
+     piece has them. One at a time, a tap moves him on, Back and Skip on
+     every card, his answers read back at the end; for him, not saved
+     with the piece. The feeling words are The Word for It, and only
+     that list (APStory.wordForIt). The two pages' own section and its
+     preamble come off in their configs.
 
    v14 (28 Sept 2026) — the walk. Everything to look at is one numbered
      list in the order it comes in his piece; "Walk through them" takes him
@@ -164,6 +176,11 @@
   var STASH_KEY = "apStoryPending"; /* localStorage: words waiting on sign-in */
   var STASH_TTL = 30 * 60 * 1000;   /* a Save he pressed while signed out: half an hour, then it is stale */
   var HELD_TTL  = 24 * 60 * 60 * 1000; /* v7: words he typed and did not save: a day */
+  /* v15 · The Word for It: the house list of feeling words, heavy to light (John, 17 Sept: "our branded version of feeling
+     words"; 25 Sept: the nine were too few). The ONLY feeling words any piece offers; road.js carries the same list. */
+  var WORD_FOR_IT = ["ashamed", "exposed", "afraid", "angry", "sad", "alone", "numb", "tired", "stuck", "restless", "convicted", "sorry", "tender", "relieved", "seen", "hopeful", "grateful", "steady", "free", "glad"];
+  /* where a feeling sits: the house list of places in the body (Where Are You? and the Road use the same seven) */
+  var BODY_PLACES = ["chest", "gut", "throat", "shoulders", "hands", "jaw", "nowhere yet"];
 
   /* ======================================================================
      1. TALKING TO LEARNWORLDS
@@ -843,7 +860,9 @@
         row.appendChild(note); note.style.order = "5";
         self.renderSaved(panel);
         /* let him save again after he edits */
-        var rearm = function () {
+        var rearm = function (e) {
+          /* v15: a tap or a word in "Now that it's written" is not a change to the piece */
+          var tg = e && e.target; if (tg && self._fieldIds && !(tg.id && self._fieldIds[tg.id])) { return; }
           btn.disabled = false; btn.textContent = "Save";
           if (cfg.ghostClass) { btn.classList.remove(cfg.ghostClass); }
           if (cfg.primaryClass) { btn.classList.add(cfg.primaryClass); }
@@ -862,6 +881,7 @@
     row.appendChild(btn);
     this.mountEditAll(row);
     this.mountAssistant(row);   /* v8 */
+    this.mountAfter(row);       /* v15 */
     row.parentNode.insertBefore(note, row.nextSibling);
     note.parentNode.insertBefore(panel, note.nextSibling);
     this.renderSaved(panel);   /* v5: the way back, from the start, when he is signed in */
@@ -946,12 +966,13 @@
     for (var i = 0; i < ORDER.length; i++) { if (ORDER[i][0].test(t)) { return ORDER[i][1]; } }
     return 5;
   }
-  /* the finish: slot → tier order. 5 saved + what's left (after a save) · 8 the ⓘ line · 10 Check it/Read it back · 15 break · 16 results · 20 Save · 21 Your page · 25 break · 30 the quiet things */
+  /* the finish: slot → tier order. 5 saved + what's left (after a save) · 8 the ⓘ line · 10 Read it back · 15 break · 16 results and the walk · 17 Now that it's written (v15) · 20 Save · 21 Your page · 25 break · 30 the quiet things */
   function finishOrder(node, slot) {
     if (node.classList.contains("aps-status")) { return 5; }
     if (node.classList.contains("aps-assist")) { return 8; }
     if (node.classList.contains("aps-act")) { return 10; }
     if (node.classList.contains("aps-read")) { return 16; }
+    if (node.classList.contains("aps-after")) { return 17; }
     if (node.classList.contains("aps-break")) { return node.getAttribute("data-at") === "a" ? 15 : 25; }
     if (slot === 8) { return 10; }
     if (slot === 4) { return 20; }
@@ -1009,6 +1030,7 @@
         ".aps-row.aps-finish .aps-assist{flex:1 1 100%;margin:0 0 2px}" +
         ".aps-row.aps-finish .aps-read{flex:1 1 100%;width:100%;max-width:none;margin:0}.aps-row.aps-finish .aps-read > *{max-width:62ch}" +
         ".aps-row.aps-finish .aps-read[hidden]{display:none!important}" +
+        ".aps-row.aps-finish .aps-after{flex:1 1 100%;width:100%;max-width:none;margin:0}.aps-row.aps-finish .aps-after > *{max-width:62ch}" +
         ".aps-row.aps-finish > .aps-break[data-at=\"b\"]{height:1px;background:#E5DCC8;margin:10px 0 2px}" +
         ".aps-row.aps-finish > .aps-quiet{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-height:0!important;height:auto!important;font-size:14px!important;font-weight:400!important;color:#6B6358!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-right:6px}" +
         ".aps-row.aps-finish > .aps-quiet:hover{color:#1F2A44!important}" +
@@ -1603,7 +1625,8 @@
       endGuide(); walk = null;
       var changed = 0; shown.forEach(function (it) { if (it.done) { changed++; } });
       var old = out.querySelector(".aps-walked"); if (old) { old.parentNode.removeChild(old); }
-      var p = el("p", "aps-note aps-walked", (early ? "Stopped. " : "Walked through " + shown.length + ". ") + (changed ? changed + " changed." : "Nothing changed.") + (changed ? " Save keeps it." : ""));
+      var onward = $("apsAfter") && $("apsAfter").querySelector(".aps-after-open") ? " Next: Now that it\u2019s written, below." : "";
+      var p = el("p", "aps-note aps-walked", (early ? "Stopped. " : "Walked through " + shown.length + ". ") + (changed ? changed + " changed." : "Nothing changed.") + (changed ? " Save keeps it." : "") + onward);
       var wr = out.querySelector(".aps-walkrow"); if (wr) { wr.parentNode.insertBefore(p, wr.nextSibling); } else { out.appendChild(p); }
       try { row.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) {}
     }
@@ -1656,11 +1679,167 @@
   };
 
   /* ======================================================================
+     9d. v15 — NOW THAT IT'S WRITTEN
+     ------------------------------------------------------------------
+     The five questions that sat on Where I'm From and Write a Lament as
+     a section of their own ("One more thing, if you want to") now come
+     from the engine, in the finish, after Read it back and the walk and
+     before Save, so every piece has them: how do you feel, now that it's
+     written (The Word for It, or his own word) · where do you feel it ·
+     which line surprised you · if someone read only one line · how much
+     of this had you said out loud. One at a time; a tap moves him on;
+     Back and Skip on every card; at the end his answers read back in one
+     short block, and Save is the next thing under it. They are for him
+     and are not saved with the piece. Nothing here needs Claude.
+       cfg.after: true   on any page, with or without an assistant
+       cfg.after: false  off; otherwise on for every poem-kind piece
+     ====================================================================== */
+  var AFTER_BODY_HINT = "In your body, right now. It will feel odd the first time \u2014 most men skip it. Do not. A feeling you can point to is one you can name, and a feeling you can name stops running you.";
+  var AFTER_SAID = ["none of it", "a little of it", "some of it", "most of it", "all of it"];
+  Story.prototype.mountAfter = function (row) {
+    var self = this, cfg = this.cfg;
+    if ($("apsAfter")) { return false; }
+    var poem = !!cfg.assistant && ASSIST.profile(typeof cfg.assistant === "object" ? cfg.assistant : { kind: "poem" }).kind === "poem";
+    if (!(cfg.after === true || (cfg.after !== false && poem))) { return false; }
+    var wrap = el("div", "aps-after", ""); wrap.id = "apsAfter";
+    var a = null, i = 0, wasDone = false;
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+    function lines() {
+      var tail = cfg.tail ? String(cfg.tail).replace(/\s+/g, " ").trim() : "", out = [];
+      self.document().split(/\n+/).forEach(function (l) { l = l.trim(); if (l && l.replace(/\s+/g, " ") !== tail) { out.push(l); } });
+      return out;
+    }
+    function short(l) { return l.length > 120 ? l.slice(0, 117).replace(/\s+\S*$/, "") + "\u2026" : l; }
+    var QS = [
+      { key: "feel", ask: "How do you feel, now that it\u2019s written?", taps: function () { return WORD_FOR_IT; }, own: true },
+      { key: "body", ask: "Where do you feel it?", hint: AFTER_BODY_HINT, taps: function () { return BODY_PLACES; } },
+      { key: "surprised", ask: "Which line surprised you?", hint: "Tap one of your own.", taps: lines, line: true },
+      { key: "one", ask: "If someone read only one line, which do you want it to be?", hint: "Tap one of your own.", taps: lines, line: true },
+      { key: "said", ask: "Before today, how much of this had you said out loud to anyone?", scale: true }
+    ];
+    function fresh() { return { feel: "", own: "", body: "", surprised: "", one: "", said: 0 }; }
+    function clear() { wrap.innerHTML = ""; }
+    function offer(note) {
+      clear();
+      var p = el("p", "aps-note aps-after-row", "");
+      var b = el("button", "aps-after-open", wasDone ? "Go through them again" : "Now that it\u2019s written"); b.type = "button";
+      b.addEventListener("click", open);
+      p.appendChild(b);
+      p.appendChild(el("span", "aps-after-what", "Five questions about what you just wrote. Most of them are one tap, and you can skip any."));
+      wrap.appendChild(p);
+      if (note) { wrap.appendChild(el("p", "aps-note", note)); }
+    }
+    function open() {
+      if (!self.document()) { offer("There is nothing written yet. Write something first."); return; }
+      a = fresh(); i = 0; draw();
+    }
+    function pick(q, v) { a[q.key] = v; }
+    function draw() {
+      clear();
+      var q = QS[i], card = el("div", "aps-after-card", "");
+      var top = el("div", "aps-guide-top", ""); top.innerHTML = "<b>" + (i + 1) + " of " + QS.length + "</b>"; card.appendChild(top);
+      card.appendChild(el("p", "aps-ask", q.ask));
+      if (q.hint) { card.appendChild(el("p", "aps-help", q.hint)); }
+      var own = null;
+      if (q.scale) {
+        var dots = el("div", "aps-dots", ""); dots.setAttribute("role", "group");
+        for (var n = 1; n <= 5; n++) {
+          (function (n) {
+            var d = el("button", "aps-dot" + (a.said === n ? " on" : ""), String(n)); d.type = "button"; d.setAttribute("aria-pressed", a.said === n ? "true" : "false");
+            d.addEventListener("click", function () { pick(q, n); step(1); });
+            dots.appendChild(d);
+          })(n);
+        }
+        card.appendChild(dots);
+        var ends = el("div", "aps-ends", ""); ends.appendChild(el("span", "", "None of it")); ends.appendChild(el("span", "", "All of it")); card.appendChild(ends);
+      } else {
+        var taps = el("div", "aps-taps", ""), list = q.taps();
+        if (!list.length) { card.appendChild(el("p", "aps-help", "Nothing to tap yet.")); }
+        list.forEach(function (w) {
+          var b = el("button", "aps-tap" + (q.line ? " aps-tap-line" : ""), q.line ? short(w) : w); b.type = "button";
+          b.setAttribute("aria-pressed", a[q.key] === w ? "true" : "false");
+          b.addEventListener("click", function () { pick(q, w); step(1); });
+          taps.appendChild(b);
+        });
+        card.appendChild(taps);
+        if (q.own) {
+          var lab = el("label", "aps-help aps-own-label", "Or your own word"); own = el("input", "aps-own", ""); own.type = "text"; own.value = a.own || ""; own.setAttribute("maxlength", "40"); own.id = "apsOwnWord"; lab.setAttribute("for", own.id);
+          own.addEventListener("input", function () { a.own = own.value.trim(); });
+          own.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); step(1); } });
+          card.appendChild(lab); card.appendChild(own);
+        }
+      }
+      var rowEl = el("div", "aps-guide-row", "");
+      if (i > 0) { var back = el("button", "aps-after-back", "Back"); back.type = "button"; back.addEventListener("click", function () { step(-1); }); rowEl.appendChild(back); }
+      var next = el("button", (cfg.buttonClass || "") + " " + (cfg.primaryClass || "") + " aps-after-next", i + 1 >= QS.length ? "Finish" : "Next"); next.type = "button";
+      next.addEventListener("click", function () { step(1); });
+      rowEl.appendChild(next);
+      var skip = el("button", "aps-after-skip", "Skip"); skip.type = "button";
+      skip.addEventListener("click", function () { a[q.key] = q.scale ? 0 : ""; if (q.own) { a.own = ""; } step(1); });
+      rowEl.appendChild(skip);
+      card.appendChild(rowEl);
+      wrap.appendChild(card);
+      try { card.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) {}
+    }
+    function step(by) {
+      i += by;
+      if (i < 0) { i = 0; }
+      if (i >= QS.length) { finish(); return; }
+      draw();
+    }
+    function finish() {
+      wasDone = true;
+      clear();
+      var box = el("div", "aps-after-done", "");
+      box.appendChild(el("p", "aps-kind", "That\u2019s everything."));
+      var sum = [];
+      var feel = [a.feel, a.own].filter(function (x) { return x; }).join(" \u2014 ");
+      if (feel) { sum.push(["How you feel", feel]); }
+      if (a.body) { sum.push(["Where", a.body]); }
+      if (a.surprised) { sum.push(["The line that surprised you", "\u201c" + a.surprised + "\u201d"]); }
+      if (a.one) { sum.push(["The one line", "\u201c" + a.one + "\u201d"]); }
+      if (a.said) { sum.push(["Said out loud before today", AFTER_SAID[a.said - 1]]); }
+      if (sum.length) {
+        var p = el("p", "aps-after-sum", "");
+        p.innerHTML = sum.map(function (r) { return "<span class=\"aps-after-k\">" + esc(r[0]) + ":</span> " + esc(r[1]); }).join("<br>");
+        box.appendChild(p);
+      } else { box.appendChild(el("p", "aps-help", "You skipped them all. That is allowed.")); }
+      box.appendChild(el("p", "aps-note", "These are for you. They are not saved with the piece."));
+      wrap.appendChild(box);
+      offerAgain();
+      try { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) {}
+    }
+    function offerAgain() {
+      var p = el("p", "aps-note aps-after-row", "");
+      var b = el("button", "aps-after-open", "Go through them again"); b.type = "button";
+      b.addEventListener("click", open);
+      p.appendChild(b);
+      wrap.appendChild(p);
+    }
+    if (!$("aps-after-css")) {
+      var st = el("style"); st.id = "aps-after-css";
+      st.textContent = ".aps-after{font-size:16px;line-height:1.5}.aps-after .aps-note{margin:0}.aps-after .aps-after-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0}.aps-after .aps-after-what{font-size:14.5px;color:#6B6358;max-width:52ch}" +
+        ".aps-after-open{font:inherit;font-size:14px;font-weight:700;color:#1F2A44;background:#fff;border:1px solid #C9A227;border-radius:2px;padding:10px 18px;cursor:pointer}.aps-after-open:hover{background:#FBF7EF}" +
+        ".aps-after-card,.aps-after-done{border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px;margin:0 0 10px;font-size:15.5px;line-height:1.5}.aps-after .aps-guide-top{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:0 0 6px}.aps-after .aps-guide-top b{color:#1F2A44}.aps-after .aps-ask{color:#1F2A44;font-weight:600;margin:6px 0}.aps-after .aps-help{font-size:14.5px;color:#6B6358;margin:4px 0 8px}.aps-after .aps-kind{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:0 0 6px}" +
+        ".aps-after .aps-taps{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.aps-tap{font:inherit;font-size:14.5px;color:#1F2A44;background:#fff;border:1px solid #C9A227;border-radius:2px;padding:7px 12px;cursor:pointer;text-align:left}.aps-tap:hover{background:#F3EBDA}.aps-tap[aria-pressed=\"true\"]{background:#1F2A44;color:#fff;border-color:#1F2A44}.aps-tap-line{flex:1 1 100%;white-space:pre-wrap;line-height:1.4}" +
+        ".aps-after .aps-own-label{display:block;margin:10px 0 4px}.aps-own{font:inherit;font-size:15px;padding:8px 10px;border:1px solid #E5DCC8;border-radius:2px;width:100%;max-width:32ch;background:#fff}" +
+        ".aps-after .aps-dots{display:flex;gap:8px;margin:8px 0 4px}.aps-after .aps-dot{width:42px;height:42px;border-radius:50%;font:inherit;font-size:15px;font-weight:600;color:#1F2A44;background:#fff;border:1px solid #C9A227;cursor:pointer}.aps-after .aps-dot:hover{background:#F3EBDA}.aps-after .aps-dot.on,.aps-after .aps-dot[aria-pressed=\"true\"]{background:#1F2A44;color:#fff;border-color:#1F2A44}.aps-after .aps-ends{display:flex;justify-content:space-between;width:242px;max-width:100%;font-size:13px;color:#6B6358}" +
+        ".aps-after .aps-guide-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0 0}.aps-after-back,.aps-after-skip{font:inherit;font-size:14px;background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;color:#8C6A3F}.aps-after-skip{margin-left:auto}" +
+        ".aps-after-sum{margin:6px 0 10px;white-space:normal}.aps-after-k{color:#8C6A3F;font-weight:600}";
+      document.head.appendChild(st);
+    }
+    offer();
+    row.appendChild(wrap);
+    return true;
+  };
+
+  /* ======================================================================
      10. THE PUBLIC DOOR
      ====================================================================== */
   window.APStory = {
-    version: "14",
+    version: "15",
     assistant: ASSIST,
+    wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
     init: function (cfg) {
       if (!cfg || !cfg.form || !cfg.fields || !cfg.fields.length || !cfg.lw || !cfg.lw.unit || !cfg.lw.blocks) {
