@@ -1,14 +1,25 @@
 /**
- * Ancient Path — Testimony Offered: notify + review-and-decide.
+ * Ancient Path — Testimony Offered: notify + review-and-decide.  review-code v6 (29 Sept 2026)
  * Bound to the "Testimony Offered (Responses)" sheet.
  *
- * Flow: a man offers -> a row lands here (via the Google Form) -> apOfferNotify
- *   emails John + Jason the whole piece to READ, plus a link -> the link opens a
- *   private page (this web app) with the piece + safeguarding checks +
- *   Approve / Hold / Decline -> the decision is written back here and both emailed.
+ * Flow: a man offers -> a row lands here -> notifyOffer_ emails John + Jason the
+ *   whole piece to READ, plus a link -> the link opens a private page (this web app)
+ *   with the piece + safeguarding checks + Approve / Hold / Decline -> the decision
+ *   is written back here and both emailed.
  *
- * Deploy: Web app, "Execute as: me (John)", "Who has access: anyone in
- *   ancientpathcoaching.com" so only John + Jason can open it.
+ * v6 — the offer comes from his page STRAIGHT TO THIS SCRIPT (doPost, op "offer"),
+ *   so the page is told the row landed before it says "Offered." (the Google Form
+ *   path is kept for pieces John submits by hand). Two more calls, both on the
+ *   PUBLIC deployment: doGet ?status=<who> returns where each of that man's pieces
+ *   stands (offered · published · taken down · kept), never the text or an email;
+ *   doPost op "withdraw" is Pull it back (before a decision) or Take it down (after
+ *   it was published), one press from his page. Columns N "Who" and O "Unit" carry
+ *   the man and the piece; "who" is a hash the page makes from his LearnWorlds id.
+ *
+ * Deploy: TWO web apps of this one script. (A) "Execute as me, anyone in
+ *   ancientpathcoaching.com" = the review page. (B) "Execute as me, Anyone" = the
+ *   public feed, the status read and the offer/withdraw calls. After any code
+ *   change: Deploy -> Manage deployments -> pencil -> Version: New version, on BOTH.
  */
 
 var REVIEWERS = "john@ancientpathcoaching.com,jason@ancientpathcoaching.com";
@@ -16,14 +27,15 @@ var NL = String.fromCharCode(10);
 
 // Sheet columns (1-based). A-I come from the form; J-M we manage.
 var COL = { ts:1, name:2, attr:3, title:4, from:5, email:6, piece:7, consent:8, notes:9,
-            rid:10, decision:11, decidedBy:12, decidedAt:13 };
+            rid:10, decision:11, decidedBy:12, decidedAt:13, who:14, unit:15 };
+var OFFERS_PER_DAY = 20;   /* one man's cap on offer + withdraw calls in a day (v6) */
 
 function ss_(){ return SpreadsheetApp.getActiveSpreadsheet(); }
 function sheet_(){ return ss_().getSheets()[0]; }
 
 function ensureHeaders_(){
   var sh = sheet_();
-  var want = { 10:"Review ID", 11:"Decision", 12:"Decided by", 13:"Decided at" };
+  var want = { 10:"Review ID", 11:"Decision", 12:"Decided by", 13:"Decided at", 14:"Who", 15:"Unit" };
   for (var c in want){
     var cell = sh.getRange(1, Number(c));
     if (!cell.getValue()) cell.setValue(want[c]);
@@ -129,25 +141,23 @@ function pieceParagraphs_(piece){
           .filter(function(p){ return p.length; });
 }
 
-// ---- triggered on every new offer ----
+// ---- triggered on every new offer THROUGH THE GOOGLE FORM (John's by-hand route) ----
 function apOfferNotify(e){
   ensureHeaders_();
   var sh = sheet_();
   var v = (e && e.namedValues) || {};
   function g(k){ return (v[k] && v[k][0]) ? v[k][0] : ""; }
-
-  var name = g("Author's name");
-  var attribution = g("How the name should appear");
-  var title = g("Piece title");
-  var from = g("Where it's from");
-  var email = g("Author's email");
-  var piece = g("The testimony");
-  var consent = g("Consent to publish on the site");
-  var notes = g("Notes for the team");
-
   var rid = newId_();
   var row = (e && e.range) ? e.range.getRow() : sh.getLastRow();
   try { sh.getRange(row, COL.rid).setValue(rid); } catch(err){}
+  notifyOffer_({ name: g("Author's name"), attribution: g("How the name should appear"), title: g("Piece title"), from: g("Where it's from"),
+                 email: g("Author's email"), piece: g("The testimony"), consent: g("Consent to publish on the site"), notes: g("Notes for the team") }, rid);
+}
+
+// ---- the reviewers' email, for an offer from either path (v6) ----
+function notifyOffer_(o, rid){
+  var name = o.name || "", attribution = o.attribution || "", title = o.title || "", from = o.from || "",
+      email = o.email || "", piece = o.piece || "", consent = o.consent || "", notes = o.notes || "";
 
   var link = reviewUrl_();
   var reviewLink = link ? (link + "?id=" + rid) : "";
@@ -199,6 +209,7 @@ function apOfferNotify(e){
 // ---- serve the review-and-decide page ----
 function doGet(e){
   if (e && e.parameter && e.parameter.feed === "published") return publicFeed_(e);
+  if (e && e.parameter && e.parameter.status) return statusFeed_(e);
   if (!isReviewer_()){
     return HtmlService.createHtmlOutput(needSignIn_())
       .setTitle("Review a testimony")
@@ -306,6 +317,117 @@ function reviewPage_(r, id){
     '</script>';
 
   return pageShell_(title, inner);
+}
+
+// ======================================================================
+// v6 — HIS PAGE TALKS TO THIS SCRIPT DIRECTLY
+// ======================================================================
+function jsonOut_(obj, cb){
+  var json = JSON.stringify(obj);
+  if (cb){
+    cb = ("" + cb).replace(/[^A-Za-z0-9_.]/g, "").slice(0, 64);
+    return ContentService.createTextOutput(cb + "(" + json + ");").setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
+}
+function cleanWho_(w){ w = ("" + (w || "")).replace(/[^A-Za-z0-9_-]/g, "").slice(0, 80); return w.length >= 8 ? w : ""; }
+function cleanText_(v, max){ return ("" + (v == null ? "" : v)).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").slice(0, max || 200); }
+
+/* where a row stands, in the man's words: offered (no decision yet, or held) · published · taken down (was up, pulled) · kept (withdrawn before a decision, or declined) */
+function stateOf_(decision){
+  var d = ("" + (decision || "")).toLowerCase();
+  if (!d || d === "held") return "offered";
+  if (d === "approved") return "published";
+  if (d === "taken down") return "taken down";
+  return "kept";   /* Withdrawn, Declined */
+}
+
+/* the newest row per unit for one man: {pieces:[{rid, unit, title, from, state, read, at}]} — never the text, never an email */
+function statusFeed_(e){
+  var who = cleanWho_(e.parameter.status), cb = e.parameter.callback || "";
+  if (!who) return jsonOut_({ pieces: [] }, cb);
+  var data = sheet_().getDataRange().getValues(), byUnit = {}, order = [];
+  for (var i = 1; i < data.length; i++){
+    var r = data[i];
+    if (("" + r[COL.who - 1]) !== who) continue;
+    var unit = "" + (r[COL.unit - 1] || "");
+    if (!unit) continue;
+    var dec = "" + (r[COL.decision - 1] || "");
+    var entry = { rid: "" + (r[COL.rid - 1] || ""), unit: unit, title: "" + (r[COL.title - 1] || ""), from: "" + (r[COL.from - 1] || ""),
+                  state: stateOf_(dec), read: dec.toLowerCase() === "declined", at: r[COL.ts - 1] ? new Date(r[COL.ts - 1]).toISOString() : "" };
+    if (!byUnit[unit]) order.push(unit);
+    byUnit[unit] = entry;   /* later rows override: the newest offer for a unit wins */
+  }
+  return jsonOut_({ pieces: order.map(function (u) { return byUnit[u]; }) }, cb);
+}
+
+/* one man's cap on offer + withdraw calls in a day */
+function underCap_(who){
+  try {
+    var c = CacheService.getScriptCache(), k = "apo:" + who + ":" + new Date().toISOString().slice(0, 10);
+    var n = Number(c.get(k) || 0);
+    if (n >= OFFERS_PER_DAY) return false;
+    c.put(k, String(n + 1), 60 * 60 * 25);
+    return true;
+  } catch (e) { return true; }
+}
+
+/* an offer from his page: append the row with rid, who and unit; email the reviewers; answer {ok, rid} */
+function offerFromPage_(b){
+  var who = cleanWho_(b.who); if (!who) return { ok: false, error: "no_who" };
+  var unit = cleanText_(b.unit, 40).replace(/[^A-Za-z0-9]/g, ""); if (!unit) return { ok: false, error: "no_unit" };
+  var consent = cleanText_(b.consent, 10); if (!/^yes$/i.test(consent)) return { ok: false, error: "no_consent" };
+  var piece = ("" + (b.testimony == null ? "" : b.testimony)).replace(/\r\n?/g, NL).slice(0, 60000);
+  if (!piece.trim()) return { ok: false, error: "empty" };
+  if (!underCap_(who)) return { ok: false, error: "rate_limited" };
+  ensureHeaders_();
+  var o = { name: cleanText_(b.name, 120), attribution: cleanText_(b.attribution, 40), title: cleanText_(b.title, 120), from: cleanText_(b.from, 120),
+            email: cleanText_(b.email, 160), piece: piece, consent: "Yes",
+            notes: "Offered from the man’s page · " + cleanText_(b.key, 20) + " · unit " + unit };
+  var rid = newId_();
+  sheet_().appendRow([new Date(), o.name, o.attribution, o.title, o.from, o.email, o.piece, o.consent, o.notes, rid, "", "", "", who, unit]);
+  try { notifyOffer_(o, rid); } catch (e) {}
+  return { ok: true, rid: rid, state: "offered" };
+}
+
+/* Pull it back (no decision yet → Withdrawn, reads as kept) or Take it down (it was published → Taken down); only the man who offered it */
+function withdrawFromPage_(b){
+  var who = cleanWho_(b.who), rid = cleanText_(b.rid, 20).replace(/[^A-Za-z0-9]/g, "");
+  if (!who || !rid) return { ok: false, error: "bad_request" };
+  if (!underCap_(who)) return { ok: false, error: "rate_limited" };
+  var sh = sheet_(), data = sh.getDataRange().getValues(), row = -1;
+  for (var i = 1; i < data.length; i++){ if (("" + data[i][COL.rid - 1]) === rid){ row = i + 1; break; } }
+  if (row < 0) return { ok: false, error: "not_found" };
+  var r = data[row - 1];
+  if (("" + r[COL.who - 1]) !== who) return { ok: false, error: "not_yours" };
+  var wasUp = ("" + (r[COL.decision - 1] || "")).toLowerCase() === "approved";
+  var word = wasUp ? "Taken down" : "Withdrawn";
+  sh.getRange(row, COL.decision).setValue(word);
+  sh.getRange(row, COL.decidedBy).setValue("the author, from his page");
+  sh.getRange(row, COL.decidedAt).setValue(new Date());
+  try { unpublish_(rid); } catch (e) {}
+  var title = "" + (r[COL.title - 1] || ""), name = "" + (r[COL.name - 1] || "");
+  try {
+    MailApp.sendEmail({ to: REVIEWERS,
+      subject: (wasUp ? "Taken down by the author: " : "Pulled back by the author: ") + title + " (" + name + ")",
+      body: (wasUp ? "The author took this piece down from his page. It has been removed from the Published list and no longer shows on the site."
+                   : "The author pulled this piece back from his page before a decision. Please do not publish it.") + NL + NL + "Piece: " + title + NL + "Author: " + name + NL + "Review ID: " + rid });
+  } catch (e) {}
+  return { ok: true, rid: rid, state: wasUp ? "taken down" : "kept" };
+}
+
+/* the page POSTs text/plain JSON {op:"offer"|"withdraw", who, ...}; answered as JSON (a simple request, so the browser lets the page read it) */
+function doPost(e){
+  var b = null;
+  try { b = JSON.parse((e && e.postData && e.postData.contents) || ""); } catch (err) { b = null; }
+  if (!b || typeof b !== "object") return jsonOut_({ ok: false, error: "bad_request" });
+  var out;
+  try {
+    if (b.op === "offer") out = offerFromPage_(b);
+    else if (b.op === "withdraw") out = withdrawFromPage_(b);
+    else out = { ok: false, error: "bad_request" };
+  } catch (err2) { out = { ok: false, error: "failed" }; }
+  return jsonOut_(out);
 }
 
 // ---- record the decision + notify ----
