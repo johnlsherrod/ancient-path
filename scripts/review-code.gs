@@ -1,5 +1,5 @@
 /**
- * Ancient Path — Testimony Offered: notify + review-and-decide.  review-code v6 (29 Sept 2026)
+ * Ancient Path — Testimony Offered: notify + review-and-decide.  review-code v6.1 (29 Sept 2026)
  * Bound to the "Testimony Offered (Responses)" sheet.
  *
  * Flow: a man offers -> a row lands here -> notifyOffer_ emails John + Jason the
@@ -300,7 +300,7 @@ function reviewPage_(r, id){
       '<button class="hold" id="apoHold">Hold</button>' +
       '<button class="decline" id="apoDecl">Decline</button>' +
     '</div>' +
-    '<p class="note"><b>Approve</b> publishes it to the Testimony section. <b>Hold</b> parks it and flags you and Jason. <b>Decline</b> keeps it his and does not publish.</p>' +
+    '<p class="note"><b>Approve</b> publishes it to Our Stories. <b>Hold</b> parks it and flags you and Jason. <b>Decline</b> keeps it his and does not publish.</p>' +
     '<script>' +
     'var ID=' + JSON.stringify(id) + ';' +
     'var chks=document.querySelectorAll(".chk"),ap=document.getElementById("apoAp");' +
@@ -462,17 +462,17 @@ function apoDecide(id, decision){
     try { publishApproved_(r, id); } catch(pe){}
     subj = "Approved — now on the site: " + title + " (" + name + ")";
     body = "Cleared and added to the Testimony section on the site." + NL + NL + body;
-    lead = "Approved."; msg = "It is cleared and now shows in the Testimony section on the site. " + esc_(name) + " can be told it is up.";
+    lead = "Approved."; msg = "It is cleared and now shows in Our Stories. His page now reads \u201cPublished.\u201d";
   } else if (decision === "Held"){
     try { unpublish_(id); } catch(ue){}
     subj = "HELD — needs you and Jason: " + title + " (" + name + ")";
     body = "This piece is HELD — not published. It needs you and Jason to look at it together and follow the escalation protocol. Do not publish until you have." + NL + NL + body;
-    lead = "Held."; msg = "It is parked and will not be published. You and Jason have been sent the note to handle it together.";
+    lead = "Held."; msg = "It is parked and will not be published. His page still reads \u201cOffered.\u201d You and Jason have been sent the note to handle it together.";
   } else {
     try { unpublish_(id); } catch(ue2){}
     subj = "Declined: " + title + " (" + name + ")";
-    body = "Declined — will not be published. It stays his own kept piece." + NL + NL + body;
-    lead = "Declined."; msg = "It will not be published. It stays his own — his to keep, his to offer again another time.";
+    body = "Declined — will not be published. His page reads Kept; he can offer it again." + NL + NL + body;
+    lead = "Declined."; msg = "It will not be published. His page now reads \u201cKept. We read it and did not publish it.\u201d He can offer it again.";
   }
   try { MailApp.sendEmail({ to: REVIEWERS, subject: subj, body: body }); } catch(e){}
 
