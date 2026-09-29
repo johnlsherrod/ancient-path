@@ -1011,7 +1011,7 @@
             }, true);
         })();
     </script>
-    <!-- AP-OFFER-v2.1 (29 Sept 2026, the piece is read from its own block, never the longest text): one control at the foot of every finished piece — Kept · Offered · Published · Taken down — read from the review sheet through the script; the offer goes to the script and is called Offered only once the row has landed; Pull it back / Take it down one press. Replaces the first offer layer (the Google Form post and the on-device "offered" note are gone). Additive layer for the After Login block. -->
+    <!-- AP-OFFER-v2.2 (29 Sept 2026: the piece is read from its own block, never the longest text; the decision lines say what happens next): one control at the foot of every finished piece — Kept · Offered · Published · Taken down — read from the review sheet through the script; the offer goes to the script and is called Offered only once the row has landed; Pull it back / Take it down one press. Replaces the first offer layer (the Google Form post and the on-device "offered" note are gone). Additive layer for the After Login block. -->
     <hr style="border:0;margin:0;height:0" data-apo="guard">
     <style id="apoStyle">
         /* AP-OFFER fix v4: John — the boxed pull-back threw the card off balance; revert to plain words in a highlight color (bronze), no boxes. Higher specificity (.ap-card) so it beats v3. */
@@ -1388,7 +1388,7 @@
             "use strict";
             if (window.__apOfferInit) return;
             window.__apOfferInit = true;
-            /* offer layer v2.1 (29 Sept 2026): one control at the foot of every finished piece — Kept · Offered · Published · Taken down —
+            /* offer layer v2.2 (29 Sept 2026): one control at the foot of every finished piece — Kept · Offered · Published · Taken down —
                read from the review sheet through the script (never from this browser's memory); the offer goes to the script and is
                called "Offered" only once the script says the row landed; Pull it back / Take it down are one press, confirmed in words. */
             var SCRIPT = "https://script.google.com/macros/s/AKfycbxTfzmFY7NuXaGZIsPqxRDKpqakwXs5heeEGcp07aiTUG6Pzk9wJ0m8qubveVZoRCO3/exec";
@@ -1579,8 +1579,8 @@
                 var e = stateFor(key);
                 if (e.state === "offered") return '<b>Offered.</b> With our team for a read — you’ll hear back before it goes up.<span class="apo-sub">Changed your mind? <button type="button" class="apo-pull">Pull it back</button></span>';
                 if (e.state === "published") return '<b>Published.</b> On Our Stories, for the men who come after you.<span class="apo-sub"><a class="apo-read" href="' + STORIES + '?p=' + encodeURIComponent(e.rid) + '">Read it there</a><span class="apo-dot">·</span><button type="button" class="apo-pull">Take it down</button></span>';
-                if (e.state === "taken down") return '<b>Taken down.</b> It stays yours.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
-                if (e.read) return '<b>Kept.</b> Our team read it. It stays yours.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
+                if (e.state === "taken down") return '<b>Taken down.</b> It is off Our Stories.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
+                if (e.read) return '<b>Kept.</b> We read it and did not publish it.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
                 return '<b>Kept.</b> Only you can read it.<span class="apo-sub">' + offerBtn("Offer it as testimony") + '</span>';
             }
             function renderFoot(card, key) {
