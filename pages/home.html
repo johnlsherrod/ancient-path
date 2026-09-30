@@ -1,0 +1,461 @@
+<style>
+/*GAPFIX*/.ap-home{margin-top:-120px;}
+@media(max-width:760px){.ap-home{margin-top:-80px;}}
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap');
+
+.ap-home{font-family:'Source Sans 3',system-ui,sans-serif;color:#2a2722;line-height:1.6;}
+.ap-home *{box-sizing:border-box;}
+.ap-home h1,.ap-home h2,.ap-home h3{font-family:'Source Serif 4',Georgia,serif;font-weight:600;line-height:1.2;margin:0;}
+.ap-wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+.ap-bleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);box-sizing:border-box;overflow-x:hidden;}
+.ap-hero{position:relative;background:#2a2620;background-image:linear-gradient(105deg,rgba(20,18,16,.80) 0%,rgba(20,18,16,.50) 42%,rgba(31,29,26,.12) 100%),url(https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80);background-size:cover;background-position:center 35%;color:#F3EDE3;}
+.ap-hero__inner{max-width:1080px;margin:0 auto;padding:130px 24px 120px;text-align:center;}
+.ap-hero h1{color:#F3EDE3;font-size:2.7rem;max-width:760px;margin:0 auto 26px;text-align:center;}
+.ap-hero__sub{color:#D8D0C4;font-size:1.15rem;max-width:620px;margin:0 auto 36px;text-align:center;}
+.ap-btn{display:inline-block;font-weight:600;text-decoration:none;padding:14px 30px;border-radius:2px;letter-spacing:.02em;font-size:1rem;transition:all .15s ease;}
+.ap-btn--fill{background:#B8945F;color:#1F1D1A;}
+.ap-btn--fill:hover{background:#caa873;}
+.ap-sec{padding:84px 0;}
+.ap-eyebrow{color:#B8945F;font-size:.76rem;letter-spacing:.2em;font-weight:600;text-transform:uppercase;margin:0 0 16px;}
+.ap-invite{background:#F7F3EC;text-align:center;}
+.ap-invite h2{font-size:2rem;max-width:720px;margin:0 auto 24px;}
+.ap-invite p{font-size:1.1rem;color:#4a463f;max-width:680px;margin:0 auto 18px;}
+.ap-grid{display:grid;gap:26px;}
+.ap-card{border-top:3px solid #B8945F;border-right:1px solid rgba(184,148,95,.18);border-bottom:1px solid rgba(184,148,95,.18);border-left:1px solid rgba(184,148,95,.18);background:#FBF8F2;padding:30px 28px 32px;border-radius:4px;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(31,29,26,.04);transition:border-color .2s,transform .2s,box-shadow .2s;text-align:left;min-width:0;}
+.ap-card h3{font-size:1.22rem;margin:0 0 12px;color:#1F1D1A;}
+.ap-card p{color:#5a544c;font-size:1rem;margin:0 0 20px;flex:1;}
+.ap-card a{color:#8C6A3F;font-weight:600;text-decoration:none;font-size:.95rem;align-self:flex-start;}
+.ap-card a:hover{color:#6E5230;}
+.ap-card:hover{border-color:#B8945F;transform:translateY(-3px);box-shadow:0 10px 24px rgba(31,29,26,.10);}
+.ap-card a.ap-card__go{display:inline-flex;align-items:center;gap:4px;transition:gap .2s,color .2s;}
+.ap-card:hover a.ap-card__go{gap:9px;}
+.ap-doors{background:#fff;}
+.ap-doors h2{font-size:2rem;text-align:center;margin:0 0 14px;}
+.ap-doors__sub{text-align:center;color:#6b655c;max-width:680px;margin:0 auto 50px;font-size:1.05rem;}
+.ap-doors .ap-grid{grid-template-columns:repeat(3,1fr);align-items:stretch;}
+.ap-doors .ap-card .ap-eyebrow{margin:0 0 10px;}
+.ap-study{background:#F7F3EC;}
+.ap-study .ap-eyebrow{text-align:center;}
+.ap-study h2{font-size:32px!important;line-height:1.2;text-align:center;max-width:none;margin:0 0 14px;}
+.ap-study__sub{text-align:center;color:#4a463f;font-size:17px!important;line-height:1.65;max-width:680px;margin:0 auto 40px;}
+.ap-study .ap-grid{grid-template-columns:repeat(3,1fr);align-items:stretch;}
+.ap-study .ap-card{background:#FBF8F2;}
+.ap-study .ap-btn--fill{color:#1F1D1A!important;align-self:flex-start;}
+.ap-study .ap-card--soon{border-top-color:#D9C6A6;background:#F7F3EA;}
+.ap-study .ap-soon{display:inline-block;align-self:flex-start;font-size:12px!important;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#8C6A3F;border:1px solid #DCCBAB;background:#FDFAF3;padding:11px 18px;border-radius:2px;}
+.ap-study__close{text-align:center;max-width:46ch;margin:44px auto 0;font-size:21px!important;line-height:1.4;font-weight:600;color:#1F2A44;}
+.ap-study__more{text-align:center;color:#4a463f;font-size:17px!important;margin:44px auto 0;max-width:60ch;}
+.ap-study__more a{color:#8C6A3F!important;font-weight:600;text-decoration:underline!important;}
+.ap-creed{background:#B8945F;color:#231D17;text-align:center;}
+.ap-creed .ap-wrap{max-width:760px;}
+.ap-creed .ap-creed__lead{font-family:'Source Serif 4',Georgia,serif;font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.35;font-weight:600;margin:0 0 1.1rem;}
+.ap-creed .ap-creed__lead span{display:block;}
+.ap-creed .ap-creed__close{font-size:clamp(1.15rem,1.9vw,1.4rem);line-height:1.55;margin:1.2rem 0 0;color:#2b2218;}
+.ap-creed .ap-creed__rule{width:54px;height:2px;background:#231D17;opacity:.4;margin:0 auto 1.6rem;border:0;}
+.ap-lens{background:#fff;text-align:center;}
+.ap-lens h2{font-size:2rem;margin:0 0 22px;}
+.ap-lens p{font-size:1.1rem;color:#4a463f;max-width:740px;margin:0 auto;}
+.ap-lens p+p{margin-top:22px;color:#6b655c;}
+.ap-lens__verse{font-family:'Source Serif 4',Georgia,serif;font-style:italic;color:#8A837A;font-size:15px!important;margin:34px auto 0;max-width:560px;}
+.ap-lens__ref{display:block;font-family:'Source Sans 3',system-ui,sans-serif;font-style:normal;font-size:12px!important;letter-spacing:.14em;text-transform:uppercase;color:#8A837A;margin-top:10px;}
+.ap-lens a{color:#8C6A3F!important;font-weight:600;text-decoration:underline!important;}
+.ap-cta{background:#1F1D1A;}
+.ap-cta__inner{max-width:720px;margin:0 auto;padding:84px 24px;text-align:center;}
+.ap-cta__eyebrow{color:#B8945F;font-size:.78rem;letter-spacing:.18em;margin:0 0 18px;text-transform:uppercase;font-weight:600;}
+.ap-cta__title{font-family:'Source Serif 4',Georgia,serif;color:#F3EDE3;font-weight:600;font-size:2rem;line-height:1.25;margin:0 0 18px;}
+.ap-cta__body{color:#B7AFA4;font-size:1.08rem;line-height:1.6;margin:0 0 30px;}
+.ap-cta__btn{display:inline-block;background:#B8945F;color:#1F1D1A;font-weight:600;text-decoration:none;padding:14px 32px;border-radius:2px;letter-spacing:.02em;transition:background .15s ease;}
+.ap-cta__btn:hover{background:#caa873;}
+.ap-cta__verse{font-family:'Source Serif 4',Georgia,serif;font-style:italic;color:#8A837A;font-size:.95rem;margin:36px auto 0;max-width:560px;}
+.ap-cta__ref{font-family:'Source Sans 3',system-ui,sans-serif;font-style:normal;font-size:12px!important;letter-spacing:.14em;text-transform:uppercase;color:#8A837A;margin:10px auto 0;}
+
+/* --- link and size fixes (root is 10px in theme) --- */
+.ap-home a{text-decoration:none!important;}
+.ap-btn--fill{color:#1F1D1A!important;}
+.ap-cta__btn{color:#1F1D1A!important;}
+.ap-card a{color:#8C6A3F!important;}
+.ap-home{font-size:16px!important;}
+.ap-home .ap-hero h1{font-size:43px!important;}
+.ap-home .ap-hero__sub{font-size:18px!important;}
+.ap-home .ap-eyebrow,.ap-home .ap-cta__eyebrow{font-size:12px!important;}
+.ap-home .ap-invite h2,.ap-home .ap-doors h2,.ap-home .ap-lens h2{font-size:32px!important;}
+.ap-home .ap-cta__title{font-size:32px!important;}
+.ap-home .ap-card h3{font-size:20px!important;}
+.ap-home .ap-invite p,.ap-home .ap-lens p{font-size:18px!important;}
+.ap-home .ap-doors__sub{font-size:17px!important;}
+.ap-home .ap-card p{font-size:16px!important;}
+.ap-home .ap-cta__body{font-size:17px!important;}
+.ap-home .ap-cta__verse{font-size:15px!important;}
+.ap-home .ap-btn,.ap-home .ap-cta__btn{font-size:16px!important;line-height:1.4!important;}
+.ap-home .ap-card a{font-size:15px!important;line-height:1.4!important;}
+@media (max-width:900px){.ap-doors .ap-grid,.ap-study .ap-grid{grid-template-columns:1fr;}}
+@media (max-width:640px){
+  .ap-home .ap-hero h1{font-size:32px!important;}
+  .ap-hero__inner{padding:90px 24px 80px;}
+  .ap-home .ap-cta__title{font-size:24px!important;}
+  .ap-home .ap-invite h2,.ap-home .ap-doors h2,.ap-home .ap-lens h2{font-size:26px!important;}
+}
+</style>
+
+<div class="ap-home">
+  <section class="ap-hero ap-bleed">
+    <div class="ap-hero__inner">
+      <h1>A <span style="color:#ECCB8C">path</span> is best walked with someone who has been on it.</h1>
+<hr style="width:56px;height:2px;background:#ECCB8C;border:0;margin:0 auto 26px" class="ap-hero__rule">
+      <p class="ap-hero__sub">Ancient Path Biblical Coaching walks alongside men in the seasons that ask the most of them — integrity work, the healing of old wounds, the ministry wilderness, and the crossings between endings and beginnings.</p>
+      <div>
+        <a class="ap-btn ap-btn--fill" href="/begin">Let's talk</a>
+      </div>
+    </div>
+  </section>
+  <section class="ap-sec ap-invite ap-bleed">
+    <div class="ap-wrap">
+      <h2>For the man ready to face what he's been carrying&nbsp;<span style="color:#ECCB8C">alone</span>.</h2>
+      <p>For the man already growing and ready to go <span style="color:#ECCB8C">further</span>.</p>
+      <p>We do not coach a man toward a tidier version of the same performance. We walk with him into what is true. He writes it. He says it. He is known.</p>
+    </div>
+  </section>
+  <!-- AP-PROMISE-BAND-v2 (29 Sept 2026): the promise on the home page — Tell your story. Offer your testimony. Be known in community. — with the three stones, Told · Offered · Known, and, under them, one question before sign-in: What kind of light am I? A tap on who lives close enough to be lit by him holds that name on his device and opens What Kind of Light with it already in the first line, counted as a start. Replaces v1's "Start below" line. -->
+<style>
+    .apb {
+        --apb-bronze: #B8945F;
+        --apb-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+        --apb-sans: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        position: relative;
+        width: 100vw;
+        margin: 0 0 0 calc(50% - 50vw);
+        background: #1B2A3A url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='600' viewBox='0 0 1600 600'><g fill='none' stroke='%23B8945F' stroke-width='1.4' opacity='0.15'><path d='M-50 460 C 250 380, 450 500, 760 420 S 1300 320, 1680 400'/><path d='M-50 500 C 250 430, 480 540, 800 470 S 1320 380, 1680 450'/><path d='M-50 420 C 280 330, 520 460, 820 370 S 1280 270, 1680 350'/><path d='M-50 540 C 300 500, 520 580, 840 520 S 1340 440, 1680 510'/><path d='M-50 380 C 300 300, 560 420, 880 330 S 1300 240, 1680 310'/></g><g fill='%23B8945F' opacity='0.20'><circle cx='760' cy='420' r='4'/></g></svg>") 50% 100%/cover no-repeat;
+        text-align: center;
+    }
+
+    .apb,
+    .apb * {
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .apb .apb-in {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 64px 24px 60px;
+    }
+
+    .apb .apb-eyebrow {
+        font: 600 13px/1.65 var(--apb-sans) !important;
+        letter-spacing: 3px !important;
+        text-transform: uppercase !important;
+        color: var(--apb-bronze) !important;
+        margin: 0 0 12px;
+    }
+
+    .apb .apb-promise {
+        font: 600 28px/1.3 var(--apb-serif) !important;
+        color: #F3EDE3 !important;
+        letter-spacing: -0.01em !important;
+        margin: 0 auto;
+        max-width: 800px;
+    }
+
+    /* a sentence of the promise never breaks inside itself */
+    .apb .apb-s {
+        display: inline-block;
+    }
+
+    .apb .apb-stones {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin: 30px auto 0;
+        max-width: 760px;
+        position: relative;
+    }
+
+    .apb .apb-stones::before {
+        content: "";
+        position: absolute;
+        left: 16.6%;
+        right: 16.6%;
+        top: 5px;
+        border-top: 1px solid rgba(184, 148, 95, 0.45);
+    }
+
+    .apb .apb-stone {
+        flex: 1 1 0;
+        position: relative;
+        padding: 0 8px;
+    }
+
+    .apb .apb-stone-dot {
+        display: block;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--apb-bronze);
+        margin: 0 auto 10px;
+        box-shadow: 0 0 0 4px #1B2A3A;
+    }
+
+    .apb .apb-stone-word {
+        display: block;
+        font: 600 15px/1.3 var(--apb-sans) !important;
+        letter-spacing: 1.5px !important;
+        text-transform: uppercase;
+        color: #F3EDE3 !important;
+    }
+
+    .apb .apb-stone-what {
+        display: block;
+        font: 400 14px/1.5 var(--apb-sans) !important;
+        color: #B7AFA4 !important;
+        margin-top: 4px;
+        text-wrap: balance;
+    }
+
+    /* v2: one question before sign-in */
+    .apb .apb-ask {
+        margin: 44px auto 0;
+        padding-top: 34px;
+        border-top: 1px solid rgba(184, 148, 95, 0.3);
+        max-width: 640px;
+    }
+
+    .apb .apb-ask-lead {
+        font: 600 13px/1.65 var(--apb-sans) !important;
+        letter-spacing: 3px !important;
+        text-transform: uppercase !important;
+        color: var(--apb-bronze) !important;
+        margin: 0 0 10px;
+    }
+
+    .apb .apb-q {
+        font: 600 30px/1.25 var(--apb-serif) !important;
+        color: #F3EDE3 !important;
+        margin: 0;
+    }
+
+    .apb .apb-q-how {
+        font: 400 17px/1.5 var(--apb-sans) !important;
+        color: #D8CFC0 !important;
+        margin: 12px auto 0;
+        max-width: 520px;
+        text-wrap: balance;
+    }
+
+    .apb .apb-who-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 22px auto 0;
+        max-width: 700px;
+    }
+
+    .apb .apb-who {
+        display: inline-block;
+        font: 500 16px/1 var(--apb-sans) !important;
+        color: #F3EDE3 !important;
+        background: rgba(243, 237, 227, 0.06);
+        border: 1px solid rgba(184, 148, 95, 0.6);
+        border-radius: 999px;
+        padding: 13px 18px;
+        min-height: 44px;
+        cursor: pointer;
+        text-decoration: none !important;
+        transition: background .15s, border-color .15s;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .apb .apb-who:hover,
+    .apb .apb-who:focus-visible {
+        background: rgba(184, 148, 95, 0.22);
+        border-color: var(--apb-bronze);
+        outline: none;
+    }
+
+    .apb .apb-who.is-going {
+        background: var(--apb-bronze);
+        color: #1B2A3A !important;
+    }
+
+    .apb .apb-else {
+        display: inline-block;
+        font: 400 15px/1.5 var(--apb-sans) !important;
+        color: #B7AFA4 !important;
+        margin: 18px auto 0;
+        text-decoration: underline !important;
+        text-underline-offset: 3px;
+    }
+
+    .apb .apb-else:hover {
+        color: #F3EDE3 !important;
+    }
+
+    @media (max-width: 640px) {
+        .apb .apb-in {
+            padding: 48px 20px 44px;
+        }
+
+        .apb .apb-promise {
+            font-size: 24px !important;
+        }
+
+        .apb .apb-stone-what {
+            display: none;
+        }
+
+        .apb .apb-ask {
+            margin-top: 34px;
+            padding-top: 28px;
+        }
+
+        .apb .apb-q {
+            font-size: 26px !important;
+        }
+
+        .apb .apb-q-how {
+            font-size: 16px !important;
+        }
+
+        /* two to a row on a phone, five rows, no word left alone on a line */
+        .apb .apb-who-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            max-width: 340px;
+        }
+
+        .apb .apb-who {
+            padding: 12px 15px;
+            font-size: 15px !important;
+        }
+    }
+</style>
+<div class="apb">
+    <div class="apb-in">
+        <p class="apb-eyebrow">Your Story</p>
+        <p class="apb-promise"><span class="apb-s">Tell your story.</span> <span class="apb-s">Offer your testimony.</span> <span class="apb-s">Be known in community.</span></p>
+        <div class="apb-stones" aria-label="The three stops">
+            <div class="apb-stone"><span class="apb-stone-dot"></span><span class="apb-stone-word">Told</span><span class="apb-stone-what">Written down and kept.<br>Only you can read it.</span></div>
+            <div class="apb-stone"><span class="apb-stone-dot"></span><span class="apb-stone-word">Offered</span><span class="apb-stone-what">Read by our team<br>before it goes up.</span></div>
+            <div class="apb-stone"><span class="apb-stone-dot"></span><span class="apb-stone-word">Known</span><span class="apb-stone-what">Published on Our Stories.<br>Other men can read it now.</span></div>
+        </div>
+        <div class="apb-ask" id="apbAsk">
+            <p class="apb-ask-lead">Start with one question</p>
+            <p class="apb-q">What kind of light am I?</p>
+            <p class="apb-q-how">Begin with who. Who is close enough to see your light?</p>
+            <div class="apb-who-row" aria-label="Tap one">
+                <a class="apb-who" href="/what-kind-of-light" data-who="my wife">my wife</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my son">my son</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my daughter">my daughter</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my father">my father</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my mother">my mother</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my brother">my brother</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my sister">my sister</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my friend">my friend</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my coworker">my coworker</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my neighbor">my neighbor</a>
+            </div>
+            <a class="apb-else" href="/what-kind-of-light">Someone else</a>
+        </div>
+    </div>
+</div>
+<script>
+    /* AP-PROMISE-BAND-v2: a tap holds the name on his device the same way the piece holds words between sessions (the engine's held-words key, a day), tells the count a piece was started, and opens the piece. No backslashes in this script: the editor eats them. */
+    (function () {
+        var FORM = "what-kind-of-light", KEY = "apStoryPending:" + FORM, PATH = "/what-kind-of-light";
+        var ask = document.getElementById("apbAsk");
+        if (!ask) { return; }
+        function hold(who) {
+            try {
+                var raw = window.localStorage.getItem(KEY);
+                if (raw) { var v = JSON.parse(raw); if (v && v.a && (Date.now() - (v.t || 0)) < 24 * 60 * 60 * 1000) { return false; } }   /* words he already holds win */
+                window.localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), a: { who1: who }, press: false }));
+                return true;
+            } catch (e) { return false; }
+        }
+        function start() {
+            try { if (typeof window.gtag === "function") { window.gtag("event", "story_start", { piece: FORM }); } } catch (e) {}
+        }
+        ask.addEventListener("click", function (e) {
+            var a = e.target && e.target.closest ? e.target.closest("a.apb-who") : null;
+            if (!a) { return; }
+            e.preventDefault();
+            var who = a.getAttribute("data-who") || "";
+            var row = ask.querySelectorAll(".apb-who");
+            for (var i = 0; i < row.length; i++) { row[i].classList.remove("is-going"); }
+            a.classList.add("is-going");
+            if (hold(who)) { start(); }
+            window.setTimeout(function () { window.location.href = PATH; }, 120);
+        });
+    })();
+</script>
+<!-- /AP-PROMISE-BAND-v2 -->
+  <section class="ap-sec ap-doors ap-bleed">
+    <div class="ap-wrap">
+      <h2>Three ways in.</h2>
+      <p class="ap-doors__sub">Read about the work, write something true, or talk to one of us. Your choice.</p>
+      <div class="ap-grid">
+        <div class="ap-card">
+          <p class="ap-eyebrow">Read</p>
+          <h3>The Work</h3>
+          <p>Where you are, how we walk with you, and what changes. Five paths for the seasons that ask the most, four forms the work takes, and what actually changes for a man who does it.</p>
+          <a class="ap-card__go" href="/how-the-work-is-carried">See the work →</a>
+        </div>
+        <div class="ap-card">
+          <p class="ap-eyebrow">Write</p>
+          <h3>Your Story</h3>
+          <p>Every path here is a story path. Poetry, prayer and the courses lead you to write, and in the writing your story takes shape as testimony. Start with Where I'm From, or write a lament. Yours to keep, print, or save to your page — and to publish only if you choose to.</p>
+          <a class="ap-card__go" href="/your-story">Start writing →</a>
+        </div>
+        <div class="ap-card">
+          <p class="ap-eyebrow">Talk</p>
+          <h3>Let's Talk</h3>
+          <p>An hour one-on-one with a coach who has walked this path, or start with thirty minutes, free. You tell us where you are and what you are carrying. We tell you, plainly, whether we can walk with you and what that would look like. No pitch.</p>
+          <a class="ap-card__go" href="/begin">Let's talk →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="ap-sec ap-study ap-bleed">
+    <div class="ap-wrap">
+      <p class="ap-eyebrow">Free Bible Studies</p>
+      <h2>Begin with the Word.</h2>
+      <p class="ap-study__sub">Word-focused, self-paced and free. Easy to start tonight, on your own or with your small group.</p>
+      <div class="ap-grid">
+        <div class="ap-card">
+          <h3>Known by Jesus</h3>
+          <p>A ten-part study of Scripture on knowing and being known by Jesus — from Eden, where knowing first broke, to the rest that remains.</p>
+          <a class="ap-btn ap-btn--fill" href="/course/i-want-you-to-know-me">Start the Study — Free</a>
+        </div>
+        <div class="ap-card">
+          <h3>Do Hard Things</h3>
+          <p>“Same sea. Same wind. Different man.” A twelve-part walk through Peter’s road — how doing hard things grows your faith.</p>
+          <a class="ap-btn ap-btn--fill" href="/course/do-hard-things">Start the Study — Free</a>
+        </div>
+        <div class="ap-card ap-card--soon">
+          <h3>Walk With Me</h3>
+          <p>Walk the ancient road from Emmaus to your own community — justice, mercy, and a life kept in step with the Spirit.</p>
+          <span class="ap-soon">Coming Soon</span>
+        </div>
+      </div>
+      <p class="ap-study__more">Ready for more than a study? The twelve-week cohort, <a href="/course/student-course">Breaking Free</a>, walks the hardest terrain in a small group of men led by trained facilitators. Its first trek, Jeremiah’s Journey, starts October 7 — free for eight men.</p>
+    </div>
+  </section>
+  <section class="ap-sec ap-creed ap-bleed">
+      <div class="ap-wrap">
+        <hr class="ap-creed__rule">
+        <p class="ap-creed__lead"><span>Relationship is what changes us.</span><span>Being known is how we grow.</span><span>Together we overcome.</span></p>
+        <p class="ap-creed__close">This is the work we’re committed to — and the path we’ll walk with you.</p>
+      </div>
+    </section>
+  <section class="ap-sec ap-lens ap-bleed">
+    <div class="ap-wrap">
+      <h2>Story → Refining → Testimony.</h2>
+      <p>Our foundational lens is narrative-focused trauma care from the Allender Center. We begin with the story a man is actually living, let it be tested and refined, and stay until it becomes testimony — something he can stand on and speak. This same movement runs through every path and every form.</p>
+      <p>Walked, not managed. This work is held by trained men — NFTC certification, confessional-community formation, and a vetting standard for everyone who leads — and by experience: we have walked hundreds of men through the Breaking Free process over the past ten years. What you bring here is held in confidence. <a href="/about">Our standards</a>.</p>
+      <p class="ap-lens__verse">“Stand by the roads, and look, and ask for the ancient paths, where the good way is; and walk in it, and find rest for your souls.”<span class="ap-lens__ref">Jeremiah 6:16</span></p>
+    </div>
+  </section>
+  
+</div> 
