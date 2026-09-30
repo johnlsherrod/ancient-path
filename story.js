@@ -1,6 +1,8 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v18.3
+   AP-STORY-MODULE-v18.4
 
+   v18.4 (30 Sept 2026) — the stem test no longer needs the stem to sit over the box sideways: What Kind of Light pins "To" / "am I" beside its box, at the
+     same height, and the row was still landing on it. Any pinned text that shares the box's height now keeps the row above the whole line.
    v18.3 (30 Sept 2026) — "Read it to me" on a phone, where a box carries its own sentence stem (Asked of Me: "I came from" is
      pinned over the top-left of its box): the row now goes ABOVE that whole line, never between the stem and the box, so the two no
      longer print on top of each other.
@@ -2088,7 +2090,7 @@
               var pos = window.getComputedStyle(sib).position;
               if ((pos === "absolute" || pos === "fixed") && String(sib.textContent || "").replace(/\s+/g, "").length > 0) {
                 var sr = sib.getBoundingClientRect(), nr = node.getBoundingClientRect();
-                if (sr.width > 0 && sr.height > 0 && sr.left < nr.right && sr.right > nr.left && sr.top < nr.bottom && sr.bottom > nr.top) { anchor = node.parentNode; break; }
+                if (sr.width > 0 && sr.height > 0 && sr.top < nr.bottom && sr.bottom > nr.top) { anchor = node.parentNode; break; }
               }
               sib = sib.previousElementSibling;
             }
@@ -2337,7 +2339,7 @@
   };
 
   window.APStory = {
-    version: "18.3",
+    version: "18.4",
     assistant: ASSIST,
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
