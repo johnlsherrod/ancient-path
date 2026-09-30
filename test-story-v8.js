@@ -49,7 +49,7 @@ function page(o) {
   const dom0 = new JSDOM("<!doctype html><html><body></body></html>", { runScripts: "outside-only", url: "https://www.ancientpathcoaching.com/x" });
   const w0 = dom0.window; w0.eval(src);
   const A = w0.APStory.assistant;
-  t("story.js is v9 and exposes the assistant", w0.APStory.version === "18.3" && A && typeof A.notes === "function");
+  t("story.js is v9 and exposes the assistant", w0.APStory.version === "18.4" && A && typeof A.notes === "function");
   const hs = A.house({ kind: "story" }), hp = A.house({ kind: "poem" });
   t("every house document opens with the relay's guarded first line", hs.indexOf('You are "a first reader" for Ancient Path Biblical Coaching.') === 0 && hp.indexOf('You are "a first reader" for Ancient Path Biblical Coaching.') === 0);
   t("the story house is the v32 text (same checks, limits, questions, options)", /THE CHECKS\./.test(hs) && /LIMITS\./.test(hs) && /QUESTIONS\./.test(hs) && /OPTIONS\./.test(hs) && !/THIS IS A POEM/.test(hs));

@@ -23,7 +23,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   w.AP_ROAD = { lw: { unit: "u1", blocks: { walk: ["a", "b", "c"], whole: "w", meta: "m" } }, plate: false, worksheet: false };   /* reader left at its default: the relay */
   w.module = {}; w.eval(road);
   const APP = w.APP, TELL = w.module.exports;
-  t("both files booted; the assistant is the shared one", !!APP && !!TELL && w.APStory.version === "18.3");
+  t("both files booted; the assistant is the shared one", !!APP && !!TELL && w.APStory.version === "18.4");
   const D = APP.D, ch = D.chapters[0];
   ch.lines = [{ on: true, k: "q0", side: "hi", label: "What I did", text: "I came home late." }, { on: true, k: "q1", side: "hi", label: "What it cost", text: "I said nothing." }];
   D.meCount = 1;
