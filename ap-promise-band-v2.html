@@ -1,0 +1,275 @@
+<!-- AP-PROMISE-BAND-v2 (29 Sept 2026): the promise on the home page — Tell your story. Offer your testimony. Be known in community. — with the three stones, Told · Offered · Known, and, under them, one question before sign-in: What kind of light am I? A tap on who lives close enough to be lit by him holds that name on his device and opens What Kind of Light with it already in the first line, counted as a start. Replaces v1's "Start below" line. -->
+<style>
+    .apb {
+        --apb-bronze: #B8945F;
+        --apb-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+        --apb-sans: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        position: relative;
+        width: 100vw;
+        margin: 0 0 0 calc(50% - 50vw);
+        background: #1B2A3A url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='600' viewBox='0 0 1600 600'><g fill='none' stroke='%23B8945F' stroke-width='1.4' opacity='0.15'><path d='M-50 460 C 250 380, 450 500, 760 420 S 1300 320, 1680 400'/><path d='M-50 500 C 250 430, 480 540, 800 470 S 1320 380, 1680 450'/><path d='M-50 420 C 280 330, 520 460, 820 370 S 1280 270, 1680 350'/><path d='M-50 540 C 300 500, 520 580, 840 520 S 1340 440, 1680 510'/><path d='M-50 380 C 300 300, 560 420, 880 330 S 1300 240, 1680 310'/></g><g fill='%23B8945F' opacity='0.20'><circle cx='760' cy='420' r='4'/></g></svg>") 50% 100%/cover no-repeat;
+        text-align: center;
+    }
+
+    .apb,
+    .apb * {
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .apb .apb-in {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 64px 24px 60px;
+    }
+
+    .apb .apb-eyebrow {
+        font: 600 13px/1.65 var(--apb-sans) !important;
+        letter-spacing: 3px !important;
+        text-transform: uppercase !important;
+        color: var(--apb-bronze) !important;
+        margin: 0 0 12px;
+    }
+
+    .apb .apb-promise {
+        font: 600 28px/1.3 var(--apb-serif) !important;
+        color: #F3EDE3 !important;
+        letter-spacing: -0.01em !important;
+        margin: 0 auto;
+        max-width: 800px;
+    }
+
+    /* a sentence of the promise never breaks inside itself */
+    .apb .apb-s {
+        display: inline-block;
+    }
+
+    .apb .apb-stones {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        margin: 30px auto 0;
+        max-width: 760px;
+        position: relative;
+    }
+
+    .apb .apb-stones::before {
+        content: "";
+        position: absolute;
+        left: 16.6%;
+        right: 16.6%;
+        top: 5px;
+        border-top: 1px solid rgba(184, 148, 95, 0.45);
+    }
+
+    .apb .apb-stone {
+        flex: 1 1 0;
+        position: relative;
+        padding: 0 8px;
+    }
+
+    .apb .apb-stone-dot {
+        display: block;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--apb-bronze);
+        margin: 0 auto 10px;
+        box-shadow: 0 0 0 4px #1B2A3A;
+    }
+
+    .apb .apb-stone-word {
+        display: block;
+        font: 600 15px/1.3 var(--apb-sans) !important;
+        letter-spacing: 1.5px !important;
+        text-transform: uppercase;
+        color: #F3EDE3 !important;
+    }
+
+    .apb .apb-stone-what {
+        display: block;
+        font: 400 14px/1.5 var(--apb-sans) !important;
+        color: #B7AFA4 !important;
+        margin-top: 4px;
+        text-wrap: balance;
+    }
+
+    /* v2: one question before sign-in */
+    .apb .apb-ask {
+        margin: 44px auto 0;
+        padding-top: 34px;
+        border-top: 1px solid rgba(184, 148, 95, 0.3);
+        max-width: 640px;
+    }
+
+    .apb .apb-ask-lead {
+        font: 600 13px/1.65 var(--apb-sans) !important;
+        letter-spacing: 3px !important;
+        text-transform: uppercase !important;
+        color: var(--apb-bronze) !important;
+        margin: 0 0 10px;
+    }
+
+    .apb .apb-q {
+        font: 600 30px/1.25 var(--apb-serif) !important;
+        color: #F3EDE3 !important;
+        margin: 0;
+    }
+
+    .apb .apb-q-how {
+        font: 400 17px/1.5 var(--apb-sans) !important;
+        color: #D8CFC0 !important;
+        margin: 12px auto 0;
+        max-width: 520px;
+        text-wrap: balance;
+    }
+
+    .apb .apb-who-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: 22px auto 0;
+        max-width: 700px;
+    }
+
+    .apb .apb-who {
+        display: inline-block;
+        font: 500 16px/1 var(--apb-sans) !important;
+        color: #F3EDE3 !important;
+        background: rgba(243, 237, 227, 0.06);
+        border: 1px solid rgba(184, 148, 95, 0.6);
+        border-radius: 999px;
+        padding: 13px 18px;
+        min-height: 44px;
+        cursor: pointer;
+        text-decoration: none !important;
+        transition: background .15s, border-color .15s;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .apb .apb-who:hover,
+    .apb .apb-who:focus-visible {
+        background: rgba(184, 148, 95, 0.22);
+        border-color: var(--apb-bronze);
+        outline: none;
+    }
+
+    .apb .apb-who.is-going {
+        background: var(--apb-bronze);
+        color: #1B2A3A !important;
+    }
+
+    .apb .apb-else {
+        display: inline-block;
+        font: 400 15px/1.5 var(--apb-sans) !important;
+        color: #B7AFA4 !important;
+        margin: 18px auto 0;
+        text-decoration: underline !important;
+        text-underline-offset: 3px;
+    }
+
+    .apb .apb-else:hover {
+        color: #F3EDE3 !important;
+    }
+
+    @media (max-width: 640px) {
+        .apb .apb-in {
+            padding: 48px 20px 44px;
+        }
+
+        .apb .apb-promise {
+            font-size: 24px !important;
+        }
+
+        .apb .apb-stone-what {
+            display: none;
+        }
+
+        .apb .apb-ask {
+            margin-top: 34px;
+            padding-top: 28px;
+        }
+
+        .apb .apb-q {
+            font-size: 26px !important;
+        }
+
+        .apb .apb-q-how {
+            font-size: 16px !important;
+        }
+
+        /* two to a row on a phone, five rows, no word left alone on a line */
+        .apb .apb-who-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            max-width: 340px;
+        }
+
+        .apb .apb-who {
+            padding: 12px 15px;
+            font-size: 15px !important;
+        }
+    }
+</style>
+<div class="apb">
+    <div class="apb-in">
+        <p class="apb-eyebrow">Your Story</p>
+        <p class="apb-promise"><span class="apb-s">Tell your story.</span> <span class="apb-s">Offer your testimony.</span> <span class="apb-s">Be known in community.</span></p>
+        <div class="apb-stones" aria-label="The three stops">
+            <div class="apb-stone"><span class="apb-stone-dot"></span><span class="apb-stone-word">Told</span><span class="apb-stone-what">Written down and kept.<br>Only you can read it.</span></div>
+            <div class="apb-stone"><span class="apb-stone-dot"></span><span class="apb-stone-word">Offered</span><span class="apb-stone-what">Read by our team<br>before it goes up.</span></div>
+            <div class="apb-stone"><span class="apb-stone-dot"></span><span class="apb-stone-word">Known</span><span class="apb-stone-what">Published on Our Stories.<br>Other men can read it now.</span></div>
+        </div>
+        <div class="apb-ask" id="apbAsk">
+            <p class="apb-ask-lead">Start with one question</p>
+            <p class="apb-q">What kind of light am I?</p>
+            <p class="apb-q-how">Begin with who. Who is close enough to see your light?</p>
+            <div class="apb-who-row" aria-label="Tap one">
+                <a class="apb-who" href="/what-kind-of-light" data-who="my wife">my wife</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my son">my son</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my daughter">my daughter</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my father">my father</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my mother">my mother</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my brother">my brother</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my sister">my sister</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my friend">my friend</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my coworker">my coworker</a>
+                <a class="apb-who" href="/what-kind-of-light" data-who="my neighbor">my neighbor</a>
+            </div>
+            <a class="apb-else" href="/what-kind-of-light">Someone else</a>
+        </div>
+    </div>
+</div>
+<script>
+    /* AP-PROMISE-BAND-v2: a tap holds the name on his device the same way the piece holds words between sessions (the engine's held-words key, a day), tells the count a piece was started, and opens the piece. No backslashes in this script: the editor eats them. */
+    (function () {
+        var FORM = "what-kind-of-light", KEY = "apStoryPending:" + FORM, PATH = "/what-kind-of-light";
+        var ask = document.getElementById("apbAsk");
+        if (!ask) { return; }
+        function hold(who) {
+            try {
+                var raw = window.localStorage.getItem(KEY);
+                if (raw) { var v = JSON.parse(raw); if (v && v.a && (Date.now() - (v.t || 0)) < 24 * 60 * 60 * 1000) { return false; } }   /* words he already holds win */
+                window.localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), a: { who1: who }, press: false }));
+                return true;
+            } catch (e) { return false; }
+        }
+        function start() {
+            try { if (typeof window.gtag === "function") { window.gtag("event", "story_start", { piece: FORM }); } } catch (e) {}
+        }
+        ask.addEventListener("click", function (e) {
+            var a = e.target && e.target.closest ? e.target.closest("a.apb-who") : null;
+            if (!a) { return; }
+            e.preventDefault();
+            var who = a.getAttribute("data-who") || "";
+            var row = ask.querySelectorAll(".apb-who");
+            for (var i = 0; i < row.length; i++) { row[i].classList.remove("is-going"); }
+            a.classList.add("is-going");
+            if (hold(who)) { start(); }
+            window.setTimeout(function () { window.location.href = PATH; }, 120);
+        });
+    })();
+</script>
+<!-- /AP-PROMISE-BAND-v2 -->
