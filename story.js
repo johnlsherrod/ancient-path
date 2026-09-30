@@ -1,6 +1,8 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v18.1
+   AP-STORY-MODULE-v18.2
 
+   v18.2 (30 Sept 2026) — phone spacing: "Read it to me" on a phone no longer sits on the last line of the question above it. It gets
+     room above and below and a full-size tap target (it was 17px tall and pulled up by a negative margin).
    v18.1 (29 Sept 2026) — one Edit (the engine's "Edit the whole thing" is no longer
      mounted: Edit and "Tap any line to change it" cover it); the quiet line
      (Read it back · Hear it · Five questions) sits below Go to your page, on its
@@ -2027,7 +2029,7 @@
       ".aps-voice.aps-touch button{font-size:16px;padding:12px 18px;min-height:44px}.aps-voice.aps-touch button.aps-talk{padding-left:40px}.aps-voice.aps-touch button.aps-talk::before{left:16px}" +
       ".aps-voice-note{flex:1 1 100%;font-size:13.5px;line-height:1.45;color:#6B6358;margin:0}" +
       ".aps-voice button.aps-readq{background:none;border:0;padding:0;border-radius:0;font-size:13.5px;color:#8C6A3F;text-decoration:underline;text-underline-offset:3px;min-height:0}.aps-voice.aps-touch button.aps-readq{font-size:14px;padding:0;min-height:0}.aps-voice button.aps-readq.is-on{background:none;color:#1F2A44;border:0}" +
-      ".aps-voice-q{margin:-4px 0 8px}.aps-voice-q button.aps-readq{font-size:14px!important}" +
+      ".aps-voice-q{margin:2px 0 2px}.aps-voice-q button.aps-readq{font-size:15px!important;padding:11px 0!important;min-height:44px!important;display:inline-flex;align-items:center}" +
       ".aps-voice.aps-touch{flex-direction:column;align-items:stretch;gap:10px}.aps-voice.aps-touch button.aps-talk{width:100%;text-align:center;font-size:17px;padding:14px 18px 14px 40px}" +
       ".aps-hear.aps-act > button{font:inherit}" +
       ".aps-one .aps-q-off{display:none!important}.aps-q-row{display:flex;flex-direction:column;gap:10px;margin:4px 0 22px}" +
@@ -2316,7 +2318,7 @@
   };
 
   window.APStory = {
-    version: "18.1",
+    version: "18.2",
     assistant: ASSIST,
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
