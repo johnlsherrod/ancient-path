@@ -1,7 +1,7 @@
 // AP-PROMISE-BAND-v2: one question before sign-in. A tap holds the name on the device in the engine's own held-words shape, counts one start, opens the piece; the piece (story.js v18.1) puts the name in the first box and counts no second start.
-const { JSDOM } = require("/home/claude/v16/node_modules/jsdom"); const fs = require("fs");
+const { JSDOM } = require("jsdom"); const fs = require("fs");
 const band = fs.readFileSync(__dirname + "/ap-promise-band-v2.html", "utf8");
-const engine = fs.readFileSync("/home/claude/v16/story.js", "utf8");
+const engine = fs.readFileSync(__dirname + "/story.js", "utf8");
 let fails = 0; const t = (n, c) => { console.log((c ? "ok   " : "FAIL ") + n); if (!c) fails++; };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 function home(o) {
