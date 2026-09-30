@@ -1,6 +1,10 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v18
+   AP-STORY-MODULE-v18.1
 
+   v18.1 (29 Sept 2026) — one Edit (the engine's "Edit the whole thing" is no longer
+     mounted: Edit and "Tap any line to change it" cover it); the quiet line
+     (Read it back · Hear it · Five questions) sits below Go to your page, on its
+     own line above the rule, so the two dark buttons are never interrupted.
    v18 (29 Sept 2026) — the finish, reshaped. Under his piece: "Tap any
      line to change it" — a tap takes him to that line's box (and on a
      phone, to that question). Then one row: Edit · Save. Then one quiet
@@ -929,7 +933,7 @@
     btn.addEventListener("click", function () { self.save(ui); });
 
     row.appendChild(btn);
-    this.mountEditAll(row);
+    /* v18.1: mountEditAll is no longer called — one Edit (John, 29 Sept) */
     this.mountAssistant(row);   /* v8 */
     this.mountAfter(row);       /* v15 */
     row.parentNode.insertBefore(note, row.nextSibling);
@@ -1022,16 +1026,16 @@
     for (var i = 0; i < ORDER.length; i++) { if (ORDER[i][0].test(t)) { return ORDER[i][1]; } }
     return 5;
   }
-  /* the finish, v18: 5 saved + what's left · 6 Edit · 7 Save · 10 break · 11 the ⓘ line · 12 the quiet line (Read it back · Hear it · Five questions) · 16 results and the walk · 17 the five cards · 21 Your page · 25 break · 30 the quiet things (Print · Copy · Save image · Edit the whole thing) */
+  /* the finish, v18.1: 5 saved + what's left · 6 Edit · 7 Save · 10 break · 21 Your page · 22 break · 23 the quiet line (Read it back · Hear it · Five questions) · 24 the ⓘ line, results and the five cards · 25 rule · 30 the quiet things (Print · Copy · Save image) */
   function finishOrder(node, slot) {
     if (node.classList.contains("aps-status")) { return 5; }
     if (node.classList.contains("aps-edit-main")) { return 6; }
-    if (node.classList.contains("aps-assist")) { return 11; }
-    if (node.classList.contains("aps-act")) { return 12; }
-    if (node.classList.contains("aps-read")) { return 16; }
-    if (node.classList.contains("aps-after")) { return 12; }
-    if (node.classList.contains("aps-break")) { return node.getAttribute("data-at") === "a" ? 10 : 25; }
-    if (slot === 8) { return 12; }
+    if (node.classList.contains("aps-assist")) { return 24; }
+    if (node.classList.contains("aps-act")) { return 23; }
+    if (node.classList.contains("aps-read")) { return 24; }
+    if (node.classList.contains("aps-after")) { return 23; }
+    if (node.classList.contains("aps-break")) { var at = node.getAttribute("data-at"); return at === "a" ? 10 : at === "c" ? 22 : 25; }
+    if (slot === 8) { return 23; }
     if (slot === 4) { return 7; }
     if (slot === 6) { return 21; }
     return 30;
@@ -1042,7 +1046,7 @@
     row.classList.add("aps-row");
     if (finish) {
       row.classList.add("aps-finish");
-      if (!row.querySelector('.aps-break[data-at="a"]')) { row.appendChild(breakEl("a")); row.appendChild(breakEl("b")); }
+      if (!row.querySelector('.aps-break[data-at="a"]')) { row.appendChild(breakEl("a")); row.appendChild(breakEl("c")); row.appendChild(breakEl("b")); }
     }
     if (finish && !row.querySelector(".aps-edit-main")) {
       /* v18: the first of the page's own Back / Edit controls (never the engine's Edit the whole thing) is the Edit button, beside Save */
@@ -1095,6 +1099,7 @@
         ".aps-row.aps-finish .aps-read[hidden]{display:none!important}" +
         ".aps-row.aps-finish .aps-after{flex:1 1 100%;width:100%;max-width:none;margin:0}.aps-row.aps-finish .aps-after > *{max-width:62ch}" +
         ".aps-row.aps-finish > .aps-break[data-at=\"b\"]{height:1px;background:#E5DCC8;margin:10px 0 2px}" +
+        ".aps-row.aps-finish > .aps-break[data-at=\"c\"]{margin-top:6px}" +
         ".aps-row.aps-finish > .aps-quiet{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-height:0!important;height:auto!important;font-size:14px!important;font-weight:400!important;color:#6B6358!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-right:6px}" +
         ".aps-row.aps-finish > .aps-quiet:hover{color:#1F2A44!important}" +
         ".aps-row.aps-finish > .aps-page-link{margin-left:0;font-size:15px}" +
@@ -2311,7 +2316,7 @@
   };
 
   window.APStory = {
-    version: "18",
+    version: "18.1",
     assistant: ASSIST,
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
