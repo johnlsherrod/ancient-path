@@ -1,6 +1,9 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v18.2
+   AP-STORY-MODULE-v18.3
 
+   v18.3 (30 Sept 2026) — "Read it to me" on a phone, where a box carries its own sentence stem (Asked of Me: "I came from" is
+     pinned over the top-left of its box): the row now goes ABOVE that whole line, never between the stem and the box, so the two no
+     longer print on top of each other.
    v18.2 (30 Sept 2026) — phone spacing: "Read it to me" on a phone no longer sits on the last line of the question above it. It gets
      room above and below and a full-size tap target (it was 17px tall and pulled up by a negative margin).
    v18.1 (29 Sept 2026) — one Edit (the engine's "Edit the whole thing" is no longer
@@ -2075,7 +2078,23 @@
           rb.classList.add("is-on"); rb.textContent = "Stop";
           VOICE.say(ask, function () { rb.classList.remove("is-on"); rb.textContent = "Read it to me"; });
         });
-        if (touch) { var rq = el("div", "aps-voice aps-voice-q", ""); rq.appendChild(rb); node.parentNode.insertBefore(rq, node); }
+        if (touch) {
+          var rq = el("div", "aps-voice aps-voice-q", ""); rq.appendChild(rb);
+          /* v18.3: a box whose line carries a pinned sentence stem (a sibling placed over the box) keeps the row above the whole line */
+          var anchor = node;
+          try {
+            var sib = node.previousElementSibling;
+            while (sib) {
+              var pos = window.getComputedStyle(sib).position;
+              if ((pos === "absolute" || pos === "fixed") && String(sib.textContent || "").replace(/\s+/g, "").length > 0) {
+                var sr = sib.getBoundingClientRect(), nr = node.getBoundingClientRect();
+                if (sr.width > 0 && sr.height > 0 && sr.left < nr.right && sr.right > nr.left && sr.top < nr.bottom && sr.bottom > nr.top) { anchor = node.parentNode; break; }
+              }
+              sib = sib.previousElementSibling;
+            }
+          } catch (e) {}
+          anchor.parentNode.insertBefore(rq, anchor);
+        }
         else { row.appendChild(rb); }
       }
       if (SR && !VOICE.denied()) {
@@ -2318,7 +2337,7 @@
   };
 
   window.APStory = {
-    version: "18.2",
+    version: "18.3",
     assistant: ASSIST,
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
