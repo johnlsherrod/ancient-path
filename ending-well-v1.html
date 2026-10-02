@@ -1,0 +1,622 @@
+<!-- AP-EW-v1 (v1, 2 Oct 2026: two settings in one file — data-mode="cohort" (the men he walked with) or data-mode="solo" (the self-directed course: the men he will walk with) on the root, eleven lines differ, ruled Oct 2; the first cut — six parts ruled Oct 2; a man to the men he walked with; body · soul · spirit; the long view in What God did; My hope for the future with his yes or no to the group; Set a stone as the last movement, set on his page when the finished piece saves; the Week 2 vow shown at the door) · Ending Well · Breaking Free · 2 Oct 2026 -->
+<div class="ew-root" id="ewRoot" data-mode="cohort">
+<style>
+.ew-root{--e-navy:#1F2A44;--e-bronze:#B8945F;--e-paper:#FBF9F5;--e-rule:#E2DCD1;--e-ink:#2B3040;--e-quiet:#6B7280;--e-serif:'Source Serif 4',Georgia,'Times New Roman',serif;--e-sans:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;all:initial;font-family:var(--e-sans) !important;color:var(--e-ink) !important;display:block;box-sizing:border-box;max-width:720px;margin:0 auto;padding:28px 20px 48px;text-align:left;line-height:1.5 !important;-webkit-font-smoothing:antialiased}
+.ew-root *{box-sizing:border-box;text-align:left}
+.ew-top-nav{margin:0 0 18px}
+.ew-page-link{font:600 13px/1.4 var(--e-sans) !important;color:var(--e-navy) !important;text-decoration:none;border-bottom:1px solid var(--e-rule);padding-bottom:1px}
+.ew-page-link:hover{border-bottom-color:var(--e-bronze)}
+.ew-eyebrow{font:600 12px/1.4 var(--e-sans);letter-spacing:.22em;text-transform:uppercase;color:var(--e-bronze);margin:0 0 10px}
+.ew-h1{font:600 36px/1.15 var(--e-serif);color:var(--e-navy);margin:0 0 14px}
+.ew-lede{font:400 18px/1.55 var(--e-sans);margin:0 0 10px}
+.ew-safe{font:400 15px/1.5 var(--e-sans);color:var(--e-quiet);margin:0 0 26px;padding-left:12px;border-left:2px solid var(--e-bronze)}
+.ew-progress{display:flex;justify-content:space-between;font:600 12px/1.4 var(--e-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--e-quiet);margin:0 0 6px}
+.ew-track{height:2px;background:var(--e-rule);margin:0 0 22px}
+.ew-fill{height:2px;width:0%;background:var(--e-bronze);transition:width .45s ease}
+.ew-part{display:none;padding:6px 0 18px 16px;border-left:2px solid var(--e-bronze)}
+.ew-part.is-active{display:block}
+.ew-part-title{font:600 26px/1.2 var(--e-serif);color:var(--e-navy);margin:0 0 4px}
+.ew-part-scene{font:italic 400 16px/1.5 var(--e-serif);color:var(--e-quiet);margin:0 0 6px}
+.ew-part-frame{font:400 15px/1.5 var(--e-sans);color:var(--e-ink);margin:0 0 16px;padding:10px 12px;background:var(--e-paper);border:1px solid var(--e-rule)}
+.ew-slot{margin:0 0 20px}
+.ew-slot-name{font:600 18px/1.3 var(--e-serif);color:var(--e-navy);margin:0 0 2px}
+.ew-slot-scene{font:italic 400 14px/1.45 var(--e-serif);color:var(--e-quiet);margin:0 0 4px}
+.ew-slot-prompt{font:400 16px/1.5 var(--e-sans);margin:0 0 4px}
+.ew-slot-shape{font:400 13px/1.4 var(--e-sans);color:var(--e-quiet);margin:0 0 8px}
+.ew-slot-shape b{font-weight:600;color:var(--e-ink)}
+.ew-in,.ew-area{display:block;width:100%;padding:10px 12px;font:400 17px/1.5 var(--e-sans);color:var(--e-ink);background:var(--e-paper);border:1px solid var(--e-rule);border-radius:2px;outline:none}
+.ew-area{min-height:84px;resize:vertical}
+.ew-in:focus,.ew-area:focus{border-color:var(--e-bronze)}
+.ew-line{display:block;position:relative;width:100%;padding:10px 12px;background:var(--e-paper);border:1px solid var(--e-rule);border-radius:2px}
+.ew-line:focus-within{border-color:var(--e-bronze)}
+.ew-stem{position:absolute;left:12px;top:10px;font:400 17px/1.5 var(--e-serif);color:var(--e-quiet);white-space:nowrap;pointer-events:none}
+.ew-root textarea.ew-rest{display:block;width:100%;min-width:0;border:0 !important;outline:none !important;box-shadow:none !important;background:transparent !important;padding:0 !important;margin:0 !important;border-radius:0 !important;resize:none;overflow:hidden;font:400 17px/1.5 var(--e-serif) !important;color:var(--e-ink) !important;min-height:1.5em;height:auto}
+.ew-rest::placeholder{color:#B9B2A6;font-style:italic}
+.ew-root textarea.ew-editor{display:none;width:100%;min-height:360px;padding:14px 16px !important;font:400 18px/1.55 var(--e-serif) !important;color:var(--e-ink) !important;background:#fff !important;border:1px solid var(--e-bronze) !important;border-radius:2px !important;box-shadow:none !important;outline:none !important;resize:vertical;white-space:pre-wrap}
+.ew-root textarea.ew-editor.is-active{display:block}
+.ew-poem.is-hidden{display:none}
+.ew-nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 0 18px}
+.ew-btn{font:600 14px/1 var(--e-sans) !important;padding:13px 22px;border-radius:2px;border:1px solid transparent;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.ew-btn-primary{background:var(--e-navy);color:#fff !important;text-decoration:none !important}
+.ew-btn-primary:hover{background:#2C3B5E}
+.ew-btn-ghost{background:transparent;color:var(--e-navy) !important;border-color:var(--e-rule)}
+.ew-btn-ghost:hover,.ew-btn-ghost:focus{background:var(--e-navy);color:#fff !important;border-color:var(--e-navy)}
+.ew-btn[disabled]{opacity:.55;cursor:default}
+.ew-spacer{flex:1}
+.ew-gate{font:400 14px/1.5 var(--e-sans);color:var(--e-quiet);margin:10px 0 0 18px;min-height:1em}
+.ew-panel{background:var(--e-paper);border:1px solid var(--e-rule);padding:22px 24px;margin:26px 0 0}
+.ew-panel-head{font:600 12px/1.4 var(--e-sans);letter-spacing:.18em;text-transform:uppercase;color:var(--e-bronze);margin:0 0 14px}
+.ew-poem{font:400 18px/1.55 var(--e-serif);color:var(--e-ink);white-space:pre-wrap;margin:0}
+.ew-poem p{font:inherit !important;color:inherit;line-height:inherit}
+.ew-poem-empty{color:var(--e-quiet);font-style:italic}
+.ew-poem-title{font:600 14px/1.4 var(--e-sans);letter-spacing:.18em;text-transform:uppercase;color:var(--e-navy);margin:0 0 12px}
+.ew-finish{display:none}
+.ew-finish.is-active{display:block}
+.ew-h2{font:600 28px/1.2 var(--e-serif);color:var(--e-navy);margin:8px 0 8px}
+.ew-note{font:400 16px/1.5 var(--e-sans);color:var(--e-quiet);margin:0 0 18px}
+.ew-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0 0}
+.aps-note{font:400 15px/1.5 var(--e-sans);color:var(--e-quiet);margin:12px 0 0;min-height:1em}
+.aps-panel{margin:6px 0 0}
+.aps-page-link{font:600 15px/1.4 var(--e-sans);color:var(--e-navy);text-decoration:underline}
+.ew-foot{font:400 14px/1.5 var(--e-sans);color:var(--e-quiet);margin:34px 0 0;padding-top:14px;border-top:1px solid var(--e-rule)}
+.ew-foot a{color:var(--e-navy)}
+@media (max-width:600px){.ew-h1{font-size:30px}.ew-part-title{font-size:22px}.ew-nav{margin-left:0}}
+.ew-root .ew-nav.ew-off{display:none !important}   /* the step row leaves the finished view; the engine pins it with !important, so this outranks it */
+.ew-quote{font:italic 400 16px/1.5 var(--e-serif);color:var(--e-quiet);margin:0 0 22px;padding:10px 14px;border-left:2px solid var(--e-rule)}
+.ew-quote b{font-style:normal;font-weight:600;color:var(--e-ink)}
+.ew-words{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+.ew-word{font:400 14px/1 var(--e-sans) !important;padding:7px 11px;border:1px solid var(--e-rule);border-radius:2px;background:#fff;color:var(--e-navy) !important;cursor:pointer}
+.ew-word:hover,.ew-word:focus{border-color:var(--e-bronze)}
+.ew-word.is-on{background:var(--e-navy);color:#fff !important;border-color:var(--e-navy)}
+.ew-stone-pick{margin:0 0 14px}
+.ew-stone-line{display:block;width:100%;text-align:left;font:400 17px/1.5 var(--e-serif) !important;color:var(--e-ink) !important;background:var(--e-paper);border:1px solid var(--e-rule);border-radius:2px;padding:10px 12px;margin:0 0 8px;cursor:pointer}
+.ew-stone-line:hover,.ew-stone-line:focus{border-color:var(--e-bronze)}
+.ew-stone-line.is-on{border-color:var(--e-navy);box-shadow:inset 3px 0 0 var(--e-bronze)}
+.ew-stone-none{font:400 14px/1.5 var(--e-sans);color:var(--e-quiet);margin:0 0 10px}
+.ew-stone-shown{margin:18px 0 0;padding:12px 14px;border:1px solid var(--e-rule);background:var(--e-paper)}
+.ew-stone-shown .ew-panel-head{margin-bottom:6px}
+.ew-stone-text{font:400 18px/1.5 var(--e-serif);color:var(--e-navy);margin:0}
+.ew-stone-note{font:400 14px/1.5 var(--e-sans);color:var(--e-quiet);margin:6px 0 0}
+</style>
+
+<p class="ew-top-nav"><a class="ew-page-link" href="/start" target="_top">&larr; Your page</a></p>
+<p class="ew-eyebrow">Breaking Free · Ending Well</p>
+<h1 class="ew-h1">Ending Well</h1>
+<p class="ew-lede" id="ewLede" data-solo="Twelve weeks, on your own. This is where you tell the men you will walk with where you started, what changed, what God did, and what you hope for — in your own words, one line at a time. Each line starts for you; you finish it.">Twelve weeks, and the men who walked them with you. This is where you tell them where you started, what changed, what God did, and what you hope for &mdash; in your own words, one line at a time. Each line starts for you; you finish it.</p>
+<p class="ew-safe">When you press Finish, this chapter is saved to your page &mdash; yours to read, change or delete. Ancient Path reads only what you choose to publish.</p>
+<p class="ew-quote" id="ewLament" style="display:none"></p>
+
+<div class="ew-progress"><span id="ewPartLabel">Part 1 of 6</span><span id="ewCount">0 of 18 written</span></div>
+<div class="ew-track"><div class="ew-fill" id="ewFill"></div></div>
+
+<div id="ewParts"><hr style="border:0;margin:0;height:0"></div>
+
+<div class="ew-nav" id="ewNav">
+  <button type="button" class="ew-btn ew-btn-ghost" id="ewBack">Back</button>
+  <button type="button" class="ew-btn ew-btn-primary" id="ewNext">Next</button>
+  <span class="ew-spacer"></span>
+  <button type="button" class="ew-btn ew-btn-ghost" id="ewSaveNow">Save and stop for now</button>
+</div>
+<p class="ew-gate" id="ewGate"></p>
+<div id="ewNavOff" style="display:none"></div>
+
+<div class="ew-panel" id="ewDraftPanel">
+  <p class="ew-panel-head">Your story so far</p>
+  <div class="ew-poem" id="ewDraft"><span class="ew-poem-empty">It begins when you write the first line.</span></div>
+</div>
+
+<div class="ew-finish" id="ewFinish">
+  <h2 class="ew-h2">Here it is, in your words.</h2>
+  <p class="ew-note">Read it out loud once. Then save it, so it is waiting on your page with the men who can read it when you offer it.</p>
+  <div class="ew-panel" style="margin-top:0">
+    <p class="ew-panel-head">Your story</p>
+    <div class="ew-poem" id="ewFinal"><hr style="border:0;margin:0;height:0"></div>
+    <textarea class="ew-editor" id="ewEditor" aria-label="Your story, to change"></textarea>
+    <div class="ew-stone-shown" id="ewStoneShown" style="display:none">
+      <p class="ew-panel-head">Your stone</p>
+      <p class="ew-stone-text" id="ewStoneText"></p>
+      <p class="ew-stone-note" id="ewStoneNote">It is set on your page when you save.</p>
+    </div>
+  </div>
+  <div class="ew-actions" id="ewActions">
+    <button type="button" class="ew-btn ew-btn-ghost" id="ewDownload">Download</button>
+    <button type="button" class="ew-btn ew-btn-ghost" id="ewCopy">Copy</button>
+    <button type="button" class="ew-btn ew-btn-ghost" id="ewWords">Edit</button>
+    <button type="button" class="ew-btn ew-btn-ghost" id="ewEdit">Back to the questions</button>
+  </div>
+</div>
+
+<input type="hidden" id="ew_meta" value="">
+
+<p class="ew-foot"><strong>If something in this stirred more than you expected:</strong> the 988 Suicide &amp; Crisis Lifeline is there any hour, by call or text. In immediate danger, call 911. <strong>We make mistakes.</strong> If something on this page is broken, <a data-ap-bug href="https://form.jotform.com/262466498821065" target="_blank" rel="noopener">report a bug</a>.</p>
+
+<script>
+(function () {
+  "use strict";
+  function $(id) { return document.getElementById(id); }
+
+  /* Six parts, ruled 2 Oct 2026. Each slot: key · stem (the grey opening words) · prompt (the help line under the heading) · ex (a whole example line) · words (a row to tap, if any) · end. */
+  var FEELINGS = ["thankful", "grateful", "sad", "still struggling with", "hopeful"];
+  var PARTS = [
+    { title: "The Doorway", frame: "The course’s last charge was “stay with the men you walked with.” This is where you say it to them.",
+      solo: { frame: "Week 12 says “look for, pray for, and actively seek relationship and community with other men.” This is written to them, before you have met them." },
+      slots: [
+        { key: "iam", stem: "To the men I walked with, I am", prompt: "Twelve weeks. Say the first true word. The row of words is there if you need it. Then say why, in a few words.", ex: "To the men I walked with, I am tired and grateful. You heard the worst of it and you kept showing up.", words: FEELINGS,
+          solo: { stem: "To the men I will walk with, I am", ex: "To the men I will walk with, I am tired and hopeful. You haven’t heard any of this yet. Here it is." } },
+        { key: "sawme", stem: "You saw me", prompt: "What did they see that nobody else did? One picture.", ex: "You saw me on the Wednesday I almost didn’t log on.",
+          solo: { stem: "What you will see in me is", prompt: "What will they see when they meet you? One picture.", ex: "What you will see in me is a man who did twelve weeks of this with nobody watching." } }
+      ] },
+    { title: "Where I started", frame: "",
+      slots: [
+        { key: "started", stem: "When I started, I was", prompt: "Week 1 was The Enemy Knows You — “he’s a person who has studied you your whole life.” Where were you when you read that? A picture a man could see, not a label.", ex: "When I started, I was sitting in the truck in the driveway, not ready to go in the house." },
+        { key: "toldmyself", stem: "What I told myself was", prompt: "The sentence you were living on. Short.", ex: "What I told myself was that I had it handled." },
+        { key: "nobodyknew", stem: "What nobody knew was", prompt: "The part no one could see from outside.", ex: "What nobody knew was how long it had been going on." }
+      ] },
+    { title: "What changed", frame: "Not twelve weeks. What is different in you, in three places: body, soul, spirit.",
+      slots: [
+        { key: "camein", stem: "What came in through my eyes and ears was", prompt: "Week 1 called it your Sphere of Influence: “any sound, sight, smell, or touch, you control.” And: “The enemy has had free rein inside your SOI, and he’s been bringing his trash in with him.” What was coming in?", ex: "What came in through my eyes and ears was a screen at midnight and voices telling me I was the only one." },
+        { key: "takein", stem: "What I take in now is", prompt: "Same sphere, your hands on the gate now. What do you let in?", ex: "What I take in now is a walk before the house wakes up and a chapter of John read out loud." },
+        { key: "renewed", stem: "What is being renewed in me is", scene: "Be transformed by the renewal of your mind — Romans 12:2", prompt: "A word, a relationship, a habit of thought. What is being made new?", ex: "What is being renewed in me is the word “father” — it used to mean absence." },
+        { key: "growing", stem: "Between me and God, what is growing is", scene: "So now faith, hope, and love abide, these three — 1 Corinthians 13:13", prompt: "Spirit is relationship. Which one grew, and what does it look like?", ex: "Between me and God, what is growing is hope. I expect him to show up now.", words: ["faith", "hope", "love"] }
+      ] },
+    { title: "What God did", scene: "I will turn their mourning into joy; I will comfort them, and give them gladness for sorrow. — Jeremiah 31:13", frame: "If it is still quiet and the struggle is still here, say that. It is not failure. This takes years, not weeks, and God’s answer may be as small as a room with men in it.",
+      slots: [
+        { key: "asked", stem: "I asked him for", prompt: "What did you ask God for at the start? Say it the way you said it then. Not every ask is answered yet.", ex: "I asked him for it to stop." },
+        { key: "goddid", stem: "What God did was", prompt: "One true sentence. For some men it is this: there are men willing to walk with me. That is God offering relationship.", ex: "What God did was put me in a room with men willing to walk with me.",
+          solo: { prompt: "One true sentence. For some men it is this: there are men out there willing to walk with me, and I am going to find them. That is God offering relationship.", ex: "What God did was keep me at it for twelve weeks with nobody watching." } },
+        { key: "smallstep", stem: "The small step I can grow by is", prompt: "Years, not weeks. One step you can take this month.", ex: "The small step I can grow by is showing up next Wednesday, whatever this week was.",
+          solo: { ex: "The small step I can grow by is finding one man and telling him I did this." } }
+      ] },
+    { title: "My hope for the future", frame: "",
+      slots: [
+        { key: "hope", stem: "My hope for the future is", prompt: "Week 12 says “orientation was always the trailhead, not the destination.” A year down the trail — what do you want to be true?", ex: "My hope for the future is to be a man my kids can tell the truth to." },
+        { key: "ask", stem: "What I ask of you is", prompt: "The Wednesdays are done. What do you need from these men now?", ex: "What I ask of you is to keep asking me the question, even when I say I’m fine.",
+          solo: { stem: "What I will ask of you is", prompt: "The course is done. What will you need from the men you find?", ex: "What I will ask of you is to ask me the question, even when I say I’m fine." } },
+        { key: "forward", stem: "Going forward, with this group, I will", prompt: "Yes or no — say it plainly and own it. Both are honorable. A goodbye said well is an ending done right.", ex: "Going forward, with this group, I will say goodbye. Thank you. I am taking this with me.", words: ["stay", "say goodbye"], wordsFirst: true,
+          solo: { stem: "Going forward, I will", prompt: "Say it plainly and own it. Both are honorable.", ex: "Going forward, I will find a group of men and tell them what I wrote here.", words: ["find men", "keep walking on my own for now"] } },
+        { key: "remember", stem: "When the gaps get longer and voices fade, I will remember by", prompt: "Week 12: “The days are not the achievement. Whatever you did that made the days is the achievement. Find it, name it out loud in the room, and do it again.” Pick one, or write your own.", ex: "When the gaps get longer and voices fade, I will remember by a call on the first of the month.", words: ["a call", "a text", "coffee", "an online meeting"],
+          solo: { stem: "When the gaps get longer, I will remember by", ex: "When the gaps get longer, I will remember by reading this again on the first of the month.", words: ["reading this again", "a text to one man", "coffee with one man", "a meeting"] } }
+      ] },
+    { title: "Set a stone", frame: "A stone is what you set so you can find the way again. Choose yours: one of your own lines above, or the words you walk by.", stone: true,
+      slots: [
+        { key: "stone", stem: "", prompt: "Or your own words.", ex: "Do the next right thing.", own: true }
+      ] }
+  ];
+  /* The setting: data-mode="cohort" (the men he walked with) or "solo" (the self-directed course: the men he will walk with). Eleven lines differ; the parts, the stone and the save do not. */
+  var MODE = ($("ewRoot") && $("ewRoot").getAttribute("data-mode")) === "solo" ? "solo" : "cohort";
+  if (MODE === "solo") {
+    var lede = $("ewLede"); if (lede && lede.getAttribute("data-solo")) lede.textContent = lede.getAttribute("data-solo");
+    PARTS.forEach(function (p) {
+      if (p.solo) { for (var k in p.solo) { if (Object.prototype.hasOwnProperty.call(p.solo, k)) p[k] = p.solo[k]; } }
+      p.slots.forEach(function (s) { if (s.solo) { for (var k2 in s.solo) { if (Object.prototype.hasOwnProperty.call(s.solo, k2)) s[k2] = s.solo[k2]; } } });
+    });
+  }
+  window.ewMode = MODE;
+  var TAIL = "Written at the end of Breaking Free.";
+  var TITLE = "Ending Well";
+  var GATE = ["renewed", "goddid"];   /* what is being renewed, and what God did, must be written before Finish */
+  var STONE_FROM = ["asked", "goddid", "smallstep"];   /* the lines he may tap as his stone */
+
+  var partsEl = $("ewParts"), fill = $("ewFill"), lbl = $("ewPartLabel"), cnt = $("ewCount"), gateEl = $("ewGate");
+  var back = $("ewBack"), next = $("ewNext"), nav = $("ewNav"), finishEl = $("ewFinish"), finalEl = $("ewFinal"), draftEl = $("ewDraft"), draftPanel = $("ewDraftPanel"), meta = $("ew_meta");
+  var ALL = [], WRITTEN = [], cur = 0, finished = false, stopped = false, edited = null;
+  var stonePick = null, stoneHost = null;
+
+  function keepFocus(el) {
+    var t0 = 0;
+    el.addEventListener("mousedown", function () { t0 = Date.now(); });
+    el.addEventListener("blur", function () { if (Date.now() - t0 < 400) { setTimeout(function () { try { el.focus({ preventScroll: true }); } catch (e) { try { el.focus(); } catch (e2) {} } }, 0); } });
+  }
+  function val(k) { var n = $("ew_" + k); return n ? String(n.value || "").trim() : ""; }
+  function setVal(k, v) { var n = $("ew_" + k); if (!n) return; n.value = v; n.dispatchEvent(new Event("input", { bubbles: true })); }
+
+  function wordRow(s, inp) {
+    var row = document.createElement("div"); row.className = "ew-words";
+    function paint() {
+      var v = val(s.key).toLowerCase();
+      for (var i = 0; i < row.children.length; i++) { var b = row.children[i]; b.classList.toggle("is-on", !!v && v.indexOf(b.textContent.toLowerCase()) !== -1); }
+    }
+    (s.words || []).forEach(function (w) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "ew-word"; b.textContent = w;
+      b.addEventListener("click", function () {
+        var v = val(s.key);
+        if (s.wordsFirst) { v = w + (v && v.toLowerCase().indexOf(w.toLowerCase()) === -1 ? ". " + v : (v.toLowerCase().indexOf(w.toLowerCase()) === 0 ? v.slice(w.length) : "")); v = v.replace(/^\.\s*/, ""); }
+        else if (!v) { v = w; }
+        else if (v.toLowerCase().indexOf(w.toLowerCase()) === -1) { v = v.replace(/[.\s]+$/, "") + " and " + w; }
+        setVal(s.key, v); try { inp.focus({ preventScroll: true }); } catch (e) {}
+      });
+      row.appendChild(b);
+    });
+    inp.addEventListener("input", paint);
+    row._paint = paint;
+    return row;
+  }
+
+  PARTS.forEach(function (p, pi) {
+    var wrap = document.createElement("div"); wrap.className = "ew-part"; wrap.setAttribute("data-part", pi);
+    var t = document.createElement("p"); t.className = "ew-part-title"; t.textContent = p.title; wrap.appendChild(t);
+    if (p.scene) { var sc = document.createElement("p"); sc.className = "ew-part-scene"; sc.textContent = p.scene; wrap.appendChild(sc); }
+    if (p.frame) { var fr = document.createElement("p"); fr.className = "ew-part-frame"; fr.textContent = p.frame; wrap.appendChild(fr); }
+    if (p.stone) { stoneHost = document.createElement("div"); stoneHost.className = "ew-stone-pick"; wrap.appendChild(stoneHost); }
+    p.slots.forEach(function (s) {
+      ALL.push(s); if (!s.own) WRITTEN.push(s);
+      var box = document.createElement("div"); box.className = "ew-slot";
+      if (s.scene) { var ss = document.createElement("p"); ss.className = "ew-slot-scene"; ss.textContent = s.scene; box.appendChild(ss); }
+      var pr = document.createElement("p"); pr.className = "ew-slot-prompt"; pr.textContent = s.prompt; box.appendChild(pr);
+      var sh = document.createElement("p"); sh.className = "ew-slot-shape"; var b = document.createElement("b"); b.textContent = s.own ? "Your own words." : "Finish the line."; sh.appendChild(b); sh.appendChild(document.createTextNode(" For example: " + s.ex)); box.appendChild(sh);
+      var line = document.createElement("div"); line.className = "ew-line";
+      var inp = document.createElement("textarea"); inp.className = "ew-rest"; inp.id = "ew_" + s.key; inp.rows = 1; inp.placeholder = "…";
+      if (s.stem) { var stem = document.createElement("span"); stem.className = "ew-stem"; stem.textContent = s.stem; line.appendChild(stem); inp.setAttribute("aria-label", s.stem + " …"); }
+      else { inp.setAttribute("aria-label", "Your stone, in your own words"); }
+      line.appendChild(inp);
+      line.addEventListener("mousedown", function (e) { if (e.target !== inp) { e.preventDefault(); try { inp.focus(); } catch (err) {} } });
+      keepFocus(inp);
+      box.appendChild(line);
+      if (s.words) { box.appendChild(wordRow(s, inp)); }
+      wrap.appendChild(box);
+      inp.addEventListener("input", function () { grow(inp); edited = null; if (s.own && val("stone")) { stonePick = null; paintStonePick(); } render(); });
+    });
+    partsEl.appendChild(wrap);
+  });
+
+  /* The Word for It joins his five once the engine is here. */
+  function addWordForIt() {
+    try {
+      var list = (window.APStory && window.APStory.wordForIt) || [];
+      var row = $("ew_iam") && $("ew_iam").parentNode.nextElementSibling;
+      if (!row || !row.classList.contains("ew-words")) return;
+      list.forEach(function (w) {
+        if (FEELINGS.indexOf(w) !== -1) return;
+        var b = document.createElement("button"); b.type = "button"; b.className = "ew-word"; b.textContent = w;
+        b.addEventListener("click", function () { var v = val("iam"); setVal("iam", !v ? w : (v.toLowerCase().indexOf(w.toLowerCase()) === -1 ? v.replace(/[.\s]+$/, "") + " and " + w : v)); try { $("ew_iam").focus({ preventScroll: true }); } catch (e) {} });
+        row.appendChild(b);
+      });
+    } catch (e) {}
+  }
+  window.ewAddWordForIt = addWordForIt;
+
+  function indent(t) { try { var s = t.previousElementSibling; var w = (s && s.className === "ew-stem") ? s.offsetWidth : 0; t.style.textIndent = w ? (w + 8) + "px" : "0"; } catch (e) {} }
+  function grow(t) { try { indent(t); t.style.height = "auto"; t.style.height = Math.max(t.scrollHeight, 26) + "px"; } catch (e) {} }
+  function growAll() { ALL.forEach(function (s) { var t = $("ew_" + s.key); if (t) grow(t); }); }
+  window.addEventListener("resize", growAll);
+
+  function lineFor(s, text) {
+    var t = String(text || "").trim().replace(/\s+/g, " ");
+    if (!t) return "";
+    if (!s.stem) return t;
+    var end = s.end || ".";
+    if (!/[.!?,;:…”"')]$/.test(t)) t += end;
+    return s.stem + " " + t;
+  }
+  function stanzas(A) {
+    var a = A || {}; function g(k) { var v = a[k] != null ? String(a[k]) : val(k); return v.trim(); }
+    var st = [];
+    PARTS.forEach(function (p) {
+      if (p.stone) return;
+      var L = [];
+      p.slots.forEach(function (s) { var l = lineFor(s, g(s.key)); if (l) L.push(l); });
+      if (L.length) st.push(L.join("\n"));
+    });
+    return st;
+  }
+  /* The stone: a line he tapped from What God did, or his own words. */
+  function stoneText(A) {
+    var a = A || {}; function g(k) { var v = a[k] != null ? String(a[k]) : val(k); return v.trim(); }
+    var own = g("stone"); if (own) return own;
+    if (stonePick) { var s = ALL.filter(function (x) { return x.key === stonePick; })[0]; return s ? lineFor(s, g(s.key)) : ""; }
+    return "";
+  }
+  function core(A) { var st = stanzas(A); if (!st.length) return ""; var out = TITLE.toUpperCase() + "\n\n" + st.join("\n\n"); var sn = stoneText(A); if (sn) out += "\n\nMy stone: " + sn; return out; }
+  function poemText(A) { if (!A && edited) return edited + "\n\n" + TAIL; var c = core(A); return c ? c + "\n\n" + TAIL : ""; }
+  window.ewDocument = poemText;   /* the whole piece as saved: title, stanzas, the stone, the tail (a page with its own document() adds its own tail) */
+  window.ewStoneText = function () { return stoneText(); };
+
+  function paintStonePick() {
+    if (!stoneHost) return;
+    stoneHost.innerHTML = "";
+    var any = false;
+    STONE_FROM.forEach(function (k) {
+      var s = ALL.filter(function (x) { return x.key === k; })[0]; var l = lineFor(s, val(k)); if (!l) return;
+      any = true;
+      var b = document.createElement("button"); b.type = "button"; b.className = "ew-stone-line" + (stonePick === k ? " is-on" : ""); b.textContent = l;
+      b.addEventListener("click", function () { stonePick = (stonePick === k) ? null : k; if (stonePick) setVal("stone", ""); paintStonePick(); render(); });
+      stoneHost.appendChild(b);
+    });
+    if (!any) { var n = document.createElement("p"); n.className = "ew-stone-none"; n.textContent = "Your lines from What God did will appear here to tap, once they are written."; stoneHost.appendChild(n); }
+  }
+
+  function paintPoem(host, empty) {
+    host.innerHTML = "";
+    if (host === finalEl && edited) {
+      edited.split("\n\n").forEach(function (blk, i) { var p = document.createElement("p"); p.style.margin = i ? "16px 0 0" : "0"; if (i === 0) { p.className = "ew-poem-title"; } p.textContent = blk; host.appendChild(p); });
+      paintTail(host); return;
+    }
+    var st = stanzas();
+    if (!st.length) { if (empty) { var e = document.createElement("span"); e.className = "ew-poem-empty"; e.textContent = empty; host.appendChild(e); } return; }
+    var t = document.createElement("p"); t.className = "ew-poem-title"; t.textContent = TITLE; host.appendChild(t);
+    st.forEach(function (s, i) { var p = document.createElement("p"); p.style.margin = i ? "16px 0 0" : "0"; p.textContent = s; host.appendChild(p); });
+    var sn = stoneText(); if (sn && host === finalEl) { var sp = document.createElement("p"); sp.style.margin = "16px 0 0"; sp.textContent = "My stone: " + sn; host.appendChild(sp); }
+    paintTail(host);
+  }
+  function paintTail(host) {
+    if (!finished) return;
+    var tl = document.createElement("p"); tl.style.margin = "18px 0 0"; tl.style.color = "#6B7280"; tl.style.fontSize = "15px"; tl.textContent = TAIL; host.appendChild(tl);
+    if (typeof __apAuthor === "string" && __apAuthor) { var bl = document.createElement("p"); bl.style.margin = "4px 0 0"; bl.style.color = "#6B7280"; bl.style.fontSize = "15px"; bl.textContent = __apAuthor + " · " + apMonthYear(); host.appendChild(bl); }
+  }
+  function gateMissing() { return GATE.filter(function (k) { return !val(k); }); }
+  function gateNames(m) { return m.map(function (k) { return ALL.filter(function (s) { return s.key === k; })[0].stem.replace(/ (is|was)$/, ""); }).join(" and "); }
+  function writeMeta() { var m = { step: cur, finished: finished && !stopped }; if (edited) m.poem = edited; if (stonePick) m.stonePick = stonePick; meta.value = JSON.stringify(m); }
+  function written() { var n = 0; WRITTEN.forEach(function (s) { if (val(s.key)) n++; }); return n; }
+  function render() {
+    var n = written();
+    fill.style.width = Math.round(100 * n / WRITTEN.length) + "%";
+    cnt.textContent = n + " of " + WRITTEN.length + " written";
+    lbl.textContent = "Part " + (cur + 1) + " of " + PARTS.length;
+    back.disabled = cur === 0;
+    next.textContent = cur === PARTS.length - 1 ? "Finish" : "Next";
+    if (cur === PARTS.length - 1) {
+      var m = gateMissing();
+      gateEl.textContent = m.length ? "Before you finish, two lines need their words: " + gateNames(m) + ". Use Back." : "";
+    } else { gateEl.textContent = ""; }
+    if (!finished) paintPoem(draftEl, "It begins when you write the first line.");
+    else paintPoem(finalEl);
+    var shown = $("ewStoneShown"), sn = stoneText();
+    if (shown) { shown.style.display = (finished && sn) ? "" : "none"; $("ewStoneText").textContent = sn; }
+    growAll();
+    writeMeta();
+  }
+  function seek(el) { try { el.scrollIntoView({ block: "start", behavior: "auto" }); window.scrollBy(0, -20); } catch (e) {} }
+  function show(i, quiet) {
+    cur = Math.max(0, Math.min(PARTS.length - 1, i));
+    var all = partsEl.querySelectorAll(".ew-part");
+    for (var k = 0; k < all.length; k++) { all[k].classList.toggle("is-active", k === cur); }
+    finished = false; stopped = false;
+    finishEl.classList.remove("is-active");
+    partsEl.style.display = ""; nav.style.display = ""; nav.classList.remove("ew-off"); gateEl.style.display = ""; draftPanel.style.display = "";
+    if (PARTS[cur].stone) paintStonePick();
+    render();
+    if (!quiet) { seek(all[cur]); var f = all[cur].querySelector("input, textarea"); if (f && !PARTS[cur].stone) { try { f.focus({ preventScroll: true }); } catch (e) {} } }
+  }
+  function finish(force) {
+    closeEditor();
+    if (!force && gateMissing().length) { render(); seek(gateEl); return; }
+    if (!force && written() === 0) { seek(partsEl); return; }
+    finished = true;
+    partsEl.style.display = "none"; nav.style.display = "none"; nav.classList.add("ew-off"); gateEl.style.display = "none"; draftPanel.style.display = "none";
+    finishEl.classList.add("is-active");
+    render();
+    try { apAuthor(function () { if (finished) paintPoem(finalEl); }); } catch (e) {}
+    if (!force) seek(finishEl);
+  }
+  function hold() { stopped = true; finish(true); }
+  window.ewFinish = finish; window.ewShow = show; window.ewHold = hold;
+
+  back.addEventListener("click", function () { show(cur - 1); });
+  next.addEventListener("click", function () { if (cur === PARTS.length - 1) finish(false); else show(cur + 1); });
+  $("ewEdit").addEventListener("click", function () { closeEditor(); show(0); });
+  var editorEl = $("ewEditor"), wordsBtn = $("ewWords");
+  keepFocus(editorEl);
+  function closeEditor() { editorEl.classList.remove("is-active"); finalEl.classList.remove("is-hidden"); wordsBtn.textContent = "Edit"; }
+  wordsBtn.addEventListener("click", function () {
+    if (editorEl.classList.contains("is-active")) {
+      var t = String(editorEl.value || "").trim();
+      edited = (t && t !== core()) ? t : null;
+      closeEditor(); render(); return;
+    }
+    editorEl.value = edited || core(); editorEl.classList.add("is-active"); finalEl.classList.add("is-hidden"); wordsBtn.textContent = "Done";
+    try { editorEl.focus(); } catch (e) {}
+  });
+  editorEl.addEventListener("input", function () { var t = String(editorEl.value || "").trim(); edited = (t && t !== core()) ? t : null; writeMeta(); });
+  $("ewSaveNow").addEventListener("click", function () { hold(); var s = $("apsSave"); if (s) s.click(); });
+  $("ewCopy").addEventListener("click", function () {
+    var txt = poemText(); if (!txt) return;
+    var done = function () { var b = $("ewCopy"); b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy"; }, 2000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(done, done); }
+    else { var ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(ta); done(); }
+  });
+  function saveBlob(name, text, type) {
+    try {
+      var blob = new Blob([text], { type: type || "text/plain;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a"); a.href = url; a.download = name;
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { try { document.body.removeChild(a); URL.revokeObjectURL(url); } catch (e) {} }, 1500);
+    } catch (e) {}
+  }
+  function withJsPDF(cb) {
+    if (window.jspdf && window.jspdf.jsPDF) { cb(window.jspdf.jsPDF); return; }
+    var s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+    s.onload = function () { cb(window.jspdf && window.jspdf.jsPDF); };
+    s.onerror = function () { cb(null); };
+    document.head.appendChild(s);
+  }
+  var __apAuthor = null;
+  function apAuthor(cb) {
+    if (__apAuthor != null) { cb(__apAuthor); return; }
+    try {
+      fetch("/api/user_stats", { credentials: "include", headers: { "Accept": "application/json" } })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { var me = (j && j.me) || {}; var nm = ((me.first_name || "") + " " + (me.last_name || "")).trim() || me.username || ""; __apAuthor = nm; cb(nm); })
+        .catch(function () { __apAuthor = ""; cb(""); });
+    } catch (e) { __apAuthor = ""; cb(""); }
+  }
+  function apMonthYear() { try { return new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }); } catch (e) { return ""; } }
+  function apLabel(doc, str, size, color, cs, anchor, cx, edgeX, y) {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(size); doc.setTextColor(color[0], color[1], color[2]);
+    var w = doc.getTextWidth(str) + cs * (str.length - 1);
+    var x = anchor === "center" ? (cx - w / 2) : (edgeX - w);
+    doc.text(str, x, y, { charSpace: cs });
+  }
+  function apKeepsake(JsPDF, eyebrow, title, footerNote, author, body) {
+    var NAVY = [31, 42, 68], BRONZE = [184, 148, 95], GREY = [107, 114, 128], INK = [43, 48, 64];
+    var doc = new JsPDF({ unit: "pt", format: "a4" });
+    var pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight();
+    var m = 70, maxW = pw - m * 2, cx = pw / 2, y = 80;
+    apLabel(doc, eyebrow, 8.5, BRONZE, 2.2, "center", cx, 0, y); y += 24;
+    doc.setFont("times", "bold"); doc.setFontSize(26); doc.setTextColor(NAVY[0], NAVY[1], NAVY[2]);
+    doc.text(title, cx, y, { align: "center" }); y += 16;
+    doc.setDrawColor(BRONZE[0], BRONZE[1], BRONZE[2]); doc.setLineWidth(1); doc.line(cx - 26, y, cx + 26, y); y += 26;
+    doc.setFont("times", "normal"); doc.setFontSize(11.5); doc.setTextColor(INK[0], INK[1], INK[2]);
+    var lead = 15, hang = 14;
+    body.split("\n\n").forEach(function (stanza) {
+      stanza.split("\n").forEach(function (t) {
+        var wr = doc.splitTextToSize(t, maxW - hang);
+        for (var w = 0; w < wr.length; w++) { if (y > ph - m) { doc.addPage(); y = 80; } doc.text(wr[w], m + (w ? hang : 0), y); y += lead; }
+      });
+      y += 9;
+    });
+    y += 4;
+    if (y > ph - m - 40) { doc.addPage(); y = 80; }
+    doc.setDrawColor(226, 220, 209); doc.setLineWidth(0.5); doc.line(m, y, pw - m, y); y += 16;
+    doc.setFont("times", "italic"); doc.setFontSize(10.5); doc.setTextColor(GREY[0], GREY[1], GREY[2]);
+    var by = (author ? "Written by " + author + " " : "Written ") + footerNote + " · " + apMonthYear();
+    doc.text(by, m, y);
+    apLabel(doc, "ANCIENT PATH", 7.5, GREY, 1.6, "right", cx, pw - m, y);
+    return doc;
+  }
+  function apBody(txt) { return txt.replace(/^[\s\S]*?\n\n/, "").replace(/\n\n[^\n]*$/, ""); }
+  window.ewKeepsake = function (JsPDF, author) { return apKeepsake(JsPDF, "BREAKING FREE", TITLE, "at the end of Breaking Free", author, apBody(poemText())); };
+  $("ewDownload").addEventListener("click", function () {
+    var txt = poemText(); if (!txt) return;
+    var b = $("ewDownload"), lab = b.textContent; b.textContent = "Preparing…";
+    apAuthor(function (author) {
+      withJsPDF(function (JsPDF) {
+        if (!JsPDF) { saveBlob(TITLE + ".txt", txt); b.textContent = lab; return; }
+        try { window.ewKeepsake(JsPDF, author).save(TITLE + ".pdf"); }
+        catch (e) { saveBlob(TITLE + ".txt", txt); }
+        b.textContent = lab;
+      });
+    });
+  });
+
+  /* Coming back to a saved piece: the meta field is filled LAST by the save module. */
+  meta.addEventListener("input", function () {
+    try { var m = JSON.parse(meta.value || "{}"); edited = (m.poem && String(m.poem).trim()) ? String(m.poem) : null; stonePick = m.stonePick || null; if (m.finished) finish(true); else show(typeof m.step === "number" ? m.step : 0, true); } catch (e) {}
+  });
+
+  /* The door: his own ninth line from the Week 2 lament, if he saved one. One line, no comment. */
+  window.ewShowLament = function (unit, vowBlock) {
+    try {
+      if (!window.APStory || !window.APStory.signedIn()) return;
+      window.APStory.latest(unit).then(function (latest) {
+        var v = latest && latest.answers && latest.answers[vowBlock];
+        v = String(v || "").replace(/\s+/g, " ").trim(); if (!v) return;
+        if (v.length > 220) v = v.slice(0, 217).replace(/\s+\S*$/, "") + "…";
+        var q = $("ewLament"); q.innerHTML = ""; var b = document.createElement("b"); b.textContent = "In Week 2 you wrote: "; q.appendChild(b); q.appendChild(document.createTextNode("“" + v + "”")); q.style.display = "";
+      }).catch(function () {});
+    } catch (e) {}
+  };
+
+  var bug = document.querySelector("a[data-ap-bug]");
+  if (bug) { try { bug.href = bug.href + "?q3_textbox1=" + encodeURIComponent(window.location.pathname); } catch (e) {} }
+
+  window.ewFields = ALL.map(function (s) { return { key: s.key, id: "ew_" + s.key }; });
+  window.ewParts = PARTS;   /* the worksheet PDF is made from these same words */
+  show(0, true);
+})();
+</script>
+
+<script>
+(function () {
+  /* AP-EW-CONFIG-v1 — the shared save (story.js v18.4) and the stone (stone.js v1), both pinned by commit and integrity hash. */
+  try { localStorage.setItem("apAdult", "1"); sessionStorage.setItem("apAdult", "1"); } catch (e) {}
+  var SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@e24c113009172b1f8d127991ecef7be0433b748d/story.js";
+  var SRI = "sha384-3YTXfzUnC0OFs9One+EQHhL6vrlTXtk2KTV3A0BM5zf28obmrPTuc/45fP6pmmgJ";
+  var STONE_SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@{{STONE_COMMIT}}/stone.js";
+  var STONE_SRI = "{{STONE_SRI}}";
+  var LAMENT = { unit: "6a9acf1a4a65fe7bd70c9743", vow: "openEnded1788512589742_293" };
+  var STONES = { unit: "6ac015de1e5c97a07e082885", blocks: { whole: "openEnded6ac015de51647", json: "openEnded6ac015de5166c", history: "openEnded6ac015de51689" } };
+  var fields = (window.ewFields || []).concat([{ key: "meta", id: "ew_meta" }]);
+  var CONFIG = {
+    form: "ending-well",
+    root: ".ew-root",
+    actionsRow: ".ew-root .ew-actions",
+    stepsHost: "#ewParts",
+    stepSelector: ".ew-part",
+    navHost: "#ewNavOff",
+    buttonClass: "ew-btn",
+    primaryClass: "ew-btn-primary",
+    ghostClass: "ew-btn-ghost",
+    parts: "parts",
+    pagePath: "/start",
+    pageLabel: "Go to your page",
+    tail: "Written at the end of Breaking Free.",
+    assistant: { kind: "poem", name: "Ending Well" },
+    after: true,
+    noteBefore: "Saving puts this on your page, where you can read it and change it whenever you want.",
+    signInSelector: 'a[data-interactive-link-type="openformslink"][data-interactive-link-var1="signin"]',
+    onRestored: function () { var held = false; try { held = JSON.parse((document.getElementById("ew_meta") || {}).value || "{}").finished === false; } catch (e) {} if (held && typeof window.ewHold === "function") window.ewHold(); else if (typeof window.ewFinish === "function") window.ewFinish(true); },
+    document: function (a) { return typeof window.ewDocument === "function" ? window.ewDocument(a) : ""; },
+    lw: { unit: "6ac015e7c77a1e998001bedf", blocks: { whole: "openEnded6ac015e7a8018", json: "openEnded6ac015e7a8038", history: "openEnded6ac015e7a8055" } },
+    fields: fields
+  };
+  function offline() {
+    if (document.getElementById("apsOffline")) return;
+    var row = document.querySelector(CONFIG.actionsRow); if (!row) return;
+    var p = document.createElement("p"); p.id = "apsOffline"; p.className = "aps-note";
+    p.textContent = "Saving is not available right now. Your words are still on this page — use Copy and paste them somewhere safe before you close it.";
+    row.parentNode.insertBefore(p, row.nextSibling);
+  }
+  try {
+    var ps = (window.parent && window.parent !== window) ? window.parent.location.search : "";
+    var wantOpen = /[?&]open=1(&|$)/.test(ps);
+    try { var _oi = window.localStorage.getItem("ap_open_intent"); if (_oi && (Date.now() - parseInt(_oi, 10) < 60000)) { wantOpen = true; window.localStorage.removeItem("ap_open_intent"); } } catch (e2) {}
+    if (wantOpen && !/[?&]open=1(&|$)/.test(window.location.search)) {
+      window.history.replaceState(null, "", window.location.pathname + (window.location.search ? window.location.search + "&open=1" : "?open=1"));
+    }
+  } catch (e) {}
+  document.addEventListener("click", function (ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest("a.aps-page-link, a.ew-page-link") : null;
+    if (a && a.getAttribute("href")) { ev.preventDefault(); var h = a.getAttribute("href"); try { window.top.location.href = h; } catch (err) { window.location.href = h; } }
+  }, true);
+
+  /* The stone is set on his page the moment a FINISHED save lands — never on "Save and stop for now", never twice for the same piece. */
+  function watchSaves(inst) {
+    if (!inst || typeof inst.save !== "function") return;
+    var orig = inst.save;
+    inst.save = function (ui, answers) {
+      if (ui && typeof ui.done === "function" && !ui._ewWrapped) {
+        var done = ui.done; ui._ewWrapped = true;
+        ui.done = function (sub) {
+          done.call(ui, sub);
+          try {
+            var m = JSON.parse((document.getElementById("ew_meta") || {}).value || "{}");
+            var text = typeof window.ewStoneText === "function" ? window.ewStoneText() : "";
+            var note = document.getElementById("ewStoneNote");
+            if (m.finished && text && window.APStone && window.APStone.configured()) {
+              if (note) note.textContent = "Setting your stone…";
+              window.APStone.set({ text: text, from: "ending-well", piece: inst.openEntryId || "", pieceTitle: "Ending Well" })
+                .then(function () { if (note) note.textContent = "Set on your page."; })
+                .catch(function () { if (note) note.textContent = "The stone did not set. Your words are saved — open this piece from your page and save once more."; });
+            }
+          } catch (e) {}
+        };
+      }
+      return orig.call(inst, ui, answers);
+    };
+  }
+  function start() {
+    if (!window.APStory) { offline(); return; }
+    var inst = window.APStory.init(CONFIG);
+    if (!inst) { offline(); return; }
+    if (window.APStone) { window.APStone.config(STONES); }
+    watchSaves(inst);
+    window.ewInstance = inst;
+    if (typeof window.ewAddWordForIt === "function") window.ewAddWordForIt();
+    if (typeof window.ewShowLament === "function") window.ewShowLament(LAMENT.unit, LAMENT.vow);
+  }
+  var s = document.createElement("script");
+  s.src = SRC; s.integrity = SRI; s.crossOrigin = "anonymous"; s.async = true;
+  s.addEventListener("error", offline);
+  s.addEventListener("load", function () {
+    var t = document.createElement("script");
+    t.src = STONE_SRC; t.integrity = STONE_SRI; t.crossOrigin = "anonymous"; t.async = true;
+    t.addEventListener("error", start);   /* no stone file: the piece still works, the stone just is not set */
+    t.addEventListener("load", start);
+    document.head.appendChild(t);
+  });
+  document.head.appendChild(s);
+})();
+</script>
+</div>
