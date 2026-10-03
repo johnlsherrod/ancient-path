@@ -1,0 +1,211 @@
+[
+ {
+  "title": "The Doorway",
+  "frame": "Week 12 says “look for, pray for, and actively seek relationship and community with other men.” This is written to them, before you have met them.",
+  "solo": {
+   "frame": "Week 12 says “look for, pray for, and actively seek relationship and community with other men.” This is written to them, before you have met them."
+  },
+  "slots": [
+   {
+    "key": "iam",
+    "stem": "To the men I will walk with, I am",
+    "prompt": "Twelve weeks. Say the first true word. The row of words is there if you need it. Then say why, in a few words.",
+    "ex": "To the men I will walk with, I am tired and hopeful. You haven’t heard any of this yet. Here it is.",
+    "words": [
+     "thankful",
+     "grateful",
+     "sad",
+     "still struggling with",
+     "hopeful"
+    ],
+    "solo": {
+     "stem": "To the men I will walk with, I am",
+     "ex": "To the men I will walk with, I am tired and hopeful. You haven’t heard any of this yet. Here it is."
+    }
+   },
+   {
+    "key": "sawme",
+    "stem": "What you will see in me is",
+    "prompt": "What will they see when they meet you? One picture.",
+    "ex": "What you will see in me is a man who did twelve weeks of this with nobody watching.",
+    "solo": {
+     "stem": "What you will see in me is",
+     "prompt": "What will they see when they meet you? One picture.",
+     "ex": "What you will see in me is a man who did twelve weeks of this with nobody watching."
+    }
+   }
+  ]
+ },
+ {
+  "title": "Where I started",
+  "frame": "",
+  "slots": [
+   {
+    "key": "started",
+    "stem": "When I started, I was",
+    "prompt": "Week 1 was The Enemy Knows You — “he’s a person who has studied you your whole life.” Where were you when you read that? A picture a man could see, not a label.",
+    "ex": "When I started, I was sitting in the truck in the driveway, not ready to go in the house."
+   },
+   {
+    "key": "toldmyself",
+    "stem": "What I told myself was",
+    "prompt": "The sentence you were living on. Short.",
+    "ex": "What I told myself was that I had it handled."
+   },
+   {
+    "key": "nobodyknew",
+    "stem": "What nobody knew was",
+    "prompt": "The part no one could see from outside.",
+    "ex": "What nobody knew was how long it had been going on."
+   }
+  ]
+ },
+ {
+  "title": "What changed",
+  "frame": "Not twelve weeks. What is different in you, in three places: body, soul, spirit.",
+  "slots": [
+   {
+    "key": "camein",
+    "stem": "What came in through my eyes and ears was",
+    "prompt": "Week 1 called it your Sphere of Influence: “any sound, sight, smell, or touch, you control.” And: “The enemy has had free rein inside your SOI, and he’s been bringing his trash in with him.” What was coming in?",
+    "ex": "What came in through my eyes and ears was a screen at midnight and voices telling me I was the only one."
+   },
+   {
+    "key": "takein",
+    "stem": "What I take in now is",
+    "prompt": "Same sphere, your hands on the gate now. What do you let in?",
+    "ex": "What I take in now is a walk before the house wakes up and a chapter of John read out loud."
+   },
+   {
+    "key": "renewed",
+    "stem": "What is being renewed in me is",
+    "scene": "Be transformed by the renewal of your mind — Romans 12:2",
+    "prompt": "A word, a relationship, a habit of thought. What is being made new?",
+    "ex": "What is being renewed in me is the word “father” — it used to mean absence."
+   },
+   {
+    "key": "growing",
+    "stem": "Between me and God, what is growing is",
+    "scene": "So now faith, hope, and love abide, these three — 1 Corinthians 13:13",
+    "prompt": "Spirit is relationship. Which one grew, and what does it look like?",
+    "ex": "Between me and God, what is growing is hope. I expect him to show up now.",
+    "words": [
+     "faith",
+     "hope",
+     "love"
+    ]
+   }
+  ]
+ },
+ {
+  "title": "What God did",
+  "scene": "I will turn their mourning into joy; I will comfort them, and give them gladness for sorrow. — Jeremiah 31:13",
+  "frame": "If it is still quiet and the struggle is still here, say that. It is not failure. This takes years, not weeks, and God’s answer may be as small as a room with men in it.",
+  "slots": [
+   {
+    "key": "asked",
+    "stem": "I asked him for",
+    "prompt": "What did you ask God for at the start? Say it the way you said it then. Not every ask is answered yet.",
+    "ex": "I asked him for it to stop."
+   },
+   {
+    "key": "goddid",
+    "stem": "What God did was",
+    "prompt": "One true sentence. For some men it is this: there are men out there willing to walk with me, and I am going to find them. That is God offering relationship.",
+    "ex": "What God did was keep me at it for twelve weeks with nobody watching.",
+    "solo": {
+     "prompt": "One true sentence. For some men it is this: there are men out there willing to walk with me, and I am going to find them. That is God offering relationship.",
+     "ex": "What God did was keep me at it for twelve weeks with nobody watching."
+    }
+   },
+   {
+    "key": "smallstep",
+    "stem": "The small step I can grow by is",
+    "prompt": "Years, not weeks. One step you can take this month.",
+    "ex": "The small step I can grow by is finding one man and telling him I did this.",
+    "solo": {
+     "ex": "The small step I can grow by is finding one man and telling him I did this."
+    }
+   }
+  ]
+ },
+ {
+  "title": "My hope for the future",
+  "frame": "",
+  "slots": [
+   {
+    "key": "hope",
+    "stem": "My hope for the future is",
+    "prompt": "Week 12 says “orientation was always the trailhead, not the destination.” A year down the trail — what do you want to be true?",
+    "ex": "My hope for the future is to be a man my kids can tell the truth to."
+   },
+   {
+    "key": "ask",
+    "stem": "What I will ask of you is",
+    "prompt": "The course is done. What will you need from the men you find?",
+    "ex": "What I will ask of you is to ask me the question, even when I say I’m fine.",
+    "solo": {
+     "stem": "What I will ask of you is",
+     "prompt": "The course is done. What will you need from the men you find?",
+     "ex": "What I will ask of you is to ask me the question, even when I say I’m fine."
+    }
+   },
+   {
+    "key": "forward",
+    "stem": "Going forward, I will",
+    "prompt": "Say it plainly and own it. Both are honorable.",
+    "ex": "Going forward, I will find a group of men and tell them what I wrote here.",
+    "words": [
+     "find men",
+     "keep walking on my own for now"
+    ],
+    "wordsFirst": true,
+    "solo": {
+     "stem": "Going forward, I will",
+     "prompt": "Say it plainly and own it. Both are honorable.",
+     "ex": "Going forward, I will find a group of men and tell them what I wrote here.",
+     "words": [
+      "find men",
+      "keep walking on my own for now"
+     ]
+    }
+   },
+   {
+    "key": "remember",
+    "stem": "When the gaps get longer, I will remember by",
+    "prompt": "Week 12: “The days are not the achievement. Whatever you did that made the days is the achievement. Find it, name it out loud in the room, and do it again.” Pick one, or write your own.",
+    "ex": "When the gaps get longer, I will remember by reading this again on the first of the month.",
+    "words": [
+     "reading this again",
+     "a text to one man",
+     "coffee with one man",
+     "a meeting"
+    ],
+    "solo": {
+     "stem": "When the gaps get longer, I will remember by",
+     "ex": "When the gaps get longer, I will remember by reading this again on the first of the month.",
+     "words": [
+      "reading this again",
+      "a text to one man",
+      "coffee with one man",
+      "a meeting"
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "title": "Set a stone",
+  "frame": "A stone is what you set so you can find the way again. Choose yours: one of your own lines above, or the words you walk by.",
+  "stone": true,
+  "slots": [
+   {
+    "key": "stone",
+    "stem": "",
+    "prompt": "Or your own words.",
+    "ex": "Do the next right thing.",
+    "own": true
+   }
+  ]
+ }
+]
