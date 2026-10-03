@@ -23,7 +23,7 @@ for k, v in ids.items():
 left = re.findall(r'\{\{[A-Z_]+\}\}', out)
 if left:
     print('placeholders left:', sorted(set(left)))
-dest = os.path.join(root, 'ending-well-v1.html')
+dest = os.path.join(root, 'ending-well-v3.html')
 open(dest, 'w').write(out)
 raw = out.rstrip('\n').encode('utf-8')
 print(dest, len(out.encode('utf-8')), 'bytes · sha256 (minus trailing newline)', hashlib.sha256(raw).hexdigest())

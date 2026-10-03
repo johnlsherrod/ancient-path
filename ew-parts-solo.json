@@ -1,15 +1,14 @@
 [
  {
   "title": "The Doorway",
+  "scene": "",
   "frame": "Week 12 says “look for, pray for, and actively seek relationship and community with other men.” This is written to them, before you have met them.",
-  "solo": {
-   "frame": "Week 12 says “look for, pray for, and actively seek relationship and community with other men.” This is written to them, before you have met them."
-  },
+  "stone": false,
   "slots": [
    {
     "key": "iam",
     "stem": "To the men I will walk with, I am",
-    "prompt": "Twelve weeks. Say the first true word. The row of words is there if you need it. Then say why, in a few words.",
+    "prompt": "Twelve weeks are done. Start with the men you will walk with. One word for what you feel toward them now — the row has some — then why, in a few words.",
     "ex": "To the men I will walk with, I am tired and hopeful. You haven’t heard any of this yet. Here it is.",
     "words": [
      "thankful",
@@ -18,137 +17,342 @@
      "still struggling with",
      "hopeful"
     ],
-    "solo": {
-     "stem": "To the men I will walk with, I am",
-     "ex": "To the men I will walk with, I am tired and hopeful. You haven’t heard any of this yet. Here it is."
-    }
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
-    "key": "sawme",
-    "stem": "What you will see in me is",
-    "prompt": "What will they see when they meet you? One picture.",
-    "ex": "What you will see in me is a man who did twelve weeks of this with nobody watching.",
-    "solo": {
-     "stem": "What you will see in me is",
-     "prompt": "What will they see when they meet you? One picture.",
-     "ex": "What you will see in me is a man who did twelve weeks of this with nobody watching."
-    }
+    "key": "sawinyou",
+    "stem": "What I will look for in you is",
+    "prompt": "Name the gold you will look for in the men you find. One thing, said plainly.",
+    "ex": "What I will look for in you is men who tell the truth before it is safe to.",
+    "words": [
+     "courage",
+     "honesty",
+     "steadiness",
+     "patience",
+     "mercy",
+     "humor",
+     "faith",
+     "the way you listened"
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    }
   ]
  },
  {
   "title": "Where I started",
-  "frame": "",
+  "scene": "",
+  "frame": "Start where you started. Three lines, and a picture a man could see.",
+  "stone": false,
   "slots": [
    {
     "key": "started",
     "stem": "When I started, I was",
-    "prompt": "Week 1 was The Enemy Knows You — “he’s a person who has studied you your whole life.” Where were you when you read that? A picture a man could see, not a label.",
-    "ex": "When I started, I was sitting in the truck in the driveway, not ready to go in the house."
+    "prompt": "Go back to the first week. Where were you — the place, the time of day, what was going on at home? A picture, not a label.",
+    "ex": "When I started, I was sitting in the truck in the driveway, not ready to go in the house.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
     "key": "toldmyself",
     "stem": "What I told myself was",
-    "prompt": "The sentence you were living on. Short.",
-    "ex": "What I told myself was that I had it handled."
+    "prompt": "Now the sentence you were living on then — the one you said to yourself to get through the day. “I’ve got it handled.” “Nobody needs to know.” Short.",
+    "ex": "What I told myself was that I had it handled.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
     "key": "nobodyknew",
     "stem": "What nobody knew was",
-    "prompt": "The part no one could see from outside.",
-    "ex": "What nobody knew was how long it had been going on."
+    "prompt": "And the part of it no one could see from outside.",
+    "ex": "What nobody knew was how long it had been going on.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    }
   ]
  },
  {
   "title": "What changed",
-  "frame": "Not twelve weeks. What is different in you, in three places: body, soul, spirit.",
+  "scene": "",
+  "frame": "Time didn’t change you. The work you did, with nobody watching, did. Say what is different, in three places: body, soul, spirit.",
+  "stone": false,
   "slots": [
    {
     "key": "camein",
     "stem": "What came in through my eyes and ears was",
     "prompt": "Week 1 called it your Sphere of Influence: “any sound, sight, smell, or touch, you control.” And: “The enemy has had free rein inside your SOI, and he’s been bringing his trash in with him.” What was coming in?",
-    "ex": "What came in through my eyes and ears was a screen at midnight and voices telling me I was the only one."
+    "ex": "What came in through my eyes and ears was a screen at midnight and voices telling me I was the only one.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
     "key": "takein",
     "stem": "What I take in now is",
-    "prompt": "Same sphere, your hands on the gate now. What do you let in?",
-    "ex": "What I take in now is a walk before the house wakes up and a chapter of John read out loud."
+    "prompt": "The same eyes and ears. Now you are the gatekeeper for what comes in. What do you let in — a first thing in the morning, a habit that has held, a practice you took up? Pick from the row, or write your own.",
+    "ex": "What I take in now is a walk before the house wakes up and a chapter of John read out loud.",
+    "words": [
+     "meditation",
+     "prayer",
+     "fasting",
+     "study",
+     "simplicity",
+     "solitude",
+     "submission",
+     "service",
+     "confession",
+     "worship",
+     "guidance",
+     "celebration"
+    ],
+    "rowNote": "From Richard Foster’s Celebration of Discipline. Walk With Me teaches all twelve.",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
     "key": "renewed",
     "stem": "What is being renewed in me is",
-    "scene": "Be transformed by the renewal of your mind — Romans 12:2",
-    "prompt": "A word, a relationship, a habit of thought. What is being made new?",
-    "ex": "What is being renewed in me is the word “father” — it used to mean absence."
+    "prompt": "Pick where it is happening, then say what is new there.",
+    "ex": "What is being renewed in me is how I see my father — the word used to mean absence.",
+    "words": [
+     "how I name what I feel",
+     "how I see my father",
+     "how I see my wife",
+     "how I see my kids",
+     "how I see other men",
+     "how I see myself",
+     "what I do with silence",
+     "what I call a win",
+     "what I do first in the morning"
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
     "key": "growing",
     "stem": "Between me and God, what is growing is",
-    "scene": "So now faith, hope, and love abide, these three — 1 Corinthians 13:13",
-    "prompt": "Spirit is relationship. Which one grew, and what does it look like?",
+    "prompt": "Spirit is where you and God meet. Of faith, hope and love, which one grew — and what does it look like in an ordinary week?",
     "ex": "Between me and God, what is growing is hope. I expect him to show up now.",
     "words": [
      "faith",
      "hope",
      "love"
-    ]
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
+   }
+  ]
+ },
+ {
+  "title": "Between the lines",
+  "scene": "",
+  "frame": "Two of your lines. What happened between them?",
+  "stone": false,
+  "slots": [
+   {
+    "key": "bridge1",
+    "stem": "",
+    "prompt": "A day, a place, something said or done. One or two sentences; the row has some ways to start.",
+    "ex": "What happened next was a week I almost skipped, and didn’t.",
+    "words": [
+     "What happened next was",
+     "While that was going on,",
+     "Around the same time,",
+     "It took weeks, but"
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": {
+     "a": "When I started, I was",
+     "aPart": "Where I started",
+     "b": "What I take in now is",
+     "bPart": "What changed",
+     "la": "Then",
+     "lb": "Now"
+    },
+    "lookback": null
    }
   ]
  },
  {
   "title": "What God did",
   "scene": "I will turn their mourning into joy; I will comfort them, and give them gladness for sorrow. — Jeremiah 31:13",
-  "frame": "If it is still quiet and the struggle is still here, say that. It is not failure. This takes years, not weeks, and God’s answer may be as small as a room with men in it.",
+  "frame": "If it is still quiet and the struggle is still here, say that. It is not failure. This takes years, not weeks, and God’s answer may be as small as twelve weeks kept with nobody watching.",
+  "stone": false,
   "slots": [
+   {
+    "key": "sawme",
+    "stem": "Nobody was watching, and what I noticed was",
+    "prompt": "Twelve weeks with no room and no men. What did you notice about yourself that nobody else was there to see? One picture.",
+    "ex": "Nobody was watching, and what I noticed was that I kept opening the book on the days I wanted to quit.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
+   },
+   {
+    "key": "expected",
+    "stem": "What I expected was",
+    "prompt": "Before you started — what did you expect of yourself?",
+    "ex": "What I expected was to quit by week three.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
+   },
+   {
+    "key": "instead",
+    "stem": "What happened instead was",
+    "prompt": "What happened. Say it plainly; it is the part a man needs to hear.",
+    "ex": "What happened instead was I am here, writing this.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
+   },
    {
     "key": "asked",
     "stem": "I asked him for",
     "prompt": "What did you ask God for at the start? Say it the way you said it then. Not every ask is answered yet.",
-    "ex": "I asked him for it to stop."
+    "ex": "I asked him for it to stop.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
     "key": "goddid",
     "stem": "What God did was",
-    "prompt": "One true sentence. For some men it is this: there are men out there willing to walk with me, and I am going to find them. That is God offering relationship.",
+    "prompt": "Say what he did, not what you did. For some men it is this: twelve weeks kept with nobody watching, and what got named in them. If nothing has moved yet, say that — it is true, and it belongs here.",
     "ex": "What God did was keep me at it for twelve weeks with nobody watching.",
-    "solo": {
-     "prompt": "One true sentence. For some men it is this: there are men out there willing to walk with me, and I am going to find them. That is God offering relationship.",
-     "ex": "What God did was keep me at it for twelve weeks with nobody watching."
-    }
-   },
-   {
-    "key": "smallstep",
-    "stem": "The small step I can grow by is",
-    "prompt": "Years, not weeks. One step you can take this month.",
-    "ex": "The small step I can grow by is finding one man and telling him I did this.",
-    "solo": {
-     "ex": "The small step I can grow by is finding one man and telling him I did this."
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": {
+     "label": "You asked him for:",
+     "stem": "I asked him for"
     }
    }
   ]
  },
  {
-  "title": "My hope for the future",
-  "frame": "",
+  "title": "Between the lines",
+  "scene": "",
+  "frame": "Two more pairs of your lines. What happened between each?",
+  "stone": false,
+  "slots": [
+   {
+    "key": "bridge2",
+    "stem": "",
+    "prompt": "The thing nobody knew, and what you noticed with nobody watching. What happened in between — a day, a place, something said or done?",
+    "ex": "It took weeks, but one night I said it out loud before I could talk myself out of it.",
+    "words": [
+     "What happened next was",
+     "While that was going on,",
+     "Around the same time,",
+     "It took weeks, but"
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": {
+     "a": "What nobody knew was",
+     "aPart": "Where I started",
+     "b": "Nobody was watching, and what I noticed was",
+     "bPart": "What God did",
+     "la": "Hidden",
+     "lb": "Seen"
+    },
+    "lookback": null
+   },
+   {
+    "key": "bridge3",
+    "stem": "",
+    "prompt": "What you asked him for, and what he did. How long did it take, and what did the waiting look like?",
+    "ex": "While that was going on, I kept asking, and for a month nothing changed except that I kept showing up.",
+    "words": [
+     "What happened next was",
+     "While that was going on,",
+     "Around the same time,",
+     "It took weeks, but"
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": {
+     "a": "I asked him for",
+     "aPart": "What God did",
+     "b": "What God did was",
+     "bPart": "What God did",
+     "la": "Asked",
+     "lb": "Answered"
+    },
+    "lookback": null
+   }
+  ]
+ },
+ {
+  "title": "What I take with me",
+  "scene": "Jesus turned and saw them following and said to them, “What are you seeking?” — John 1:38",
+  "frame": "His first question to the men who followed him. Answer it for a year from now.",
+  "stone": false,
   "slots": [
    {
     "key": "hope",
     "stem": "My hope for the future is",
-    "prompt": "Week 12 says “orientation was always the trailhead, not the destination.” A year down the trail — what do you want to be true?",
-    "ex": "My hope for the future is to be a man my kids can tell the truth to."
+    "prompt": "A year down the trail — what do you want to be true? Say it as a man who means to get there.",
+    "ex": "My hope for the future is to be a man my kids can tell the truth to.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
+   },
+   {
+    "key": "miss",
+    "stem": "What I will miss is",
+    "prompt": "An ending is a loss, even a good one — a routine, a book open every day. Say what aches. It is holy ground, not weakness.",
+    "ex": "What I will miss is the hour every day that was only this.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
     "key": "ask",
     "stem": "What I will ask of you is",
     "prompt": "The course is done. What will you need from the men you find?",
     "ex": "What I will ask of you is to ask me the question, even when I say I’m fine.",
-    "solo": {
-     "stem": "What I will ask of you is",
-     "prompt": "The course is done. What will you need from the men you find?",
-     "ex": "What I will ask of you is to ask me the question, even when I say I’m fine."
-    }
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
     "key": "forward",
@@ -159,44 +363,89 @@
      "find men",
      "keep walking on my own for now"
     ],
-    "wordsFirst": true,
-    "solo": {
-     "stem": "Going forward, I will",
-     "prompt": "Say it plainly and own it. Both are honorable.",
-     "ex": "Going forward, I will find a group of men and tell them what I wrote here.",
-     "words": [
-      "find men",
-      "keep walking on my own for now"
-     ]
-    }
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    },
    {
-    "key": "remember",
-    "stem": "When the gaps get longer, I will remember by",
+    "key": "smallstep",
+    "stem": "The one small thing I will try this month is",
+    "prompt": "Not the whole life. One small thing, repeated, that moves you one degree — something you could start tomorrow.",
+    "ex": "The one small thing I will try this month is finding one man and telling him I did this.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
+   },
+   {
+    "key": "held",
+    "stem": "I’ll know it has held when",
+    "prompt": "How will you know? Something you could see or count, four weeks from now.",
+    "ex": "I’ll know it has held when it is still happening four weeks from now.",
+    "words": [],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
+   },
+   {
+    "key": "drift",
+    "stem": "I’ll know I’ve drifted when",
+    "prompt": "Name the sign before it comes — what you will be doing, and what you will be feeling. Pick from the rows, or write your own.",
+    "ex": "I’ll know I’ve drifted when my phone goes quiet and I tell myself I’m fine.",
+    "words": [
+     "a missed week",
+     "a quiet phone",
+     "a bad night",
+     "“I’m fine”",
+     "the old screen",
+     "a long silence"
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
+   },
+   {
+    "key": "voice",
+    "stem": "The voice that calls me back says",
+    "prompt": "Not a name — the words. What does it say?",
+    "ex": "The voice that calls me back says, “They heard the worst and stayed.”",
+    "words": [
+     "“You’re not alone in this.”",
+     "“Come back.”",
+     "“Do the next right thing.”",
+     "“They heard the worst and stayed.”"
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
+   },
+   {
+    "key": "answer",
+    "stem": "I will answer it by",
     "prompt": "Week 12: “The days are not the achievement. Whatever you did that made the days is the achievement. Find it, name it out loud in the room, and do it again.” Pick one, or write your own.",
-    "ex": "When the gaps get longer, I will remember by reading this again on the first of the month.",
+    "ex": "I will answer it by reading this again, that day.",
     "words": [
      "reading this again",
      "a text to one man",
      "coffee with one man",
      "a meeting"
     ],
-    "solo": {
-     "stem": "When the gaps get longer, I will remember by",
-     "ex": "When the gaps get longer, I will remember by reading this again on the first of the month.",
-     "words": [
-      "reading this again",
-      "a text to one man",
-      "coffee with one man",
-      "a meeting"
-     ]
-    }
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    }
   ]
  },
  {
   "title": "Set a stone",
-  "frame": "A stone is what you set so you can find the way again. Choose yours: one of your own lines above, or the words you walk by.",
+  "scene": "When your children ask in time to come, ‘What do those stones mean to you?’ then you shall tell them… So these stones shall be to the people of Israel a memorial forever. — Joshua 4:6–7",
+  "frame": "Israel set twelve stones at the Jordan so that when their children asked “What do those stones mean to you?” there would be an answer. A stone is set to be found again — by you, and by whoever asks. Choose yours: one of your own lines above, or the words you walk by.",
   "stone": true,
   "slots": [
    {
@@ -204,7 +453,32 @@
     "stem": "",
     "prompt": "Or your own words.",
     "ex": "Do the next right thing.",
-    "own": true
+    "words": [],
+    "rowNote": "",
+    "own": true,
+    "bridge": null,
+    "lookback": null
+   },
+   {
+    "key": "stonefor",
+    "stem": "This stone is for",
+    "prompt": "Naming well is a skill. Name the one this is for, and you will name other things well too.",
+    "ex": "This stone is for my son, for when he asks.",
+    "words": [
+     "my son",
+     "my daughter",
+     "my wife",
+     "a friend",
+     "a man I walk with",
+     "my group",
+     "the man I was",
+     "myself, a year from now",
+     "someone who will ask one day"
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    }
   ]
  }
