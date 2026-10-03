@@ -1,0 +1,318 @@
+<!-- AP-SAS-v1 · build 3 (3 Oct 2026: John's own stone under all three lines, his words) (build 2, 3 Oct 2026: John's opening ruling — the line under the two scenes is "Two stones. One remembers a crossing. One remembers help. Yours can be either."; the help line on Till now asks about a crossing, or help) (build 1, 3 Oct 2026) — Set a Stone, the standalone Your Story piece. John's rulings of Oct 3: same standing as Write a Lament, its own page at /set-a-stone, its own card on the Your Story shelf; three lines as ruled Oct 2 — "This stone is for" (the pick list of roles), "Till now, the LORD has", "What this stone means to me is" (biblical examples and meanings); the page opens with Joshua 4:6–7 and 1 Samuel 7:12 (ESV), short; John's own stone is the example under each line; it reads right for a man on his own. Saves the way the other pieces save (story.js, the Stones form as its own form), lands in "Your stones" on Your Page with the stones Ending Well sets. After Save: the return date, and "Set it where others can see it" (stone.js v2). -->
+<div class="ew-root" id="sasRoot">
+<style>
+.ew-root{--e-navy:#1F2A44;--e-bronze:#B8945F;--e-paper:#FBF9F5;--e-rule:#E2DCD1;--e-ink:#2B3040;--e-quiet:#6B7280;--e-serif:'Source Serif 4',Georgia,'Times New Roman',serif;--e-sans:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;all:initial;font-family:var(--e-sans) !important;color:var(--e-ink) !important;display:block;box-sizing:border-box;max-width:720px;margin:0 auto;padding:28px 20px 48px;text-align:left;line-height:1.5 !important;-webkit-font-smoothing:antialiased}
+.ew-root *{box-sizing:border-box;text-align:left}
+.ew-top-nav{margin:0 0 18px}
+.ew-page-link{font:600 13px/1.4 var(--e-sans) !important;color:var(--e-navy) !important;text-decoration:none;border-bottom:1px solid var(--e-rule);padding-bottom:1px}
+.ew-page-link:hover{border-bottom-color:var(--e-bronze)}
+.ew-eyebrow{font:600 12px/1.4 var(--e-sans);letter-spacing:.22em;text-transform:uppercase;color:var(--e-bronze);margin:0 0 10px}
+.ew-h1{font:600 36px/1.15 var(--e-serif);color:var(--e-navy);margin:0 0 14px}
+.ew-lede{font:400 18px/1.55 var(--e-sans);margin:0 0 10px}
+.ew-safe{font:400 15px/1.5 var(--e-sans);color:var(--e-quiet);margin:0 0 26px;padding-left:12px;border-left:2px solid var(--e-bronze)}
+.ew-progress{display:flex;justify-content:space-between;font:600 12px/1.4 var(--e-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--e-quiet);margin:0 0 6px}
+.ew-track{height:2px;background:var(--e-rule);margin:0 0 22px}
+.ew-fill{height:2px;width:0%;background:var(--e-bronze);transition:width .45s ease}
+.ew-part{display:none;padding:6px 0 18px 16px;border-left:2px solid var(--e-bronze)}
+.ew-part.is-active{display:block}
+.ew-part-title{font:600 26px/1.2 var(--e-serif);color:var(--e-navy);margin:0 0 4px}
+.ew-part-scene{font:italic 400 16px/1.5 var(--e-serif);color:var(--e-quiet);margin:0 0 6px}
+.ew-part-frame{font:400 15px/1.5 var(--e-sans);color:var(--e-ink);margin:0 0 16px;padding:10px 12px;background:var(--e-paper);border:1px solid var(--e-rule)}
+.ew-slot{margin:0 0 20px}
+.ew-slot-name{font:600 18px/1.3 var(--e-serif);color:var(--e-navy);margin:0 0 2px}
+.ew-slot-scene{font:italic 400 14px/1.45 var(--e-serif);color:var(--e-quiet);margin:0 0 4px}
+.ew-slot-prompt{font:400 16px/1.5 var(--e-sans);margin:0 0 4px}
+.ew-slot-shape{font:400 13px/1.4 var(--e-sans);color:var(--e-quiet);margin:0 0 8px}
+.ew-slot-shape b{font-weight:600;color:var(--e-ink)}
+.ew-in,.ew-area{display:block;width:100%;padding:10px 12px;font:400 17px/1.5 var(--e-sans);color:var(--e-ink);background:var(--e-paper);border:1px solid var(--e-rule);border-radius:2px;outline:none}
+.ew-area{min-height:84px;resize:vertical}
+.ew-in:focus,.ew-area:focus{border-color:var(--e-bronze)}
+.ew-line{display:block;position:relative;width:100%;padding:10px 12px;background:var(--e-paper);border:1px solid var(--e-rule);border-radius:2px}
+.ew-line:focus-within{border-color:var(--e-bronze)}
+.ew-stem{position:absolute;left:12px;top:10px;font:400 17px/1.5 var(--e-serif);color:var(--e-quiet);white-space:nowrap;pointer-events:none}
+.ew-root textarea.ew-rest{display:block;width:100%;min-width:0;border:0 !important;outline:none !important;box-shadow:none !important;background:transparent !important;padding:0 !important;margin:0 !important;border-radius:0 !important;resize:none;overflow:hidden;font:400 17px/1.5 var(--e-serif) !important;color:var(--e-ink) !important;min-height:1.5em;height:auto}
+.ew-rest::placeholder{color:#B9B2A6;font-style:italic}
+.ew-root textarea.ew-editor{display:none;width:100%;min-height:360px;padding:14px 16px !important;font:400 18px/1.55 var(--e-serif) !important;color:var(--e-ink) !important;background:#fff !important;border:1px solid var(--e-bronze) !important;border-radius:2px !important;box-shadow:none !important;outline:none !important;resize:vertical;white-space:pre-wrap}
+.ew-root textarea.ew-editor.is-active{display:block}
+.ew-poem.is-hidden{display:none}
+.ew-nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 0 18px}
+.ew-btn{font:600 14px/1 var(--e-sans) !important;padding:13px 22px;border-radius:2px;border:1px solid transparent;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.ew-btn-primary{background:var(--e-navy);color:#fff !important;text-decoration:none !important}
+.ew-btn-primary:hover{background:#2C3B5E}
+.ew-btn-ghost{background:transparent;color:var(--e-navy) !important;border-color:var(--e-rule)}
+.ew-btn-ghost:hover,.ew-btn-ghost:focus{background:var(--e-navy);color:#fff !important;border-color:var(--e-navy)}
+.ew-btn[disabled]{opacity:.55;cursor:default}
+.ew-spacer{flex:1}
+.ew-gate{font:400 14px/1.5 var(--e-sans);color:var(--e-quiet);margin:10px 0 0 18px;min-height:1em}
+.ew-panel{background:var(--e-paper);border:1px solid var(--e-rule);padding:22px 24px;margin:26px 0 0}
+.ew-panel-head{font:600 12px/1.4 var(--e-sans);letter-spacing:.18em;text-transform:uppercase;color:var(--e-bronze);margin:0 0 14px}
+.ew-poem{font:400 18px/1.55 var(--e-serif);color:var(--e-ink);white-space:pre-wrap;margin:0}
+.ew-poem p{font:inherit !important;color:inherit;line-height:inherit}
+.ew-poem-empty{color:var(--e-quiet);font-style:italic}
+.ew-poem-title{font:600 14px/1.4 var(--e-sans);letter-spacing:.18em;text-transform:uppercase;color:var(--e-navy);margin:0 0 12px}
+.ew-finish{display:none}
+.ew-finish.is-active{display:block}
+.ew-h2{font:600 28px/1.2 var(--e-serif);color:var(--e-navy);margin:8px 0 8px}
+.ew-note{font:400 16px/1.5 var(--e-sans);color:var(--e-quiet);margin:0 0 18px}
+.ew-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0 0}
+.aps-note{font:400 15px/1.5 var(--e-sans);color:var(--e-quiet);margin:12px 0 0;min-height:1em}
+.aps-panel{margin:6px 0 0}
+.aps-page-link{font:600 15px/1.4 var(--e-sans);color:var(--e-navy);text-decoration:underline}
+.ew-foot{font:400 14px/1.5 var(--e-sans);color:var(--e-quiet);margin:34px 0 0;padding-top:14px;border-top:1px solid var(--e-rule)}
+.ew-foot a{color:var(--e-navy)}
+@media (max-width:600px){.ew-h1{font-size:30px}.ew-part-title{font-size:22px}.ew-nav{margin-left:0}}
+.ew-root .ew-quote{font:italic 400 16px/1.55 var(--e-serif);color:var(--e-ink);margin:0 0 14px;padding:10px 14px;border-left:2px solid var(--e-bronze)}
+.ew-root .ew-quote b{font-style:normal;font-weight:600;color:var(--e-quiet);font-family:var(--e-sans);font-size:13px;letter-spacing:.04em}
+.ew-root .sas-frame{font:400 16px/1.55 var(--e-sans);color:var(--e-ink);margin:0 0 26px}
+.ew-root .sas-slot{margin:0 0 26px;padding:0 0 0 16px;border-left:2px solid var(--e-bronze)}
+.ew-root .sas-ex{font:italic 400 15px/1.5 var(--e-serif);color:var(--e-quiet);margin:6px 0 0}
+.ew-root .sas-ex b{font-style:normal;font-weight:600;font-family:var(--e-sans);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--e-bronze);margin-right:6px}
+.ew-root .ew-words{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+.ew-root .ew-word{font:400 14px/1 var(--e-sans) !important;padding:7px 11px;border:1px solid var(--e-rule);border-radius:2px;background:#fff;color:var(--e-navy) !important;cursor:pointer}
+.ew-root .ew-word:hover,.ew-root .ew-word:focus{border-color:var(--e-bronze)}
+.ew-root .ew-word.is-on{border-color:var(--e-navy);box-shadow:inset 3px 0 0 var(--e-bronze)}
+.ew-root .sas-where{font:italic 400 14px/1.5 var(--e-serif);color:var(--e-quiet);margin:8px 0 0;min-height:1.5em}
+.ew-root .sas-where b{font-style:normal;font-weight:600;color:var(--e-ink)}
+.ew-root .ew-rest{font:400 17px/1.5 var(--e-serif) !important;color:var(--e-ink) !important;min-height:26px;overflow:hidden}
+.ew-root .sas-stone{font:400 19px/1.55 var(--e-serif);color:var(--e-navy);margin:0;white-space:pre-line}
+.ew-root .sas-stone.is-empty{font-style:italic;color:var(--e-quiet)}
+.ew-root .sas-after{margin:14px 0 0;font:400 15px/1.5 var(--e-sans);color:var(--e-quiet)}
+.ew-root .sas-offer{margin:14px 0 0}
+.ew-root .ap-stone-offer-open,.ew-root .ap-stone-offer-back{font:600 15px/1.4 var(--e-sans) !important;color:#8C6A3F !important;background:none !important;border:0 !important;padding:0 !important;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.ew-root .ap-stone-offer-open:hover,.ew-root .ap-stone-offer-back:hover{color:var(--e-navy) !important}
+.ew-root .ap-stone-offer-panel{margin:10px 0 0;padding:12px 14px;border:1px solid var(--e-rule);background:#fff}
+.ew-root .ap-stone-offer-what,.ew-root .ap-stone-offer-state,.ew-root .ap-stone-offer-note{font:400 15px/1.5 var(--e-sans);color:var(--e-quiet);margin:0 0 8px}
+.ew-root .ap-stone-offer-state{color:var(--e-ink)}
+.ew-root .ap-stone-offer-choice{display:flex;gap:18px;margin:0 0 12px}
+.ew-root .ap-stone-offer-radio{font:400 15px/1.4 var(--e-sans);color:var(--e-ink);display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.ew-root .ap-stone-offer-radio input{display:inline-block !important;appearance:auto;-webkit-appearance:radio;width:16px;height:16px;margin:0;accent-color:var(--e-navy)}
+.ew-root .ap-stone-offer-go{margin:0 12px 0 0}
+.ew-root .ew-actions .ew-btn-ghost.aps-quiet{border:0;padding:0;font-weight:600;text-decoration:underline;text-underline-offset:3px;color:#8C6A3F !important;background:none !important}
+@media print{.ew-root .ew-top-nav,.ew-root .ew-safe,.ew-root .sas-slot,.ew-root .ew-actions,.ew-root .aps-note,.ew-root .aps-panel,.ew-root .sas-offer,.ew-root .ew-foot{display:none !important}}
+</style>
+
+<p class="ew-top-nav"><a class="ew-page-link" href="/start" target="_top">&larr; Your Page</a></p>
+<p class="ew-eyebrow">Your Story · A stone of remembrance</p>
+<h1 class="ew-h1">Set a Stone</h1>
+<p class="ew-lede">Three lines that mark what God has done, set where you will find them again. A stone is set to be found — by you, and by whoever asks.</p>
+<p class="ew-safe">Nothing you write here reaches us unless you choose to save it with us. Everything else stays on your device.</p>
+
+<p class="ew-quote">When your children ask in time to come, &lsquo;What do those stones mean to you?&rsquo; then you shall tell them&hellip; So these stones shall be to the people of Israel a memorial forever. <b>Joshua 4:6&ndash;7</b></p>
+<p class="ew-quote">Then Samuel took a stone and set it up between Mizpah and Shen and called its name Ebenezer; for he said, &ldquo;Till now the LORD has helped us.&rdquo; <b>1 Samuel 7:12</b></p>
+<p class="sas-frame">Two stones. One remembers a crossing. One remembers help. Yours can be either.</p>
+
+<div id="sasSlots"><hr style="border:0;margin:0;height:0"></div>
+<div id="sasNavOff" style="display:none"></div>
+
+<div class="ew-panel">
+  <p class="ew-panel-head">Your stone</p>
+  <p class="sas-stone is-empty" id="sasStone">Your three lines will gather here as you write.</p>
+  <p class="sas-after" id="sasAfter" style="display:none"></p>
+  <div class="sas-offer" id="sasOffer"></div>
+</div>
+<div class="ew-actions" id="sasActions">
+  <button type="button" class="ew-btn ew-btn-ghost" id="sasCopy">Copy</button>
+  <button type="button" class="ew-btn ew-btn-ghost" id="sasPrint">Print</button>
+</div>
+
+<input type="hidden" id="sas_from" value="set-a-stone">
+<input type="hidden" id="sas_pieceTitle" value="Set a Stone">
+<input type="hidden" id="sas_returnAt" value="">
+<input type="hidden" id="sas_returns" value="[]">
+<input type="hidden" id="sas_rid" value="">
+<input type="hidden" id="sas_shown" value="">
+<input type="hidden" id="sas_meta" value="">
+
+<p class="ew-foot"><strong>If something in this stirred more than you expected:</strong> the 988 Suicide &amp; Crisis Lifeline is there any hour, by call or text. In immediate danger, call 911. <strong>We make mistakes.</strong> If something on this page is broken or wrong, <a href="/contact" target="_top">tell us</a>.</p>
+
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+  /* who this stone is for — roles, never names (John, Oct 2: no personal information in this work; name well and you name other things well) */
+  var STONE_FOR = ["my son", "my daughter", "my wife", "a friend", "a man I walk with", "my group", "the man I was", "myself, a year from now", "someone who will ask one day"];
+  /* what a stone can mean — John's five (Oct 2) and Samuel's, each with the place in Scripture it comes from (ESV) */
+  var MEANS = [
+    { w: "a rescue", where: "Samuel’s stone — “Till now the LORD has helped us.” 1 Samuel 7:12" },
+    { w: "a new discipline", where: "Daniel, on his knees three times a day, as he had done before. Daniel 6:10" },
+    { w: "more hope", where: "“But this I call to mind, and therefore I have hope.” Lamentations 3:21" },
+    { w: "growth in faith", where: "“I believe; help my unbelief!” Mark 9:24" },
+    { w: "capacity to love", where: "“We love because he first loved us.” 1 John 4:19" },
+    { w: "a sacrifice", where: "Abraham named the place “The LORD will provide.” Genesis 22:14" }
+  ];
+  /* the three lines. ex = John's own stone, the example under each line (his words, Oct 3) */
+  var SLOTS = [
+    { key: "stonefor", stem: "This stone is for", prompt: "Who will find this one day and ask? Pick one, or write your own. Naming well is a skill — name the one this is for, and you will name other things well too.", ex: "This stone is for those who chose the same path.", words: STONE_FOR },
+    { key: "text", stem: "Till now, the LORD has", prompt: "Have you had a miracle crossing? Say what you crossed and how he brought you over. Or maybe you only need to remember: how has God helped you?", ex: "Till now, the LORD has helped me see the men on the path with me, and that the battle has already been fought and won." },
+    { key: "meaning", stem: "What this stone means to me is", prompt: "Pick one to see where it comes from, or write your own.", ex: "What this stone means to me is surrender. The help was always there, as long as I surrendered the ego that said I needed to do it on my own.", words: MEANS.map(function (m) { return m.w; }), where: MEANS }
+  ];
+  var FIELDS = SLOTS.map(function (s) { return { key: s.key, id: "sas_" + s.key }; })
+    .concat(["from", "pieceTitle", "returnAt", "returns", "rid", "shown", "meta"].map(function (k) { return { key: k, id: "sas_" + k }; }));
+  window.sasFields = FIELDS;
+
+  function val(k) { var n = $("sas_" + k); return n ? String(n.value || "").trim() : ""; }
+  function setVal(k, v) { var n = $("sas_" + k); if (!n) return; n.value = v; n.dispatchEvent(new Event("input", { bubbles: true })); }
+  function lineFor(s, t) { t = String(t || "").trim(); if (!t) return ""; if (t.toLowerCase().indexOf(s.stem.toLowerCase()) === 0) return t; return s.stem + " " + t; }
+  function indent(t) { try { var s = t.previousElementSibling; var w = (s && s.className === "ew-stem") ? s.offsetWidth : 0; t.style.textIndent = w ? (w + 8) + "px" : "0"; } catch (e) {} }
+  function grow(t) { try { indent(t); t.style.height = "auto"; t.style.height = Math.max(t.scrollHeight, 26) + "px"; } catch (e) {} }
+
+  function build() {
+    var host = $("sasSlots"); host.innerHTML = "";
+    SLOTS.forEach(function (s) {
+      var wrap = document.createElement("div"); wrap.className = "sas-slot";
+      var name = document.createElement("p"); name.className = "ew-slot-name"; name.textContent = s.stem + " …"; wrap.appendChild(name);
+      var pr = document.createElement("p"); pr.className = "ew-slot-prompt"; pr.textContent = s.prompt; wrap.appendChild(pr);
+      var line = document.createElement("label"); line.className = "ew-line";
+      var stem = document.createElement("span"); stem.className = "ew-stem"; stem.textContent = s.stem; line.appendChild(stem);
+      var inp = document.createElement("textarea"); inp.className = "ew-rest"; inp.id = "sas_" + s.key; inp.rows = 1; inp.placeholder = "…"; inp.setAttribute("aria-label", s.stem + " …");
+      line.appendChild(inp); wrap.appendChild(line);
+      if (s.words) {
+        var row = document.createElement("div"); row.className = "ew-words"; row.setAttribute("data-for", s.key);
+        s.words.forEach(function (w) {
+          var b = document.createElement("button"); b.type = "button"; b.className = "ew-word"; b.textContent = w;
+          b.addEventListener("click", function () { setVal(s.key, w); inp.focus(); paintRow(s.key); showWhere(s, w); });
+          row.appendChild(b);
+        });
+        wrap.appendChild(row);
+        if (s.where) { var wh = document.createElement("p"); wh.className = "sas-where"; wh.id = "sasWhere_" + s.key; wh.textContent = ""; wrap.appendChild(wh); }
+      }
+      var ex = document.createElement("p"); ex.className = "sas-ex"; var b = document.createElement("b"); b.textContent = "John wrote"; ex.appendChild(b); ex.appendChild(document.createTextNode(s.ex)); wrap.appendChild(ex);
+      inp.addEventListener("input", function () { grow(inp); paintRow(s.key); if (s.where) showWhere(s, inp.value); render(); });
+      host.appendChild(wrap);
+    });
+    window.requestAnimationFrame(function () { SLOTS.forEach(function (s) { grow($("sas_" + s.key)); }); });
+  }
+  function paintRow(key) {
+    var row = document.querySelector('.ew-words[data-for="' + key + '"]'); if (!row) return;
+    var v = val(key).toLowerCase();
+    Array.prototype.forEach.call(row.querySelectorAll(".ew-word"), function (b) { b.classList.toggle("is-on", !!v && v === b.textContent.toLowerCase()); });
+  }
+  function showWhere(s, v) {
+    var p = $("sasWhere_" + s.key); if (!p) return;
+    v = String(v || "").trim().toLowerCase();
+    var hit = null; s.where.forEach(function (m) { if (v && v.indexOf(m.w) === 0) hit = m; });
+    p.innerHTML = "";
+    if (hit) { var b = document.createElement("b"); b.textContent = hit.w + " — "; p.appendChild(b); p.appendChild(document.createTextNode(hit.where)); }
+  }
+  function lines(A) {
+    var a = A || {}; function g(k) { var v = a[k] != null ? String(a[k]) : val(k); return v.trim(); }
+    var out = [];
+    SLOTS.forEach(function (s) { var l = lineFor(s, g(s.key)); if (l) out.push(l); });
+    return out;
+  }
+  /* the whole stone as saved: the three lines, nothing of ours. Empty until the "Till now" line is written — a stone without it is not a stone. */
+  function document_(A) {
+    var a = A || {}; var main = (a.text != null ? String(a.text) : val("text")).trim();
+    if (!main) return "";
+    return lines(A).join("\n");
+  }
+  window.sasDocument = document_;
+  function returnDay() { try { return window.APStone ? window.APStone.firstReturn(new Date().toISOString()) : ""; } catch (e) { return ""; } }
+  function render() {
+    var p = $("sasStone"), ls = lines();
+    if (!val("text")) { p.textContent = ls.length ? ls.join("\n") + "\n…" : "Your three lines will gather here as you write."; p.classList.add("is-empty"); }
+    else { p.textContent = ls.join("\n"); p.classList.remove("is-empty"); }
+    /* the record travels with the save: finished whenever the stone line is there; the return date is the day three months from now */
+    $("sas_meta").value = val("text") ? JSON.stringify({ finished: true }) : "";
+    if (!$("sas_returnAt").value) { $("sas_returnAt").value = returnDay(); }
+  }
+  window.sasRender = render;
+
+  /* after a FINISHED save lands: the return date and the offer, read back from the record the engine wrote */
+  window.sasAfterSave = function (inst) {
+    var after = $("sasAfter"), offer = $("sasOffer");
+    if (!window.APStone || !window.APStone.configured()) return;
+    var id = inst && inst.openEntryId;
+    window.APStone.list().then(function (l) {
+      var st = null; l.forEach(function (s) { if (!st && (!id || s.id === id)) st = s; });
+      if (!st) return;
+      after.style.display = "";
+      after.textContent = "Set on your page. On " + window.APStone.longDate(st.returnAt + "T12:00:00") + " we will ask you what it means to you.";
+      if (typeof window.APStone.offerUI === "function") { window.APStone.offerUI(offer, st, { buttonClass: "ew-btn ew-btn-primary" }); }
+    }).catch(function () {});
+  };
+
+  $("sasCopy").addEventListener("click", function () {
+    var t = document_(); if (!t) return;
+    var done = function () { $("sasCopy").textContent = "Copied"; window.setTimeout(function () { $("sasCopy").textContent = "Copy"; }, 1800); };
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(done, done); }
+    else { var ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(ta); done(); }
+  });
+  $("sasPrint").addEventListener("click", function () { try { window.print(); } catch (e) {} });
+
+  build(); render();
+})();
+</script>
+
+<script>
+(function () {
+  /* AP-SAS-CONFIG-v1 — the shared save (story.js) and the stone (stone.js v2), both pinned by commit and integrity hash. The Stones form is this page's own form: a finished save is the stone. */
+  try { localStorage.setItem("apAdult", "1"); sessionStorage.setItem("apAdult", "1"); } catch (e) {}
+  var SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@27bc86c020b06a4d8c8c74fe4f754bb43e7c6613/story.js";
+  var SRI = "sha384-IdO918gJ8JJIUxhqFDMItlrn8hCRhtkJwVDPgUiyrL2KCRR4s0GDF/sN8F3W3TDJ";
+  var STONE_SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@0ad7e1c54b10ea5446cc6bc6a145e25ed91eab7a/stone.js";
+  var STONE_SRI = "sha384-JQoDZ8ikwS8YbN3TTFtozzFGJgKgfALipH/E8outRRNLB7iJc6rdoGmx4pd2gmaa";
+  var SCRIPT = "https://script.google.com/macros/s/AKfycbxTfzmFY7NuXaGZIsPqxRDKpqakwXs5heeEGcp07aiTUG6Pzk9wJ0m8qubveVZoRCO3/exec";
+  var STONES = { unit: "6ac015de1e5c97a07e082885", blocks: { whole: "openEnded6ac015de51647", json: "openEnded6ac015de5166c", history: "openEnded6ac015de51689" }, script: SCRIPT };
+  var CONFIG = {
+    form: "set-a-stone",
+    root: ".ew-root",
+    actionsRow: ".ew-root .ew-actions",
+    navHost: "#sasNavOff",
+    buttonClass: "ew-btn",
+    primaryClass: "ew-btn-primary",
+    ghostClass: "ew-btn-ghost",
+    parts: "lines",
+    pagePath: "/start",
+    pageLabel: "Go to Your Page",
+    noteBefore: "Saving puts your stone on your page, where you can read it whenever you want. You will be asked to sign in — that is the only thing an account is for here.",
+    signInSelector: 'a[data-interactive-link-type="openformslink"][data-interactive-link-var1="signin"]',
+    document: function (a) { return typeof window.sasDocument === "function" ? window.sasDocument(a) : ""; },
+    lw: { unit: STONES.unit, blocks: { whole: STONES.blocks.whole, json: STONES.blocks.json, history: STONES.blocks.history } },
+    fields: window.sasFields || []
+  };
+  function offline() {
+    if (document.getElementById("apsOffline")) return;
+    var row = document.querySelector(CONFIG.actionsRow); if (!row) return;
+    var p = document.createElement("p"); p.id = "apsOffline"; p.className = "aps-note";
+    p.textContent = "Saving is not available right now. Your words are still on this page — use Copy and paste them somewhere safe before you close it.";
+    row.parentNode.insertBefore(p, row);
+  }
+  document.addEventListener("click", function (ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest("a.aps-page-link, a.ew-page-link") : null;
+    if (a && a.getAttribute("href")) { ev.preventDefault(); var h = a.getAttribute("href"); try { window.top.location.href = h; } catch (err) { window.location.href = h; } }
+  }, true);
+  /* when a save lands, the page reads its stone back and shows the return date and the offer */
+  function watchSaves(inst) {
+    if (!inst || typeof inst.save !== "function") return;
+    var orig = inst.save;
+    inst.save = function (ui, answers) {
+      if (ui && typeof ui.done === "function" && !ui._sasWrapped) {
+        var done = ui.done; ui._sasWrapped = true;
+        ui.done = function (sub) { done.call(ui, sub); try { if (typeof window.sasAfterSave === "function") window.sasAfterSave(inst); } catch (e) {} };
+      }
+      return orig.call(inst, ui, answers);
+    };
+  }
+  function start() {
+    if (!window.APStory) { offline(); return; }
+    var inst = window.APStory.init(CONFIG);
+    if (!inst) { offline(); return; }
+    if (window.APStone) { window.APStone.config(STONES); }
+    watchSaves(inst);
+    window.sasInstance = inst;
+    if (typeof window.sasRender === "function") window.sasRender();
+  }
+  var s = document.createElement("script");
+  s.src = SRC; s.integrity = SRI; s.crossOrigin = "anonymous"; s.async = true;
+  s.addEventListener("error", offline);
+  s.addEventListener("load", function () {
+    var t = document.createElement("script");
+    t.src = STONE_SRC; t.integrity = STONE_SRI; t.crossOrigin = "anonymous"; t.async = true;
+    t.addEventListener("error", start);
+    t.addEventListener("load", start);
+    document.head.appendChild(t);
+  });
+  document.head.appendChild(s);
+})();
+</script>
+</div>

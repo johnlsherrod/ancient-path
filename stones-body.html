@@ -1,0 +1,75 @@
+<!-- AP-STONES-v1 · build 1 (3 Oct 2026) — What These Stones Mean, the public page at /stones on the Your Story shelf (John, Oct 3). Every stone a man has set where others can see it: his three lines, the month, and his first name or no name — nothing else. Read live from the Published list through stone.js (the same list Our Stories reads; a stone leaves it the day he takes it back). One file, two settings: the root carries data-limit="" (the whole page) or data-limit="3" with data-band="1" (the band on the Breaking Free page and anywhere else the newest stones belong — same file, two words changed; with no published stones the band shows nothing at all). -->
+<div class="aps-root" id="apStonesRoot" data-limit="" data-band="">
+<style>
+.aps-root{--s-navy:#1F2A44;--s-bronze:#B8945F;--s-paper:#FBF9F5;--s-rule:#E2DCD1;--s-ink:#2B3040;--s-quiet:#6B7280;--s-serif:'Source Serif 4',Georgia,'Times New Roman',serif;--s-sans:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:720px;margin:0 auto;padding:0 16px;color:var(--s-ink)}
+.aps-root *{box-sizing:border-box;text-align:left}
+.aps-root .aps-eyebrow{font:600 12px/1.4 var(--s-sans);letter-spacing:.22em;text-transform:uppercase;color:var(--s-bronze);margin:0 0 10px}
+.aps-root .aps-h1{font:600 36px/1.15 var(--s-serif);color:var(--s-navy);margin:0 0 14px}
+.aps-root .aps-lede{font:400 18px/1.55 var(--s-sans);color:var(--s-ink);margin:0 0 26px}
+.aps-root .aps-quote{font:italic 400 16px/1.55 var(--s-serif);color:var(--s-ink);margin:0 0 30px;padding:10px 14px;border-left:2px solid var(--s-bronze)}
+.aps-root .aps-quote b{font-style:normal;font-weight:600;color:var(--s-quiet);font-family:var(--s-sans);font-size:13px;letter-spacing:.04em}
+.aps-root .aps-list{margin:0}
+.aps-root .ap-stone{margin:0 0 18px;padding:18px 20px;background:var(--s-paper);border:1px solid var(--s-rule);border-left:3px solid var(--s-bronze)}
+.aps-root .ap-stone-text{font:400 17px/1.55 var(--s-serif);color:var(--s-ink);margin:0 0 4px}
+.aps-root .ap-stone-text.ap-stone-main{font-size:19px;color:var(--s-navy)}
+.aps-root .ap-stone-meta{font:400 13px/1.45 var(--s-sans);color:var(--s-quiet);margin:8px 0 0}
+.aps-root .ap-stone-empty{font:italic 400 16px/1.5 var(--s-serif);color:var(--s-quiet);margin:0 0 18px}
+.aps-root .aps-wait{font:400 15px/1.5 var(--s-sans);color:var(--s-quiet);margin:0 0 18px}
+.aps-root .aps-you{display:block;margin:26px 0 0;padding:22px 24px;background:var(--s-navy);color:#F3EDE3;text-decoration:none;border-radius:2px}
+.aps-root .aps-you .aps-you-k{font:600 12px/1.4 var(--s-sans);letter-spacing:.18em;text-transform:uppercase;color:var(--s-bronze);margin:0 0 6px}
+.aps-root .aps-you .aps-you-t{font:600 22px/1.3 var(--s-serif);color:#F3EDE3;margin:0 0 4px}
+.aps-root .aps-you .aps-you-go{font:600 15px/1.4 var(--s-sans);color:#F3EDE3;margin:0;text-decoration:underline;text-underline-offset:3px}
+.aps-root .aps-you:hover{background:#2C3B5E}
+.aps-root .aps-all{display:inline-block;margin:6px 0 0;font:600 15px/1.4 var(--s-sans);color:var(--s-navy);text-decoration:underline;text-underline-offset:3px}
+.aps-root .aps-foot{font:400 14px/1.5 var(--s-sans);color:var(--s-quiet);margin:34px 0 0;padding-top:14px;border-top:1px solid var(--s-rule)}
+.aps-root .aps-foot a{color:var(--s-navy)}
+.aps-root[data-band="1"]{max-width:none;padding:0}
+.aps-root[data-band="1"] .aps-h1{font-size:26px;margin-bottom:8px}
+.aps-root[data-band="1"] .aps-lede{font-size:16px;margin-bottom:18px}
+.aps-root[data-band="1"] .aps-quote,.aps-root[data-band="1"] .aps-you,.aps-root[data-band="1"] .aps-foot{display:none}
+.aps-root[data-band="1"] .ap-stone{padding:14px 16px;margin-bottom:12px}
+@media (max-width:600px){.aps-root .aps-h1{font-size:30px}}
+</style>
+
+<p class="aps-eyebrow">Your Story · Stones of remembrance</p>
+<h1 class="aps-h1">What These Stones Mean</h1>
+<p class="aps-lede">Men who walked this path set these stones. Each one says what God did, in the man&rsquo;s own words. Read them. When you are ready, set your own.</p>
+<p class="aps-quote">When your children ask in time to come, &lsquo;What do those stones mean to you?&rsquo; then you shall tell them&hellip; <b>Joshua 4:6&ndash;7</b></p>
+
+<div class="aps-list" id="apStonesList"><p class="aps-wait">Reading the stones&hellip;</p></div>
+<a class="aps-all" id="apStonesAll" href="/stones" style="display:none">All the stones &rarr;</a>
+
+<a class="aps-you" href="/set-a-stone">
+  <p class="aps-you-k">Your stone</p>
+  <p class="aps-you-t">What has the LORD done, till now?</p>
+  <p class="aps-you-go">Set your own &rarr;</p>
+</a>
+
+<p class="aps-foot">Every stone here was set by the man who wrote it, where others can see it, with his first name or none. He can take it back any time. <a href="/your-story">Your Story</a></p>
+
+<script>
+(function () {
+  /* AP-STONES-CONFIG-v1 — stone.js v2 reads the Published list; nothing here needs a sign-in. */
+  var STONE_SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@{{STONE_COMMIT}}/stone.js";
+  var STONE_SRI = "{{STONE_SRI}}";
+  var SCRIPT = "{{REVIEW_SCRIPT}}";
+  var root = document.getElementById("apStonesRoot");
+  var band = root.getAttribute("data-band") === "1";
+  var limit = parseInt(root.getAttribute("data-limit") || "0", 10) || 0;
+  function show() {
+    var host = document.getElementById("apStonesList"), all = document.getElementById("apStonesAll");
+    if (!window.APStone) { host.innerHTML = ""; var p = document.createElement("p"); p.className = "ap-stone-empty"; p.textContent = "The stones could not be read just now. Try again in a moment."; host.appendChild(p); return; }
+    window.APStone.config({ script: SCRIPT });
+    window.APStone.renderPublished(host, { limit: limit, empty: band ? "" : "No stones are set where others can see them yet. Yours can be the first." }).then(function (l) {
+      /* the band (John, Oct 3): with no published stones it shows nothing at all — no box, no heading */
+      if (band && !l.length) { root.style.display = "none"; return; }
+      if (band && all && l.length > limit) { all.style.display = ""; all.textContent = "All the stones →"; }
+    });
+  }
+  var s = document.createElement("script");
+  s.src = STONE_SRC; s.integrity = STONE_SRI; s.crossOrigin = "anonymous"; s.async = true;
+  s.addEventListener("error", show); s.addEventListener("load", show);
+  document.head.appendChild(s);
+})();
+</script>
+</div>

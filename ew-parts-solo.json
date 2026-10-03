@@ -479,6 +479,24 @@
     "own": false,
     "bridge": null,
     "lookback": null
+   },
+   {
+    "key": "meaning",
+    "stem": "What this stone means to me is",
+    "prompt": "Pick one to see where it comes from, or write your own.",
+    "ex": "What this stone means to me is a new discipline: I do the next right thing.",
+    "words": [
+     "a rescue",
+     "a new discipline",
+     "more hope",
+     "growth in faith",
+     "capacity to love",
+     "a sacrifice"
+    ],
+    "rowNote": "",
+    "own": false,
+    "bridge": null,
+    "lookback": null
    }
   ]
  }
