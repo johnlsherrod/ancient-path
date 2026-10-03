@@ -1,5 +1,14 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v18.4
+   AP-STORY-MODULE-v18.5
+
+   v18.5 (3 Oct 2026) — the finish, simple (John, Oct 3: "keep it simple, easy, flowing, contextual, and story
+     oriented"; the finish read as an afterthought and its three help lines sat at three indents). Save is first and
+     alone; Edit joins the quiet line; every note about the piece ("Saving puts this on your page", "There is nothing
+     written yet", "Saved to your page") sits ABOVE the row, where a man reads it before he acts; the three help lines
+     (Read it back · Five questions · Hear it) each stand full width, the label on its own line and the words under it
+     at one indent, on a phone too; the page is named "Your Page" wherever a link or button names it. And on a phone,
+     "Read it to me" goes above the whole line even when the step is not showing yet (a hidden step measured as
+     nothing, so the row landed between the pinned opening words and the box).
 
    v18.4 (30 Sept 2026) — the stem test no longer needs the stem to sit over the box sideways: What Kind of Light pins "To" / "am I" beside its box, at the
      same height, and the row was still landing on it. Any pinned text that shares the box's height now keeps the row above the whole line.
@@ -928,7 +937,7 @@
           if (cfg.ghostClass) { btn.classList.remove(cfg.ghostClass); }
           if (cfg.primaryClass) { btn.classList.add(cfg.primaryClass); }
           note.classList.remove("aps-status"); note.innerHTML = ""; note.textContent = cfg.noteBefore || ""; note.style.order = "";
-          row.parentNode.insertBefore(note, row.nextSibling);
+          row.parentNode.insertBefore(note, row);
           self.renderSaved(panel);
           document.removeEventListener("input", rearm, true);
         };
@@ -943,8 +952,8 @@
     /* v18.1: mountEditAll is no longer called — one Edit (John, 29 Sept) */
     this.mountAssistant(row);   /* v8 */
     this.mountAfter(row);       /* v15 */
-    row.parentNode.insertBefore(note, row.nextSibling);
-    note.parentNode.insertBefore(panel, note.nextSibling);
+    row.parentNode.insertBefore(note, row);   /* v18.5: every note about the piece sits above the row */
+    row.parentNode.insertBefore(panel, row.nextSibling);
     this.renderSaved(panel);   /* v5: the way back, from the start, when he is signed in */
     this.holdTyping();         /* v7 */
     this.mountVoice();         /* v17 · before oneRow, so Hear it takes its tier */
@@ -1033,10 +1042,10 @@
     for (var i = 0; i < ORDER.length; i++) { if (ORDER[i][0].test(t)) { return ORDER[i][1]; } }
     return 5;
   }
-  /* the finish, v18.1: 5 saved + what's left · 6 Edit · 7 Save · 10 break · 21 Your page · 22 break · 23 the quiet line (Read it back · Hear it · Five questions) · 24 the ⓘ line, results and the five cards · 25 rule · 30 the quiet things (Print · Copy · Save image) */
+  /* the finish, v18.5: 5 saved + what's left · 7 Save · 10 break · 21 Your Page · 22 break · 23 the help lines (Read it back · Five questions · Hear it), each full width · 24 the ⓘ line, results and the five cards · 25 rule · 30 the quiet things (Edit · Back · Download · Copy · Continue on your phone) */
   function finishOrder(node, slot) {
     if (node.classList.contains("aps-status")) { return 5; }
-    if (node.classList.contains("aps-edit-main")) { return 6; }
+    if (node.classList.contains("aps-edit-main")) { return 29; }   /* v18.5: Edit leads the quiet line */
     if (node.classList.contains("aps-assist")) { return 24; }
     if (node.classList.contains("aps-act")) { return 23; }
     if (node.classList.contains("aps-read")) { return 24; }
@@ -1059,7 +1068,7 @@
       /* v18: the first of the page's own Back / Edit controls (never the engine's Edit the whole thing) is the Edit button, beside Save */
       var saveBtn = null, editBtn = null;
       for (var e0 = 0; e0 < row.children.length; e0++) { var cb = row.children[e0]; if (cb.tagName !== "BUTTON") { continue; } var sl0 = slotFor(cb); if (sl0 === 4 && !saveBtn) { saveBtn = cb; } if (sl0 === 1 && !editBtn && cb.id !== "apsEdit") { editBtn = cb; } }
-      if (editBtn) { editBtn.classList.add("aps-edit-main"); editBtn.setAttribute("data-aps-label", editBtn.textContent); editBtn.textContent = "Edit"; if (saveBtn) { editBtn.className = saveBtn.className + " aps-edit-main"; } }
+      if (editBtn) { editBtn.classList.add("aps-edit-main"); editBtn.setAttribute("data-aps-label", editBtn.textContent); editBtn.textContent = "Edit"; editBtn.classList.add("aps-quiet"); }   /* v18.5: Edit is a quiet link, after Save */
     }
     for (var i = 0; i < row.children.length; i++) {
       var c = row.children[i];
@@ -1069,7 +1078,7 @@
       if (finish) {
         var o = finishOrder(c, slot);
         c.style.order = String(o);
-        if (o === 30 && c.tagName === "BUTTON") { c.classList.add("aps-quiet"); }
+        if (o >= 29 && c.tagName === "BUTTON") { c.classList.add("aps-quiet"); }
       } else {
         c.style.order = String(slot === 8 ? 3 : slot);
       }
@@ -1120,12 +1129,12 @@
         "@media (max-width:620px){.aps-row.aps-step > button{flex:1 1 0}}" +
         "@media (max-width:620px){.aps-row>button{flex:1 1 auto}.aps-row .aps-page-link{flex:1 1 100%;text-align:center;margin:4px 0 0}.aps-row.aps-finish > .aps-quiet{flex:0 1 auto}.aps-row.aps-finish > .aps-page-link{flex:0 1 auto;text-align:left;margin:0}}" +
         /* v18: the quiet line: Read it back, Hear it, Five questions read as links, not buttons; on a phone the words beside them come off */
-        ".aps-row.aps-finish > .aps-act{flex:0 1 auto;display:flex;align-items:center;gap:10px;margin:0 18px 0 0}.aps-row.aps-finish .aps-act-what{font-size:13.5px;line-height:1.4;color:#6B6358;max-width:40ch}.aps-row.aps-finish > .aps-act > button{flex:0 0 auto;order:0}" +
+        ".aps-row.aps-finish > .aps-act{flex:1 1 100%;display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin:0}.aps-row.aps-finish .aps-act-what{font-size:14px;line-height:1.45;color:#6B6358;max-width:52ch}.aps-row.aps-finish > .aps-act > button{flex:0 0 auto;order:0}" +
         ".aps-row.aps-finish > .aps-act > button,.aps-row.aps-finish .aps-after .aps-after-open{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-height:0!important;height:auto!important;font-size:15px!important;font-weight:600!important;color:#8C6A3F!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:0!important;width:auto!important}" +
         ".aps-row.aps-finish > .aps-act > button:hover,.aps-row.aps-finish .aps-after .aps-after-open:hover{color:#1F2A44!important}" +
-        ".aps-row.aps-finish .aps-after{flex:0 1 auto;width:auto;margin:0}.aps-row.aps-finish .aps-after .aps-after-row{margin:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.aps-row.aps-finish .aps-after .aps-after-what{font-size:13.5px;color:#6B6358;max-width:40ch}.aps-row.aps-finish .aps-after > .aps-after-card,.aps-row.aps-finish .aps-after > .aps-after-done,.aps-row.aps-finish .aps-after > .aps-note:not(.aps-after-row){flex:1 1 100%}" +
-        "@media (max-width:620px){.aps-row.aps-finish .aps-act-what,.aps-row.aps-finish .aps-after .aps-after-what{display:none}.aps-row.aps-finish > .aps-act{margin-right:14px;flex:0 1 auto}}" +
-        ".aps-row.aps-finish > .aps-edit-main{order:6}" +
+        ".aps-row.aps-finish .aps-after{flex:1 1 100%;width:100%;margin:0}.aps-row.aps-finish .aps-after .aps-after-row{margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}.aps-row.aps-finish .aps-after .aps-after-what{font-size:14px;line-height:1.45;color:#6B6358;max-width:52ch}.aps-row.aps-finish .aps-after > .aps-after-card,.aps-row.aps-finish .aps-after > .aps-after-done,.aps-row.aps-finish .aps-after > .aps-note:not(.aps-after-row){flex:1 1 100%}" +
+        "@media (max-width:620px){.aps-row.aps-finish > .aps-act{flex:1 1 100%}}" +
+        ".aps-row.aps-finish > .aps-edit-main{order:29}" +
         "@media print{.aps-row{position:static}}";
       document.head.appendChild(st);
     }
@@ -1243,7 +1252,7 @@
     var old = document.querySelector(this.cfg.actionsRow + " .aps-page-link"); if (old) { old.parentNode.removeChild(old); }
     if (!this.cfg.pagePath) { return; }
     if (!this.saved && !signedIn()) { return; }
-    var a = el("a", "aps-page-link" + (this.saved ? " " + (this.cfg.buttonClass || "") + " " + (this.cfg.primaryClass || "") + " aps-page-btn" : ""), this.saved ? (this.cfg.pageLabel || "Go to your page") : (this.cfg.pageLinkLabel || "Your page"));
+    var a = el("a", "aps-page-link" + (this.saved ? " " + (this.cfg.buttonClass || "") + " " + (this.cfg.primaryClass || "") + " aps-page-btn" : ""), String(this.saved ? (this.cfg.pageLabel || "Go to Your Page") : (this.cfg.pageLinkLabel || "Your Page")).replace(/your page/i, "Your Page"));   /* v18.5: the page is named Your Page */
     a.href = this.cfg.pagePath;
     if (inFrame()) { a.target = "_top"; }   /* v7: from inside a course frame his page opens in the full window */
     if (this.saved) { this.dressLink(a); }   /* v11: the page's own link rules must not paint the button's words over */
@@ -1747,11 +1756,11 @@
     if (!$("aps-read-css")) {
       var st = el("style"); st.id = "aps-read-css";
       st.textContent = ".aps-read{max-width:62ch;margin:14px 0 0;font-size:16px;line-height:1.5}.aps-read .aps-busy{font-family:inherit;color:#1F2A44;display:flex;align-items:center;gap:10px;margin:0}.aps-read .aps-dot{width:10px;height:10px;border-radius:50%;background:#C9A227;animation:aps-pulse 1s ease-in-out infinite}@keyframes aps-pulse{0%,100%{opacity:.3}50%{opacity:1}}.aps-read .aps-stop{margin-left:10px;font:inherit;font-size:14px;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:#8C6A3F}.aps-read .aps-note{margin:0}.aps-read .aps-noteitem{border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:14px 16px;margin:14px 0}.aps-read .aps-kind{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:14px 0 4px}.aps-read .aps-noteitem .aps-kind{margin-top:0}.aps-read .aps-quoted{border-left:3px solid #C9A227;padding-left:12px;color:#6B6358;margin:6px 0;white-space:pre-wrap}.aps-read .aps-ask{color:#1F2A44;font-weight:600;margin:6px 0}.aps-read .aps-help{font-size:14.5px;color:#6B6358;margin:4px 0 0}.aps-read .aps-heard{border-left:3px solid #C9A227;padding-left:12px;margin:8px 0}.aps-read .aps-people{margin:6px 0;padding-left:1.2em}" +
-        ".aps-row.aps-finish > .aps-act{flex:1 1 100%;display:flex;align-items:center;gap:14px;margin:0}.aps-act-what{font-size:14.5px;line-height:1.4;color:#6B6358;max-width:52ch}.aps-row.aps-finish > .aps-act > button{flex:0 0 auto;order:0}" +
+        ".aps-row.aps-finish > .aps-act{flex:1 1 100%;display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin:0}.aps-act-what{font-size:14px;line-height:1.45;color:#6B6358;max-width:52ch}.aps-row.aps-finish > .aps-act > button{flex:0 0 auto;order:0}" +
         ".aps-read .aps-way{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.aps-goto,.aps-again{font:inherit;font-size:14px;font-weight:600;color:#1F2A44;background:#fff;border:1px solid #C9A227;border-radius:2px;padding:6px 12px;cursor:pointer}.aps-goto:hover,.aps-again:hover{background:#FBF7EF}.aps-read .is-done{opacity:.55}.aps-read .aps-done{color:#8C6A3F;font-weight:600}.aps-here{outline:2px solid #C9A227!important;outline-offset:2px}" +
         ".aps-read .aps-num{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:50%;background:#C9A227;color:#1F2A44;font-size:12px;font-weight:700;letter-spacing:0;margin-right:6px}.aps-read .aps-walkrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 4px}.aps-read .aps-walkrow span{font-size:14.5px;color:#6B6358}.aps-walk{font:inherit;font-size:14px;font-weight:700;color:#fff;background:#1F2A44;border:1px solid #1F2A44;border-radius:2px;padding:10px 18px;cursor:pointer}.aps-walk:hover{background:#2B3856}" +
         ".aps-guide{margin:10px 0 14px;border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px;font-size:15.5px;line-height:1.5;max-width:62ch}.aps-guide .aps-guide-top{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:0 0 6px}.aps-guide .aps-guide-top b{color:#1F2A44}.aps-guide .aps-guide-part{color:#1F2A44}.aps-guide .aps-quoted{border-left:3px solid #C9A227;padding-left:12px;color:#6B6358;margin:6px 0;white-space:pre-wrap}.aps-guide .aps-ask{color:#1F2A44;font-weight:600;margin:6px 0}.aps-guide .aps-help{font-size:14.5px;color:#6B6358;margin:4px 0 0}.aps-guide .aps-guide-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0 0}.aps-guide .aps-guide-state{font-size:14.5px;color:#6B6358}.aps-guide .aps-guide-state.aps-done{color:#8C6A3F;font-weight:600}.aps-guide .aps-guide-quit{font:inherit;font-size:14px;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:#8C6A3F;margin-left:auto}" +
-        "@media (max-width:620px){.aps-row.aps-finish > .aps-act{flex-wrap:wrap;gap:8px 14px}}" +
+        "@media (max-width:620px){.aps-row.aps-finish > .aps-act{gap:3px}}" +
         ".aps-assist{margin:10px 0 0}.aps-assist summary{display:inline-flex;align-items:center;gap:8px;color:#6B6358;font-size:14px;cursor:pointer;list-style:none}.aps-assist summary::-webkit-details-marker{display:none}.aps-assist .aps-assist-name{font-weight:700;color:#1F2A44}.aps-assist .aps-info{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid #8C6A3F;color:#8C6A3F;font-family:Georgia,serif;font-style:italic;font-size:12px;font-weight:700;line-height:1}.aps-assist .aps-how{color:#8C6A3F;text-decoration:underline}.aps-assist p{margin:10px 0 0;max-width:62ch;font-size:15.5px;line-height:1.5;border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px}";
       document.head.appendChild(st);
     }
@@ -2090,7 +2099,9 @@
               var pos = window.getComputedStyle(sib).position;
               if ((pos === "absolute" || pos === "fixed") && String(sib.textContent || "").replace(/\s+/g, "").length > 0) {
                 var sr = sib.getBoundingClientRect(), nr = node.getBoundingClientRect();
-                if (sr.width > 0 && sr.height > 0 && sr.top < nr.bottom && sr.bottom > nr.top) { anchor = node.parentNode; break; }
+                /* v18.5: a step that is not showing yet measures as nothing; a pinned, non-empty sibling is a stem whether or not it can be measured */
+                var measurable = sr.width > 0 && sr.height > 0;
+                if (!measurable || (sr.top < nr.bottom && sr.bottom > nr.top)) { anchor = node.parentNode; break; }
               }
               sib = sib.previousElementSibling;
             }
