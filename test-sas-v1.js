@@ -118,9 +118,9 @@ const EX = { stonefor: "those who chose the same path.", text: "helped me see th
     t("his page: the v1 Ending Well stone drawn whole, one line", pile.querySelectorAll(".ap-stone")[1].querySelectorAll(".ap-stone-text").length === 1);
     // the offer goes to the sheet with the three lines
     d.querySelector("#sasOffer .ap-stone-offer-open").click();
-    d.querySelector('#sasOffer input[value="first"]').click();
+    d.querySelector('#sasOffer input[value="name"]').click();
     d.querySelector("#sasOffer .ap-stone-offer-go").click(); await sleep(60);
-    t("offer: the three lines, first name, its own unit, from Set a Stone", log.posts.length === 1 && log.posts[0].testimony === a[SW] && log.posts[0].attribution === "First name" && /^stone/.test(log.posts[0].unit) && log.posts[0].from === "Set a Stone");
+    t("offer: the three lines, first name, its own unit, from Set a Stone", log.posts.length === 1 && log.posts[0].testimony === a[SW] && log.posts[0].attribution === "Full name" && /^stone/.test(log.posts[0].unit) && log.posts[0].from === "Set a Stone");
     t("offer: the record remembers it", JSON.parse(latest[SU].answers[SH])[1].answers.rid === "R1" && /Offered/.test(d.querySelector("#sasOffer .ap-stone-offer-state").textContent));
   }
   // 5. signed out: Save asks for sign-in, nothing lost

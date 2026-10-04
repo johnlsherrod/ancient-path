@@ -90,11 +90,11 @@ function world(opts) {
     const v2 = [{ id: "c1", when: "2026-10-03T15:00:00.000Z", text: "The LORD has given me a year.", answers: { text: "The LORD has given me a year.", stonefor: "This stone is for a friend.", meaning: "What this stone means to me is growth in faith.", from: "set-a-stone", pieceTitle: "Set a Stone", returnAt: "2027-01-03", returns: "[]" } }];
     const { w, store, posts } = world({ history: JSON.stringify(v2) });
     const l = await w.APStone.list();
-    const s = await w.APStone.offer(l[0], { shown: "first" });
+    const s = await w.APStone.offer(l[0], { shown: "name" });
     ok(posts.length === 1 && posts[0].op === "offer" && posts[0].unit === "stonec1" && posts[0].title === "Stone c1", "offer: one row, its own unit and title");
     ok(posts[0].testimony === "This stone is for a friend.\nThe LORD has given me a year.\nWhat this stone means to me is growth in faith.", "offer: the three lines, nothing else");
-    ok(posts[0].attribution === "First name" && posts[0].consent === "yes" && posts[0].from === "Set a Stone", "offer: first name, consent, where from");
-    ok(s.rid === "RID1" && s.shown === "first" && JSON.parse(store.history)[0].answers.rid === "RID1", "offer: rid and name choice kept on the record");
+    ok(posts[0].attribution === "Full name" && posts[0].consent === "yes" && posts[0].from === "Set a Stone", "v2.3 offer: his name (first and last), consent, where from");
+    ok(s.rid === "RID1" && s.shown === "name" && JSON.parse(store.history)[0].answers.rid === "RID1", "offer: rid and name choice kept on the record");
     const host = w.document.getElementById("pile");
     await w.APStone.render(host, { today: new Date("2026-10-03T12:00:00") });
     ok(/Offered\./.test(host.querySelector(".ap-stone-offer-state").textContent) && host.querySelector(".ap-stone-offer-back").textContent === "Take it back", "drawn as offered with Take it back");
@@ -108,7 +108,8 @@ function world(opts) {
     const host = w.document.getElementById("pile");
     await w.APStone.render(host, { today: new Date("2026-10-03T12:00:00") });
     ok(host.querySelector(".ap-stone-offer-open").textContent === "Set it where others can see it", "offer line: the ruled words");
-    ok(host.querySelector(".ap-stone-offer-what").textContent === "Your three lines, your first name or no name, and the month. Nothing else. You can take it back any time.", "offer line: the ruled explanation");
+    ok(host.querySelector(".ap-stone-offer-what").textContent === "Your three lines, your name or no name, and the month. Nothing else. You can take it back any time.", "offer line: the ruled explanation");
+    ok([...host.querySelectorAll(".ap-stone-offer-radio")].map(l => l.textContent.trim()).join("|") === "Your name|No name" && host.querySelector(".ap-stone-offer-radio input[value=none]").checked, "v2.3: the two choices are his name or no name, no name the default");
     ok(host.querySelector("#apStoneNoned1").checked && !host.querySelector("#apStoneFirstd1").checked, "offer line: No name is the default");
     ok(host.querySelector(".ap-stone-offer-panel").style.display === "none", "offer panel closed until he opens it");
   }

@@ -1,5 +1,9 @@
 /* ==========================================================================
-   AP-STONE-v2.2 (4 Oct 2026) — the stone, kept whole.
+   AP-STONE-v2.3 (4 Oct 2026) — the stone, kept whole.
+
+   v2.3 — the name on a stone others can see is his name (first and last, as on his account) or no name — "first
+     name only" is gone (John, Oct 4: "the name option needs to be first and last or nothing"). The deal line says
+     "your name or no name". A stone offered before v2.3 under "first" keeps that choice until he takes it back.
 
    v2.2 — the stem on Set a Stone's own line is "The LORD has" (John, Oct 4: "till now" was hard to connect to, and any
      opener that measures the road — "to this point", "this far" — read as an ending; Samuel's own grammar, nothing in
@@ -292,15 +296,16 @@
       .then(function (r) { return r.json(); })
       .then(function (r) { if (!r || r.ok !== true) { throw { code: (r && r.error) || "failed" }; } return r; });
   }
-  /* offer(st, { shown: "first" | "none" }) → the stone, with rid and shown kept on it */
+  /* offer(st, { shown: "name" | "none" }) → the stone, with rid and shown kept on it */
+  function attributionFor(shown) { return shown === "name" ? "Full name" : shown === "first" ? "First name" : "No name"; }
   function offer(st, opts) {
     opts = opts || {};
     if (!CFG || !CFG.script) { return window.Promise.reject({ code: "no_script" }); }
-    var shown = opts.shown === "first" ? "first" : "none";
+    var shown = opts.shown === "name" ? "name" : "none";
     return window.Promise.all([authorInfo(), whoAmI()]).then(function (res) {
       var a = res[0], who = res[1];
       if (!who) { throw { code: "no_who" }; }
-      return send({ op: "offer", who: who, key: "stone", unit: unitFor(st), name: a.name || "", attribution: shown === "first" ? "First name" : "No name",
+      return send({ op: "offer", who: who, key: "stone", unit: unitFor(st), name: a.name || "", attribution: attributionFor(shown),
                     title: titleFor(st), from: st.pieceTitle || "Set a Stone", email: a.email || "", testimony: wholeText(st), consent: "yes" });
     }).then(function (r) {
       return update(st.id, function (s) { s.rid = String(r.rid || ""); s.shown = shown; return s; });
@@ -426,14 +431,14 @@
     }
     var open = el("button", "ap-stone-offer-open", "Set it where others can see it"); open.type = "button";
     var panel = el("div", "ap-stone-offer-panel"); panel.style.display = "none";
-    panel.appendChild(el("p", "ap-stone-offer-what", "Your three lines, your first name or no name, and the month. Nothing else. You can take it back any time."));
+    panel.appendChild(el("p", "ap-stone-offer-what", "Your three lines, your name or no name, and the month. Nothing else. You can take it back any time."));
     var choice = el("div", "ap-stone-offer-choice");
     var idA = "apStoneFirst" + st.id, idB = "apStoneNone" + st.id;
     function radio(id, val, label, checked) {
       var l = el("label", "ap-stone-offer-radio"); var r = document.createElement("input"); r.type = "radio"; r.name = "apStoneShown" + st.id; r.value = val; r.id = id; r.checked = !!checked;
       l.appendChild(r); l.appendChild(document.createTextNode(" " + label)); return l;
     }
-    choice.appendChild(radio(idA, "first", "First name", false));
+    choice.appendChild(radio(idA, "name", "Your name", false));
     choice.appendChild(radio(idB, "none", "No name", true));
     panel.appendChild(choice);
     var go = el("button", (opts.buttonClass || "") + " ap-stone-offer-go", "Set it"); go.type = "button";
@@ -441,7 +446,7 @@
     panel.appendChild(go); panel.appendChild(note);
     open.addEventListener("click", function () { panel.style.display = panel.style.display === "none" ? "" : "none"; });
     go.addEventListener("click", function () {
-      var shown = document.getElementById(idA) && document.getElementById(idA).checked ? "first" : "none";
+      var shown = document.getElementById(idA) && document.getElementById(idA).checked ? "name" : "none";
       go.disabled = true; note.textContent = "Offering…";
       offer(st, { shown: shown }).then(function (s) {
         box.innerHTML = ""; box.appendChild(offerLine(s, opts, { }));
@@ -466,7 +471,7 @@
       var text = wholeText(st) + "\n" + longDate(st.returns[st.returns.length - 1].when) + " · What it means to me now: " + st.returns[st.returns.length - 1].text;
       window.Promise.all([authorInfo(), whoAmI()]).then(function (res) {
         var a = res[0], who = res[1]; if (!who) { throw { code: "no_who" }; }
-        return send({ op: "offer", who: who, key: "stone", unit: unitFor(st), name: a.name || "", attribution: st.shown === "first" ? "First name" : "No name",
+        return send({ op: "offer", who: who, key: "stone", unit: unitFor(st), name: a.name || "", attribution: attributionFor(st.shown),
                       title: titleFor(st), from: st.pieceTitle || "Set a Stone", email: a.email || "", testimony: text, consent: "yes" });
       }).then(function (r) { return update(st.id, function (s) { s.rid = String(r.rid || s.rid || ""); return s; }); })
         .then(function () { note.textContent = "Offered. Read by our team before it goes up."; })
@@ -518,7 +523,7 @@
   }
 
   window.APStone = {
-    version: "2.2",
+    version: "2.3",
     config: function (c) { CFG = c || null; return cfgOk(); },
     configured: cfgOk,
     set: set,
