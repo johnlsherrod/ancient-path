@@ -1,5 +1,7 @@
 /* ==========================================================================
-   AP-STONE-v2.4 (4 Oct 2026) — the stone, kept whole.
+   AP-STONE-v2.5 (4 Oct 2026) — the stone, kept whole.
+
+   v2.5 — the last two words of the return's lead and ground lines are tied together (no lonely word on a line — John's rule).
 
    v2.4 — the return has its ground (John, Oct 4): on the day a return is due, above "What does it mean to you now?"
      stand "Three months on. Come back to the stone." and the Gilgal line — Joshua set the stones there the day Israel
@@ -59,8 +61,8 @@
   var STEM_TILL_OLD = "Till now, the LORD has";   /* the stem before v2.2; a line kept under it reads back under the new one */
   var MONTHS_TO_RETURN = 3;   /* the first return, three months on (John, Oct 1) */
   /* v2.4 — what stands above the question on the day it is due (John, Oct 4: return to Gilgal) */
-  var RETURN_LEAD = "Three months on. Come back to the stone.";
-  var RETURN_GROUND = "Gilgal means to roll. Joshua set the stones there the day Israel came in, and the LORD rolled their shame away on that ground. Samuel went back there to renew the kingdom. In and back meet on the same ground.";
+  var RETURN_LEAD = "Three months on. Come back to the\u00a0stone.";
+  var RETURN_GROUND = "Gilgal means to roll. Joshua set the stones there the day Israel came in, and the LORD rolled their shame away on that ground. Samuel went back there to renew the kingdom. In and back meet on the same\u00a0ground.";
 
   function story() { return window.APStory || null; }
   function cfgOk() { return !!(CFG && CFG.unit && CFG.blocks && CFG.blocks.whole && CFG.blocks.json && CFG.blocks.history); }
@@ -533,7 +535,7 @@
   }
 
   window.APStone = {
-    version: "2.4",
+    version: "2.5",
     config: function (c) { CFG = c || null; return cfgOk(); },
     configured: cfgOk,
     set: set,
