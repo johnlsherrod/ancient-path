@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Your Page v26 from v25.5 (pages/start-v25.html): the Your stones card reads the stone record through stone.js v2
+"""Your Page v26.1 from v25.5 (pages/start-v25.html): the Your stones card reads the stone record through stone.js v2
 (story.js and stone.js loaded, pinned by commit and hash) — every stone with its date and what it was for, his dated
 answers, the one question when the return is due, and "Set it where others can see it"; a quiet "Set another" link to
 /set-a-stone. Every needle must match exactly once."""
@@ -15,7 +15,7 @@ def rep(old, new):
     out = out.replace(old, new)
 
 rep('<!-- AP-HOME-v25.5 (v25.5, 2 Oct:',
-    '<!-- AP-HOME-v26 (v26, 3 Oct: the Your stones card reads the whole stone — who it is for, what the LORD has done, what it means — with its date and where it came from; his dated answers under it; the question "What does it mean to you now?" on the day the return is due; "Set it where others can see it" with first name or no name, and Take it back; a quiet Set another link; story.js and stone.js loaded for it, pinned by commit and hash) (v25.5, 2 Oct:')
+    '<!-- AP-HOME-v26 (v26.2, 4 Oct: stone.js v2.2) (v26.1, 4 Oct: the pile stacks one stone under another in the card — the three-stops row layout no longer reaches it; story.js v18.6 and stone.js v2.1) (v26, 3 Oct: the Your stones card reads the whole stone — who it is for, what the LORD has done, what it means — with its date and where it came from; his dated answers under it; the question "What does it mean to you now?" on the day the return is due; "Set it where others can see it" with first name or no name, and Take it back; a quiet Set another link; story.js and stone.js loaded for it, pinned by commit and hash) (v25.5, 2 Oct:')
 
 # the card's styles: the stone's three lines, the answers, the question, the offer line
 rep('''        .ap-home .ap-stone-meta {
@@ -28,7 +28,11 @@ rep('''        .ap-home .ap-stone-meta {
             color: var(--ap-quiet) !important;
             margin: 2px 0 0;
         }
-        .ap-home .ap-card .ap-stone { flex: none; padding-left: 0; padding-right: 0; }
+        /* v26.1 (4 Oct, John's walk): the card's pile stacks one stone under another — the ".ap-stones" row layout above is the three stops band, not the pile */
+        .ap-home .ap-card .ap-stones { display: block; max-width: none; margin: 14px 0 0; }
+        .ap-home .ap-card .ap-stones::before { display: none; }
+        .ap-home .ap-card .ap-stone { flex: none; padding: 0 0 14px; margin: 0 0 14px; border-bottom: 1px solid var(--ap-rule); }
+        .ap-home .ap-card .ap-stone:last-child { padding-bottom: 0; margin-bottom: 0; border-bottom: 0; }
         .ap-home .ap-card .ap-stone-text { font: 400 15.5px/1.5 var(--ap-serif) !important; color: var(--ap-ink) !important; }
         .ap-home .ap-card .ap-stone-text.ap-stone-main { font-size: 17px !important; color: var(--ap-navy) !important; }
         .ap-home .ap-card .ap-stone-return { margin: 8px 0 0; padding-left: 10px; border-left: 2px solid var(--ap-bronze); }
@@ -102,5 +106,5 @@ out = out[:start] + new_block + out[end:]
 
 dest = os.path.join(here, 'pages', 'start-v26.html')
 open(dest, 'w').write(out)
-raw = out.rstrip('\\n').encode('utf-8')
+raw = out.rstrip('\n').encode('utf-8')
 print(dest, len(out.encode('utf-8')), 'bytes · sha256 (minus trailing newline)', hashlib.sha256(raw).hexdigest())

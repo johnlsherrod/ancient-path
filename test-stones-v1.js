@@ -7,11 +7,11 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const scripts = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 const markup = page.replace(/<script>[\s\S]*?<\/script>/g, "");
 const FEED = { pieces: [
-  { id: "1", name: "John", title: "Stone a", from: "Set a Stone", piece: "This stone is for my son.\nTill now, the LORD has kept me.\nWhat this stone means to me is a new discipline.", at: "2026-10-01T13:00:00Z" },
+  { id: "1", name: "John", title: "Stone a", from: "Set a Stone", piece: "This stone is for my son.\nThe LORD has kept me.\nWhat this stone means to me is a new discipline.", at: "2026-10-01T13:00:00Z" },
   { id: "2", name: "Jason", title: "Where I’m From", from: "Where I’m From", piece: "I am from…", at: "2026-10-02T13:00:00Z" },
   { id: "3", name: "", title: "Stone b", from: "Ending Well", piece: "What God did was put me in a room with men.", at: "2026-12-20T13:00:00Z" },
-  { id: "4", name: "Mike", title: "Stone c", from: "Set a Stone", piece: "This stone is for a friend.\nTill now, the LORD has given me a year.\nWhat this stone means to me is more hope.", at: "2026-11-05T13:00:00Z" },
-  { id: "5", name: "Al", title: "Stone d", from: "Set a Stone", piece: "Till now, the LORD has.", at: "2026-09-05T13:00:00Z" }
+  { id: "4", name: "Mike", title: "Stone c", from: "Set a Stone", piece: "This stone is for a friend.\nThe LORD has given me a year.\nWhat this stone means to me is more hope.", at: "2026-11-05T13:00:00Z" },
+  { id: "5", name: "Al", title: "Stone d", from: "Set a Stone", piece: "The LORD has.", at: "2026-09-05T13:00:00Z" }
 ] };
 async function mount(o) {
   o = o || {};
@@ -29,9 +29,10 @@ async function mount(o) {
 }
 (async () => {
   { const { d } = await mount();
+    t("build 4: the Set-your-own box asks \"What has the LORD done?\" and no \"till now\" stands in our own words; build 3: Joshua 4:24 under the lede, its reference never breaking, the old quote gone, stone.js pinned to John's commit", /\.aps-quote b\{[^}]*white-space:nowrap\}/.test(page) && /What has the LORD done\?<\/p>/.test(page) && !/till now\?/.test(page) && /so that all the peoples of the earth may know that the hand of the LORD is mighty\. <b>Joshua 4:24<\/b>/.test(page) && page.indexOf("Joshua 4:6") < 0 && page.split("ancient-path@26d49405c1dbf621d2c4977a77a1f5865164b4f4/stone.js").length === 2 && page.indexOf("0ad7e1c54b10ea5446cc6bc6a145e25ed91eab7a") < 0);
     t("the ruled lede, word for word", d.querySelector(".aps-lede").textContent === "Men who walked this path set these stones. Each one says what God did, in the man’s own words. Read them. When you are ready, set your own.");
     const st = d.querySelectorAll("#apStonesList .ap-stone");
-    t("stones only, newest first", st.length === 4 && st[0].querySelector(".ap-stone-main").textContent === "What God did was put me in a room with men." && st[3].querySelector(".ap-stone-main").textContent === "Till now, the LORD has.");
+    t("stones only, newest first", st.length === 4 && st[0].querySelector(".ap-stone-main").textContent === "What God did was put me in a room with men." && st[3].querySelector(".ap-stone-main").textContent === "The LORD has.");
     t("an Ending Well stone is shown as written: his own line, no Till-now words put on it", st[0].querySelector(".ap-stone-main").textContent === "What God did was put me in a room with men." && !/Till now/.test(st[0].textContent));
     t("each: the lines, the month, first name or none — nothing else", st[1].querySelectorAll(".ap-stone-text").length === 3 && st[1].querySelector(".ap-stone-meta").textContent === "November 2026 · Mike" && st[0].querySelector(".ap-stone-meta").textContent === "December 2026" && !/Ending Well|Set a Stone|Stone b/.test(st[0].textContent));
     t("the way to set your own", d.querySelector(".aps-you").getAttribute("href") === "/set-a-stone" && d.getElementById("apStonesAll").style.display === "none");

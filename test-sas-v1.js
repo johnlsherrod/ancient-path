@@ -20,6 +20,7 @@ async function mount(o) {
   w.HTMLElement.prototype.scrollIntoView = function () {}; w.scrollBy = function () {};
   w.getUserToken = () => (o.signedOut ? null : "tok");
   w.matchMedia = (q) => ({ matches: false });
+  if (o.voice) { w.webkitSpeechRecognition = function () { this.start = () => {}; this.stop = () => {}; }; w.SpeechSynthesisUtterance = function (t) { this.text = t; }; w.speechSynthesis = { speak() {}, cancel() {}, getVoices: () => [] }; }
   const latest = o.latest || {};
   const log = { patches: [], inits: [], posts: [] }; let lastUnit = null;
   w.fetch = (path, init) => {
@@ -51,15 +52,16 @@ const EX = { stonefor: "those who chose the same path.", text: "helped me see th
 (async () => {
   // 1. the door and the three lines
   { const { d } = await mount();
-    t("title and the two Scriptures, ESV, short", d.querySelector(".ew-h1").textContent === "Set a Stone" && /Joshua 4:6–7/.test(d.querySelectorAll(".ew-quote")[0].textContent) && /Till now the LORD has helped us/.test(d.querySelectorAll(".ew-quote")[1].textContent));
+    t("title and the two Scriptures, ESV, short — Joshua 4:21–24 (the crossing on dry ground, why others should see it) then 1 Samuel 7:12", d.querySelector(".ew-h1").textContent === "Set a Stone" && /Joshua 4:21–24/.test(d.querySelectorAll(".ew-quote")[0].textContent) && /passed over this Jordan on dry ground/.test(d.querySelectorAll(".ew-quote")[0].textContent) && /all the peoples of the earth may know/.test(d.querySelectorAll(".ew-quote")[0].textContent) && !/Joshua 4:6/.test(d.body.textContent) && /Till now the LORD has helped us/.test(d.querySelectorAll(".ew-quote")[1].textContent));
+    t("build 4: the meaning help line is the answer to the children's question; the page pins stone.js to John's commit", /The answer you give when someone asks what this stone means\./.test(page) && /Pick one to see where it comes from, or write your own\./.test(page) && page.split("ancient-path@26d49405c1dbf621d2c4977a77a1f5865164b4f4/stone.js").length === 2 && page.indexOf("0ad7e1c54b10ea5446cc6bc6a145e25ed91eab7a") < 0);
     t("the line under the two scenes, John's words", d.querySelector(".sas-frame").textContent === "Two stones. One remembers a crossing. One remembers help. Yours can be either.");
-    t("the Till-now help line, John's words", d.querySelectorAll(".ew-slot-prompt")[1].textContent === "Have you had a miracle crossing? Say what you crossed and how he brought you over. Or maybe you only need to remember: how has God helped you?");
+    t("build 6: the The-LORD-has help line — the marker on the path, then John's two doors", d.querySelectorAll(".ew-slot-prompt")[1].textContent === "A stone is a marker on the path. Have you had a miracle crossing? Say what you crossed and how he brought you over. Or maybe you only need to remember: how has God helped you?");
     t("the fixed first line", d.querySelector(".ew-safe").textContent === "Nothing you write here reaches us unless you choose to save it with us. Everything else stays on your device.");
     const stems = [...d.querySelectorAll(".ew-stem")].map(s => s.textContent);
-    t("three lines, the ruled stems in order", stems.join("|") === "This stone is for|Till now, the LORD has|What this stone means to me is");
+    t("three lines, the ruled stems in order", stems.join("|") === "This stone is for|The LORD has|What this stone means to me is");
     t("who it is for: the ruled pick list, roles only", [...d.querySelectorAll('.ew-words[data-for="stonefor"] .ew-word')].map(b => b.textContent).join("|") === "my son|my daughter|my wife|a friend|a man I walk with|my group|the man I was|myself, a year from now|someone who will ask one day");
     t("what it means: six meanings", d.querySelectorAll('.ew-words[data-for="meaning"] .ew-word').length === 6 && [...d.querySelectorAll('.ew-words[data-for="meaning"] .ew-word')].map(b => b.textContent).join("|") === "a rescue|a new discipline|more hope|growth in faith|capacity to love|a sacrifice");
-    t("John's example under each line", d.querySelectorAll(".sas-ex").length === 3 && [...d.querySelectorAll(".sas-ex b")].every(b => b.textContent === "John wrote"));
+    t("John's example under each line", d.querySelectorAll(".sas-ex").length === 3 && [...d.querySelectorAll(".sas-ex b")].every(b => b.textContent === "For example"));
     t("no season, no stranger, no brother, no next man", !/\bseason\b|stranger|\bbrother\b|next man|men who come after/i.test(d.querySelector(".ew-root").textContent));
     t("no Google tag in the block", !/G-VKPN74MHRZ|googletagmanager/.test(page));
     t("Save is on the page, Copy and Print beside it", !!d.getElementById("apsSave") && !!d.getElementById("sasCopy") && !!d.getElementById("sasPrint"));
@@ -69,8 +71,8 @@ const EX = { stonefor: "those who chose the same path.", text: "helped me see th
   { const { w, d } = await mount();
     type(w, d, "sas_stonefor", EX.stonefor); type(w, d, "sas_text", EX.text); type(w, d, "sas_meaning", EX.meaning);
     const stoneText = d.getElementById("sasStone").textContent.split("\n");
-    t("the stone gathers as three lines with their stems", stoneText.length === 3 && stoneText[0] === "This stone is for those who chose the same path." && stoneText[1] === "Till now, the LORD has helped me see the men on the path with me, and that the battle has already been fought and won." && stoneText[2] === "What this stone means to me is surrender. The help was always there, as long as I surrendered the ego that said I needed to do it on my own.");
-    t("the examples match John's lines as the page shows them", [...d.querySelectorAll(".sas-ex")].map(e => e.textContent.replace(/^John wrote/, "")).join("|") === stoneText.join("|"));
+    t("the stone gathers as three lines with their stems", stoneText.length === 3 && stoneText[0] === "This stone is for those who chose the same path." && stoneText[1] === "The LORD has helped me see the men on the path with me, and that the battle has already been fought and won." && stoneText[2] === "What this stone means to me is surrender. The help was always there, as long as I surrendered the ego that said I needed to do it on my own.");
+    t("the examples match John's lines as the page shows them", [...d.querySelectorAll(".sas-ex")].map(e => e.textContent.replace(/^For example/, "")).join("|") === stoneText.join("|"));
     t("the whole document is the three lines, nothing of ours", w.sasDocument() === stoneText.join("\n"));
     d.querySelector('.ew-words[data-for="meaning"] .ew-word').click();
     t("tap a meaning: it fills the line and shows where it comes from", d.getElementById("sas_meaning").value === "a rescue" && /1 Samuel 7:12/.test(d.getElementById("sasWhere_meaning").textContent) && d.querySelector('.ew-words[data-for="meaning"] .ew-word').classList.contains("is-on"));
@@ -81,7 +83,7 @@ const EX = { stonefor: "those who chose the same path.", text: "helped me see th
   // 3. nothing written: Save refused with the fixed words; only the for-line written: still not a stone
   { const { w, d, log } = await mount();
     d.getElementById("apsSave").click(); await sleep(20);
-    t("nothing written: refused, nothing sent", /There is nothing written yet/.test(d.getElementById("apsNote").textContent) && log.patches.length === 0);
+    t("build 5: nothing written: Save says what the stone needs and goes to that box; nothing sent", /The line that starts “The LORD has” is the stone\. Write it, then save\./.test(d.getElementById("apsNote").textContent) && log.patches.length === 0 && d.activeElement && d.activeElement.id === "sas_text");
     type(w, d, "sas_stonefor", "my son"); d.getElementById("apsSave").click(); await sleep(20);
     t("no stone line yet: still not a stone", log.patches.length === 0 && d.getElementById("sasStone").classList.contains("is-empty"));
   }
@@ -90,21 +92,29 @@ const EX = { stonefor: "those who chose the same path.", text: "helped me see th
     const { w, d, log, latest } = await mount({ latest: { [SU]: { answers: { [SH]: JSON.stringify(prior) } } } });
     type(w, d, "sas_stonefor", EX.stonefor); type(w, d, "sas_text", EX.text); type(w, d, "sas_meaning", EX.meaning);
     d.getElementById("apsSave").click(); await sleep(60);
+    if (log.patches.length !== 1) console.log("NOTE:", d.getElementById("apsNote").textContent, "| text:", d.getElementById("sas_text").value.slice(0,30));
     t("one save to the Stones form", log.patches.length === 1 && log.inits[0] === SU);
     const a = log.patches[0].answers;
-    t("whole = the three lines", a[SW] === "This stone is for those who chose the same path.\nTill now, the LORD has helped me see the men on the path with me, and that the battle has already been fought and won.\nWhat this stone means to me is surrender. The help was always there, as long as I surrendered the ego that said I needed to do it on my own.");
+    t("whole = the three lines", a[SW] === "This stone is for those who chose the same path.\nThe LORD has helped me see the men on the path with me, and that the battle has already been fought and won.\nWhat this stone means to me is surrender. The help was always there, as long as I surrendered the ego that said I needed to do it on my own.");
     const hist = JSON.parse(a[SH]);
     t("history: the Ending Well stone kept, the new stone added", hist.length === 2 && hist[0].id === "ew9" && hist[1].answers.from === "set-a-stone" && hist[1].answers.pieceTitle === "Set a Stone");
     t("the new entry is in the stone shape: the words as typed, return date, no returns, not offered", hist[1].text === a[SW] && hist[1].answers.text === EX.text && hist[1].answers.stonefor === EX.stonefor && /^\d{4}-\d{2}-\d{2}$/.test(hist[1].answers.returnAt) && hist[1].answers.returns === "[]" && hist[1].answers.rid === "" && !("meta" in hist[1].answers));
     t("Saved: the engine's words", /Saved to your page/.test(d.getElementById("apsNote").textContent) && /Finished\. It is on your page\./.test(d.getElementById("apsNote").textContent));
     await sleep(60);
-    t("after Save: the return date, three months on", /^Set on your page\. On [A-Z][a-z]+ \d{1,2}, \d{4} we will ask you what it means to you\.$/.test(d.getElementById("sasAfter").textContent));
+    t("build 5, after Save: the dates stand under the stone — set on today, ask yourself three months on", /^Set on [A-Z][a-z]+ \d{1,2}, \d{4}\.\nOn [A-Z][a-z]+ \d{1,2}, \d{4}, ask yourself what it means to you\.$/.test(d.getElementById("sasDates").textContent) && d.getElementById("sasDates").style.display === "" && d.getElementById("sasAfter").textContent === "It is on your page.");
+    { const r = new Date(d.getElementById("sas_returnAt").value + "T12:00:00"); const want = r.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }); t("build 5: the return date shown is the record's return date", d.getElementById("sasDates").textContent.indexOf("On " + want + ",") > 0); }
+    { let copied = ""; w.navigator.clipboard = { writeText: (t) => { copied = t; return Promise.resolve(); } }; d.getElementById("sasCopy").click(); await sleep(20);
+      t("build 5: Copy carries the three lines and then the two dates", copied.indexOf(a[SW]) === 0 && /\n\nSet on [A-Z][a-z]+ \d{1,2}, \d{4}\.\nOn /.test(copied)); }
+    { const v = await mount({ voice: true }); await sleep(80); const n = v.d.querySelector(".sas-slot .aps-voice-note");
+      t("build 5: the voice note sits under the first writing box, not inside it", !!n && !n.closest(".ew-line") && n.previousElementSibling && n.previousElementSibling.classList.contains("ew-line") && v.d.querySelectorAll(".aps-voice-note").length === 1); }
+    t("build 5: one-sentence help lines; the second sentence sits under its pick list", d.querySelectorAll(".sas-slot")[0].querySelector(".ew-slot-prompt").textContent === "Who will find this one day and ask?" && /Naming well is a skill/.test(d.querySelectorAll(".sas-slot")[0].querySelector(".sas-row-note").textContent) && d.querySelectorAll(".sas-slot")[2].querySelector(".sas-row-note").textContent === "Pick one to see where it comes from, or write your own.");
+    t("build 5: the lede, as ruled", d.querySelector(".ew-lede").textContent === "In three lines, mark what God has done. Your stone is kept on your page, and three months from now you will be asked what it means.");
     t("after Save: the offer line, the ruled words, No name the default", d.querySelector("#sasOffer .ap-stone-offer-open") && d.querySelector("#sasOffer .ap-stone-offer-open").textContent === "Set it where others can see it" && d.querySelector('#sasOffer input[value="none"]').checked);
     // his page reads both stones, newest first
     const pile = d.createElement("div"); d.body.appendChild(pile);
     const l = await w.APStone.render(pile, { offer: false });
     t("his page: both stones, newest first, each with its date and where from", l.length === 2 && l[0].from === "set-a-stone" && l[1].id === "ew9" && pile.querySelectorAll(".ap-stone").length === 2 && /from Set a Stone/.test(pile.querySelectorAll(".ap-stone-meta")[0].textContent) && /from Ending Well/.test(pile.querySelectorAll(".ap-stone-meta")[1].textContent));
-    t("his page: the Set a Stone lines read back with their opening words", l[0].text.indexOf("Till now, the LORD has ") === 0 && l[0].stonefor.indexOf("This stone is for ") === 0 && l[0].meaning.indexOf("What this stone means to me is ") === 0 && pile.querySelectorAll(".ap-stone")[0].querySelectorAll(".ap-stone-text").length === 3);
+    t("his page: the Set a Stone lines read back with their opening words", l[0].text.indexOf("The LORD has ") === 0 && l[0].stonefor.indexOf("This stone is for ") === 0 && l[0].meaning.indexOf("What this stone means to me is ") === 0 && pile.querySelectorAll(".ap-stone")[0].querySelectorAll(".ap-stone-text").length === 3);
     t("his page: the v1 Ending Well stone drawn whole, one line", pile.querySelectorAll(".ap-stone")[1].querySelectorAll(".ap-stone-text").length === 1);
     // the offer goes to the sheet with the three lines
     d.querySelector("#sasOffer .ap-stone-offer-open").click();
