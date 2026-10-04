@@ -50,7 +50,7 @@ function world(opts) {
   // 2. set a v2 stone from Set a Stone, then one from Ending Well; both land in the one list, newest first
   {
     const { w, store, submits } = world();
-    const st = await w.APStone.set({ text: "Till now, the LORD has kept me sober for a year.", stonefor: "This stone is for my son.", meaning: "What this stone means to me is a new discipline.", from: "set-a-stone", pieceTitle: "Set a Stone" });
+    const st = await w.APStone.set({ text: "The LORD has kept me sober for a year.", stonefor: "This stone is for my son.", meaning: "What this stone means to me is a new discipline.", from: "set-a-stone", pieceTitle: "Set a Stone" });
     ok(st.id && st.returnAt && st.stonefor === "This stone is for my son.", "set: record carries the three lines and a return date");
     const list1 = JSON.parse(store.history);
     ok(list1.length === 1 && list1[0].answers.meaning === "What this stone means to me is a new discipline." && list1[0].answers.returns === "[]", "set: stored in the story.js entry shape, v2 fields in answers");
@@ -87,12 +87,12 @@ function world(opts) {
   }
   // 4. the offer: three lines to the sheet, name choice, unit per stone; take it back
   {
-    const v2 = [{ id: "c1", when: "2026-10-03T15:00:00.000Z", text: "Till now, the LORD has given me a year.", answers: { text: "Till now, the LORD has given me a year.", stonefor: "This stone is for a friend.", meaning: "What this stone means to me is growth in faith.", from: "set-a-stone", pieceTitle: "Set a Stone", returnAt: "2027-01-03", returns: "[]" } }];
+    const v2 = [{ id: "c1", when: "2026-10-03T15:00:00.000Z", text: "The LORD has given me a year.", answers: { text: "The LORD has given me a year.", stonefor: "This stone is for a friend.", meaning: "What this stone means to me is growth in faith.", from: "set-a-stone", pieceTitle: "Set a Stone", returnAt: "2027-01-03", returns: "[]" } }];
     const { w, store, posts } = world({ history: JSON.stringify(v2) });
     const l = await w.APStone.list();
     const s = await w.APStone.offer(l[0], { shown: "first" });
     ok(posts.length === 1 && posts[0].op === "offer" && posts[0].unit === "stonec1" && posts[0].title === "Stone c1", "offer: one row, its own unit and title");
-    ok(posts[0].testimony === "This stone is for a friend.\nTill now, the LORD has given me a year.\nWhat this stone means to me is growth in faith.", "offer: the three lines, nothing else");
+    ok(posts[0].testimony === "This stone is for a friend.\nThe LORD has given me a year.\nWhat this stone means to me is growth in faith.", "offer: the three lines, nothing else");
     ok(posts[0].attribution === "First name" && posts[0].consent === "yes" && posts[0].from === "Set a Stone", "offer: first name, consent, where from");
     ok(s.rid === "RID1" && s.shown === "first" && JSON.parse(store.history)[0].answers.rid === "RID1", "offer: rid and name choice kept on the record");
     const host = w.document.getElementById("pile");
@@ -103,7 +103,7 @@ function world(opts) {
   }
   // 5. the offer line before any offer: default No name, the ruled words
   {
-    const v2 = [{ id: "d1", when: "2026-10-03T15:00:00.000Z", text: "Till now, the LORD has.", answers: { text: "Till now, the LORD has.", returnAt: "2027-01-03", returns: "[]" } }];
+    const v2 = [{ id: "d1", when: "2026-10-03T15:00:00.000Z", text: "The LORD has.", answers: { text: "The LORD has.", returnAt: "2027-01-03", returns: "[]" } }];
     const { w } = world({ history: JSON.stringify(v2) });
     const host = w.document.getElementById("pile");
     await w.APStone.render(host, { today: new Date("2026-10-03T12:00:00") });
@@ -116,9 +116,9 @@ function world(opts) {
   {
     const { w } = world();
     const l = w.APStone._parseFeed({ pieces: [
-      { id: "1", name: "John", title: "Stone a", from: "Set a Stone", piece: "This stone is for my son.\nTill now, the LORD has.\nWhat this stone means to me is hope.", at: "2026-10-01T00:00:00Z" },
+      { id: "1", name: "John", title: "Stone a", from: "Set a Stone", piece: "This stone is for my son.\nThe LORD has.\nWhat this stone means to me is hope.", at: "2026-10-01T00:00:00Z" },
       { id: "2", name: "", title: "Where I’m From", from: "Where I’m From", piece: "I am from…", at: "2026-10-02T00:00:00Z" },
-      { id: "3", name: "John", title: "Stone a", from: "Set a Stone", piece: "This stone is for my son.\nTill now, the LORD has.\nWhat this stone means to me is hope.\nJanuary 1, 2027 · What it means to me now: still true.", at: "2027-01-01T00:00:00Z" },
+      { id: "3", name: "John", title: "Stone a", from: "Set a Stone", piece: "This stone is for my son.\nThe LORD has.\nWhat this stone means to me is hope.\nJanuary 1, 2027 · What it means to me now: still true.", at: "2027-01-01T00:00:00Z" },
       { id: "4", name: "", title: "Stone b", from: "Ending Well", piece: "What God did was keep me.", at: "2026-12-20T00:00:00Z" }
     ] });
     ok(l.length === 2 && l[0].title === "Stone a" && l[0].lines.length === 4 && l[1].title === "Stone b" && l[1].lines.length === 1, "feed: stones only, newest wins, newest first");

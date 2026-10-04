@@ -1,5 +1,9 @@
 /* ==========================================================================
-   AP-STONE-v2.1 (4 Oct 2026) — the stone, kept whole.
+   AP-STONE-v2.2 (4 Oct 2026) — the stone, kept whole.
+
+   v2.2 — the stem on Set a Stone's own line is "The LORD has" (John, Oct 4: "till now" was hard to connect to, and any
+     opener that measures the road — "to this point", "this far" — read as an ending; Samuel's own grammar, nothing in
+     front). A line kept under the old stem reads back under the new one.
 
    v2.1 — the record survives LearnWorlds: a stored answer loses "}}" (measured 3 Oct, see story.js v18.6), so every
      value written here puts a space between two braces in a row, and a list already cut short is mended on read.
@@ -42,7 +46,8 @@
   var CFG = null;
   var STEM_FOR = "This stone is for";
   var STEM_MEANS = "What this stone means to me is";
-  var STEM_TILL = "Till now, the LORD has";   /* Set a Stone's own line; Ending Well's stone is a line of its own */
+  var STEM_TILL = "The LORD has";   /* Set a Stone's own line; Ending Well's stone is a line of its own */
+  var STEM_TILL_OLD = "Till now, the LORD has";   /* the stem before v2.2; a line kept under it reads back under the new one */
   var MONTHS_TO_RETURN = 3;   /* the first return, three months on (John, Oct 1) */
 
   function story() { return window.APStory || null; }
@@ -106,7 +111,7 @@
     var from = String(a.from || "");
     var text = clean(typeof a.text === "string" && a.text ? a.text : e.text);
     if (!text) { return null; }
-    if (from === "set-a-stone") { text = withStem(STEM_TILL, text); }
+    if (from === "set-a-stone") { if (text.toLowerCase().indexOf(STEM_TILL_OLD.toLowerCase()) === 0) { text = clean(text.slice(STEM_TILL_OLD.length)); } text = withStem(STEM_TILL, text); }
     var when = String(e.when || "");
     var st = {
       id: String(e.id || ""),
@@ -513,7 +518,7 @@
   }
 
   window.APStone = {
-    version: "2.1",
+    version: "2.2",
     config: function (c) { CFG = c || null; return cfgOk(); },
     configured: cfgOk,
     set: set,

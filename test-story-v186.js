@@ -25,7 +25,7 @@ function page(stateHistory) {
 const type = (w, d, id, v) => { const n = d.getElementById(id); n.value = v; n.dispatchEvent(new w.Event("input", { bubbles: true })); };
 const values = (sent, skipWhole) => { const out = []; sent.forEach(s => (s.answers || []).forEach(a => { if (!(skipWhole && a.blockId === "W")) out.push(String(a.answer && a.answer.value)); })); return out; };
 (async () => {
-  t("story.js says v18.6, stone.js says v2.1", /AP-STORY-MODULE-v18\.6/.test(src.slice(0, 120)) && /AP-STONE-v2\.1/.test(stoneSrc.slice(0, 120)));
+  t("story.js says v18.6, stone.js says v2.2", /AP-STORY-MODULE-v18\.6/.test(src.slice(0, 120)) && /AP-STONE-v2\.2/.test(stoneSrc.slice(0, 120)));
   { const { w, d, inst, sent } = page(null); await sleep(60);
     type(w, d, "a", "a line he wrote {{with}} braces}}"); type(w, d, "b", "second"); d.getElementById("meta").value = JSON.stringify({ finished: true });
     inst.save({ working() {}, done() {}, fail(m) { t("no fail: " + m, false); } }); await sleep(120);
@@ -49,7 +49,7 @@ const values = (sent, skipWhole) => { const out = []; sent.forEach(s => (s.answe
     // stone.js reads the same damaged list and finds the stone
     w.APStone.config({ unit: "U", blocks: { whole: "W", json: "J", history: "H" }, script: "" });
     const l = await w.APStone.list();
-    t("stone.js v2.1: the damaged stone reads back whole — its three lines, its return date", l.length >= 1 && l.some(s => s.stonefor === "This stone is for a friend" && /Till now, the LORD has helped/.test(s.text) && s.meaning === "What this stone means to me is more hope" && s.returnAt === "2027-01-03"));
+    t("stone.js v2.1: the damaged stone reads back whole — its three lines, its return date", l.length >= 1 && l.some(s => s.stonefor === "This stone is for a friend" && /^The LORD has helped$/.test(s.text) && s.meaning === "What this stone means to me is more hope" && s.returnAt === "2027-01-03"));
   }
   { const { w, d, inst, sent } = page(null); await sleep(60);
     type(w, d, "a", "a stone"); d.getElementById("meta").value = JSON.stringify({ finished: false });
