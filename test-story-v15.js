@@ -43,7 +43,7 @@ const relay = input => {
 (async () => {
   // ---- 0. the engine carries The Word for It, once, and says it is v15
   { const { w } = page({ relay });
-    t("APStory.version is 15", w.APStory.version === "18.4");
+    t("APStory.version is the current cut", w.APStory.version === "18.6");
     t("APStory.wordForIt is The Word for It, the twenty words heavy to light", JSON.stringify(w.APStory.wordForIt) === JSON.stringify(WORD_FOR_IT)); }
 
   // ---- 1. where it sits: in the finish, after Read it back and its results, before Save

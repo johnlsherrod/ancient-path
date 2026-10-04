@@ -1,6 +1,11 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v18.5
+   AP-STORY-MODULE-v18.6
 
+   v18.6 (4 Oct 2026) — the record kept whole. LearnWorlds drops "}}" from a stored open-ended answer (measured 3 Oct
+     on the Stones form: every history list came back exactly two characters short, the two closing braces at its
+     end, while the answers JSON, which ends in one brace, came back whole). Every JSON value the engine stores is now
+     written with a space between two braces in a row (lwJSON), and a list already cut short is mended on read
+     (mendList). Nothing else changes.
    v18.5 (3 Oct 2026) — the finish, simple (John, Oct 3: "keep it simple, easy, flowing, contextual, and story
      oriented"; the finish read as an afterthought and its three help lines sat at three indents). Save is first and
      alone; Edit joins the quiet line; every note about the piece ("Saving puts this on your page", "There is nothing
@@ -369,10 +374,25 @@
      adding history to a form is exactly one line in its config, nothing
      else about the form has to change.
      ====================================================================== */
+  /* v18.6: LearnWorlds drops "}}" from a stored open-ended answer (measured 3 Oct 2026 on the Stones form: every
+     history list came back exactly two characters short — the two closing braces at its end — while the answers
+     JSON, which ends in one brace, came back whole). JSON allows whitespace between tokens, so every value stored
+     from here is written with a space between two braces in a row; nothing of a man's own text changes unless he
+     typed two braces together, and then a space goes between them. */
+  function lwJSON(v) { return JSON.stringify(v).replace(/\}(?=\})/g, "} ").replace(/\{(?=\{)/g, "{ "); }
+  /* a list stored before v18.6 and cut short: the missing closing braces go back before the final bracket */
+  function mendList(raw) {
+    var s = String(raw || "").trim();
+    if (!s || s.charAt(0) !== "[" || s.charAt(s.length - 1) !== "]") { return null; }
+    var opens = (s.match(/\{/g) || []).length, closes = (s.match(/\}/g) || []).length;
+    if (opens <= closes) { return null; }
+    var fixed = s.slice(0, -1); while (opens-- > closes) { fixed += "}"; } fixed += "]";
+    try { var v = JSON.parse(fixed); return Array.isArray(v) ? v : null; } catch (e) { return null; }
+  }
   function parseHistoryList(raw) {
     if (!raw) { return []; }
     var v;
-    try { v = JSON.parse(raw); } catch (e) { return []; }
+    try { v = JSON.parse(raw); } catch (e) { v = mendList(raw); if (!v) { return []; } }
     if (Array.isArray(v)) { return v.filter(function (e) { return e && typeof e === "object"; }); }
     return [];   /* a stray non-array value is treated as "no history yet", never thrown */
   }
@@ -647,7 +667,7 @@
     if (lw.blocks.whole) { out.push({ blockId: lw.blocks.whole, value: this.document(answers) }); }
     /* v4: one question can hold every answer as JSON, so a form with many
        small fields needs two questions in LearnWorlds, not thirty. */
-    if (lw.blocks.json) { out.push({ blockId: lw.blocks.json, value: JSON.stringify(answers) }); }
+    if (lw.blocks.json) { out.push({ blockId: lw.blocks.json, value: lwJSON(answers) }); }
     /* v6: the history array, when this form keeps one — computed by the
        caller (save()) before toBlocks is called, just carried across. */
     if (extraBlock) { out.push(extraBlock); }
@@ -697,13 +717,13 @@
             var entryAnswers = {};
             for (var k in answers) { if (k !== "meta") { entryAnswers[k] = answers[k]; } }
             var merged = mergeHistory(priorList, entryAnswers, self.document(answers), self.openEntryId);
-            extraBlock = { blockId: historyBlock, value: JSON.stringify(merged.list) };
+            extraBlock = { blockId: historyBlock, value: lwJSON(merged.list) };
             newEntryId = merged.id;
           } else {
             /* Stopping early: carry whatever history already exists
                through unchanged. Do not touch openEntryId either — he is
                still mid-sitting on the same piece. */
-            extraBlock = { blockId: historyBlock, value: rawByBlockId[historyBlock] || JSON.stringify([]) };
+            extraBlock = { blockId: historyBlock, value: lwJSON(parseHistoryList(rawByBlockId[historyBlock])) };
           }
         }
         return lwSubmit(self.cfg.lw.unit, self.toBlocks(answers, extraBlock)).then(function (sub) {
@@ -2350,7 +2370,7 @@
   };
 
   window.APStory = {
-    version: "18.4",
+    version: "18.6",
     assistant: ASSIST,
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 

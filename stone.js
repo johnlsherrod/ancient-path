@@ -1,5 +1,8 @@
 /* ==========================================================================
-   AP-STONE-v2 (3 Oct 2026) — the stone, kept whole.
+   AP-STONE-v2.1 (4 Oct 2026) — the stone, kept whole.
+
+   v2.1 — the record survives LearnWorlds: a stored answer loses "}}" (measured 3 Oct, see story.js v18.6), so every
+     value written here puts a space between two braces in a row, and a list already cut short is mended on read.
 
    v2 — John's rulings of Oct 3: the stone is three lines, not one. Every
      stone keeps who it is for, what the LORD has done ("Till now, the LORD
@@ -46,9 +49,18 @@
   function cfgOk() { return !!(CFG && CFG.unit && CFG.blocks && CFG.blocks.whole && CFG.blocks.json && CFG.blocks.history); }
   function newId() { return String(Date.now()) + "-" + Math.random().toString(36).slice(2, 8); }
   function clean(t) { return String(t || "").replace(/\s+/g, " ").trim(); }
+  function lwJSON(v) { return JSON.stringify(v).replace(/\}(?=\})/g, "} ").replace(/\{(?=\{)/g, "{ "); }
+  function mendList(raw) {
+    var s = String(raw || "").trim();
+    if (!s || s.charAt(0) !== "[" || s.charAt(s.length - 1) !== "]") { return null; }
+    var opens = (s.match(/\{/g) || []).length, closes = (s.match(/\}/g) || []).length;
+    if (opens <= closes) { return null; }
+    var fixed = s.slice(0, -1); while (opens-- > closes) { fixed += "}"; } fixed += "]";
+    try { var v = JSON.parse(fixed); return Array.isArray(v) ? v : null; } catch (e) { return null; }
+  }
   function parseList(raw) {
     if (!raw) { return []; }
-    var v; try { v = JSON.parse(raw); } catch (e) { return []; }
+    var v; try { v = JSON.parse(raw); } catch (e) { v = mendList(raw); if (!v) { return []; } }
     return Array.isArray(v) ? v.filter(function (e) { return e && typeof e === "object"; }) : [];
   }
   function parseReturns(raw) {
@@ -158,8 +170,8 @@
     var S = story();
     return S._submit(CFG.unit, [
       { blockId: CFG.blocks.whole, value: wholeText(latestSt) },
-      { blockId: CFG.blocks.json, value: JSON.stringify(toEntry(latestSt).answers) },
-      { blockId: CFG.blocks.history, value: JSON.stringify(entries) }
+      { blockId: CFG.blocks.json, value: lwJSON(toEntry(latestSt).answers) },
+      { blockId: CFG.blocks.history, value: lwJSON(entries) }
     ]);
   }
 
@@ -501,7 +513,7 @@
   }
 
   window.APStone = {
-    version: "2",
+    version: "2.1",
     config: function (c) { CFG = c || null; return cfgOk(); },
     configured: cfgOk,
     set: set,
