@@ -1,8 +1,14 @@
 /* ==========================================================================
-   AP-STONE-v2.8 (5 Oct 2026) — the stone, kept whole.
+   AP-STONE-v2.9 (5 Oct 2026) — the stone, kept whole.
+
+   v2.9 — nothing added to the biblical text (John, Oct 5: "we don't know the stones stood in a ring"). The return's
+     ground line said the LORD "stood in the midst of them"; Joshua 4 does not say it. It now says "the LORD was with
+     them", which the text does say (Joshua 1:9, 3:7). And the next return is his to set (John, Oct 5: "As a next step,
+     set the next follow up."): two taps above Save on a due stone — "three months" (on by default) or "a year" —
+     and answer(id, text, months) carries the choice; without one, a year on, as before.
 
    v2.8 — the return's Gilgal line says what the page says (John, Oct 5: Gilgal is the circle, God with us): "Gilgal means a
-     circle. Joshua set the stones there the day Israel came in, and the LORD stood in the midst of them. Samuel went
+     circle. Joshua set the stones there the day Israel came in, and the LORD [was with them — v2.9]. Samuel went
      back there to renew the kingdom. In and back meet on the same ground."
 
    v2.7 — the stone has a name (John, Oct 5). The record carries name; stoneName() is the name when there is one (a
@@ -78,7 +84,7 @@
   var RETURN_LEAD = "Three months on. Come back to the\u00a0stone.";
   var RETURN_ASK = "What has the LORD done in you\u00a0since?";
   var RETURN_HEAD = "What the LORD has done since";
-  var RETURN_GROUND = "Gilgal means a circle. Joshua set the stones there the day Israel came in, and the LORD stood in the midst of them. Samuel went back there to renew the kingdom. In and back meet on the same\u00a0ground.";
+  var RETURN_GROUND = "Gilgal means a circle. Joshua set the stones there the day Israel came in, and the LORD was with them. Samuel went back there to renew the kingdom. In and back meet on the same\u00a0ground.";
 
   function story() { return window.APStory || null; }
   function cfgOk() { return !!(CFG && CFG.unit && CFG.blocks && CFG.blocks.whole && CFG.blocks.json && CFG.blocks.history); }
@@ -122,7 +128,7 @@
   }
   /* the first return is three months after the stone was set; after an answer, a year on */
   function firstReturn(whenISO) { return dayISO(addMonths(whenISO, MONTHS_TO_RETURN)); }
-  function nextReturn(fromISO) { return dayISO(addMonths(fromISO, 12)); }
+  function nextReturn(fromISO, months) { return dayISO(addMonths(fromISO, months === 3 ? 3 : 12)); }
   function isDue(st, today) {
     if (!st || !st.returnAt) { return false; }
     var t = today ? dayISO(today instanceof Date ? today : new Date(today)) : dayISO(new Date());
@@ -281,15 +287,15 @@
     });
   }
 
-  /* The return: his dated answer to "What does it mean to you now?" The
-     next return is a year on from today. */
-  function answer(id, text) {
+  /* The return: his dated answer to the stone's question. The next return is
+     his to set — three months or a year on from today (a year without a choice). */
+  function answer(id, text, months) {
     text = clean(text);
     if (!text) { return window.Promise.reject(new Error("stone: nothing to say")); }
     return update(id, function (st) {
       var now = new Date().toISOString();
       st.returns = (st.returns || []).concat([{ when: now, text: text }]);
-      st.returnAt = nextReturn(now);
+      st.returnAt = nextReturn(now, months);
       return st;
     }).then(function (st) { try { story().track("stone_return", st.from || "stone"); } catch (e) {} return st; });
   }
@@ -438,15 +444,24 @@
       ask.appendChild(el("p", "ap-stone-ask-ground", RETURN_GROUND));
       var lab = el("label", "ap-stone-ask-q", returnQuestion(st)); lab.setAttribute("for", "apStoneAsk" + st.id);
       var ta = el("textarea", "ap-stone-ask-box"); ta.id = "apStoneAsk" + st.id; ta.rows = 3; ta.setAttribute("aria-label", returnQuestion(st));
+      /* v2.9 — the next return is his to set: three months (a season) or a year */
+      var months = 3;
+      var nxt = el("div", "ap-stone-ask-next");
+      nxt.appendChild(el("span", "ap-stone-ask-next-lead", "Then set the next return:"));
+      var taps = [[3, "three months"], [12, "a year"]].map(function (o) {
+        var b = el("button", "ap-stone-ask-when" + (o[0] === months ? " is-on" : ""), o[1]); b.type = "button"; b.setAttribute("data-months", String(o[0]));
+        b.addEventListener("click", function () { months = o[0]; taps.forEach(function (x) { x.classList.toggle("is-on", x === b); }); });
+        nxt.appendChild(b); return b;
+      });
       var row = el("div", "ap-stone-ask-row");
       var btn = el("button", (opts.buttonClass || "") + " ap-stone-ask-save", "Save"); btn.type = "button";
       var note = el("p", "ap-stone-ask-note", "");
       row.appendChild(btn);
-      ask.appendChild(lab); ask.appendChild(ta); ask.appendChild(row); ask.appendChild(note);
+      ask.appendChild(lab); ask.appendChild(ta); ask.appendChild(nxt); ask.appendChild(row); ask.appendChild(note);
       btn.addEventListener("click", function () {
         var t = clean(ta.value); if (!t) { note.textContent = "Say it in a few words, then Save."; return; }
         btn.disabled = true; note.textContent = "Saving…";
-        answer(st.id, t).then(function (s) {
+        answer(st.id, t, months).then(function (s) {
           note.textContent = "Saved. We will ask again on " + longDate(s.returnAt + "T12:00:00") + ".";
           ask.parentNode.replaceChild(drawStone(s, opts, states), w);
           if (s.rid && opts.offer !== false) { offerReturnLine(s, w, opts); }
@@ -567,7 +582,7 @@
   }
 
   window.APStone = {
-    version: "2.8",
+    version: "2.9",
     config: function (c) { CFG = c || null; return cfgOk(); },
     configured: cfgOk,
     set: set,

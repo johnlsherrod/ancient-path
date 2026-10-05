@@ -1,5 +1,11 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v18.7
+   AP-STORY-MODULE-v18.8
+
+   v18.8 (5 Oct 2026) — a man's voice (John, Oct 5: a woman's voice is not the right one for a men's site; one voice
+     across the engine). bestVoice() now puts a man's voice first: a man's natural voice (Guy, Andrew, Brian,
+     Christopher, Eric, Roger, Ryan, Steffan), then Google UK English Male, then Apple's men (Daniel, Alex, Evan, Tom,
+     Oliver, Aaron, Arthur, Fred), then any other man's voice, then the natural voices of either kind, then the rest.
+     Every page that loads story.js speaks with the same pick — Read it to me, Hear it, the Road, the stones.
 
    v18.7 (5 Oct 2026) — a better voice for Read it to me and Hear it. The device's default voice on Windows is the old
      robotic one; Edge and Chrome there ship natural voices beside it. say() now picks the best English voice the
@@ -1987,7 +1993,7 @@
     }
     function phone() { return touch() && window.innerWidth <= 640; }
     /* speak one text; the same button stops it; returns false when the device cannot speak */
-    /* v18.7 — the best voice the device has: natural first, then premium, then any English voice that is not the oldest one */
+    /* v18.7 — the best voice the device has: natural first, then premium, then any English voice that is not the oldest one; v18.8 — a man's voice before any of them */
     var pickedVoice = null, pickedFor = 0;
     function bestVoice() {
       var s = TTS(); if (!s || typeof s.getVoices !== "function") { return null; }
@@ -1996,13 +2002,21 @@
       if (pickedVoice && pickedFor === vs.length) { return pickedVoice; }
       var en = vs.filter(function (v) { return /^en[-_]/i.test(v.lang || ""); });
       if (!en.length) { en = vs; }
+      /* v18.8 — a man's voice first, the same one on every page */
+      var MAN = /\b(guy|andrew|brian|christopher|eric|roger|ryan|steffan|davis|jason|tony|william|liam|connor|daniel|alex|evan|tom|oliver|aaron|arthur|fred|lee|rishi|gordon|james|david|mark|male)\b/i;
       var score = function (v) {
         var n = String(v.name || "");
+        var man = MAN.test(n);
+        if (man && /natural/i.test(n)) { return 10; }
+        if (man && /online/i.test(n)) { return 9; }
+        if (/google uk english male/i.test(n)) { return 8; }
+        if (man && /daniel|alex|evan|tom|oliver|aaron|arthur|fred/i.test(n)) { return 7.5; }
+        if (man && !/microsoft (david|mark)(?! online)/i.test(n)) { return 7; }
         if (/natural/i.test(n)) { return 6; }
         if (/online/i.test(n)) { return 5; }
         if (/google (us|uk) english|google english/i.test(n)) { return 4; }
-        if (/samantha|ava|allison|zoe|evan|tom|daniel|karen|moira|serena/i.test(n)) { return 3; }
-        if (/microsoft (david|zira|mark)(?! online)/i.test(n)) { return 1; }
+        if (/samantha|ava|allison|zoe|karen|moira|serena/i.test(n)) { return 3; }
+        if (/microsoft (david|zira|mark)(?! online)/i.test(n)) { return man ? 1.5 : 1; }
         return 2;
       };
       var pick = null, best = -1;
