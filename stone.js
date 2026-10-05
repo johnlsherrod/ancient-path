@@ -1,5 +1,10 @@
 /* ==========================================================================
-   AP-STONE-v2.6 (4 Oct 2026) — the stone, kept whole.
+   AP-STONE-v2.7 (5 Oct 2026) — the stone, kept whole.
+
+   v2.7 — the stone has a name (John, Oct 5). The record carries name; stoneName() is the name when there is one (a
+     stone set before v2.7 keeps the old reading of its third line); the name heads the stone wherever it is drawn
+     (.ap-stone-name) and the return asks by it. An offered stone carries its name as its first line, and the public
+     page reads a short first line that is not one of the stone's own lines as the name.
 
    v2.6 — the return asks by name (John, Oct 4). The word on his third line is the stone's name, as Samuel's was Help;
      on the day a return is due the question reads "You named this stone ‹name›. What has the LORD done in you since?"
@@ -140,6 +145,7 @@
       text: text,
       stonefor: withStem(STEM_FOR, a.stonefor),
       meaning: withStem(STEM_MEANS, a.meaning),
+      name: clean(a.name),
       from: String(a.from || ""),
       piece: String(a.piece || ""),
       pieceTitle: String(a.pieceTitle || ""),
@@ -153,7 +159,7 @@
   /* the stone as stored: the entry shape story.js keeps */
   function toEntry(st, existing) {
     var answers = {
-      text: st.text, stonefor: st.stonefor || "", meaning: st.meaning || "",
+      text: st.text, stonefor: st.stonefor || "", meaning: st.meaning || "", name: st.name || "",
       from: st.from || "", piece: st.piece || "", pieceTitle: st.pieceTitle || "",
       returnAt: st.returnAt || "", returns: JSON.stringify(st.returns || []),
       rid: st.rid || "", shown: st.shown || ""
@@ -174,6 +180,7 @@
   function wholeText(st) { return lines(st).join("\n"); }
   /* v2.6 — the stone's name: the word on his third line, without the stem, to the first full stop, at most eight words */
   function stoneName(st) {
+    if (st && st.name) { return String(st.name).trim(); }
     var m = String((st && st.meaning) || "").trim(); if (!m) { return ""; }
     if (m.toLowerCase().indexOf(STEM_MEANS.toLowerCase()) === 0) { m = m.slice(STEM_MEANS.length); }
     m = m.replace(/^[\s:,\-–—]+/, "").split(/[.!?]/)[0].trim().replace(/[,;:]$/, "");
@@ -234,6 +241,7 @@
         text: text,
         stonefor: clean(opts.stonefor),
         meaning: clean(opts.meaning),
+        name: clean(opts.name),
         from: String(opts.from || ""),
         piece: piece,
         pieceTitle: String(opts.pieceTitle || ""),
@@ -332,7 +340,7 @@
       var a = res[0], who = res[1];
       if (!who) { throw { code: "no_who" }; }
       return send({ op: "offer", who: who, key: "stone", unit: unitFor(st), name: a.name || "", attribution: attributionFor(shown),
-                    title: titleFor(st), from: st.pieceTitle || "Set a Stone", email: a.email || "", testimony: wholeText(st), consent: "yes" });
+                    title: titleFor(st), from: st.pieceTitle || "Set a Stone", email: a.email || "", testimony: (st.name ? st.name + "\n" : "") + wholeText(st), consent: "yes" });
     }).then(function (r) {
       return update(st.id, function (s) { s.rid = String(r.rid || ""); s.shown = shown; return s; });
     }).then(function (s) { try { story().track("stone_offer", s.from || "stone"); } catch (e) {} return s; });
@@ -367,8 +375,10 @@
     var byTitle = {}, order = [];
     ((j && j.pieces) || []).forEach(function (p) {
       if (!p || !/^Stone /.test(String(p.title || ""))) { return; }
-      var st = { title: String(p.title), name: String(p.name || ""), from: String(p.from || ""), at: String(p.at || ""), lines: String(p.piece || "").split(/\r?\n/).map(clean).filter(Boolean) };
+      var st = { title: String(p.title), name: String(p.name || ""), from: String(p.from || ""), at: String(p.at || ""), lines: String(p.piece || "").split(/\r?\n/).map(clean).filter(Boolean), stoneName: "" };
       if (!st.lines.length) { return; }
+      /* v2.7: a named stone is offered with its name first — a short first line that is not one of the stone's own lines */
+      if (st.lines.length >= 2 && st.lines[0].split(/\s+/).length <= 4 && !/^(this stone is for|the lord has|till now|what this stone means|what god did)/i.test(st.lines[0])) { st.stoneName = st.lines[0]; st.lines = st.lines.slice(1); }
       if (!byTitle[st.title]) { order.push(st.title); byTitle[st.title] = st; }
       else if (String(st.at) > String(byTitle[st.title].at)) { byTitle[st.title] = st; }
     });
@@ -408,6 +418,7 @@
   }
   function drawStone(st, opts, states) {
     var w = el("div", "ap-stone"); w.setAttribute("data-stone", st.id);
+    if (st.name) { w.appendChild(el("p", "ap-stone-name", st.name)); }
     var ls = lines(st);
     ls.forEach(function (t, i) { var p = el("p", "ap-stone-text" + (i === 1 || ls.length === 1 ? " ap-stone-main" : "")); p.textContent = t; w.appendChild(p); });
     w.appendChild(el("p", "ap-stone-meta", metaLine(st)));
@@ -459,7 +470,7 @@
     }
     var open = el("button", "ap-stone-offer-open", "Set it where others can see it"); open.type = "button";
     var panel = el("div", "ap-stone-offer-panel"); panel.style.display = "none";
-    panel.appendChild(el("p", "ap-stone-offer-what", "Your three lines, your name or no name, and the month. Nothing else. You can take it back any time."));
+    panel.appendChild(el("p", "ap-stone-offer-what", "The stone — its name and its three lines — the month, and your name or no name. Nothing else. You can take it back any time."));
     var choice = el("div", "ap-stone-offer-choice");
     var idA = "apStoneFirst" + st.id, idB = "apStoneNone" + st.id;
     function radio(id, val, label, checked) {
@@ -542,6 +553,7 @@
       if (!shown.length) { if (opts.empty) { host.appendChild(el("p", "ap-stone-empty", opts.empty)); } return l; }
       shown.forEach(function (st) {
         var w = el("div", "ap-stone ap-stone-public");
+        if (st.stoneName) { w.appendChild(el("p", "ap-stone-name", st.stoneName)); }
         st.lines.forEach(function (t, i) { var p = el("p", "ap-stone-text" + (i === 1 || st.lines.length === 1 ? " ap-stone-main" : "")); p.textContent = t; w.appendChild(p); });
         w.appendChild(el("p", "ap-stone-meta", [monthYear(st.at), st.name].filter(Boolean).join(" · ")));
         host.appendChild(w);
@@ -551,7 +563,7 @@
   }
 
   window.APStone = {
-    version: "2.6",
+    version: "2.7",
     config: function (c) { CFG = c || null; return cfgOk(); },
     configured: cfgOk,
     set: set,

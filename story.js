@@ -1,5 +1,10 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v18.6
+   AP-STORY-MODULE-v18.7
+
+   v18.7 (5 Oct 2026) — a better voice for Read it to me and Hear it. The device's default voice on Windows is the old
+     robotic one; Edge and Chrome there ship natural voices beside it. say() now picks the best English voice the
+     device offers (a "Natural" or "Online" voice, then Google's or Apple's premium voices, then any other English
+     voice) and keeps the pick. Nothing else changes.
 
    v18.6 (4 Oct 2026) — the record kept whole. LearnWorlds drops "}}" from a stored open-ended answer (measured 3 Oct
      on the Stones form: every history list came back exactly two characters short, the two closing braces at its
@@ -1982,11 +1987,36 @@
     }
     function phone() { return touch() && window.innerWidth <= 640; }
     /* speak one text; the same button stops it; returns false when the device cannot speak */
+    /* v18.7 — the best voice the device has: natural first, then premium, then any English voice that is not the oldest one */
+    var pickedVoice = null, pickedFor = 0;
+    function bestVoice() {
+      var s = TTS(); if (!s || typeof s.getVoices !== "function") { return null; }
+      var vs = []; try { vs = s.getVoices() || []; } catch (e) { vs = []; }
+      if (!vs.length) { return null; }
+      if (pickedVoice && pickedFor === vs.length) { return pickedVoice; }
+      var en = vs.filter(function (v) { return /^en[-_]/i.test(v.lang || ""); });
+      if (!en.length) { en = vs; }
+      var score = function (v) {
+        var n = String(v.name || "");
+        if (/natural/i.test(n)) { return 6; }
+        if (/online/i.test(n)) { return 5; }
+        if (/google (us|uk) english|google english/i.test(n)) { return 4; }
+        if (/samantha|ava|allison|zoe|evan|tom|daniel|karen|moira|serena/i.test(n)) { return 3; }
+        if (/microsoft (david|zira|mark)(?! online)/i.test(n)) { return 1; }
+        return 2;
+      };
+      var pick = null, best = -1;
+      en.forEach(function (v) { var sc = score(v) + (/^en[-_]US/i.test(v.lang || "") ? 0.5 : 0) + (v.default ? 0.1 : 0); if (sc > best) { best = sc; pick = v; } });
+      pickedVoice = pick; pickedFor = vs.length;
+      return pick;
+    }
+    try { var s0 = TTS(); if (s0 && typeof s0.addEventListener === "function") { s0.addEventListener("voiceschanged", function () { pickedVoice = null; }); } } catch (e) {}
     function say(text, onEnd) {
       var s = TTS(); if (!s) { return false; }
       stop();
       var u = new window.SpeechSynthesisUtterance(String(text || ""));
       u.lang = document.documentElement.lang || "en-US"; u.rate = 0.95;
+      var v = bestVoice(); if (v) { try { u.voice = v; if (v.lang) { u.lang = v.lang; } } catch (e) {} }
       u.onend = function () { if (speaking === u) { speaking = null; } if (onEnd) { onEnd(); } };
       u.onerror = u.onend;
       speaking = u;
@@ -1994,7 +2024,7 @@
       return true;
     }
     function stop() { var s = TTS(); if (s) { try { s.cancel(); } catch (e) {} } speaking = null; }
-    return { SR: SR, TTS: TTS, touch: touch, phone: phone, say: say, stop: stop,
+    return { SR: SR, TTS: TTS, touch: touch, phone: phone, say: say, stop: stop, bestVoice: bestVoice,
       denied: function (v) { if (v !== undefined) { denied = !!v; } return denied; } };
   })();
 

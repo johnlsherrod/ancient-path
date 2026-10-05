@@ -64,6 +64,10 @@ function world(opts) {
     const l2 = await w.APStone.list();
     ok(l2.length === 2 && l2.filter(s => s.piece === "ew1").length === 1 && l2.filter(s => s.piece === "ew1")[0].text === "What God did was keep me.", "same piece set twice: one stone, the newer words");
     ok(submits.length === 3, "three writes");
+    const named = await w.APStone.set({ text: "brought me back.", stonefor: "a man I walk with", meaning: "a crossing I could not make alone, that required good people", name: "Crossing", from: "set-a-stone", piece: "sas3", pieceTitle: "Set a Stone" });
+    ok(named.name === "Crossing" && w.APStone.stoneName(named) === "Crossing" && w.APStone.returnQuestion(named) === "You named this stone Crossing. What has the LORD done in you\u00a0since?" && JSON.parse(store.history).filter(e => e.answers.piece === "sas3")[0].answers.name === "Crossing", "v2.7: set() keeps the name; the name wins over the third line; the return asks by it");
+    const host3 = w.document.createElement("div"); w.document.body.appendChild(host3); await w.APStone.render(host3, { offer: false });
+    ok(host3.querySelector('[data-stone="' + named.id + '"] .ap-stone-name') && host3.querySelector('[data-stone="' + named.id + '"] .ap-stone-name').textContent === "Crossing" && host3.querySelector('[data-stone="' + named.id + '"] .ap-stone-name').nextElementSibling.classList.contains("ap-stone-text"), "v2.7: the name heads the stone on his page");
   }
   // 3. the return: due on the day, the answer is kept dated, the next return is a year on
   {
@@ -110,7 +114,7 @@ function world(opts) {
     const host = w.document.getElementById("pile");
     await w.APStone.render(host, { today: new Date("2026-10-03T12:00:00") });
     ok(host.querySelector(".ap-stone-offer-open").textContent === "Set it where others can see it", "offer line: the ruled words");
-    ok(host.querySelector(".ap-stone-offer-what").textContent === "Your three lines, your name or no name, and the month. Nothing else. You can take it back any time.", "offer line: the ruled explanation");
+    ok(host.querySelector(".ap-stone-offer-what").textContent === "The stone — its name and its three lines — the month, and your name or no name. Nothing else. You can take it back any time.", "offer line: the ruled explanation");
     ok([...host.querySelectorAll(".ap-stone-offer-radio")].map(l => l.textContent.trim()).join("|") === "Your name|No name" && host.querySelector(".ap-stone-offer-radio input[value=none]").checked, "v2.3: the two choices are his name or no name, no name the default");
     ok(host.querySelector("#apStoneNoned1").checked && !host.querySelector("#apStoneFirstd1").checked, "offer line: No name is the default");
     ok(host.querySelector(".ap-stone-offer-panel").style.display === "none", "offer panel closed until he opens it");
@@ -126,6 +130,9 @@ function world(opts) {
     ] });
     ok(l.length === 2 && l[0].title === "Stone a" && l[0].lines.length === 4 && l[1].title === "Stone b" && l[1].lines.length === 1, "feed: stones only, newest wins, newest first");
     ok(l[0].name === "John" && l[1].name === "", "feed: first name or none");
+    const n = w.APStone._parseFeed({ pieces: [{ id: "5", name: "", title: "Stone c", from: "Set a Stone", piece: "Crossing\nThis stone is for a man I walk with.\nThe LORD has brought me back.\nWhat this stone means to me is a crossing I could not make alone.", at: "2026-10-05T00:00:00Z" }] });
+    ok(n.length === 1 && n[0].stoneName === "Crossing" && n[0].lines.length === 3 && l[0].stoneName === "" && l[1].stoneName === "", "v2.7 feed: a short first line that is not a stone line is the name; a return line last is not");
+
   }
   // 7. not signed in: nothing read, set refused
   {
