@@ -25,7 +25,7 @@ function page(stateHistory) {
 const type = (w, d, id, v) => { const n = d.getElementById(id); n.value = v; n.dispatchEvent(new w.Event("input", { bubbles: true })); };
 const values = (sent, skipWhole) => { const out = []; sent.forEach(s => (s.answers || []).forEach(a => { if (!(skipWhole && a.blockId === "W")) out.push(String(a.answer && a.answer.value)); })); return out; };
 (async () => {
-  t("story.js says v18.6, stone.js says v2.5", /AP-STORY-MODULE-v18\.6/.test(src.slice(0, 120)) && /AP-STONE-v2\.5/.test(stoneSrc.slice(0, 120)));
+  t("story.js says v18.6, stone.js says v2.6", /AP-STORY-MODULE-v18\.6/.test(src.slice(0, 120)) && /AP-STONE-v2\.6/.test(stoneSrc.slice(0, 120)));
   { const { w, d, inst, sent } = page(null); await sleep(60);
     type(w, d, "a", "a line he wrote {{with}} braces}}"); type(w, d, "b", "second"); d.getElementById("meta").value = JSON.stringify({ finished: true });
     inst.save({ working() {}, done() {}, fail(m) { t("no fail: " + m, false); } }); await sleep(120);

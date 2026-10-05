@@ -1,5 +1,10 @@
 /* ==========================================================================
-   AP-STONE-v2.5 (4 Oct 2026) — the stone, kept whole.
+   AP-STONE-v2.6 (4 Oct 2026) — the stone, kept whole.
+
+   v2.6 — the return asks by name (John, Oct 4). The word on his third line is the stone's name, as Samuel's was Help;
+     on the day a return is due the question reads "You named this stone ‹name›. What has the LORD done in you since?"
+     — the stone reminds, the LORD does the changing ("a reminder, not an idol"). A kept answer is headed "What the
+     LORD has done since". A stone with no third line gets the question alone.
 
    v2.5 — the last two words of the return's lead and ground lines are tied together (no lonely word on a line — John's rule).
 
@@ -62,6 +67,8 @@
   var MONTHS_TO_RETURN = 3;   /* the first return, three months on (John, Oct 1) */
   /* v2.4 — what stands above the question on the day it is due (John, Oct 4: return to Gilgal) */
   var RETURN_LEAD = "Three months on. Come back to the\u00a0stone.";
+  var RETURN_ASK = "What has the LORD done in you\u00a0since?";
+  var RETURN_HEAD = "What the LORD has done since";
   var RETURN_GROUND = "Gilgal means to roll. Joshua set the stones there the day Israel came in, and the LORD rolled their shame away on that ground. Samuel went back there to renew the kingdom. In and back meet on the same\u00a0ground.";
 
   function story() { return window.APStory || null; }
@@ -165,6 +172,15 @@
     return out;
   }
   function wholeText(st) { return lines(st).join("\n"); }
+  /* v2.6 — the stone's name: the word on his third line, without the stem, to the first full stop, at most eight words */
+  function stoneName(st) {
+    var m = String((st && st.meaning) || "").trim(); if (!m) { return ""; }
+    if (m.toLowerCase().indexOf(STEM_MEANS.toLowerCase()) === 0) { m = m.slice(STEM_MEANS.length); }
+    m = m.replace(/^[\s:,\-–—]+/, "").split(/[.!?]/)[0].trim().replace(/[,;:]$/, "");
+    var w = m.split(/\s+/).filter(Boolean); if (w.length > 8) { w = w.slice(0, 8); }
+    return w.join(" ");
+  }
+  function returnQuestion(st) { var n = stoneName(st); return n ? "You named this stone " + n + ". " + RETURN_ASK : RETURN_ASK; }
 
   /* ---- reading ---- */
   function rawList() {
@@ -397,7 +413,7 @@
     w.appendChild(el("p", "ap-stone-meta", metaLine(st)));
     (st.returns || []).forEach(function (r) {
       var q = el("div", "ap-stone-return");
-      q.appendChild(el("p", "ap-stone-return-when", longDate(r.when) + " · What it means to me now"));
+      q.appendChild(el("p", "ap-stone-return-when", longDate(r.when) + " · " + RETURN_HEAD));
       q.appendChild(el("p", "ap-stone-return-text", r.text));
       w.appendChild(q);
     });
@@ -405,8 +421,8 @@
       var ask = el("div", "ap-stone-ask");
       ask.appendChild(el("p", "ap-stone-ask-lead", RETURN_LEAD));
       ask.appendChild(el("p", "ap-stone-ask-ground", RETURN_GROUND));
-      var lab = el("label", "ap-stone-ask-q", "What does it mean to you now?"); lab.setAttribute("for", "apStoneAsk" + st.id);
-      var ta = el("textarea", "ap-stone-ask-box"); ta.id = "apStoneAsk" + st.id; ta.rows = 3; ta.setAttribute("aria-label", "What does this stone mean to you now?");
+      var lab = el("label", "ap-stone-ask-q", returnQuestion(st)); lab.setAttribute("for", "apStoneAsk" + st.id);
+      var ta = el("textarea", "ap-stone-ask-box"); ta.id = "apStoneAsk" + st.id; ta.rows = 3; ta.setAttribute("aria-label", returnQuestion(st));
       var row = el("div", "ap-stone-ask-row");
       var btn = el("button", (opts.buttonClass || "") + " ap-stone-ask-save", "Save"); btn.type = "button";
       var note = el("p", "ap-stone-ask-note", "");
@@ -480,7 +496,7 @@
     var note = el("p", "ap-stone-offer-note", "");
     yes.addEventListener("click", function () {
       yes.disabled = true; no.disabled = true; note.textContent = "Offering…";
-      var text = wholeText(st) + "\n" + longDate(st.returns[st.returns.length - 1].when) + " · What it means to me now: " + st.returns[st.returns.length - 1].text;
+      var text = wholeText(st) + "\n" + longDate(st.returns[st.returns.length - 1].when) + " · " + RETURN_HEAD + ": " + st.returns[st.returns.length - 1].text;
       window.Promise.all([authorInfo(), whoAmI()]).then(function (res) {
         var a = res[0], who = res[1]; if (!who) { throw { code: "no_who" }; }
         return send({ op: "offer", who: who, key: "stone", unit: unitFor(st), name: a.name || "", attribution: attributionFor(st.shown),
@@ -535,7 +551,7 @@
   }
 
   window.APStone = {
-    version: "2.5",
+    version: "2.6",
     config: function (c) { CFG = c || null; return cfgOk(); },
     configured: cfgOk,
     set: set,
@@ -549,6 +565,8 @@
     renderPublished: renderPublished,
     offerUI: offerUI,
     lines: lines,
+    stoneName: stoneName,
+    returnQuestion: returnQuestion,
     wholeText: wholeText,
     isDue: isDue,
     firstReturn: firstReturn,
