@@ -1,5 +1,9 @@
 /* ==========================================================================
-   AP-STONE-v2.7 (5 Oct 2026) — the stone, kept whole.
+   AP-STONE-v2.8 (5 Oct 2026) — the stone, kept whole.
+
+   v2.8 — the return's Gilgal line says what the page says (John, Oct 5: Gilgal is the circle, God with us): "Gilgal means a
+     circle. Joshua set the stones there the day Israel came in, and the LORD stood in the midst of them. Samuel went
+     back there to renew the kingdom. In and back meet on the same ground."
 
    v2.7 — the stone has a name (John, Oct 5). The record carries name; stoneName() is the name when there is one (a
      stone set before v2.7 keeps the old reading of its third line); the name heads the stone wherever it is drawn
@@ -74,7 +78,7 @@
   var RETURN_LEAD = "Three months on. Come back to the\u00a0stone.";
   var RETURN_ASK = "What has the LORD done in you\u00a0since?";
   var RETURN_HEAD = "What the LORD has done since";
-  var RETURN_GROUND = "Gilgal means to roll. Joshua set the stones there the day Israel came in, and the LORD rolled their shame away on that ground. Samuel went back there to renew the kingdom. In and back meet on the same\u00a0ground.";
+  var RETURN_GROUND = "Gilgal means a circle. Joshua set the stones there the day Israel came in, and the LORD stood in the midst of them. Samuel went back there to renew the kingdom. In and back meet on the same\u00a0ground.";
 
   function story() { return window.APStory || null; }
   function cfgOk() { return !!(CFG && CFG.unit && CFG.blocks && CFG.blocks.whole && CFG.blocks.json && CFG.blocks.history); }
@@ -563,7 +567,7 @@
   }
 
   window.APStone = {
-    version: "2.7",
+    version: "2.8",
     config: function (c) { CFG = c || null; return cfgOk(); },
     configured: cfgOk,
     set: set,

@@ -1,0 +1,2 @@
+#!/usr/bin/env python3
+"""stone.js v2.8 — the return's Gilgal line says the circle, as the writing page does (John, Oct 5). RETURN_GROUND = "Gilgal means a circle. Joshua set the stones there the day Israel came in, and the LORD stood in the midst of them. Samuel went back there to renew the kingdom. In and back meet on the same ground." Nothing else moves. (Applied in place on 5 Oct; this file records the change.)"""
