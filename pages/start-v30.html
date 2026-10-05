@@ -1,0 +1,1972 @@
+<div class="learnworlds-main-text learnworlds-element learnworlds-main-text-large" data-magic="description" data-node-type="text" id="el_1600361776628_11" contenteditable="" tabindex="0">
+    <!-- AP-HOME-v30 (v30, 5 Oct, John's walk of v29: stone.js v2.8; link, not publish — the stones card is the standard card, one quoted line (the newest stone's name and its LORD line) and All your stones; the pile opens in place when that button is pressed and closes again; Edit on every Set a Stone stone in the pile) (v29, 5 Oct: a stone's name heads it on the card and in the pile — stone.js v2.7; story.js v18.7 for the voice; the foot of the pile also leads to What These Stones Mean) (v28, 4 Oct: stone.js v2.6 — on the day a return is due the stone says "Three months on. Come back to the stone." and the Gilgal line above its question; the Remembrance Stones note says so) (v27, 4 Oct: the stones card is "Remembrance Stones" under "Set a Stone", card-sized — the count, the newest stone and one button, All your stones; the pile is its own section under the cards with every stone, the return question when due, the offer or Take it back, Set another; the chronicle's line is true to the day; stone.js v2.3 — his name or no name) (v26.2, 4 Oct: stone.js v2.2) (v26.1, 4 Oct: the pile stacks one stone under another in the card — the three-stops row layout no longer reaches it; story.js v18.6 and stone.js v2.1) (v26, 3 Oct: the Your stones card reads the whole stone — who it is for, what the LORD has done, what it means — with its date and where it came from; his dated answers under it; the question "What does it mean to you now?" on the day the return is due; "Set it where others can see it" with first name or no name, and Take it back; a quiet Set another link; story.js and stone.js loaded for it, pinned by commit and hash) (v25.5, 2 Oct: the block slides by half the difference with its width kept — the column it sits in pads 25px on the right and none on the left, so a margin on one side only shrank it) (v25.4, 2 Oct: the content below the band is slid to the true middle of the page area — it had sat 45px from the left and 56px from the right) (v25.3, 2 Oct: measured against the page's own scrolling area, so its scrollbar no longer counts as page width — the band was 10px too wide and the content 5px off center) (v25.2, 2 Oct: the page is set level inside the region the site gives it, not the whole window — a signed-in learner on a desktop now gets the site's side menu, and the page had sat left with a gap on the right) (v25.1, 2 Oct: no literal double curly brace anywhere in the block — LearnWorlds reads it as a template tag and cuts the page off there) (v25, 2 Oct: Breaking Free is a course card for the men in it (never offered as free); the Coming soon line drops the October 7 date; Ending Well — SURFACES ew + a card hidden until something is saved; Your stones — the stones a man has set, newest first, one card shown once he has one; the offer list knows Ending Well) (v24.5, 30 Sept: the whole page is set level between the left and right edges of the screen — on a phone the cards no longer sit closer to the left edge than the right) (v24.4, 30 Sept: the line under the three stones breaks between its two sentences — no lonely word) (v24.4, 30 Sept: the dark band at the top is set to the screen edge to edge whatever sits around the page — on a phone it no longer stops short on the right and runs off on the left) (v24.3, 29 Sept: a sentence of the promise never breaks inside itself on a phone) (v24.2, 29 Sept: the Known line reads "Published on Our Stories. / Other men can read it now." so the three lines balance) (v24.1, 29 Sept: the lines under the three stones break between their sentences — no lonely words) (v24, 29 Sept: the promise and the three stones — Told · Offered · Known — at the top of the page; the shelf is Your chronicle; the phone-width fix for the Why paragraph) (v23, 24 Sept: Where Are You? — SURFACES where + a card hidden until something is saved; six steps, once) (v22, 19 Sept: The Road I Walked, Walk With Me — SURFACES road + a card hidden until something is saved; a surface marked once gets no Write another) (v21, 17 Sept: the What Kind of Light card no longer says to take it to someone) (v20, 17 Sept: What Kind of Light — SURFACES wkl + a card hidden until something is saved; direct() and the offer layer count it) (v19, 12 Sept: Asked of Me has six parts; card link) (v18, 12 Sept: wha is Asked of Me at /asked-of-me) (v17, 12 Sept: What He Asked Me — SURFACES wha + a card hidden until something is saved; direct() and the offer layer count it) (v16: story pieces open in their own clean page from Your Page, not inside the course player — one click there and one click back) (v15: story cards titled by the piece a man made (Here I Am, The Man Who Crossed, Your Next Step), course name as the small label) (v14: on Open it / Pick up, leave a short note in the browser so the poem page can restore his saved work even though the course player drops the open flag from its address) (v13, 7 Sept: the two open courses are named in the page; enrolment read from /api/user_stats + /api/products/mine, which answer learners; /api/courses is admin-only) — his page, the home for story work (C25). 4 Sept 2026.
+     Replaces the template "Welcome, {{user.username}}" heading on the After Login page (/start).
+     Reads what he has written straight from LearnWorlds (same-origin, his own session):
+     the Lament and Where I'm From forms in the hidden Your Story course. Nothing is sent.
+     Directional, never sequential: one next step suggested from what he actually did; everything open.
+-->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
+
+        .ap-home {
+            --ap-navy: #1F2A44;
+            --ap-bronze: #B8945F;
+            --ap-paper: #FBF9F5;
+            --ap-rule: #E2DCD1;
+            --ap-ink: #2B3040;
+            --ap-quiet: #6B7280;
+            --ap-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+            --ap-sans: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            all: initial;
+            display: block;
+            box-sizing: border-box;
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 8px 20px 12px;
+            font-family: var(--ap-sans) !important;
+            color: var(--ap-ink) !important;
+            line-height: 1.5 !important;
+            text-align: left;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .ap-home *,
+        .ap-home *::before,
+        .ap-home *::after {
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        .ap-home p,
+        .ap-home a,
+        .ap-home h1,
+        .ap-home h2,
+        .ap-home h3,
+        .ap-home button {
+            font-family: inherit !important;
+        }
+
+        .ap-home p {
+            color: var(--ap-ink) !important;
+        }
+
+        .ap-home a {
+            text-decoration: none !important;
+        }
+
+        /* ---- greeting ---- */
+        .ap-home .ap-eyebrow {
+            font: 600 12px/1.2 var(--ap-sans) !important;
+            letter-spacing: .14em !important;
+            text-transform: uppercase !important;
+            color: var(--ap-bronze) !important;
+            margin: 0 0 10px;
+        }
+
+        .ap-home .ap-hello {
+            font: 400 clamp(30px, 5vw, 42px)/1.15 var(--ap-serif) !important;
+            color: var(--ap-navy) !important;
+            margin: 0 0 12px;
+            letter-spacing: -0.005em !important;
+        }
+
+        .ap-home .ap-line {
+            font: 400 18px/1.6 var(--ap-serif) !important;
+            color: var(--ap-ink) !important;
+            margin: 0 0 22px;
+            max-width: 58ch;
+        }
+
+        .ap-home .ap-primary {
+            display: inline-block;
+            font: 600 15px/1 var(--ap-sans) !important;
+            letter-spacing: .02em !important;
+            background: var(--ap-navy) !important;
+            color: #fff !important;
+            padding: 15px 26px;
+            border-radius: 2px;
+            border: 1px solid var(--ap-navy);
+            transition: background-color .15s ease;
+        }
+
+        .ap-home .ap-primary:hover {
+            background: #2B3856 !important;
+        }
+
+        .ap-home .ap-primary-note {
+            display: inline-block;
+            margin: 0 0 0 14px;
+            font: 400 14px/1.4 var(--ap-sans) !important;
+            color: var(--ap-quiet) !important;
+        }
+
+        /* ---- why ---- */
+        .ap-home .ap-why {
+            margin: 26px 0 0;
+            padding: 20px 24px 6px;
+            background: var(--ap-paper);
+            border-left: 3px solid var(--ap-bronze);
+        }
+
+        .ap-home .ap-why-kind {
+            font: 600 11px/1 var(--ap-sans) !important;
+            letter-spacing: .14em !important;
+            text-transform: uppercase !important;
+            color: var(--ap-bronze) !important;
+            margin: 0 0 12px;
+        }
+
+        .ap-home .ap-why p {
+            font: 400 16px/1.65 var(--ap-serif) !important;
+            color: var(--ap-ink) !important;
+            margin: 0 0 14px;
+            columns: 2;
+            column-gap: 44px;
+        }
+
+        @media (max-width: 720px) {
+            .ap-home .ap-why p {
+                columns: 1;
+            }
+        }
+
+        /* ---- sections ---- */
+        .ap-home .ap-sec {
+            margin: 44px 0 0;
+            padding-top: 22px;
+            border-top: 1px solid var(--ap-rule);
+        }
+
+        .ap-home .ap-sec-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 0 0 16px;
+        }
+
+        .ap-home .ap-h2 {
+            font: 400 26px/1.25 var(--ap-serif) !important;
+            color: var(--ap-navy) !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-sec-note {
+            font: 400 14px/1.5 var(--ap-sans) !important;
+            color: var(--ap-quiet) !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .ap-home .ap-grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (max-width: 860px) {
+
+            .ap-home .ap-grid,
+            .ap-home .ap-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ---- cards ---- */
+        .ap-home .ap-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 22px 22px 20px;
+            background: var(--ap-paper);
+            border: 1px solid var(--ap-rule);
+            border-radius: 6px;
+            min-height: 200px;
+        }
+
+        .ap-home .ap-card.is-next {
+            border-color: var(--ap-bronze);
+            box-shadow: inset 3px 0 0 var(--ap-bronze);
+        }
+
+        .ap-home .ap-card-kind {
+            font: 600 11px/1 var(--ap-sans) !important;
+            letter-spacing: .12em !important;
+            text-transform: uppercase !important;
+            color: var(--ap-bronze) !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-card-title {
+            font: 400 22px/1.25 var(--ap-serif) !important;
+            color: var(--ap-navy) !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-card-state {
+            font: 400 14px/1.45 var(--ap-sans) !important;
+            color: var(--ap-quiet) !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-card-quote {
+            font: italic 400 16px/1.55 var(--ap-serif) !important;
+            color: var(--ap-ink) !important;
+            margin: 2px 0 0;
+            white-space: pre-line;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .ap-home .ap-stone {
+            margin: 10px 0 0;
+            padding: 10px 0 0;
+            border-top: 1px solid var(--ap-rule);
+        }
+
+        .ap-home .ap-stone:first-child {
+            margin-top: 4px;
+            padding-top: 0;
+            border-top: 0;
+        }
+
+        .ap-home .ap-stone-text {
+            font: 400 17px/1.5 var(--ap-serif) !important;
+            color: var(--ap-navy) !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-stone-meta {
+            font: 400 13px/1.45 var(--ap-sans) !important;
+            color: var(--ap-quiet) !important;
+            margin: 2px 0 0;
+        }
+        /* v26.1 (4 Oct, John's walk): the card's pile stacks one stone under another — the ".ap-stones" row layout above is the three stops band, not the pile */
+        .ap-home .ap-card-stone { margin: 2px 0 0; }
+        .ap-home .ap-card-stone p { font: 400 15.5px/1.5 var(--ap-serif) !important; color: var(--ap-ink) !important; margin: 0; }
+        .ap-home .ap-card-stone p.ap-card-stone-main { color: var(--ap-navy) !important; }
+        .ap-home .ap-pile .ap-stone-edit { display: inline-block; margin: 8px 14px 0 0; font: 600 14px/1.4 var(--ap-sans) !important; color: var(--ap-navy) !important; text-decoration: underline; text-underline-offset: 3px; }
+        .ap-home .ap-card-stone p.ap-card-stone-name, .ap-home .ap-pile .ap-stone-name { font: 600 17px/1.3 var(--ap-serif) !important; color: var(--ap-navy) !important; margin: 0 0 6px; }
+        .ap-home .ap-pile .ap-stone-another + .ap-stone-another { margin-left: 18px; }
+        .ap-home .ap-card-stone p.ap-card-stone-when { font: 400 13px/1.45 var(--ap-sans) !important; color: var(--ap-quiet) !important; margin: 4px 0 0; }
+        .ap-home .ap-pile { max-width: 720px; }
+        .ap-home .ap-pile .ap-stones { display: block; max-width: none; margin: 0; }
+        .ap-home .ap-pile .ap-stones::before { display: none; }
+        .ap-home .ap-pile .ap-stone { flex: none; padding: 0 0 18px; margin: 0 0 18px; border-top: 0; border-bottom: 1px solid var(--ap-rule); }
+        .ap-home .ap-pile .ap-stone:last-child { padding-bottom: 0; margin-bottom: 0; border-bottom: 0; }
+        .ap-home .ap-pile-foot { margin: 18px 0 0; }
+        .ap-home #apRemembrance { scroll-margin-top: 110px; }
+        .ap-home .ap-card .ap-stone-text, .ap-home .ap-pile .ap-stone-text { font: 400 15.5px/1.5 var(--ap-serif) !important; color: var(--ap-ink) !important; }
+        .ap-home .ap-card .ap-stone-text.ap-stone-main, .ap-home .ap-pile .ap-stone-text.ap-stone-main { font-size: 17px !important; color: var(--ap-navy) !important; }
+        .ap-home .ap-card .ap-stone-return, .ap-home .ap-pile .ap-stone-return { margin: 8px 0 0; padding-left: 10px; border-left: 2px solid var(--ap-bronze); }
+        .ap-home .ap-card .ap-stone-return-when, .ap-home .ap-pile .ap-stone-return-when { font: 600 12px/1.4 var(--ap-sans) !important; letter-spacing: .08em; text-transform: uppercase; color: var(--ap-bronze) !important; margin: 0; }
+        .ap-home .ap-card .ap-stone-return-text, .ap-home .ap-pile .ap-stone-return-text { font: 400 15.5px/1.5 var(--ap-serif) !important; color: var(--ap-ink) !important; margin: 2px 0 0; }
+        .ap-home .ap-card .ap-stone-ask, .ap-home .ap-pile .ap-stone-ask { margin: 10px 0 0; padding: 10px 12px; background: var(--ap-paper); border: 1px solid var(--ap-rule); }
+        .ap-home .ap-pile .ap-stone-ask-lead { font: 600 15.5px/1.4 var(--ap-serif) !important; color: var(--ap-navy) !important; margin: 0 0 4px; }
+        .ap-home .ap-pile .ap-stone-ask-ground { font: 400 14px/1.55 var(--ap-sans) !important; color: var(--ap-quiet) !important; margin: 0 0 10px; }
+        .ap-home .ap-card .ap-stone-ask-q, .ap-home .ap-pile .ap-stone-ask-q { display: block; font: 600 15px/1.4 var(--ap-serif) !important; color: var(--ap-navy) !important; margin: 0 0 6px; }
+        .ap-home .ap-card .ap-stone-ask-box, .ap-home .ap-pile .ap-stone-ask-box { display: block; width: 100%; box-sizing: border-box; padding: 8px 10px; font: 400 15.5px/1.5 var(--ap-serif) !important; color: var(--ap-ink) !important; background: #fff; border: 1px solid var(--ap-rule); border-radius: 2px; resize: vertical; }
+        .ap-home .ap-card .ap-stone-ask-box:focus, .ap-home .ap-pile .ap-stone-ask-box:focus { outline: none; border-color: var(--ap-bronze); }
+        .ap-home .ap-card .ap-stone-ask-row, .ap-home .ap-pile .ap-stone-ask-row { margin: 8px 0 0; }
+        .ap-home .ap-card .ap-stone-ask-note, .ap-home .ap-card .ap-stone-offer-what, .ap-home .ap-card .ap-stone-offer-state, .ap-home .ap-card .ap-stone-offer-note, .ap-home .ap-pile .ap-stone-ask-note, .ap-home .ap-pile .ap-stone-offer-what, .ap-home .ap-pile .ap-stone-offer-state, .ap-home .ap-pile .ap-stone-offer-note { font: 400 13.5px/1.5 var(--ap-sans) !important; color: var(--ap-quiet) !important; margin: 6px 0 0; }
+        .ap-home .ap-card .ap-stone-offer-state, .ap-home .ap-pile .ap-stone-offer-state { color: var(--ap-ink) !important; margin-top: 8px; }
+        .ap-home .ap-card .ap-stone-offer, .ap-home .ap-pile .ap-stone-offer { margin: 8px 0 0; }
+        .ap-home .ap-card .ap-stone-offer-open, .ap-home .ap-card .ap-stone-offer-back, .ap-home .ap-pile .ap-stone-offer-open, .ap-home .ap-pile .ap-stone-offer-back { font: 600 14px/1.4 var(--ap-sans) !important; color: #8C6A3F !important; background: none !important; border: 0 !important; padding: 0 !important; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; margin: 0 14px 0 0; }
+        .ap-home .ap-card .ap-stone-offer-open:hover, .ap-home .ap-card .ap-stone-offer-back:hover, .ap-home .ap-pile .ap-stone-offer-open:hover, .ap-home .ap-pile .ap-stone-offer-back:hover { color: var(--ap-navy) !important; }
+        .ap-home .ap-card .ap-stone-offer-panel, .ap-home .ap-pile .ap-stone-offer-panel { margin: 8px 0 0; padding: 10px 12px; border: 1px solid var(--ap-rule); background: #fff; }
+        .ap-home .ap-card .ap-stone-offer-choice, .ap-home .ap-pile .ap-stone-offer-choice { display: flex; gap: 16px; margin: 8px 0 10px; }
+        .ap-home .ap-card .ap-stone-offer-radio, .ap-home .ap-pile .ap-stone-offer-radio { font: 400 14px/1.4 var(--ap-sans) !important; color: var(--ap-ink) !important; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+        .ap-home .ap-card .ap-stone-offer-radio input, .ap-home .ap-pile .ap-stone-offer-radio input { display: inline-block !important; appearance: auto; -webkit-appearance: radio; width: 15px; height: 15px; margin: 0; accent-color: var(--ap-navy); }
+        .ap-home .ap-card .ap-stone-another, .ap-home .ap-pile .ap-stone-another { display: inline-block; margin: 12px 0 0; font: 600 14px/1.4 var(--ap-sans) !important; color: var(--ap-navy) !important; text-decoration: underline; text-underline-offset: 3px; }
+
+        .ap-home .ap-card-body {
+            font: 400 15px/1.6 var(--ap-sans) !important;
+            color: var(--ap-ink) !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-card-actions {
+            margin-top: auto;
+            padding-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ap-home .ap-btn {
+            display: inline-block;
+            font: 600 14px/1 var(--ap-sans) !important;
+            letter-spacing: .02em !important;
+            padding: 12px 18px;
+            border-radius: 2px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+        }
+
+        .ap-home .ap-btn-primary {
+            background: var(--ap-navy) !important;
+            color: #fff !important;
+            border-color: var(--ap-navy) !important;
+        }
+
+        .ap-home .ap-btn-primary:hover {
+            background: #2B3856 !important;
+        }
+
+        .ap-home .ap-btn-ghost {
+            background: transparent !important;
+            color: var(--ap-navy) !important;
+            border-color: var(--ap-rule) !important;
+        }
+
+        .ap-home .ap-btn-ghost:hover {
+            background: var(--ap-navy) !important;
+            color: #fff !important;
+            border-color: var(--ap-navy) !important;
+        }
+
+        /* ---- courses ---- */
+        .ap-home .ap-course {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid var(--ap-rule);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .ap-home .ap-course-img {
+            display: block;
+            width: 100%;
+            height: 132px;
+            object-fit: cover;
+            background: var(--ap-rule);
+        }
+
+        .ap-home .ap-course-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 16px 18px 18px;
+            flex: 1 1 auto;
+        }
+
+        .ap-home .ap-course-title {
+            font: 400 20px/1.25 var(--ap-serif) !important;
+            color: var(--ap-navy) !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-course-line {
+            font: 400 14px/1.5 var(--ap-sans) !important;
+            color: var(--ap-ink) !important;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .ap-home .ap-course-state {
+            font: 600 12px/1.2 var(--ap-sans) !important;
+            letter-spacing: .08em !important;
+            text-transform: uppercase !important;
+            color: var(--ap-bronze) !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-course-actions {
+            margin-top: auto;
+            padding-top: 10px;
+        }
+
+        .ap-home .ap-soon {
+            font: 400 14px/1.6 var(--ap-sans) !important;
+            color: var(--ap-quiet) !important;
+            margin: 14px 0 0;
+        }
+
+        .ap-home .ap-soon strong {
+            color: var(--ap-navy) !important;
+            font-weight: 600 !important;
+        }
+
+        /* ---- doors ---- */
+        .ap-home .ap-door {
+            padding: 20px 22px;
+            border: 1px solid var(--ap-rule);
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .ap-home .ap-door h3 {
+            font: 400 20px/1.3 var(--ap-serif) !important;
+            color: var(--ap-navy) !important;
+            margin: 0 0 6px;
+        }
+
+        .ap-home .ap-door p {
+            font: 400 15px/1.55 var(--ap-sans) !important;
+            color: var(--ap-ink) !important;
+            margin: 0 0 12px;
+        }
+
+        .ap-home .ap-door a.ap-link {
+            font: 600 14px/1.4 var(--ap-sans) !important;
+            color: var(--ap-bronze) !important;
+            border-bottom: 1px solid var(--ap-rule);
+        }
+
+        .ap-home .ap-door a.ap-link:hover {
+            border-bottom-color: var(--ap-bronze);
+        }
+
+        /* ---- foot ---- */
+        .ap-home .ap-foot {
+            margin: 40px 0 0;
+            padding-top: 16px;
+            border-top: 1px solid var(--ap-rule);
+            font: 400 13px/1.6 var(--ap-sans) !important;
+            color: var(--ap-quiet) !important;
+        }
+
+        .ap-home .ap-foot p {
+            font: inherit !important;
+            color: inherit !important;
+            margin: 0 0 6px;
+        }
+
+        .ap-home .ap-foot strong {
+            color: var(--ap-navy) !important;
+            font-weight: 600 !important;
+        }
+
+        .ap-home .ap-foot a {
+            color: var(--ap-navy) !important;
+            text-decoration: underline !important;
+            font-weight: 600 !important;
+        }
+
+        .ap-home .ap-profile {
+            font: 400 14px/1.4 var(--ap-sans) !important;
+            color: var(--ap-quiet) !important;
+            text-decoration: underline !important;
+        }
+
+        /* ---- the site's front door (AP-BAND on the personal page, v6) ---- */
+        .ap-home .ap-band {
+            position: relative;
+            width: 100vw;
+            margin: 0 0 34px calc(50% - 50vw);
+            background: #1B2A3A url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='600' viewBox='0 0 1600 600'><g fill='none' stroke='%23B8945F' stroke-width='1.4' opacity='0.15'><path d='M-50 460 C 250 380, 450 500, 760 420 S 1300 320, 1680 400'/><path d='M-50 500 C 250 430, 480 540, 800 470 S 1320 380, 1680 450'/><path d='M-50 420 C 280 330, 520 460, 820 370 S 1280 270, 1680 350'/><path d='M-50 540 C 300 500, 520 580, 840 520 S 1340 440, 1680 510'/><path d='M-50 380 C 300 300, 560 420, 880 330 S 1300 240, 1680 310'/></g><g fill='%23B8945F' opacity='0.20'><circle cx='760' cy='420' r='4'/></g></svg>") 50% 100%/cover no-repeat;
+            text-align: center;
+        }
+
+        .ap-home .ap-band,
+        .ap-home .ap-band * {
+            text-align: center;
+        }
+
+        .ap-home .ap-band-in {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 64px 24px;
+        }
+
+        .ap-home .ap-band .ap-eyebrow {
+            font: 600 13px/1.65 var(--ap-sans) !important;
+            letter-spacing: 3px !important;
+            color: var(--ap-bronze) !important;
+            margin: 0 0 10px;
+        }
+
+        .ap-home .ap-band .ap-hello {
+            font: 600 44px/1.15 var(--ap-serif) !important;
+            color: #F3EDE3 !important;
+            letter-spacing: -0.01em !important;
+            margin: 0;
+        }
+
+        .ap-home .ap-band .ap-line {
+            font: 400 19px/1.6 var(--ap-sans) !important;
+            color: #B7AFA4 !important;
+            margin: 14px auto 0;
+            max-width: 600px;
+        }
+
+        .ap-home .ap-band .ap-promise {
+            font: 600 23px/1.4 var(--ap-serif) !important;
+            color: #F3EDE3 !important;
+            max-width: 700px;
+        }
+        .ap-home .ap-band .ap-line-small {
+            font-size: 16px !important;
+            margin-top: 22px;
+        }
+        .ap-home .ap-stones {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 0;
+            margin: 26px auto 0;
+            max-width: 760px;
+            position: relative;
+        }
+        .ap-home .ap-stones::before {
+            content: "";
+            position: absolute;
+            left: 16.6%;
+            right: 16.6%;
+            top: 5px;
+            border-top: 1px solid rgba(184, 148, 95, 0.45);
+        }
+        .ap-home .ap-stone {
+            flex: 1 1 0;
+            position: relative;
+            padding: 0 8px;
+        }
+        .ap-home .ap-stone-dot {
+            display: block;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--ap-bronze);
+            margin: 0 auto 10px;
+            box-shadow: 0 0 0 4px #1B2A3A;
+        }
+        .ap-home .ap-stone-word {
+            display: block;
+            font: 600 15px/1.3 var(--ap-sans) !important;
+            letter-spacing: 1.5px !important;
+            text-transform: uppercase;
+            color: #F3EDE3 !important;
+        }
+        .ap-home .ap-stone-what {
+            display: block;
+            font: 400 14px/1.5 var(--ap-sans) !important;
+            color: #B7AFA4 !important;
+            margin-top: 4px;
+            text-wrap: balance;
+        }
+        .ap-home .ap-band .ap-s {
+            display: inline-block;
+        }
+
+        /* the road on every finished piece: where this one stands (offer layer v2.3) */
+        .ap-home .ap-card .apo-road {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin: 0 0 10px;
+            position: relative;
+        }
+        .ap-home .ap-card .apo-road::before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            right: 5px;
+            top: 5px;
+            border-top: 1px solid #D9D2C6;
+        }
+        .ap-home .ap-card .apo-stop {
+            flex: 1 1 0;
+            position: relative;
+            font: 600 11px/1.3 var(--ap-sans) !important;
+            letter-spacing: 1.2px !important;
+            text-transform: uppercase;
+            color: #A39B8F !important;
+        }
+        .ap-home .ap-card .apo-stop:nth-child(2) { text-align: center; }
+        .ap-home .ap-card .apo-stop:last-child { text-align: right; }
+        .ap-home .ap-card .apo-stop::before {
+            content: "";
+            display: block;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1.5px solid #C9C2B6;
+            box-sizing: border-box;
+            margin: 0 0 6px;
+        }
+        .ap-home .ap-card .apo-stop:nth-child(2)::before { margin-left: auto; margin-right: auto; }
+        .ap-home .ap-card .apo-stop:last-child::before { margin-left: auto; }
+        .ap-home .ap-card .apo-stop.is-here,
+        .ap-home .ap-card .apo-stop.is-past { color: #1F2A44 !important; }
+        .ap-home .ap-card .apo-stop.is-here::before,
+        .ap-home .ap-card .apo-stop.is-past::before { background: var(--ap-bronze); border-color: var(--ap-bronze); }
+        .ap-home .ap-card .apo-stop.is-here::before { box-shadow: 0 0 0 3px rgba(184, 148, 95, 0.25); }
+
+        @media (max-width: 640px) {
+            .ap-home .ap-band-in {
+                padding: 48px 20px;
+            }
+            .ap-home .ap-band .ap-promise { font-size: 20px !important; }
+            .ap-home .ap-stone-what { display: none; }
+
+            .ap-home .ap-band .ap-hello {
+                font-size: 34px !important;
+            }
+
+            .ap-home .ap-band .ap-line {
+                font-size: 17px !important;
+            }
+        }
+
+        /* the template pieces this page no longer needs */
+        #el_1600361776630_13,
+        #el_1600361776629_12,
+        #section_1595508952669_1,
+        #section_1595264140423_17,
+        #section_1746209127709_360,
+        #section_1596728568594_589,
+        #section_1594819137767_30 {
+            display: none !important;
+        }
+
+        #el_1600361776627_10 {
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: 0 0 100% !important;
+        }
+    </style>
+    <div class="ap-home" id="apHome">
+        <div class="ap-band">
+            <div class="ap-band-in">
+                <p class="ap-eyebrow">Your page</p>
+                <h1 class="ap-hello" id="apHello">Welcome back.</h1>
+                <p class="ap-line ap-promise"><span class="ap-s">Tell your story.</span> <span class="ap-s">Offer your testimony.</span> <span class="ap-s">Be known in community.</span></p>
+                <div class="ap-stones" aria-label="The three stops">
+                    <div class="ap-stone"><span class="ap-stone-dot"></span><span class="ap-stone-word">Told</span><span class="ap-stone-what">Written down and kept.<br>Only you can read it.</span></div>
+                    <div class="ap-stone"><span class="ap-stone-dot"></span><span class="ap-stone-word">Offered</span><span class="ap-stone-what">Read by our team<br>before it goes up.</span></div>
+                    <div class="ap-stone"><span class="ap-stone-dot"></span><span class="ap-stone-word">Known</span><span class="ap-stone-what">Published on Our Stories.<br>Other men can read it now.</span></div>
+                </div>
+                <p class="ap-line ap-line-small"><span style="display:inline-block">There is no order to keep.</span> <span style="display:inline-block">All of it is open to you.</span></p>
+            </div>
+        </div>
+        <p id="apPrimaryRow"><a class="ap-primary" id="apPrimary" href="/write-a-lament">Write a lament</a><span class="ap-primary-note" id="apPrimaryNote">The oldest form there is for saying that something is wrong.</span></p>
+        <div class="ap-why">
+            <p class="ap-why-kind">Why do this at all</p>
+            <p>A story you have never told still runs your life. It shows up as the promises you made to yourself as a boy — never again, never trust, never need anyone — and as the walls you built to stay safe, and it decides how you react before you have had time to think. Telling it changes that. Writing it down, in the past tense, is a first step toward being known — and that is where healing happens, in company, not alone. Told out loud and heard, it gets new information: you are not alone with it now, and you are safe. That is what new ways of living are built on. And a story told truly, all the way through, becomes a testimony: something you can hand to another man when he needs it.</p>
+        </div>
+        <div class="ap-sec">
+            <div class="ap-sec-head">
+                <h2 class="ap-h2" id="apStoriesHead">Your chronicle</h2>
+                <p class="ap-sec-note" id="apStoriesNote">Nothing saved yet. Start with either one — there is no order to keep.</p>
+            </div>
+            <div class="ap-grid" id="apStories">
+                <div class="ap-card" data-story="lament">
+                    <p class="ap-card-kind">Lament</p>
+                    <p class="ap-card-title">Write a Lament</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">Nine parts, from the address to the vow. About twenty minutes, and you can stop at any part and come back.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/write-a-lament">Begin</a></div>
+                </div>
+                <div class="ap-card" data-story="wif">
+                    <p class="ap-card-kind">Poem</p>
+                    <p class="ap-card-title">Where I Am From</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">Twenty-six small questions and a poem builds itself out of what you already know. About ten minutes.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/where-i-am-from">Begin</a></div>
+                </div>
+                <div class="ap-card" data-story="wha" style="display:none">
+                    <p class="ap-card-kind">Poem</p>
+                    <p class="ap-card-title">Asked of Me</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">One question God asked. You answer it as your story moves — where you came from, the names you lived under, the turn, who He is to you, and where you are going.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/asked-of-me">Begin</a></div>
+                </div>
+                <div class="ap-card" data-story="road" style="display:none">
+                    <p class="ap-card-kind">Walk With Me</p>
+                    <p class="ap-card-title">The Road I Walked</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">Ten chapters, one after each section of Walk With Me, that build into your own story.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/the-road-i-walked">Begin</a></div>
+                </div>
+                <div class="ap-card" data-story="where" style="display:none">
+                    <p class="ap-card-kind">Walk With Me</p>
+                    <p class="ap-card-title">Where Are You?</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">The first question God ever asked a man, asked to you, today: your own X on the map, and one step.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/where-are-you">Begin</a></div>
+                </div>
+                <div class="ap-card" data-story="wkl" style="display:none">
+                    <p class="ap-card-kind">Poem</p>
+                    <p class="ap-card-title">What Kind of Light</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">Nine lines of questions about the light you give, and one question for one person in your life.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/what-kind-of-light">Begin</a></div>
+                </div>
+                <div class="ap-card" data-story="nxs" style="display:none">
+                    <p class="ap-card-kind">Do Hard Things</p>
+                    <p class="ap-card-title">Your Next Step</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">Six short answers written at the end of the course: where you started, what changed, and what comes next.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/path-player?courseid=do-hard-things&amp;unit=6a9ec1bb3b2a4937b70dbb21Unit">Open the course</a></div>
+                </div>
+                <div class="ap-card" data-story="arc" style="display:none">
+                    <p class="ap-card-kind">Do Hard Things</p>
+                    <p class="ap-card-title">The Man Who Crossed</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">Your crossing as a poem in your own words — twenty-five short answers, from the shore to the table you sit at now.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/path-player?courseid=do-hard-things&amp;unit=6a9edad8ec5e03f7ab034a63Unit">Open the course</a></div>
+                </div>
+                <div class="ap-card" data-story="hia" style="display:none">
+                    <p class="ap-card-kind">Known by Jesus</p>
+                    <p class="ap-card-title">Here I Am</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">Where you are, as a poem in your own words — twenty-five short answers, from the tower you built to the table you sit at now.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/path-player?courseid=i-want-you-to-know-me&amp;unit=6a9ee2474431c4df080367a5Unit">Open the course</a></div>
+                </div>
+                <div class="ap-card" data-story="knx" style="display:none">
+                    <p class="ap-card-kind">Known by Jesus</p>
+                    <p class="ap-card-title">Your Next Step</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">Six short answers written at the end of the course: where you started, what changed, and what comes next.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/path-player?courseid=i-want-you-to-know-me&amp;unit=6a9ee2609e292b89090eb884Unit">Open the course</a></div>
+                </div>
+                <div class="ap-card" data-story="ew" style="display:none">
+                    <p class="ap-card-kind">Breaking Free</p>
+                    <p class="ap-card-title">Ending Well</p>
+                    <p class="ap-card-state">Not started</p>
+                    <p class="ap-card-body">Where you started, what changed, what God did, and what you hope for &mdash; written to the men you walked with, at the end of Breaking Free.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="/path-player?courseid=student-course&amp;unit=6ac01a803708b7aebd0eef32Unit">Open the course</a></div>
+                </div>
+                <div class="ap-card" data-story="stones" style="display:none">
+                    <p class="ap-card-kind">Set a Stone</p>
+                    <p class="ap-card-title">Remembrance Stones</p>
+                    <p class="ap-card-state"></p>
+                    <p class="ap-card-quote" id="apStoneNewest"></p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-primary" href="#apRemembrance" id="apStonesAll">All your stones</a></div>
+                </div>
+                <div class="ap-card is-next" id="apNext">
+                    <p class="ap-card-kind">If you want a suggestion</p>
+                    <p class="ap-card-title" id="apNextTitle">Start with the poem</p>
+                    <p class="ap-card-body" id="apNextBody">Where I Am From is the easiest way in — small questions, nothing hard to answer, and a real poem at the end. The lament is here whenever you need it.</p>
+                    <div class="ap-card-actions"><a class="ap-btn ap-btn-ghost" id="apNextLink" href="/where-i-am-from">Go there</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="ap-sec" id="apRemembrance" style="display:none">
+            <div class="ap-sec-head">
+                <h2 class="ap-h2">Remembrance Stones</h2>
+                <p class="ap-sec-note" id="apRemembranceNote">Every stone you have set, newest first. Three months on, each one asks you to come back.</p>
+            </div>
+            <div class="ap-pile">
+                <div class="ap-stones" id="apStonePile"></div>
+                <p class="ap-pile-foot"><a class="ap-stone-another" href="/set-a-stone">Set another &rarr;</a><a class="ap-stone-another" href="/stones">What These Stones Mean &rarr;</a></p>
+            </div>
+        </div>
+        <div class="ap-sec" id="apCoursesSec">
+            <div class="ap-sec-head">
+                <h2 class="ap-h2">Courses</h2>
+                <p class="ap-sec-note" id="apCoursesNote">Free to start, and yours to keep.</p>
+            </div>
+            <div class="ap-grid" id="apCourses">
+                <hr style="border:0;margin:0;height:0">
+            </div>
+            <p class="ap-soon" id="apSoon" hidden=""></p>
+        </div>
+        <div class="ap-sec">
+            <div class="ap-sec-head">
+                <h2 class="ap-h2">Doors</h2>
+                <p class="ap-sec-note">Everything here is open, whatever you have or have not done.</p>
+            </div>
+            <div class="ap-grid">
+                <div class="ap-door">
+                    <h3>Talk with Ancient Path</h3>
+                    <p>A conversation about where you are — insight, a recommendation, a referral, or coaching. The first one is free and there is nothing to prepare.</p>
+                    <a class="ap-link" href="https://calendly.com/john-ancientpathcoaching/introductions" target="_blank" rel="noopener">Book a free 30-minute conversation →</a>
+                </div>
+                <div class="ap-door">
+                    <h3>The poetry pages</h3>
+                    <p>Why anger at God is biblical, what a lament is for, and the other short pieces that go with the writing.</p>
+                    <a class="ap-link" href="/your-story">Read them →</a>
+                </div>
+                <div class="ap-door">
+                    <h3>Your profile</h3>
+                    <p>Your name, your email, your password — the account side of things.</p>
+                    <a class="ap-link" href="/profile">Open your profile →</a>
+                </div>
+            </div>
+        </div>
+        <div class="ap-foot">
+            <p><strong>Nothing you write reaches us unless you choose to save it with us.</strong> What you save is yours: read it, change it, or write it again.</p>
+            <p><strong>We make mistakes.</strong> Sometimes it is in the site we build. If you find one, please send us the information — a screen print is great, or just a description. Thank you. <a href="https://form.jotform.com/262466498821065?q3_textbox1=https%3A%2F%2Fwww.ancientpathcoaching.com%2Fstart" target="_blank" rel="noopener">Report a bug</a></p>
+        </div>
+    </div>
+    <script>
+        (function() {
+            var $ = function(id) {
+                return document.getElementById(id);
+            };
+            var SURFACES = {
+                lament: {
+                    unit: "6a9acf1a4a65fe7bd70c9743",
+                    whole: "openEnded1788512593217_295",
+                    meta: "openEnded1788534605339_275",
+                    parts: 9,
+                    partWord: "step",
+                    page: "/write-a-lament",
+                    name: "lament"
+                },
+                nxs: {
+                    unit: "6a9ec39ba4b37ac12a0fd698",
+                    whole: "openEnded1788771837959_288",
+                    meta: "openEnded1788771839959_290",
+                    parts: 6,
+                    partWord: "part",
+                    page: "/ebook/ebook6a9ec1bb3b2a4937b70dbb21-6a9ec1bb5acd8",
+                    name: "next step"
+                },
+                arc: {
+                    unit: "6a9eda1465bd64a422053e4f",
+                    whole: "openEnded1788777451885_276",
+                    json: "openEnded1788777454977_278",
+                    parts: 5,
+                    partWord: "part",
+                    page: "/ebook/ebook6a9edad8ec5e03f7ab034a63-6a9edad89012a",
+                    name: "crossing"
+                },
+                hia: {
+                    unit: "6a9ee0560b663e59d00f52fa",
+                    whole: "openEnded6a9ee0561523c",
+                    json: "openEnded6a9ee0561526d",
+                    parts: 5,
+                    partWord: "part",
+                    page: "/ebook/ebook6a9ee2474431c4df080367a5-6a9ee24797487",
+                    name: "Here I Am poem"
+                },
+                knx: {
+                    unit: "6a9ee071812147198209a574",
+                    whole: "openEnded6a9ee0718a150",
+                    meta: "openEnded6a9ee0718a16d",
+                    parts: 6,
+                    partWord: "part",
+                    page: "/ebook/ebook6a9ee2609e292b89090eb884-6a9ee261060b5",
+                    name: "Known by Jesus next step"
+                },
+                wif: {
+                    unit: "6a9b1bd66f53d6a78c00a895",
+                    whole: "openEnded1788532124536_276",
+                    json: "openEnded1788532161732_279",
+                    parts: 7,
+                    partWord: "part",
+                    page: "/where-i-am-from",
+                    name: "poem"
+                },
+                wha: {
+                    unit: "6aa495c7401787900c017193",
+                    whole: "openEnded6aa495c762c85",
+                    json: "openEnded6aa495c762ca3",
+                    parts: 6,
+                    partWord: "part",
+                    page: "/asked-of-me",
+                    name: "Asked of Me poem"
+                },
+                wkl: {
+                    unit: "6aac317b65698408f804bf64",
+                    whole: "openEnded6aac317bb8dc6",
+                    json: "openEnded6aac317bb8de3",
+                    parts: 3,
+                    partWord: "part",
+                    page: "/what-kind-of-light",
+                    name: "What Kind of Light poem"
+                },
+                road: {
+                    unit: "6aaf030c329c182cee08bcb2",
+                    whole: "openEnded6aaf030c844ed",
+                    meta: "openEnded6aaf030c8451e",
+                    parts: 10,
+                    partWord: "part",
+                    page: "/the-road-i-walked",
+                    name: "story",
+                    once: true
+                },
+                where: {
+                    unit: "6ab526197d249596ce0b3104",
+                    whole: "openEnded6ab526194f23b",
+                    meta: "openEnded6ab526194f27e",
+                    parts: 6,
+                    partWord: "step",
+                    page: "/where-are-you",
+                    name: "answer to Where are you?",
+                    once: true
+                },
+                ew: {
+                    unit: "6ac015e7c77a1e998001bedf",
+                    whole: "openEnded6ac015e7a8018",
+                    json: "openEnded6ac015e7a8038",
+                    parts: 6,
+                    partWord: "part",
+                    page: "/ebook/ebook6ac01a803708b7aebd0eef32-6ac01a80a3155",
+                    name: "Ending Well story"
+                }
+            };
+            var STONES = { unit: "6ac015de1e5c97a07e082885", blocks: { whole: "openEnded6ac015de51647", json: "openEnded6ac015de5166c", history: "openEnded6ac015de51689" }, script: "https://script.google.com/macros/s/AKfycbxTfzmFY7NuXaGZIsPqxRDKpqakwXs5heeEGcp07aiTUG6Pzk9wJ0m8qubveVZoRCO3/exec" };
+            var STORY_SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@62f4b918f144151bf02d0d5285b7f5f9da9a0d67/story.js", STORY_SRI = "sha384-lFSgkETYKSy9Hh8NKV8eAhwmpK63b4hGKN/pMBtyEnLxMg9CtFevxHohXVK4dN6/";
+            var STONE_SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@326bae922422441be3f73a1f139991e1d754d262/stone.js", STONE_SRI = "sha384-WvO8Aa51okb5x5XgiApWvBaUoERaWdCt9M2P1R4SU3VY6dEI32xPK2q2xtBrj7Cx";
+
+            function getJSON(path) {
+                return fetch(path, {
+                    credentials: "include",
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                }).then(function(r) {
+                    return r.ok ? r.json() : null;
+                }).catch(function() {
+                    return null;
+                });
+            }
+
+            function hello(first) {
+                var h = new Date().getHours();
+                var word = h < 12 ? "Good morning" : (h < 17 ? "Good afternoon" : "Good evening");
+                $("apHello").textContent = first ? word + ", " + first + "." : word + ".";
+            }
+
+            function when(ts) {
+                if (!ts) {
+                    return "";
+                }
+                var d = new Date(ts * 1000),
+                    now = new Date();
+                var days = Math.floor((now - d) / 864e5);
+                if (days <= 0) {
+                    return "today";
+                }
+                if (days === 1) {
+                    return "yesterday";
+                }
+                if (days < 7) {
+                    return days + " days ago";
+                }
+                return d.toLocaleDateString(undefined, {
+                    month: "long",
+                    day: "numeric"
+                });
+            }
+
+            function readState(key) {
+                var s = SURFACES[key];
+                return getJSON("/api/assessment/state?sourceType=unit&objectId=" + s.unit).then(function(data) {
+                    var sub = data && data.latestSubmission;
+                    if (!sub || sub.status !== "submitted" || !sub.answers) {
+                        return {
+                            key: key,
+                            status: "none"
+                        };
+                    }
+                    var by = {};
+                    sub.answers.forEach(function(a) {
+                        if (a && a.blockId && a.answer) {
+                            by[a.blockId] = String(a.answer.value || "");
+                        }
+                    });
+                    var meta = null;
+                    try {
+                        meta = s.meta ? JSON.parse(by[s.meta] || "") : JSON.parse(JSON.parse(by[s.json] || "{}").meta || "");
+                    } catch (e) {
+                        meta = null;
+                    }
+                    var paras = (by[s.whole] || "").split("\n\n");
+                    if (paras.length > 1 && paras[0].trim() === paras[0].trim().toUpperCase() && paras[0].trim().length < 40) {
+                        paras.shift();
+                    }
+                    var whole = (paras[0] || "").trim();
+                    var finished = meta ? !!meta.finished : true;
+                    return {
+                        key: key,
+                        status: finished ? "finished" : "progress",
+                        step: meta && typeof meta.step === "number" ? meta.step + 1 : null,
+                        first: whole.split("\n").slice(0, 2).join("\n"),
+                        when: when(sub.submittedTimestamp || sub.modified)
+                    };
+                });
+            }
+
+            function paint(st) {
+                var s = SURFACES[st.key],
+                    card = document.querySelector('[data-story="' + st.key + '"]');
+                if (!card) {
+                    return;
+                }
+                var state = card.querySelector(".ap-card-state"),
+                    body = card.querySelector(".ap-card-body"),
+                    acts = card.querySelector(".ap-card-actions");
+                if (st.status !== "none" && card.style.display === "none") {
+                    card.style.display = "";
+                }
+                if (st.status === "none") {
+                    return;
+                }
+                var open = s.page + (s.page.indexOf("?") >= 0 ? "&open=1" : "?open=1");
+                if (st.status === "progress") {
+                    state.textContent = "In progress — you stopped at " + s.partWord + " " + st.step + " of " + s.parts + (st.when ? " · saved " + st.when : "");
+                    acts.innerHTML = '<a class="ap-btn ap-btn-primary" href="' + open + '">Pick up where you left off</a>';
+                } else {
+                    state.textContent = "Finished" + (st.when ? " · saved " + st.when : "");
+                    acts.innerHTML = '<a class="ap-btn ap-btn-primary" href="' + open + '">Open it</a>' + (s.once ? "" : '<a class="ap-btn ap-btn-ghost" href="' + s.page + '">Write another</a>');
+                }
+                if (st.first) {
+                    body.className = "ap-card-quote";
+                    body.textContent = st.first;
+                }
+            }
+
+            function direct(lam, wif, nxs, arc, hia, knx, wha, wkl, road, where, ew) {
+                var p = $("apPrimary"),
+                    n = $("apPrimaryNote"),
+                    t = $("apNextTitle"),
+                    b = $("apNextBody"),
+                    l = $("apNextLink");
+                var inProg = [lam, wif, nxs, arc, hia, knx, wha, wkl, road, where, ew].filter(function(s) {
+                    return s.status === "progress";
+                })[0];
+                if (inProg) {
+                    var s = SURFACES[inProg.key];
+                    p.href = s.page + (s.page.indexOf("?") >= 0 ? "&open=1" : "?open=1");
+                    p.textContent = "Pick up your " + s.name;
+                    n.textContent = "You stopped at " + s.partWord + " " + inProg.step + " of " + s.parts + ". It is all still there.";
+                } else if (lam.status === "finished" && wif.status !== "finished") {
+                    p.href = "/where-i-am-from";
+                    p.textContent = "Write Where I Am From";
+                    n.textContent = "Ten minutes. Twenty-six small questions.";
+                } else if (wif.status === "finished" && lam.status !== "finished") {
+                    p.href = "/write-a-lament";
+                    p.textContent = "Write a lament";
+                    n.textContent = "Nine parts. The oldest form there is for saying that something is wrong.";
+                } else if (lam.status === "finished" && wif.status === "finished") {
+                    p.href = "/write-a-lament";
+                    p.textContent = "Write another lament";
+                    n.textContent = "It never comes out the same twice. Or open one you saved, below.";
+                } else {
+                    p.href = "/where-i-am-from";
+                    p.textContent = "Write Where I Am From";
+                    n.textContent = "The easiest way in. About ten minutes.";
+                }
+                /* the suggestion card: one honest next step, never a sequence */
+                if (inProg) {
+                    t.textContent = "Finish what you started";
+                    b.textContent = "You have a " + SURFACES[inProg.key].name + " in progress. Everything you wrote is waiting where you left it — pick it up when you are ready, not before.";
+                    l.href = SURFACES[inProg.key].page + (SURFACES[inProg.key].page.indexOf("?") >= 0 ? "&open=1" : "?open=1");
+                    l.textContent = "Pick it up";
+                } else if (lam.status === "finished" && wif.status !== "finished") {
+                    t.textContent = "Consider Where I Am From";
+                    b.textContent = "You wrote a lament — the hard one. The poem goes the other way: small, specific, and mostly kind. It is a good thing to write after a lament.";
+                    l.href = "/where-i-am-from";
+                    l.textContent = "Go there";
+                } else if (wif.status === "finished" && lam.status !== "finished") {
+                    t.textContent = "Consider a lament";
+                    b.textContent = "You wrote the poem. If there is something in it that still hurts, the lament is the form for saying so to God — nine parts, and you can stop at any of them.";
+                    l.href = "/write-a-lament";
+                    l.textContent = "Go there";
+                } else if (lam.status === "finished" && wif.status === "finished") {
+                    t.textContent = "Read them together";
+                    b.textContent = "You have both. Read them one after the other, out loud if you can. Then write whichever one wants writing again — neither comes out the same twice.";
+                    l.href = "/write-a-lament?open=1";
+                    l.textContent = "Open the lament";
+                }
+            }
+
+            /* Your stones (v26): every stone he has set, from any piece, newest first — read and drawn by stone.js v2 (the lines, the date and where from, his dated answers, the question on the day the return is due, the offer line). The card stays hidden until he has one. */
+            function loadScript(src, sri) {
+                return new Promise(function(resolve, reject) {
+                    var s = document.createElement("script");
+                    s.src = src; s.integrity = sri; s.crossOrigin = "anonymous"; s.async = true;
+                    s.addEventListener("load", resolve); s.addEventListener("error", reject);
+                    document.head.appendChild(s);
+                });
+            }
+            function stones() {
+                var card = document.querySelector('[data-story="stones"]');
+                if (!card || !STONES.unit) {
+                    return;
+                }
+                var p = window.APStory ? Promise.resolve() : loadScript(STORY_SRC, STORY_SRI);
+                p.then(function() { return window.APStone ? null : loadScript(STONE_SRC, STONE_SRI); }).then(function() {
+                    if (!window.APStone || !window.APStone.config(STONES)) { return; }
+                    var host = document.getElementById("apStonePile"), sec = document.getElementById("apRemembrance");
+                    return window.APStone.render(host, { buttonClass: "ap-btn ap-btn-primary" }).then(function(list) {
+                        if (!list.length) { return; }
+                        card.querySelector(".ap-card-state").textContent = list.length === 1 ? "One stone set" : list.length + " stones set";
+                        /* the newest stone on the card: its lines and its date; the pile below holds the rest */
+                        var newest = list[0], box = document.getElementById("apStoneNewest");
+                        if (box && newest) {
+                            /* v30: one quoted line, like every other card — the stone's name, then its LORD line */
+                            box.textContent = (newest.name ? newest.name + "\n" : "") + (newest.text || "");
+                        }
+                        card.style.display = "";
+                        /* v30: the pile stays off the page until All your stones is pressed; Edit on each Set a Stone stone */
+                        var all = document.getElementById("apStonesAll");
+                        if (sec && all && !all._wired) {
+                            all._wired = true;
+                            all.addEventListener("click", function(ev) {
+                                ev.preventDefault();
+                                var open = sec.style.display === "none";
+                                sec.style.display = open ? "" : "none";
+                                all.textContent = open ? "Close your stones" : "All your stones";
+                                if (open) { try { sec.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }
+                            });
+                        }
+                        list.forEach(function(st) {
+                            if (!st || st.from !== "set-a-stone" || !st.id || !host) { return; }
+                            var el = host.querySelector('[data-stone="' + st.id + '"]'); if (!el || el.querySelector(".ap-stone-edit")) { return; }
+                            var ed = document.createElement("a"); ed.className = "ap-stone-edit"; ed.href = "/set-a-stone?open=" + encodeURIComponent(st.id); ed.textContent = "Edit";
+                            var off = el.querySelector(".ap-stone-offer");
+                            if (off) { el.insertBefore(ed, off); } else { el.appendChild(ed); }
+                        });
+                        var note = $("apStoriesNote"); if (note) { note.textContent = "Pick up where you left off, or start another."; }
+                    });
+                }).catch(function() {});
+            }
+            stones();
+
+            function esc(t) {
+                return String(t || "").replace(/[&<>"]/g, function(c) {
+                    return {
+                        "&": "&amp;",
+                        "<": "&lt;",
+                        ">": "&gt;",
+                        '"': "&quot;"
+                    } [c];
+                });
+            }
+
+            function courses() {
+                /* The two open courses are named here on purpose: the course list LearnWorlds serves (/api/courses) answers admins only — a learner gets 403 — so the page must not depend on it. Enrolment comes from the calls the After Login page itself makes for every man (/api/user_stats, /api/products/mine), with /api/courses as an extra signal when it answers. The section never hides. */
+                var OPEN = [{
+                    titleId: "do-hard-things",
+                    id: "6a5f7f8cd0269f85b701f6bc",
+                    title: "Do Hard Things",
+                    line: "Twelve-part study in the life of Peter. How faith is formed doing hard things alongside good people, stepping onto the right path when it costs.",
+                    img: "https://lwfiles.mycourse.app/69ff74fa031fcc8033475300-public/04987ae97371159ad68bd66433fb50b9.jpg"
+                }, {
+                    titleId: "i-want-you-to-know-me",
+                    id: "6a4c0c75ddbefaf6d303ed4f",
+                    title: "Known by Jesus",
+                    line: "A ten-part study of Scripture on knowing and being known by Jesus \u2014 from Eden, where knowing first broke, to the rest that remains.",
+                    img: "https://lwfiles.mycourse.app/69ff74fa031fcc8033475300-public/d1655f7353a17a1bde1bca4e138d204b.jpg"
+                }, {
+                    titleId: "student-course",
+                    id: "6a3561d1acab7f684f0d82c0",
+                    title: "Breaking Free",
+                    line: "Breaking Free is for men walking out of pornography and sexual sin toward a life of purity \u2014 not by white-knuckling the behavior, but by reaching the wounds beneath it.",
+                    img: "https://lwfiles.mycourse.app/69ff74fa031fcc8033475300-public/31b9370d96ffd8b134180152fa59a7d8.jpg",
+                    onlyMine: true
+                }];
+                var known = {};
+                OPEN.forEach(function(c) {
+                    known[c.titleId] = c.titleId;
+                    known[c.id] = c.titleId;
+                });
+                var host = $("apCourses");
+
+                function idsOf(x) {
+                    var out = [];
+                    if (!x) {
+                        return out;
+                    }
+                    if (typeof x === "string") {
+                        out.push(x);
+                        return out;
+                    }
+                    ["titleId", "courseId", "course_id", "id", "_id", "productId", "product_id"].forEach(function(k) {
+                        if (x[k]) {
+                            out.push(String(x[k]));
+                        }
+                    });
+                    if (x.course && typeof x.course === "object") {
+                        out = out.concat(idsOf(x.course));
+                    }
+                    if (x.product && typeof x.product === "object") {
+                        out = out.concat(idsOf(x.product));
+                    }
+                    return out;
+                }
+
+                function paint(mine) {
+                    var html = "";
+                    OPEN.forEach(function(c) {
+                        var m = !!mine[c.titleId];
+                        if (c.onlyMine && !m) {
+                            return;   /* a cohort course is shown to the men in it, never offered as free */
+                        }
+                        html += '<div class="ap-course"><img class="ap-course-img" src="' + c.img + '" alt=""><div class="ap-course-body">' + '<p class="ap-course-state">' + (m ? "Yours \u2014 pick up where you left off" : "Free") + '</p>' + '<p class="ap-course-title">' + esc(c.title) + '</p><p class="ap-course-line">' + esc(c.line) + '</p>' + '<div class="ap-course-actions"><a class="ap-btn ' + (m ? "ap-btn-primary" : "ap-btn-ghost") + '" href="' + (m ? "/path-player?courseid=" + c.titleId : "/course/" + c.titleId) + '">' + (m ? "Continue" : "Start the study \u2014 free") + '</a></div></div></div>';
+                    });
+                    host.innerHTML = html;
+                    $("apSoon").innerHTML = "<strong>Coming soon:</strong> Walk With Me.";
+                    $("apSoon").hidden = false;
+                }
+                paint({});
+                var mine = {};
+
+                function mark(ids) {
+                    ids.forEach(function(id) {
+                        if (known[id]) {
+                            mine[known[id]] = 1;
+                        }
+                    });
+                }
+                Promise.all([getJSON("/api/user_stats"), getJSON("/api/products/mine"), getJSON("/api/courses")]).then(function(res) {
+                    var stats = res[0],
+                        prods = res[1],
+                        cat = res[2];
+                    if (cat && cat.courses) {
+                        Object.keys(cat.courses).forEach(function(k) {
+                            var c = cat.courses[k];
+                            if (c && c.titleId && c.me && c.me.registered) {
+                                mark([c.titleId]);
+                            }
+                        });
+                        var rc = cat.registeredCourses;
+                        if (rc) {
+                            (Array.isArray(rc) ? rc : Object.keys(rc)).forEach(function(x) {
+                                mark(idsOf(x));
+                            });
+                        }
+                    }
+                    var uc = stats && stats.userCourses;
+                    if (uc) {
+                        (Array.isArray(uc) ? uc : Object.keys(uc).map(function(k) {
+                            var x = uc[k];
+                            return (x && typeof x === "object") ? x : k;
+                        })).forEach(function(x) {
+                            mark(idsOf(x));
+                        });
+                    }
+                    if (prods && prods.products) {
+                        prods.products.forEach(function(x) {
+                            mark(idsOf(x));
+                        });
+                    }
+                    paint(mine);
+                });
+            }
+            courses();
+            getJSON("/api/user/me").then(function(me) {
+                hello(me && me.user && me.user.first_name);
+            });
+            Promise.all([readState("lament"), readState("wif"), readState("nxs"), readState("arc"), readState("hia"), readState("knx"), readState("wha"), readState("wkl"), readState("road"), readState("where"), readState("ew")]).then(function(r) {
+                paint(r[0]);
+                paint(r[1]);
+                paint(r[2]);
+                paint(r[3]);
+                paint(r[4]);
+                paint(r[5]);
+                paint(r[6]);
+                paint(r[7]);
+                paint(r[8]);
+                paint(r[9]);
+                paint(r[10]);
+                direct(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10]);
+                if (r.some(function(x) { return x && x.status !== "none"; })) {
+                    $("apStoriesHead").textContent = "Your chronicle";
+                    $("apStoriesNote").textContent = "Pick up where you left off, or start another.";
+                }
+            });
+            /* The course player strips ?open=1 from its address, so when he taps Open it / Pick up, leave a short-lived note the poem page can read to bring his saved work back. Those links carry open=1 in their href; Write another does not. */
+            document.addEventListener("click", function(ev) {
+                var a = ev.target && ev.target.closest ? ev.target.closest("a") : null;
+                if (a && a.getAttribute("href") && /[?&]open=1(&|$)/.test(a.getAttribute("href"))) {
+                    try {
+                        window.localStorage.setItem("ap_open_intent", String(Date.now()));
+                    } catch (err) {}
+                }
+            }, true);
+        })();
+    </script>
+    <!-- AP-OFFER-v2.3 (29 Sept 2026: every finished piece shows where it stands on the road — Told · Offered · Known; Published reads "where other men can read it"; the slow press says so) (v2.2: the piece is read from its own block, never the longest text; the decision lines say what happens next): one control at the foot of every finished piece — Kept · Offered · Published · Taken down — read from the review sheet through the script; the offer goes to the script and is called Offered only once the row has landed; Pull it back / Take it down one press. Additive layer for the After Login block. -->
+    <hr style="border:0;margin:0;height:0" data-apo="guard">
+    <style id="apoStyle">
+        /* AP-OFFER fix v4: John — the boxed pull-back threw the card off balance; revert to plain words in a highlight color (bronze), no boxes. Higher specificity (.ap-card) so it beats v3. */
+        .ap-card .apo-offered .apo-pull {
+            display: inline !important;
+            margin: 0 0 0 3px !important;
+            padding: 0 !important;
+            border: 0 !important;
+            background: none !important;
+            color: #B8945F !important;
+            font: 600 13px/1.5 var(--sans, 'Source Sans 3', sans-serif) !important;
+            text-decoration: underline !important;
+            text-underline-offset: 2px;
+            cursor: pointer;
+            vertical-align: baseline !important
+        }
+
+        .ap-card .apo-offered .apo-pull:hover {
+            color: #1F2A44 !important;
+            background: none !important
+        }
+
+        .ap-card .apo-offered .apo-confirm {
+            display: block !important;
+            margin-top: 6px !important;
+            font: 400 13px/1.5 var(--sans, 'Source Sans 3', sans-serif) !important;
+            color: #2B3040 !important
+        }
+
+        .ap-card .apo-offered .apo-confirm .apo-q {
+            display: inline !important;
+            font: 400 13px/1.5 var(--sans, 'Source Sans 3', sans-serif) !important;
+            color: #2B3040 !important;
+            margin: 0 !important
+        }
+
+        .ap-card .apo-offered .apo-confirm a {
+            display: inline !important;
+            padding: 0 !important;
+            border: 0 !important;
+            background: none !important;
+            color: #B8945F !important;
+            font-weight: 600 !important;
+            text-decoration: underline !important;
+            text-underline-offset: 2px;
+            cursor: pointer;
+            margin: 0 0 0 14px !important
+        }
+
+        .ap-card .apo-offered .apo-confirm a:hover {
+            color: #1F2A44 !important;
+            background: none !important
+        }
+
+        .ap-card .apo-offered .apo-confirm a.apo-no {
+            color: #6B7280 !important;
+            font-weight: 400 !important
+        }
+
+        .ap-card .apo-offered .apo-confirm a.apo-no:hover {
+            color: #1F2A44 !important
+        }
+
+        /* AP-OFFER fix v3: the offered-state actions (Pull it back + its confirm) read as real boxed buttons, not text links. */
+        .apo-offered .apo-pull {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 15px;
+            border: 1px solid #D8D0C4 !important;
+            border-radius: 2px;
+            background: transparent !important;
+            color: #4A4033 !important;
+            font: 600 13px/1 var(--sans, 'Source Sans 3', sans-serif) !important;
+            text-decoration: none !important;
+            cursor: pointer;
+            vertical-align: middle
+        }
+
+        .apo-offered .apo-pull:hover {
+            border-color: #B8945F !important;
+            color: #1F2A44 !important;
+            background: #FBF9F5 !important
+        }
+
+        .apo-offered .apo-confirm {
+            display: flex !important;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+            color: #2B3040
+        }
+
+        .apo-offered .apo-confirm .apo-q {
+            flex: 0 0 100%;
+            font: 400 13px/1.5 var(--sans, 'Source Sans 3', sans-serif);
+            color: #2B3040
+        }
+
+        .apo-offered .apo-confirm a {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 2px;
+            border: 1px solid #1F2A44 !important;
+            background: #1F2A44 !important;
+            color: #fff !important;
+            font: 600 13px/1 var(--sans, 'Source Sans 3', sans-serif) !important;
+            text-decoration: none !important;
+            cursor: pointer;
+            margin: 0 !important
+        }
+
+        .apo-offered .apo-confirm a:hover {
+            background: #2c3a5c !important
+        }
+
+        .apo-offered .apo-confirm a.apo-no {
+            background: transparent !important;
+            color: #1F2A44 !important;
+            border-color: #D8D0C4 !important
+        }
+
+        .apo-offered .apo-confirm a.apo-no:hover {
+            border-color: #1F2A44 !important;
+            background: #FBF9F5 !important
+        }
+
+        /* AP-OFFER fix v2: LearnWorlds forces native radios/checkboxes to display:none — restore them and show a clear selected state on each box; also force the disabled dim on Offer it. */
+        .apo-opt input {
+            display: inline-block !important;
+            -webkit-appearance: auto !important;
+            appearance: auto !important;
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            position: static !important;
+            pointer-events: auto !important;
+            flex: 0 0 auto !important;
+            margin: 3px 0 0 !important;
+            accent-color: #B8945F !important
+        }
+
+        .apo-opt:has(input:checked) {
+            border-color: #B8945F !important;
+            background: #FAF6EF !important;
+            box-shadow: inset 0 0 0 1px #B8945F !important
+        }
+
+        .apo-btn-primary[disabled] {
+            opacity: .5 !important;
+            cursor: default !important
+        }
+
+        .apo-offer-btn {
+            font: 600 13px/1 var(--sans, 'Source Sans 3', sans-serif);
+            padding: 11px 18px;
+            border-radius: 2px;
+            border: 1px solid #B8945F;
+            background: transparent;
+            color: #1F2A44;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none
+        }
+
+        .apo-offer-btn:hover {
+            background: #B8945F;
+            color: #fff
+        }
+
+        .apo-offered {
+            display: block;
+            margin: 12px 0 0;
+            font: 400 14px/1.55 var(--sans, 'Source Sans 3', sans-serif);
+            color: #3d7a52
+        }
+
+        .apo-offered b {
+            font-weight: 600
+        }
+
+        .apo-offered .apo-sub {
+            display: block;
+            color: #6B7280;
+            font-size: 13px;
+            margin-top: 4px
+        }
+
+        .apo-pull {
+            background: none;
+            border: 0;
+            padding: 0;
+            margin-top: 6px;
+            color: #6B7280;
+            font: 400 13px/1.4 var(--sans, 'Source Sans 3', sans-serif);
+            text-decoration: underline;
+            cursor: pointer
+        }
+
+        .apo-confirm {
+            margin-top: 8px;
+            font: 400 13px/1.5 var(--sans, 'Source Sans 3', sans-serif);
+            color: #2B3040
+        }
+
+        .apo-confirm a {
+            color: #1F2A44;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-right: 14px
+        }
+
+        .apo-confirm a.apo-no {
+            color: #6B7280;
+            font-weight: 400
+        }
+
+        .apo-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(31, 42, 68, .55);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 40px 16px
+        }
+
+        .apo-overlay[hidden] {
+            display: none
+        }
+
+        .apo-panel {
+            background: #fff;
+            border: 1px solid #E2DCD1;
+            border-top: 3px solid #B8945F;
+            border-radius: 4px;
+            max-width: 460px;
+            width: 100%;
+            margin: auto;
+            padding: 28px 28px 24px;
+            box-shadow: 0 12px 40px rgba(31, 42, 68, .25);
+            font-family: var(--sans, 'Source Sans 3', sans-serif);
+            color: #2B3040
+        }
+
+        .apo-panel h2 {
+            font: 600 24px/1.2 var(--serif, 'Source Serif 4', Georgia, serif);
+            color: #1F2A44;
+            margin: 0 0 12px
+        }
+
+        .apo-frame {
+            font: 400 16px/1.6 var(--serif, 'Source Serif 4', Georgia, serif);
+            color: #2B3040;
+            margin: 0 0 22px
+        }
+
+        .apo-lab {
+            font: 600 15px/1.4 var(--sans, 'Source Sans 3', sans-serif);
+            color: #1F2A44;
+            margin: 20px 0 10px
+        }
+
+        .apo-opt {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            padding: 11px 13px;
+            border: 1px solid #E2DCD1;
+            border-radius: 3px;
+            margin: 0 0 9px;
+            cursor: pointer
+        }
+
+        .apo-opt input {
+            margin: 3px 0 0;
+            flex: 0 0 auto
+        }
+
+        .apo-opt .apo-t {
+            font: 400 16px/1.4 var(--sans, 'Source Sans 3', sans-serif);
+            color: #2B3040
+        }
+
+        .apo-opt .apo-t b {
+            font-weight: 600;
+            color: #1F2A44
+        }
+
+        .apo-opt .apo-t .apo-s {
+            display: block;
+            font-size: 13px;
+            color: #6B7280;
+            margin-top: 2px
+        }
+
+        .apo-onlysite {
+            font: 400 14px/1.6 var(--sans, 'Source Sans 3', sans-serif);
+            color: #6B7280;
+            margin: 8px 2px 0
+        }
+
+        .apo-assure {
+            font: 400 14px/1.6 var(--sans, 'Source Sans 3', sans-serif);
+            color: #6B7280;
+            background: #FBF9F5;
+            border-left: 2px solid #B8945F;
+            padding: 12px 14px;
+            margin: 20px 0 22px
+        }
+
+        .apo-err {
+            font: 400 14px/1.5 var(--sans, 'Source Sans 3', sans-serif);
+            color: #9a3b2f;
+            margin: 0 0 14px;
+            display: none
+        }
+
+        .apo-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .apo-btn-primary {
+            font: 600 14px/1 var(--sans, 'Source Sans 3', sans-serif);
+            padding: 13px 26px;
+            border-radius: 2px;
+            border: 1px solid #1F2A44;
+            background: #1F2A44;
+            color: #fff;
+            cursor: pointer
+        }
+
+        .apo-btn-primary[disabled] {
+            opacity: .5;
+            cursor: default
+        }
+
+        .apo-btn-ghost {
+            font: 600 13px/1 var(--sans, 'Source Sans 3', sans-serif);
+            padding: 12px 16px;
+            border-radius: 2px;
+            border: 1px solid #E2DCD1;
+            background: transparent;
+            color: #1F2A44;
+            cursor: pointer
+        }
+
+        .apo-busy {
+            font-size: 14px;
+            color: #6B7280
+        }
+        /* offer layer v2: the one control at the foot of a finished piece */
+        .ap-card .apo-foot { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--ap-rule, #E2DCD1); color: #2B3040 !important; }
+        .ap-card .apo-foot.is-offered { color: #3d7a52 !important; }
+        .ap-card .apo-foot.is-published { color: #1F2A44 !important; }
+        .ap-card .apo-foot.is-taken-down { color: #6B7280 !important; }
+        .ap-card .apo-foot .apo-sub { margin-top: 8px; }
+        .ap-card .apo-foot .apo-offer-btn { margin: 2px 0 0; }
+        .ap-card .apo-foot .apo-read { color: #B8945F !important; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+        .ap-card .apo-foot .apo-read:hover { color: #1F2A44 !important; }
+        .ap-card .apo-foot .apo-dot { color: #6B7280; margin: 0 8px; }
+        .ap-card .apo-foot .apo-confirm a { white-space: nowrap; }
+    </style>
+    <script>
+        (function() {
+            "use strict";
+            if (window.__apOfferInit) return;
+            window.__apOfferInit = true;
+            /* offer layer v2.2 (29 Sept 2026): one control at the foot of every finished piece — Kept · Offered · Published · Taken down —
+               read from the review sheet through the script (never from this browser's memory); the offer goes to the script and is
+               called "Offered" only once the script says the row landed; Pull it back / Take it down are one press, confirmed in words. */
+            var SCRIPT = "https://script.google.com/macros/s/AKfycbxTfzmFY7NuXaGZIsPqxRDKpqakwXs5heeEGcp07aiTUG6Pzk9wJ0m8qubveVZoRCO3/exec";
+            var STORIES = "/your-story";
+            var SURF = {
+                lament: { unit: "6a9acf1a4a65fe7bd70c9743", whole: "openEnded1788512593217_295", title: "A Lament", from: "Write a Lament" },
+                wif: { unit: "6a9b1bd66f53d6a78c00a895", whole: "openEnded1788532124536_276", title: "Where I’m From", from: "Where I’m From" },
+                nxs: { unit: "6a9ec39ba4b37ac12a0fd698", whole: "openEnded1788771837959_288", title: "Your Next Step", from: "Do Hard Things" },
+                arc: { unit: "6a9eda1465bd64a422053e4f", whole: "openEnded1788777451885_276", title: "The Man Who Crossed", from: "Do Hard Things" },
+                hia: { unit: "6a9ee0560b663e59d00f52fa", whole: "openEnded6a9ee0561523c", title: "Here I Am", from: "Known by Jesus" },
+                knx: { unit: "6a9ee071812147198209a574", whole: "openEnded6a9ee0718a150", title: "Your Next Step", from: "Known by Jesus" },
+                wha: { unit: "6aa495c7401787900c017193", whole: "openEnded6aa495c762c85", title: "Asked of Me", from: "Asked of Me" },
+                wkl: { unit: "6aac317b65698408f804bf64", whole: "openEnded6aac317bb8dc6", title: "What Kind of Light", from: "What Kind of Light" },
+                road: { unit: "6aaf030c329c182cee08bcb2", whole: "openEnded6aaf030c844ed", title: "The Road I Walked", from: "Walk With Me" },
+                where: { unit: "6ab526197d249596ce0b3104", whole: "openEnded6ab526194f23b", title: "Where Are You?", from: "Walk With Me" },
+                ew: { unit: "6ac015e7c77a1e998001bedf", whole: "openEnded6ac015e7a8018", title: "Ending Well", from: "Breaking Free" }
+            };
+            var STATE = {};        /* unit → {rid, state, read} from the sheet */
+            var ready = false;     /* feet are drawn only once the sheet has answered (or failed), so a state never flickers */
+
+            function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+            function track(name, key) { try { if (typeof window.gtag === "function") window.gtag("event", name, { piece: key }); } catch (e) {} }
+            function lsDel(k) { try { window.localStorage.removeItem(k); } catch (e) {} }
+            /* v1 remembered "offered" on the device; the sheet is the truth now, so those notes are cleared */
+            for (var k0 in SURF) { lsDel("ap_offered_" + SURF[k0].unit); }
+
+            // ---- who he is to the sheet: a hash of his LearnWorlds id, never the id itself ----
+            function hexOf(buf) { return Array.prototype.map.call(new Uint8Array(buf), function(b) { return ("0" + b.toString(16)).slice(-2); }).join(""); }
+            function fnv(s, seed) { var h = seed >>> 0; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return ("00000000" + h.toString(16)).slice(-8); }
+            function whoFor(id) {
+                var s = "ap:" + id;
+                if (window.crypto && window.crypto.subtle && window.TextEncoder) {
+                    try { return window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)).then(hexOf).catch(function() { return fnv(s, 2166136261) + fnv(s, 84696351); }); } catch (e) {}
+                }
+                return Promise.resolve(fnv(s, 2166136261) + fnv(s, 84696351));
+            }
+            function getJSON(path) {
+                return fetch(path, { credentials: "include", headers: { "Accept": "application/json" } }).then(function(r) { return r.ok ? r.json() : null; }).catch(function() { return null; });
+            }
+            var _author = null;
+            function authorInfo() {
+                if (_author) return Promise.resolve(_author);
+                return getJSON("/api/user_stats").then(function(j) {
+                    var me = (j && j.me) || {};
+                    var a = { id: me.id || me._id || me.user_id || "", name: ((me.first_name || "") + " " + (me.last_name || "")).trim() || me.username || "", email: me.email || me.user_email || "" };
+                    if (a.id && a.email) { _author = a; return a; }
+                    return getJSON("/api/user/me").then(function(m) {
+                        var u = (m && m.user) || m || {};
+                        if (!a.id) a.id = u.id || u._id || "";
+                        if (!a.email) a.email = u.email || u.user_email || "";
+                        if (!a.name) a.name = ((u.first_name || "") + " " + (u.last_name || "")).trim() || u.username || "";
+                        _author = a; return a;
+                    });
+                });
+            }
+            function whoAmI() { return authorInfo().then(function(a) { return a.id ? whoFor(String(a.id)) : ""; }); }
+
+            // ---- talking to the script ----
+            function send(o) {
+                return fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(o), credentials: "omit" })
+                    .then(function(r) { return r.json(); })
+                    .then(function(r) { if (!r || r.ok !== true) { throw { code: (r && r.error) || "failed" }; } return r; });
+            }
+            function readStatus(who) {
+                if (!who) return Promise.resolve(null);
+                return fetch(SCRIPT + "?status=" + encodeURIComponent(who), { credentials: "omit", cache: "no-store" })
+                    .then(function(r) { return r.json(); })
+                    .then(function(j) { var m = {}; ((j && j.pieces) || []).forEach(function(p) { if (p && p.unit) m[p.unit] = { rid: p.rid || "", state: p.state || "kept", read: !!p.read }; }); return m; })
+                    .catch(function() { return null; });
+            }
+
+            // ---- reading the finished piece, unchanged from v1 ----
+            function apoLooksLikeProse(t) { if (typeof t !== "string" || t.length < 12) return false; if (!/\s/.test(t)) return false; if (/^openEnded/i.test(t)) return false; if (/^\s*[\[{]/.test(t)) return false; return /[a-zA-Z]/.test(t); }
+            function apoLongestProse(scope) {
+                var best = "", seen = (typeof WeakSet !== "undefined") ? new WeakSet() : null;
+                (function walk(o, d) {
+                    if (o == null || d > 12) return;
+                    if (typeof o === "string") { if (o.length > best.length && apoLooksLikeProse(o)) best = o; return; }
+                    if (typeof o !== "object") return;
+                    if (seen) { if (seen.has(o)) return; seen.add(o); }
+                    for (var k in o) { try { walk(o[k], d + 1); } catch (e) {} }
+                })(scope, 0);
+                return best;
+            }
+            function apoFindSubmission(state) {
+                function grab(re) {
+                    var found = null, seen = (typeof WeakSet !== "undefined") ? new WeakSet() : null;
+                    (function walk(o, d) {
+                        if (found || o == null || typeof o !== "object" || d > 8) return;
+                        if (seen) { if (seen.has(o)) return; seen.add(o); }
+                        for (var k in o) { if (re.test(k) && o[k] && typeof o[k] === "object") { found = o[k]; return; } }
+                        for (var k2 in o) { if (!found) walk(o[k2], d + 1); }
+                    })(state, 0);
+                    return found;
+                }
+                return grab(/latestSubmission|userSubmission|(^|_)submission$/i) || grab(/(^|_)answers$|responses/i);
+            }
+            function apoAssemble(raw) {
+                if (!raw) return "";
+                var t = ("" + raw).trim();
+                if (t.charAt(0) === "{") {
+                    try {
+                        var obj = JSON.parse(t);
+                        if (obj && typeof obj === "object" && !(obj instanceof Array)) {
+                            var parts = [];
+                            for (var k in obj) { var v = obj[k]; if (typeof v === "string" && v.trim()) parts.push(v.trim()); }
+                            if (parts.length) return parts.join("\n\n");
+                        }
+                    } catch (e) {}
+                }
+                return t;
+            }
+            /* v2.1 (29 Sept): the piece is read from ITS OWN block (the "whole" question), never as "the longest text in the
+               submission" — since the saved-pieces record was added to every form (13 Sept) that record is a JSON array longer
+               than the piece, and the longest-text read sent the record to the review page instead of the poem. The longest-text
+               read is kept only as a fallback for a form with no whole block, and it never accepts a JSON array or object. */
+            function answersById(j) {
+                var by = {}, sub = j && j.latestSubmission;
+                if (sub && sub.answers && sub.answers.length) { for (var i = 0; i < sub.answers.length; i++) { var a = sub.answers[i]; if (a && a.blockId && a.answer && typeof a.answer.value === "string") by[a.blockId] = a.answer.value; } return by; }
+                var found = apoFindSubmission(j); var list = found && (found.answers || found);
+                if (list && list.length) { for (var k = 0; k < list.length; k++) { var b = list[k]; if (b && b.blockId && b.answer && typeof b.answer.value === "string") by[b.blockId] = b.answer.value; } }
+                return by;
+            }
+            function isRecord(t) { var x = String(t || "").trim(); return x.charAt(0) === "[" || (x.charAt(0) === "{" && /"(id|when|text|answers|finished|step)"\s*:/.test(x.slice(0, 80)) && x.indexOf('"text"') >= 0); }
+            function readWhole(unit, wholeId) {
+                return getJSON("/api/assessment/state?sourceType=unit&objectId=" + unit).then(function(j) {
+                    var by = answersById(j), text = "";
+                    if (wholeId && typeof by[wholeId] === "string" && by[wholeId].trim() && !isRecord(by[wholeId])) text = by[wholeId];
+                    if (!text) {
+                        var best = "";
+                        for (var id in by) { var v = by[id]; if (apoLooksLikeProse(v) && !isRecord(v) && v.length > best.length) best = v; }
+                        text = apoAssemble(best);
+                    }
+                    return (text && text.trim()) ? text : null;
+                });
+            }
+
+            // ---- the consent panel ----
+            var overlay = null, panel = null;
+            function buildOverlay() {
+                if (overlay) return;
+                overlay = document.createElement("div"); overlay.className = "apo-overlay"; overlay.hidden = true;
+                overlay.addEventListener("click", function(ev) { if (ev.target === overlay) closePanel(); });
+                document.addEventListener("keydown", function(ev) { if (ev.key === "Escape" && overlay && !overlay.hidden) closePanel(); });
+                panel = document.createElement("div"); panel.className = "apo-panel";
+                overlay.appendChild(panel); document.body.appendChild(overlay);
+            }
+            function closePanel() { if (overlay) overlay.hidden = true; }
+            function openPanel(key, card) {
+                buildOverlay();
+                var s = SURF[key]; if (!s) return;
+                panel.innerHTML = '<div class="apo-busy">One moment…</div>';
+                overlay.hidden = false;
+                authorInfo().then(function(a) {
+                    var full = a.name || "", first = full ? full.split(/\s+/)[0] : "", opts = "";
+                    if (full) {
+                        opts += '<label class="apo-opt"><input type="radio" name="apoNm" value="Full name" checked><span class="apo-t"><b>' + esc(full) + '</b><span class="apo-s">Your full name</span></span></label>';
+                        opts += '<label class="apo-opt"><input type="radio" name="apoNm" value="First name only"><span class="apo-t"><b>' + esc(first) + '</b><span class="apo-s">First name only</span></span></label>';
+                    }
+                    opts += '<label class="apo-opt"><input type="radio" name="apoNm" value="Do not show name"' + (full ? "" : " checked") + '><span class="apo-t"><b>Don’t show my name</b><span class="apo-s">Without a name</span></span></label>';
+                    panel.innerHTML = '<h2>Offer this as testimony</h2>' + '<p class="apo-frame">Your story can help the next man — that is why we ask you to offer it.</p>' + '<p class="apo-err" id="apoErr"></p>' + '<p class="apo-lab">How would you like your name to appear?</p>' + opts + '<p class="apo-lab">Before it goes up</p>' + '<label class="apo-opt"><input type="checkbox" id="apoYes" checked><span class="apo-t">Yes — Ancient Path can publish this on the site.<span class="apo-s">You can take it down whenever you want.</span></span></label>' + '<p class="apo-onlysite">This is only about the site. If we ever want to print your words — in a booklet, or on a card — we’ll ask you first.</p>' + '<p class="apo-assure">We read every piece before it goes up. If anything gives us pause, we will talk with you first — nothing is published without that.</p>' + '<div class="apo-actions"><button type="button" class="apo-btn-primary" id="apoGo">Offer it</button><button type="button" class="apo-btn-ghost" id="apoNo">Not now</button></div>';
+                    var goBtn = panel.querySelector("#apoGo"), yes = panel.querySelector("#apoYes"), err = panel.querySelector("#apoErr");
+                    function sync() { goBtn.disabled = !yes.checked; }
+                    yes.addEventListener("change", sync); sync();
+                    panel.querySelector("#apoNo").addEventListener("click", closePanel);
+                    function fail(msg) { err.textContent = msg; err.style.display = "block"; goBtn.disabled = false; goBtn.textContent = "Offer it"; }
+                    goBtn.addEventListener("click", function() {
+                        if (!yes.checked) return;
+                        var attribution = (panel.querySelector('input[name="apoNm"]:checked') || {}).value || "Do not show name";
+                        goBtn.disabled = true; goBtn.textContent = "Offering… this takes a moment"; err.style.display = "none";
+                        Promise.all([readWhole(s.unit, s.whole), whoAmI()]).then(function(res) {
+                            var text = res[0], who = res[1];
+                            if (!text || !text.trim()) { fail("We couldn’t read your piece just now. Open it once, then try offering it again."); return; }
+                            if (!who) { fail("We couldn’t tell who you are just now. Sign out, sign in, and try again."); return; }
+                            return send({ op: "offer", who: who, key: key, unit: s.unit, name: a.name || "", attribution: attribution, title: s.title, from: s.from, email: a.email || "", testimony: text, consent: "Yes" })
+                                .then(function(r) {
+                                    STATE[s.unit] = { rid: r.rid || "", state: "offered", read: false };
+                                    closePanel(); renderFoot(card, key); track("story_offer", key);
+                                }, function() { fail("It didn’t send. Your piece is still here — try again."); });
+                        });
+                    });
+                });
+            }
+
+            // ---- the one control at the foot of a finished piece ----
+            function stateFor(key) { var e = STATE[SURF[key].unit]; return e || { rid: "", state: "kept", read: false }; }
+            function offerBtn(label) { return '<button type="button" class="apo-offer-btn">' + label + '</button>'; }
+            function footHTML(key) {
+                var e = stateFor(key);
+                if (e.state === "offered") return '<b>Offered.</b> With our team for a read — you’ll hear back before it goes up.<span class="apo-sub">Changed your mind? <button type="button" class="apo-pull">Pull it back</button></span>';
+                if (e.state === "published") return '<b>Published.</b> On Our Stories, where other men can read it.<span class="apo-sub"><a class="apo-read" href="' + STORIES + '?p=' + encodeURIComponent(e.rid) + '">Read it there</a><span class="apo-dot">·</span><button type="button" class="apo-pull">Take it down</button></span>';
+                if (e.state === "taken down") return '<b>Taken down.</b> It is off Our Stories.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
+                if (e.read) return '<b>Kept.</b> We read it and did not publish it.<span class="apo-sub">' + offerBtn("Offer it again") + '</span>';
+                return '<b>Kept.</b> Only you can read it.<span class="apo-sub">' + offerBtn("Offer it as testimony") + '</span>';
+            }
+            /* where this piece stands on the road: Told (kept, pulled back, taken down, declined) · Offered (offered or held) · Known (published) */
+            function roadHTML(e) {
+                var at = e.state === "published" ? 3 : e.state === "offered" ? 2 : 1;
+                var w = ["Told", "Offered", "Known"], h = '<div class="apo-road" aria-label="Where this piece stands">';
+                for (var i = 0; i < 3; i++) { h += '<span class="apo-stop' + (i + 1 < at ? " is-past" : i + 1 === at ? " is-here" : "") + '">' + w[i] + '</span>'; }
+                return h + '</div>';
+            }
+            function renderFoot(card, key) {
+                var e = stateFor(key), old = card.querySelector(".apo-foot");
+                var foot = document.createElement("div");
+                foot.className = "apo-foot apo-offered is-" + e.state.replace(/\s+/g, "-");
+                foot.innerHTML = roadHTML(e) + footHTML(key);
+                if (old) old.parentNode.replaceChild(foot, old);
+                else { var actions = card.querySelector(".ap-card-actions"); (actions ? actions.parentNode : card).appendChild(foot); }
+                var ob = foot.querySelector(".apo-offer-btn"); if (ob) ob.addEventListener("click", function() { openPanel(key, card); });
+                var pb = foot.querySelector(".apo-pull"); if (pb) pb.addEventListener("click", function() { askPull(card, key); });
+            }
+            function askPull(card, key) {
+                var e = stateFor(key), foot = card.querySelector(".apo-foot"), sub = foot && foot.querySelector(".apo-sub");
+                if (!sub) return;
+                var up = e.state === "published";
+                sub.innerHTML = '<span class="apo-confirm"><span class="apo-q">' + (up ? "Take it down from Our Stories?" : "Pull it back from our team?") + '</span> <a class="apo-yes">' + (up ? "Yes, take it down" : "Yes, pull it back") + '</a> <a class="apo-no">' + (up ? "Leave it up" : "Keep it offered") + '</a></span>';
+                sub.querySelector(".apo-no").addEventListener("click", function() { renderFoot(card, key); });
+                sub.querySelector(".apo-yes").addEventListener("click", function() {
+                    sub.innerHTML = '<span class="apo-q">' + (up ? "Taking it down…" : "Pulling it back…") + '</span>';
+                    whoAmI().then(function(who) { return send({ op: "withdraw", who: who, rid: e.rid }); }).then(function(r) {
+                        STATE[SURF[key].unit] = { rid: e.rid, state: r.state || (up ? "taken down" : "kept"), read: false };
+                        renderFoot(card, key); track(up ? "story_takedown" : "story_withdraw", key);
+                    }, function() {
+                        renderFoot(card, key);
+                        var f2 = card.querySelector(".apo-foot .apo-sub"); if (f2) { var n = document.createElement("span"); n.className = "apo-q"; n.textContent = " It didn’t go through — try again."; f2.appendChild(n); }
+                    });
+                });
+            }
+            /* every finished, openable card gets the control; a card in progress or not saved gets none */
+            function enhance() {
+                if (!ready) return;
+                var cards = document.querySelectorAll(".ap-card[data-story]");
+                for (var i = 0; i < cards.length; i++) {
+                    (function(card) {
+                        var key = card.getAttribute("data-story"); if (!SURF[key]) return;
+                        var actions = card.querySelector(".ap-card-actions"), openable = false;
+                        if (actions && getComputedStyle(card).display !== "none") {
+                            var links = actions.querySelectorAll("a,button");
+                            for (var k = 0; k < links.length; k++) { if (/open it/i.test(links[k].textContent || "")) { openable = true; break; } }
+                        }
+                        var foot = card.querySelector(".apo-foot");
+                        if (!openable) { if (foot) foot.parentNode.removeChild(foot); return; }
+                        if (!foot) renderFoot(card, key);
+                    })(cards[i]);
+                }
+            }
+            var t = null;
+            function schedule() { if (t) return; t = setTimeout(function() { t = null; enhance(); }, 120); }
+            function start() {
+                whoAmI().then(readStatus, function() { return null; }).then(function(m) { if (m) STATE = m; ready = true; enhance(); });
+                var host = document.getElementById("apStories");
+                if (host && window.MutationObserver) { new MutationObserver(schedule).observe(host, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class"] }); }
+                var n = 0, iv = setInterval(function() { enhance(); if (++n > 12) clearInterval(iv); }, 1500);
+            }
+            if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+            else start();
+        })();
+    </script>
+    <script>
+        /* AP-BAND-FIT (v24.5): the page is level between the screen edges, and the band is as wide as the screen and starts at the left edge of the screen, measured rather than assumed. No backslashes in this script: the editor eats them. */
+        (function() {
+            /* The region the site gives the page: the widest ancestor below <body>. With no side menu that is the whole window; with LearnWorlds' signed-in side menu it is the part beside it. */
+            function region(h) {
+                /* v25.3: the page scrolls inside an element of its own on this site, and that element's scrollbar is part of the window but not part of the page. Measure the scrolling ancestor's inside width (clientWidth leaves the scrollbar out); failing that, the widest ancestor below <body>; failing that, the window. */
+                var e = h && h.parentElement, best = null, bw = 0;
+                var inside = function (el) { var r = el.getBoundingClientRect(); return { left: r.left, right: r.left + el.clientWidth, width: el.clientWidth }; };
+                while (e && e !== document.body && e !== document.documentElement) {
+                    var ov = "";
+                    try { ov = window.getComputedStyle(e).overflowY; } catch (err) {}
+                    if ((ov === "auto" || ov === "scroll") && e.clientWidth >= 200) { return inside(e); }
+                    if (e.clientWidth > bw + 1) { bw = e.clientWidth; best = e; }
+                    e = e.parentElement;
+                }
+                if (best && bw >= 200) { return inside(best); }
+                return { left: 0, right: document.documentElement.clientWidth, width: document.documentElement.clientWidth };
+            }
+            function fit() {
+                var h = document.getElementById("apHome");
+                if (!h) return;
+                h.style.marginLeft = "0px";
+                h.style.marginRight = "0px";
+                var reg = region(h);
+                var hr = h.getBoundingClientRect();
+                var gl = hr.left - reg.left, gr = reg.right - hr.right;
+                /* v25.5: the column the block sits in pads 25px on the right and none on the left (measured on the live page), so the block fills its column off-center. A margin on one side only shrinks a block that fills its column; a margin on one side and the same taken off the other slides it with its width kept. Slide by half the difference, then check it landed inside the region and kept its width; if not, undo. */
+                if (Math.abs(gr - gl) > 1) {
+                    var w0 = hr.width, d = (gr - gl) / 2;
+                    h.style.marginLeft = d + "px";
+                    h.style.marginRight = (-d) + "px";
+                    var hr2 = h.getBoundingClientRect();
+                    var gl2 = hr2.left - reg.left, gr2 = reg.right - hr2.right;
+                    if (Math.abs(gr2 - gl2) >= Math.abs(gr - gl) - 1 || Math.abs(hr2.width - w0) > 1 || gl2 < -1 || gr2 < -1) { h.style.marginLeft = "0px"; h.style.marginRight = "0px"; }
+                }
+                var b = document.querySelector("#apHome .ap-band");
+                if (!b) return;
+                b.style.marginLeft = "0px";
+                var left = b.getBoundingClientRect().left - reg.left;
+                b.style.marginLeft = (-left) + "px";
+                b.style.width = Math.round(reg.width) + "px";
+            }
+            fit();
+            window.addEventListener("resize", fit);
+            window.addEventListener("orientationchange", fit);
+            window.addEventListener("load", fit);
+            if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+        })();
+    </script>
+</div>
