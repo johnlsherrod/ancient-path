@@ -24,7 +24,7 @@ const html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta n
     });
     await p.goto("https://www.ancientpathcoaching.com/set-a-stone"); await p.waitForTimeout(400);
     await p.screenshot({ path: __dirname + "/sas-door-" + name + ".png", fullPage: true });
-    for (const [id, v] of [["sas_stonefor", "those who chose the same path."], ["sas_text", "kept a room of men around me who heard the worst and stayed."], ["sas_meaning", "a new discipline: I do the next right thing."]]) {
+    for (const [id, v] of [["sas_stonefor", "those who chose the same path."], ["sas_text", "kept a room of men around me who heard the worst and stayed."], ["sas_meaning", "a new discipline: I do the next right thing."], ["sas_name", "Discipline"]]) {
       await p.fill("#" + id, v);
     }
     await p.waitForTimeout(100);
@@ -36,7 +36,7 @@ const html = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta n
     // the measurements that matter: the stem never sits over his words, nothing wider than the screen
     const m = await p.evaluate(() => {
       const out = { over: 0, wide: document.documentElement.scrollWidth > window.innerWidth };
-      document.querySelectorAll(".ew-line").forEach(l => { const s = l.querySelector(".ew-stem"), t = l.querySelector("textarea"); const si = parseFloat(getComputedStyle(t).textIndent); if (si < s.offsetWidth) out.over++; });
+      document.querySelectorAll(".ew-line").forEach(l => { const s = l.querySelector(".ew-stem"), t = l.querySelector("textarea"); if (!s) return; const si = parseFloat(getComputedStyle(t).textIndent); if (si < s.offsetWidth) out.over++; });
       return out;
     });
     console.log(name, JSON.stringify(m));

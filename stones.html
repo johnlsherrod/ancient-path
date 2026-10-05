@@ -1,15 +1,22 @@
-<!-- AP-STONES-v1 · build 6 (4 Oct 2026: stone.js v2.6 — the return has its ground and asks by name) (build 5, 4 Oct 2026: the navy box is one line and one button, not three links; the foot line says "his name or none" — stone.js v2.3) (build 4, 4 Oct 2026: the "Set your own" box asks "What has the LORD done?" — no "till now" in our own words anywhere) (build 3, 4 Oct 2026: a scripture reference never breaks across lines; stone.js v2.2, story.js v18.6) (build 2, 3 Oct 2026: Joshua 4:24 under the lede) (build 1, 3 Oct 2026) — What These Stones Mean, the public page at /stones on the Your Story shelf (John, Oct 3). Every stone a man has set where others can see it: his three lines, the month, and his first name or no name — nothing else. Read live from the Published list through stone.js (the same list Our Stories reads; a stone leaves it the day he takes it back). One file, two settings: the root carries data-limit="" (the whole page) or data-limit="3" with data-band="1" (the band on the Breaking Free page and anywhere else the newest stones belong — same file, two words changed; with no published stones the band shows nothing at all). -->
+<!-- AP-STONES-v1 · build 10 (5 Oct 2026: stone.js v2.9; story.js v18.8) (build 9 (5 Oct 2026, John: the house pattern — the navy band (Read them · What These Stones Mean · the lede) and the house foot, ← Your Story and Report a bug; stone.js v2.8) (build 8 (5 Oct 2026: a stone's name heads it — stone.js v2.7; story.js v18.7) (build 7, 5 Oct 2026, John: one sentence added to the lede — "Every one of them points to the Rock.") (build 6 (4 Oct 2026: stone.js v2.6 — the return has its ground and asks by name) (build 5, 4 Oct 2026: the navy box is one line and one button, not three links; the foot line says "his name or none" — stone.js v2.3) (build 4, 4 Oct 2026: the "Set your own" box asks "What has the LORD done?" — no "till now" in our own words anywhere) (build 3, 4 Oct 2026: a scripture reference never breaks across lines; stone.js v2.2, story.js v18.6) (build 2, 3 Oct 2026: Joshua 4:24 under the lede) (build 1, 3 Oct 2026) — What These Stones Mean, the public page at /stones on the Your Story shelf (John, Oct 3). Every stone a man has set where others can see it: his three lines, the month, and his first name or no name — nothing else. Read live from the Published list through stone.js (the same list Our Stories reads; a stone leaves it the day he takes it back). One file, two settings: the root carries data-limit="" (the whole page) or data-limit="3" with data-band="1" (the band on the Breaking Free page and anywhere else the newest stones belong — same file, two words changed; with no published stones the band shows nothing at all). -->
 <div class="aps-root" id="apStonesRoot" data-limit="" data-band="">
 <style>
 .aps-root{--s-navy:#1F2A44;--s-bronze:#B8945F;--s-paper:#FBF9F5;--s-rule:#E2DCD1;--s-ink:#2B3040;--s-quiet:#6B7280;--s-serif:'Source Serif 4',Georgia,'Times New Roman',serif;--s-sans:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:720px;margin:0 auto;padding:0 16px;color:var(--s-ink)}
 .aps-root *{box-sizing:border-box;text-align:left}
-.aps-root .aps-eyebrow{font:600 12px/1.4 var(--s-sans);letter-spacing:.22em;text-transform:uppercase;color:var(--s-bronze);margin:0 0 10px}
-.aps-root .aps-h1{font:600 36px/1.15 var(--s-serif);color:var(--s-navy);margin:0 0 14px}
-.aps-root .aps-lede{font:400 18px/1.55 var(--s-sans);color:var(--s-ink);margin:0 0 26px}
+.aps-root .aps-band{position:relative;width:100vw;margin:0 0 36px calc(50% - 50vw);background:#1B2A3A url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='600' viewBox='0 0 1600 600'><g fill='none' stroke='%23B8945F' stroke-width='1.4' opacity='0.15'><path d='M-50 460 C 250 380, 450 500, 760 420 S 1300 320, 1680 400'/><path d='M-50 500 C 250 430, 480 540, 800 470 S 1320 380, 1680 450'/><path d='M-50 420 C 280 330, 520 460, 820 370 S 1280 270, 1680 350'/><path d='M-50 540 C 300 500, 520 580, 840 520 S 1340 440, 1680 510'/><path d='M-50 380 C 300 300, 560 420, 880 330 S 1300 240, 1680 310'/></g><g fill='%23B8945F' opacity='0.20'><circle cx='760' cy='420' r='4'/></g></svg>") 50% 100%/cover no-repeat}
+.aps-root .aps-band,.aps-root .aps-band *{text-align:center}
+.aps-root .aps-band-in{max-width:720px;margin:0 auto;padding:64px 24px}
+.aps-root .aps-band-eyebrow{font:600 13px/1.65 var(--s-sans) !important;letter-spacing:3px !important;text-transform:uppercase !important;color:var(--s-bronze) !important;margin:0 0 10px}
+.aps-root .aps-band-t{font:600 44px/1.15 var(--s-serif) !important;color:#F3EDE3 !important;letter-spacing:-0.01em !important;margin:0}
+.aps-root .aps-band-lede{font:400 19px/1.6 var(--s-sans) !important;color:#B7AFA4 !important;margin:14px auto 0;max-width:600px}
+@media (max-width:640px){.aps-root .aps-band-in{padding:48px 20px}.aps-root .aps-band-t{font-size:34px !important}.aps-root .aps-band-lede{font-size:17px !important}}
+.aps-root .aps-back{margin:30px 0 0;font:600 15px/1.4 var(--s-sans)}
+.aps-root .aps-back a{color:var(--s-bronze) !important;text-decoration:none !important;font-weight:600 !important}
 .aps-root .aps-quote{font:italic 400 16px/1.55 var(--s-serif);color:var(--s-ink);margin:0 0 30px;padding:10px 14px;border-left:2px solid var(--s-bronze)}
 .aps-root .aps-quote b{font-style:normal;font-weight:600;color:var(--s-quiet);font-family:var(--s-sans);font-size:13px;letter-spacing:.04em;white-space:nowrap}
 .aps-root .aps-list{margin:0}
 .aps-root .ap-stone{margin:0 0 18px;padding:18px 20px;background:var(--s-paper);border:1px solid var(--s-rule);border-left:3px solid var(--s-bronze)}
+.aps-root .ap-stone-name{font:600 20px/1.3 var(--s-serif);color:var(--s-navy);margin:0 0 8px}
 .aps-root .ap-stone-text{font:400 17px/1.55 var(--s-serif);color:var(--s-ink);margin:0 0 4px}
 .aps-root .ap-stone-text.ap-stone-main{font-size:19px;color:var(--s-navy)}
 .aps-root .ap-stone-meta{font:400 13px/1.45 var(--s-sans);color:var(--s-quiet);margin:8px 0 0}
@@ -23,16 +30,22 @@
 .aps-root .aps-foot{font:400 14px/1.5 var(--s-sans);color:var(--s-quiet);margin:34px 0 0;padding-top:14px;border-top:1px solid var(--s-rule)}
 .aps-root .aps-foot a{color:var(--s-navy)}
 .aps-root[data-band="1"]{max-width:none;padding:0}
-.aps-root[data-band="1"] .aps-h1{font-size:26px;margin-bottom:8px}
-.aps-root[data-band="1"] .aps-lede{font-size:16px;margin-bottom:18px}
-.aps-root[data-band="1"] .aps-quote,.aps-root[data-band="1"] .aps-you,.aps-root[data-band="1"] .aps-foot{display:none}
+.aps-root[data-band="1"] .aps-band{display:none}
+.aps-root[data-band="1"] .aps-band-h{display:block;font:600 26px/1.2 var(--s-serif);color:var(--s-navy);margin:0 0 8px}
+.aps-root[data-band="1"] .aps-band-l{display:block;font:400 16px/1.55 var(--s-sans);color:var(--s-ink);margin:0 0 18px}
+.aps-root .aps-band-h,.aps-root .aps-band-l{display:none}
+.aps-root[data-band="1"] .aps-quote,.aps-root[data-band="1"] .aps-you,.aps-root[data-band="1"] .aps-foot,.aps-root[data-band="1"] .aps-back{display:none}
 .aps-root[data-band="1"] .ap-stone{padding:14px 16px;margin-bottom:12px}
 @media (max-width:600px){.aps-root .aps-h1{font-size:30px}}
 </style>
 
-<p class="aps-eyebrow">Your Story · Stones of remembrance</p>
-<h1 class="aps-h1">What These Stones Mean</h1>
-<p class="aps-lede">Men who walked this path set these stones. Each one says what God did, in the man&rsquo;s own words. They were set so the question would be asked. Read them. When you are ready, set your own.</p>
+<div class="aps-band"><div class="aps-band-in">
+<p class="aps-band-eyebrow">Read them</p>
+<h1 class="aps-band-t">What These Stones Mean</h1>
+<p class="aps-band-lede">Men who walked this path set these stones. Each one says what God did, in the man&rsquo;s own words. They were set so the question would be asked. Every one of them points to the Rock. When you are ready, set your own.</p>
+</div></div>
+<h2 class="aps-band-h">What These Stones Mean</h2>
+<p class="aps-band-l">The newest stones men have set where others can see them.</p>
 <p class="aps-quote">&hellip;so that all the peoples of the earth may know that the hand of the LORD is mighty. <b>Joshua 4:24</b></p>
 
 <div class="aps-list" id="apStonesList"><p class="aps-wait">Reading the stones&hellip;</p></div>
@@ -43,13 +56,14 @@
   <a class="aps-you-go" href="/set-a-stone">Set a stone</a>
 </div>
 
-<p class="aps-foot">Every stone here was set by the man who wrote it, where others can see it, with his name or none. He can take it back any time. <a href="/your-story">Your Story</a></p>
+<p class="aps-back"><a href="/your-story">&larr; Your Story</a></p>
+<p class="aps-foot">Every stone here was set by the man who wrote it, where others can see it, with his name or none. He can take it back any time. <strong>We make mistakes.</strong> If you find one, please <a href="https://form.jotform.com/262466498821065" target="_blank" rel="noopener" data-ap-bug="">report a bug</a>.</p>
 
 <script>
 (function () {
   /* AP-STONES-CONFIG-v1 — stone.js v2 reads the Published list; nothing here needs a sign-in. */
-  var STONE_SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@8cb3d9f1b25db2b711f50844446993afef469479/stone.js";
-  var STONE_SRI = "sha384-pB7m4PJ+5nHnIfGGAqdFNcnpceaOiXitZeMUvlbrvqgqYWIAGvabmzlgV9l/R5Rv";
+  var STONE_SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@816b4b08e04c568ee77b2d492c4980532803db3d/stone.js";
+  var STONE_SRI = "sha384-xj76rwdhdLpNizSgd+fhcWWNdiC3JkTPLLCYzD7U9To8W80ACcU+K+Dqz32HsIzJ";
   var SCRIPT = "https://script.google.com/macros/s/AKfycbxTfzmFY7NuXaGZIsPqxRDKpqakwXs5heeEGcp07aiTUG6Pzk9wJ0m8qubveVZoRCO3/exec";
   var root = document.getElementById("apStonesRoot");
   var band = root.getAttribute("data-band") === "1";
