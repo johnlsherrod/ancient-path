@@ -1,5 +1,9 @@
 /**
- * Ancient Path — Front Desk · build 10
+ * Ancient Path — Front Desk · build 11
+ *   build 11 (Oct 8): a row on the Actions tab that the script did not write itself stays open until someone ticks it done.
+ *     The search-article task (and later the monthly search refresh and any other automation) appends its own rows, keys
+ *     like "draft:<slug>", rule R12. Until now the five-minute pass marked every row it had not produced itself done.
+ *     Script-owned keys (seat: first: bwm: wl: bug: testimony: look: contact: pay: cal: room:) behave exactly as before.
  *   build 9 (Oct 7): three things John ruled on day one of the cohort.
  *     1. The Tuesday reminder sends itself: every Tuesday at 7:00 PM Central, when tomorrow is one of the cohort's
  *        twelve Wednesdays, the men on the Room tab get "Tomorrow night, 7:00" from john@ (signed John, Jason in Cc,
@@ -71,7 +75,7 @@
  */
 
 const FD = {
-  BUILD: 10,
+  BUILD: 11,
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   LABEL: 'FD-captured',
   TZ: 'America/Chicago',
@@ -696,6 +700,9 @@ function roomFeed_(ss, cfg) {
 
 // ───────────────────────────── the Action lane ─────────────────────────────
 
+/** Keys the script itself writes to the Actions tab (build 11). Any other key belongs to an outside automation and is never auto-closed. */
+const SCRIPT_ACTION_KEY = /^(seat|first|bwm|wl|bug|testimony|look|contact|pay|cal|room):/;
+
 function rebuildActions_(ss, cfg, cal) {
   const now = new Date();
   const roster = rows_(ss.getSheetByName('Roster'));
@@ -801,6 +808,13 @@ function rebuildActions_(ss, cfg, cal) {
   });
   existing.forEach((ex, key) => {
     if (wantKeys.has(key)) return;
+    if (!SCRIPT_ACTION_KEY.test(key)) {
+      // build 11: written by another automation (draft:, refresh:, ...) — the script does not own it, so it never closes it.
+      // It stays open until someone ticks "mark done by hand" (or types done in status).
+      if (ex[H['mark done by hand']] === true && ex[H['status']] !== 'done') { ex[H['status']] = 'done'; ex[H['done at']] = now; }
+      out.push(ex);
+      return;
+    }
     if (ex[H['status']] !== 'done') { ex[H['status']] = 'done'; ex[H['done at']] = now; }
     out.push(ex);
   });
