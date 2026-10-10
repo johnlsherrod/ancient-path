@@ -1,4 +1,4 @@
-<!-- AP-READ build 1 (10 Oct 2026) — the Read door at /read. Two sections: Our stories (the four founders' pieces baked in, every published community piece added from the Published feed, newest first, then the invitation to write) and Articles (read live from the blog, the three Your Story signposts left out, then the invitation to talk). Self-contained: no engine, no outside file. Backslash-free on purpose. -->
+<!-- AP-READ build 2 (10 Oct 2026: What Kind of Light Am I, John’s poem, baked in as the fifth founders’ card) · build 1 (10 Oct 2026) — the Read door at /read. Two sections: Our stories (the four founders' pieces baked in, every published community piece added from the Published feed, newest first, then the invitation to write) and Articles (read live from the blog, the three Your Story signposts left out, then the invitation to talk). Self-contained: no engine, no outside file. Backslash-free on purpose. -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
 .apr{--apr-navy:#1F2A44;--apr-cream:#F6F2EA;--apr-bronze:#B8945F;--apr-deep:#8C6A3F;--apr-ink:#1F1D1A;--apr-quiet:#6B6357;--apr-rule:#E4DCCB;--apr-serif:"Source Serif 4","Source Serif Pro",Georgia,"Times New Roman",serif;--apr-sans:"Source Sans 3","Source Sans Pro","Segoe UI",Helvetica,Arial,sans-serif;
@@ -48,7 +48,7 @@
 @media (max-width:640px){.apr .apr-in{padding:0 16px}.apr .apr-grid{grid-template-columns:1fr;gap:14px}.apr .apr-sec{padding-top:44px}.apr .apr-loop{font-size:19px!important}.apr .apr-w{white-space:normal;text-align:right}}
 @media (prefers-reduced-motion:reduce){.apr a.apr-card,.apr a.apr-you{transition:none}}
 </style>
-<div class="apr" id="apRead" data-build="1">
+<div class="apr" id="apRead" data-build="2">
   <div class="apr-band"><div class="apr-in">
     <p class="apr-eb">Ancient Path</p>
     <h1 class="apr-h1">Read</h1>
@@ -60,13 +60,14 @@
     <h2 class="apr-h2">Our stories</h2>
     <p class="apr-sub">When a man writes his story all the way through and offers it, it becomes testimony. Some of these came from friends of Ancient Path, people we know and trust. Read them. We are on this path together.</p>
     <div class="apr-grid apr-stories" id="aprStories">
+      <a class="apr-card" data-k="poetry" href="/your-story?p=light"><span class="apr-meta"><span class="apr-k">What Kind of Light</span><span class="apr-w">John Sherrod</span></span><span class="apr-t">What Kind of Light Am I?</span><span class="apr-l">Am I the fireflies at our first home, among the pecan trees, the pine forest and the open fields, swarms of light, dancing, and we ran to them?</span><span class="apr-go">Read his story<i>→</i></span></a>
       <a class="apr-card" data-k="poetry" href="/your-story?p=josiah"><span class="apr-meta"><span class="apr-k">Where I’m From</span><span class="apr-w">Josiah Choiniere</span></span><span class="apr-t">Where I’m From</span><span class="apr-l">I am from Glass Figurines and Lladros, from Diet Pepsi and Mountain Dew.</span><span class="apr-go">Read his story<i>→</i></span></a>
       <a class="apr-card" data-k="poetry" href="/your-story?p=jason"><span class="apr-meta"><span class="apr-k">Where I’m From</span><span class="apr-w">Jason Posey</span></span><span class="apr-t">Where I’m From</span><span class="apr-l">My heart is the summer wind; unstoppable, unknowable, and free.</span><span class="apr-go">Read his story<i>→</i></span></a>
       <a class="apr-card" data-k="poetry" href="/your-story?p=i-am-from"><span class="apr-meta"><span class="apr-k">Where I’m From</span><span class="apr-w">John Sherrod</span></span><span class="apr-t">I Am From</span><span class="apr-l">I am from the hills of east Tennessee, the streets of New York, the big skies of Texas, and the beaches of southern California.</span><span class="apr-go">Read his story<i>→</i></span></a>
       <a class="apr-card" data-k="courses" href="/your-story?p=here-i-am"><span class="apr-meta"><span class="apr-k">Known by Jesus</span><span class="apr-w">John Sherrod</span></span><span class="apr-t">Here I Am</span><span class="apr-l">I built a career on a faulty foundation and protected titles.</span><span class="apr-go">Read his story<i>→</i></span></a>
       <a class="apr-you" href="/your-story#write-your-story"><span class="apr-meta"><span class="apr-k">Your story</span></span><span class="apr-t">It belongs here.</span><span class="apr-l">One hour. Your own words. Start with Where I’m From.</span><span class="apr-go">Begin<i>→</i></span></a>
     </div>
-    <a class="apr-all" id="aprAll" href="/your-story?stories=all"><span>All our stories →</span><small id="aprCount">4 so far</small></a>
+    <a class="apr-all" id="aprAll" href="/your-story?stories=all"><span>All our stories →</span><small id="aprCount">5 so far</small></a>
   </div></section>
 
   <section class="apr-sec" id="articles"><div class="apr-in">
@@ -92,7 +93,7 @@
   </div>
 </div>
 <script>
-/* AP-READ build 1 — Our stories from the Published feed (JSONP, same feed the hub reads); Articles from the blog's own list. Backslash-free on purpose. */
+/* AP-READ build 2 — Our stories from the Published feed (JSONP, same feed the hub reads); Articles from the blog's own list. Backslash-free on purpose. */
 (function () {
   var FEED = "https://script.google.com/macros/s/AKfycbxTfzmFY7NuXaGZIsPqxRDKpqakwXs5heeEGcp07aiTUG6Pzk9wJ0m8qubveVZoRCO3/exec?feed=published";
   var BLOG = "/api/blogPostsAllPublicPaginated?limit=40&page=1&site_template=true";
