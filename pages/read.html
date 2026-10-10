@@ -1,4 +1,4 @@
-<!-- AP-READ build 5 (10 Oct 2026: the block runs edge to edge at the visible width — build 4 clipped it to the column) · build 4 (10 Oct 2026: the ask box is on the page from the first moment — guide.js keeps it and sends an ask pressed before it arrived) · build 3 (10 Oct 2026: the Guide — the ask box "What are you carrying? Ask in your own words." and the row of concern doors in the band, the answer above the cards, the four choices, "What men are asking" below Articles, each section the newest handful ending in All our stories → / All articles →, the "so far" count retired; all drawn by guide.js, served by the Guide script, so the page carries three slots, one new link and one loader line) · build 2 (10 Oct 2026: What Kind of Light Am I, John’s poem, baked in as the fifth founders’ card) · build 1 (10 Oct 2026) — the Read door at /read. Two sections: Our stories (the four founders' pieces baked in, every published community piece added from the Published feed, newest first, then the invitation to write) and Articles (read live from the blog, the three Your Story signposts left out, then the invitation to talk). Self-contained: no engine, no outside file. Backslash-free on purpose. -->
+<!-- AP-READ build 6 (10 Oct 2026: the box reads "What do you need help with? Ask in your own words.") · build 5 (10 Oct 2026: the block runs edge to edge at the visible width — build 4 clipped it to the column) · build 4 (10 Oct 2026: the ask box is on the page from the first moment — guide.js keeps it and sends an ask pressed before it arrived) · build 3 (10 Oct 2026: the Guide — the ask box "What are you carrying? Ask in your own words." and the row of concern doors in the band, the answer above the cards, the four choices, "What men are asking" below Articles, each section the newest handful ending in All our stories → / All articles →, the "so far" count retired; all drawn by guide.js, served by the Guide script, so the page carries three slots, one new link and one loader line) · build 2 (10 Oct 2026: What Kind of Light Am I, John’s poem, baked in as the fifth founders’ card) · build 1 (10 Oct 2026) — the Read door at /read. Two sections: Our stories (the four founders' pieces baked in, every published community piece added from the Published feed, newest first, then the invitation to write) and Articles (read live from the blog, the three Your Story signposts left out, then the invitation to talk). Self-contained: no engine, no outside file. Backslash-free on purpose. -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
 .apr{--apr-navy:#1F2A44;--apr-cream:#F6F2EA;--apr-bronze:#B8945F;--apr-deep:#8C6A3F;--apr-ink:#1F1D1A;--apr-quiet:#6B6357;--apr-rule:#E4DCCB;--apr-serif:"Source Serif 4","Source Serif Pro",Georgia,"Times New Roman",serif;--apr-sans:"Source Sans 3","Source Sans Pro","Segoe UI",Helvetica,Arial,sans-serif;
@@ -56,12 +56,12 @@
 .apr .apa-note{font-family:var(--apr-sans);font-size:14px;color:#D9D2C3;margin:10px 2px 0;text-align:left}
 @media (max-width:640px){.apr .apa-row{flex-direction:column}.apr .apa-q{font-size:15.5px;padding:12px 13px}.apr .apa-go{padding:13px 22px}}
 </style>
-<div class="apr" id="apRead" data-build="5">
+<div class="apr" id="apRead" data-build="6">
   <div class="apr-band"><div class="apr-in">
     <p class="apr-eb">Ancient Path</p>
     <h1 class="apr-h1">Read</h1>
     <p class="apr-lede">Stories from men who walked this path, and plain words for hard things.</p>
-    <div data-ap-ask="band"><form class="apa-box" id="apAskForm" autocomplete="off" onsubmit="window.apAskEarly=1;return false"><div class="apa-row"><input class="apa-q" id="apAskQ" type="text" maxlength="600" placeholder="What are you carrying? Ask in your own words." aria-label="What are you carrying? Ask in your own words."><button class="apa-go" id="apAskGo" type="submit">Ask</button></div><p class="apa-help">We keep the questions, not who asked them, unless you leave your email so we can tell you when it’s ready.</p><p class="apa-note" id="apAskNote"></p></form></div>
+    <div data-ap-ask="band"><form class="apa-box" id="apAskForm" autocomplete="off" onsubmit="window.apAskEarly=1;return false"><div class="apa-row"><input class="apa-q" id="apAskQ" type="text" maxlength="600" placeholder="What do you need help with? Ask in your own words." aria-label="What do you need help with? Ask in your own words."><button class="apa-go" id="apAskGo" type="submit">Ask</button></div><p class="apa-help">We keep the questions, not who asked them, unless you leave your email so we can tell you when it’s ready.</p><p class="apa-note" id="apAskNote"></p></form></div>
   </div></div>
   <section data-ap-ask="out"></section>
 
@@ -111,7 +111,7 @@
   </div>
 </div>
 <script>
-/* AP-READ build 5 — Our stories from the Published feed (JSONP, same feed the hub reads); Articles from the blog's own list. Backslash-free on purpose. */
+/* AP-READ build 6 — Our stories from the Published feed (JSONP, same feed the hub reads); Articles from the blog's own list. Backslash-free on purpose. */
 (function () {
   /* the block runs edge to edge. 100vw counts the scroll bar, so on a desktop window it ran a few pixels past the right edge:
      the width is set to the visible width of the site's scroll box instead, and the block starts at its left edge */
