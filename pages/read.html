@@ -1,4 +1,4 @@
-<!-- AP-READ build 2 (10 Oct 2026: What Kind of Light Am I, John’s poem, baked in as the fifth founders’ card) · build 1 (10 Oct 2026) — the Read door at /read. Two sections: Our stories (the four founders' pieces baked in, every published community piece added from the Published feed, newest first, then the invitation to write) and Articles (read live from the blog, the three Your Story signposts left out, then the invitation to talk). Self-contained: no engine, no outside file. Backslash-free on purpose. -->
+<!-- AP-READ build 3 (10 Oct 2026: the Guide — the ask box "What are you carrying? Ask in your own words." and the row of concern doors in the band, the answer above the cards, the four choices, "What men are asking" below Articles, each section the newest handful ending in All our stories → / All articles →, the "so far" count retired; all drawn by guide.js, served by the Guide script, so the page carries three slots, one new link and one loader line) · build 2 (10 Oct 2026: What Kind of Light Am I, John’s poem, baked in as the fifth founders’ card) · build 1 (10 Oct 2026) — the Read door at /read. Two sections: Our stories (the four founders' pieces baked in, every published community piece added from the Published feed, newest first, then the invitation to write) and Articles (read live from the blog, the three Your Story signposts left out, then the invitation to talk). Self-contained: no engine, no outside file. Backslash-free on purpose. -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
 .apr{--apr-navy:#1F2A44;--apr-cream:#F6F2EA;--apr-bronze:#B8945F;--apr-deep:#8C6A3F;--apr-ink:#1F1D1A;--apr-quiet:#6B6357;--apr-rule:#E4DCCB;--apr-serif:"Source Serif 4","Source Serif Pro",Georgia,"Times New Roman",serif;--apr-sans:"Source Sans 3","Source Sans Pro","Segoe UI",Helvetica,Arial,sans-serif;
@@ -48,12 +48,14 @@
 @media (max-width:640px){.apr .apr-in{padding:0 16px}.apr .apr-grid{grid-template-columns:1fr;gap:14px}.apr .apr-sec{padding-top:44px}.apr .apr-loop{font-size:19px!important}.apr .apr-w{white-space:normal;text-align:right}}
 @media (prefers-reduced-motion:reduce){.apr a.apr-card,.apr a.apr-you{transition:none}}
 </style>
-<div class="apr" id="apRead" data-build="2">
+<div class="apr" id="apRead" data-build="3">
   <div class="apr-band"><div class="apr-in">
     <p class="apr-eb">Ancient Path</p>
     <h1 class="apr-h1">Read</h1>
     <p class="apr-lede">Stories from men who walked this path, and plain words for hard things.</p>
+    <div data-ap-ask="band"></div>
   </div></div>
+  <section data-ap-ask="out"></section>
 
   <section class="apr-sec" id="our-stories"><div class="apr-in">
     <p class="apr-eb">In Their Own Words</p>
@@ -67,7 +69,7 @@
       <a class="apr-card" data-k="courses" href="/your-story?p=here-i-am"><span class="apr-meta"><span class="apr-k">Known by Jesus</span><span class="apr-w">John Sherrod</span></span><span class="apr-t">Here I Am</span><span class="apr-l">I built a career on a faulty foundation and protected titles.</span><span class="apr-go">Read his story<i>→</i></span></a>
       <a class="apr-you" href="/your-story#write-your-story"><span class="apr-meta"><span class="apr-k">Your story</span></span><span class="apr-t">It belongs here.</span><span class="apr-l">One hour. Your own words. Start with Where I’m From.</span><span class="apr-go">Begin<i>→</i></span></a>
     </div>
-    <a class="apr-all" id="aprAll" href="/your-story?stories=all"><span>All our stories →</span><small id="aprCount">5 so far</small></a>
+    <a class="apr-all" id="aprAll" href="/your-story?stories=all"><span>All our stories →</span></a>
   </div></section>
 
   <section class="apr-sec" id="articles"><div class="apr-in">
@@ -84,6 +86,14 @@
       <a class="apr-card" href="/blog/angry-with-him"><span class="apr-pic" style="background-image:url('https://lwfiles.mycourse.app/69ff74fa031fcc8033475300-public/2bcb9efe405e898e8fbf11bcbcad5c0a.jpg')"></span><span class="apr-d">August 29, 2026</span><span class="apr-t">When You’re Angry With Him</span><span class="apr-l">Anger at God is evidence of the relationship, not a breach of it. Most men do one of four things instead of saying it out loud.</span><span class="apr-go">Read it<i>→</i></span></a>
       <a class="apr-you" id="aprTalk" href="/begin"><span class="apr-meta"><span class="apr-k">Let’s talk</span></span><span class="apr-t">Read something that landed?</span><span class="apr-l">Thirty minutes with one of us, free. You tell us where you are and what you are carrying.</span><span class="apr-go">Let’s talk<i>→</i></span></a>
     </div>
+    <a class="apr-all" id="aprAllArticles" href="/blog/"><span>All articles →</span></a>
+  </div></section>
+
+  <section class="apr-sec" id="asking" data-ap-ask="asking" hidden><div class="apr-in">
+    <p class="apr-eb">Asked here</p>
+    <h2 class="apr-h2">What men are asking</h2>
+    <p class="apr-sub">What men brought to this page, in their own words, and where we are with each one.</p>
+    <div data-ap-ask-rows></div>
   </div></section>
 
   <p class="apr-loop">Read theirs. Then <a href="/your-story#write-your-story">write yours</a>.</p>
@@ -93,7 +103,7 @@
   </div>
 </div>
 <script>
-/* AP-READ build 2 — Our stories from the Published feed (JSONP, same feed the hub reads); Articles from the blog's own list. Backslash-free on purpose. */
+/* AP-READ build 3 — Our stories from the Published feed (JSONP, same feed the hub reads); Articles from the blog's own list. Backslash-free on purpose. */
 (function () {
   var FEED = "https://script.google.com/macros/s/AKfycbxTfzmFY7NuXaGZIsPqxRDKpqakwXs5heeEGcp07aiTUG6Pzk9wJ0m8qubveVZoRCO3/exec?feed=published";
   var BLOG = "/api/blogPostsAllPublicPaginated?limit=40&page=1&site_template=true";
@@ -136,7 +146,7 @@
   function kindOf(from) { var p = ("" + (from || "")).toLowerCase(); if (p.indexOf("friend") >= 0) return "friends"; if (p.indexOf("stone") >= 0) return "stones"; if (p.indexOf("from") >= 0) return "poetry"; if (p.indexOf("lament") >= 0 || p.indexOf("prayer") >= 0 || p.indexOf("psalm") >= 0) return "prayer"; return "courses"; }
 
   /* ---- Our stories ---- */
-  var grid = document.getElementById("aprStories"), count = document.getElementById("aprCount");
+  var grid = document.getElementById("aprStories");
   function storyCard(it) {
     var id = safeId(it.id); if (!id) return null;
     var name = clean(it.name) || "Shared anonymously", from = clean(it.from) || "Testimony", title = clean(it.title) || "A testimony", text = it.piece;
@@ -156,7 +166,6 @@
         var c = storyCard(list[i]); if (!c) continue;
         grid.insertBefore(c, grid.firstChild); n++;
       }
-      if (count) count.textContent = (grid.querySelectorAll("a.apr-card").length) + " so far";
     } catch (e) {}
   };
   if (grid) {
@@ -194,3 +203,4 @@
   }
 })();
 </script>
+<script src="https://script.google.com/macros/s/AKfycbzgsFs-tGu5Xv-cBUDmJO4T39V0P8GNX4OM9WNErwKzlwaq2e4pCOgWxMFmZWXAaPFg/exec?file=guide.js" async></script>
