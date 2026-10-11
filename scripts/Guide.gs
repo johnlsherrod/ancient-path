@@ -1,4 +1,10 @@
-/* AP-GUIDE build 9 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (10 Oct 2026)
+/* AP-GUIDE build 11 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (11 Oct 2026)
+ *   build 11: "What Scripture says" must carry a Bible reference (book chapter:verse) or it is dropped — the faster model once
+ *   quoted an article's own sentence there; the instruction now says an article's words are never Scripture.
+ *   build 10: speed. The Guide asks Claude itself when its own Script Properties carry ANTHROPIC_API_KEY (the hand-off back from
+ *   the relay cost 5–30 seconds an ask); without the key it uses the relay as before. The lists an ask reads (pieces, pages,
+ *   concerns, settings) come from the cache, not the sheet; the sheet is opened once per ask; the answer is written by the
+ *   faster model unless the Config row "answer model" says full; step two writes its result straight onto the row step one made.
  *   build 9: the first step (choosing the pieces or pages) asks the relay for its faster model ("fast": true — the relay falls back
  *   to its usual model if the faster one does not answer); an ask about writing his story says to start with Where I Am From, as
  *   the Your Story page does, and offers The Story Path to walk all nine — and those two pages lead the cards.
@@ -79,7 +85,7 @@
  */
 
 const GUIDE = {
-  BUILD: 9,
+  BUILD: 11,
   SHEET_NAME: 'Ancient Path — Guide',
   DOORS: ['Shame', 'Pornography', 'What people think of me', 'Anger', 'Where I’m from', 'Endings and new beginnings', 'Grief and lament', 'Fathers and children', 'Writing my story', 'How to be known in community'],
   SITE: 'https://www.ancientpathcoaching.com',
@@ -102,7 +108,10 @@ const GUIDE = {
   },
   MAX_Q: 600,
   MAX_PIECE_CHARS: 9000,
-  MAX_READ_CHARS: 30000,
+  MAX_READ_CHARS: 18000,
+  API_URL: 'https://api.anthropic.com/v1/messages',
+  FAST_MODEL: 'claude-haiku-4-5',
+  FULL_MODEL: 'claude-sonnet-5',
   STORY_LINE: 'We have several ways to engage your story — from poems to a lament, to setting a remembrance stone, to courses. Take a look below and see if one matches what you need.',
   STORY_START: 'Start with Where I Am From. If you want to walk all nine as one path, The Story Path is the way.'
 };
@@ -124,15 +133,18 @@ function setup() {
   Logger.log('The Guide is up. Build ' + GUIDE.BUILD + '. Pieces: ' + n + '. Sheet: https://docs.google.com/spreadsheets/d/' + ss.getId());
 }
 
+let SS_ = null;   // opened once per run
 function sheet_() {
+  if (SS_) return SS_;
   const props = PropertiesService.getScriptProperties();
   let id = props.getProperty('GUIDE_SHEET_ID');
-  if (id) { try { return SpreadsheetApp.openById(id); } catch (e) {} }
+  if (id) { try { SS_ = SpreadsheetApp.openById(id); return SS_; } catch (e) {} }
   const found = DriveApp.getFilesByName(GUIDE.SHEET_NAME);
   let ss = null;
   while (found.hasNext()) { const f = found.next(); if (f.getMimeType() === MimeType.GOOGLE_SHEETS) { ss = SpreadsheetApp.openById(f.getId()); break; } }
   if (!ss) ss = SpreadsheetApp.create(GUIDE.SHEET_NAME);
   props.setProperty('GUIDE_SHEET_ID', ss.getId());
+  SS_ = ss;
   return ss;
 }
 
@@ -212,14 +224,19 @@ function ensureConfig_(ss) {
     ['review owner', 'John', 'Whose name goes on the Front Desk action for the monthly review.'],
     ['master list', '3', 'The ActiveCampaign list a left email joins (3 = Master Contact List).'],
     ['front desk actions', 'yes', 'yes: the monthly review also writes one row on the Front Desk Actions tab.'],
-    ['newest handful', '6', 'How many pieces each section on /read shows before "All our stories" / "All articles".']
+    ['newest handful', '6', 'How many pieces each section on /read shows before "All our stories" / "All articles".'],
+    ['answer model', 'fast', 'fast: the answer under the pieces is written by the faster model (a few seconds). full: the usual model (slower, about ten seconds more).']
   ];
   const add = want.filter(w => !have[w[0]]);
   if (add.length) sh.getRange(sh.getLastRow() + 1, 1, add.length, 3).setValues(add);
 }
 
 function config_(ss) {
-  const rows = (ss || sheet_()).getSheetByName('Config').getDataRange().getValues().slice(1);
+  if (!ss) { const hit = bigGet_('cfg'); if (hit) return hit; const c = readConfig_(sheet_()); bigPut_('cfg', c, 600); return c; }
+  return readConfig_(ss);
+}
+function readConfig_(ss) {
+  const rows = ss.getSheetByName('Config').getDataRange().getValues().slice(1);
   const c = {}; rows.forEach(r => { const k = String(r[0]).trim(); if (k) c[k] = String(r[1]).trim(); });
   return {
     perVisitor: numOr_(c['asks per visitor per day'], 12),
@@ -229,7 +246,8 @@ function config_(ss) {
     owner: c['review owner'] || 'John',
     masterList: numOr_(c['master list'], 3),
     fdActions: String(c['front desk actions'] || 'yes').toLowerCase() !== 'no',
-    handful: Math.max(3, numOr_(c['newest handful'], 6))
+    handful: Math.max(3, numOr_(c['newest handful'], 6)),
+    answerFull: String(c['answer model'] || 'fast').toLowerCase() === 'full'
   };
 }
 
@@ -243,6 +261,12 @@ function ensureTriggers_() {
 // ───────────────────────────── the concerns (the one list) ─────────────────────────────
 
 /** The list as the sheet has it: renames applied, each row with its name, old names, ticks and state. Order column, then sheet order. */
+/** The list for an ask: cached ten minutes (the hourly refresh clears it), so a tick reaches the box within ten minutes. */
+function concernsFast_() {
+  const hit = bigGet_('concerns'); if (hit) return hit;
+  const list = concerns_(); bigPut_('concerns', list, 600); return list;
+}
+
 function concerns_(ss) {
   ss = ss || sheet_();
   const sh = ss.getSheetByName('Concerns');
@@ -300,6 +324,7 @@ function updateConcernStates_(ss, pieces) {
     c.state = state; c.where = where; c.address = best ? best.address : '';
   });
   CacheService.getScriptCache().remove('guidefeed');
+  bigDel_('concerns');
   return list;
 }
 
@@ -416,7 +441,7 @@ function refreshPieces() {
   const last = sh.getLastRow();
   if (last > 1) sh.getRange(2, 1, last - 1, GUIDE.TABS.Pieces.length).clearContent();
   sh.getRange(2, 1, out.length, GUIDE.TABS.Pieces.length).setValues(out);
-  CacheService.getScriptCache().remove('pieces');
+  bigDel_('pieces');
   updateConcernStates_(ss, pieces);
   try { refreshSite_(); } catch (e) { log_('site', 'read failed: ' + String(e).slice(0, 160)); }
   PropertiesService.getScriptProperties().setProperty('GUIDE_REFRESHED', new Date().toISOString());
@@ -447,12 +472,12 @@ function articleBody_(html) {
 
 function pieces_() {
   const cache = CacheService.getScriptCache();
-  const hit = cache.get('pieces');
-  if (hit) { try { return JSON.parse(hit); } catch (e) {} }
+  const hit = bigGet_('pieces');
+  if (hit) return hit;
   const sh = sheet_().getSheetByName('Pieces');
   const list = rows_(sh).filter(r => r['id']).map(r => ({ id: String(r['id']), source: String(r['source']), kind: String(r['kind']), title: String(r['title']), who: String(r['who']),
     description: String(r['description']), address: String(r['address']), concern: String(r['concern'] || ''), updated: String(r['updated'] || ''), body: String(r['body'] || '') }));
-  try { cache.put('pieces', JSON.stringify(list), 1800); } catch (e) {}   // a big list may not fit the cache; the sheet is read each time then
+  bigPut_('pieces', list, 3600);   // kept in parts, so a long list still fits the cache
   return list;
 }
 
@@ -509,13 +534,13 @@ function siteTab_(ss) {
 /** Every row of the Site tab, as the ask reads it. Cached half an hour; the hourly read clears it. */
 function site_() {
   const cache = CacheService.getScriptCache();
-  const hit = cache.get('site');
-  if (hit) { try { return JSON.parse(hit); } catch (e) {} }
+  const hit = bigGet_('site');
+  if (hit) return hit;
   const list = rows_(siteTab_()).filter(r => String(r['id']).trim() && String(r['address']).trim()).map(r => ({
     id: String(r['id']).trim(), source: 'site', kind: String(r['kind'] || ''), title: String(r['title'] || ''), line: String(r['line'] || ''),
     address: absUrl_(String(r['address']).trim()), go: String(r['go'] || 'Open it'), body: String(r['body'] || '').replace(/^hand:\s*/, '')
   }));
-  try { cache.put('site', JSON.stringify(list), 1800); } catch (e) {}
+  bigPut_('site', list, 3600);
   return list;
 }
 function absUrl_(a) { return /^https?:/.test(a) ? a : GUIDE.SITE + (a.charAt(0) === '/' ? '' : '/') + a; }
@@ -538,7 +563,7 @@ function refreshSite_() {
     }
     sh.getRange(i + 1, H['updated'] + 1).setValue(new Date());
   }
-  CacheService.getScriptCache().remove('site');
+  bigDel_('site');
   return n;
 }
 
@@ -555,7 +580,7 @@ function siteStep_(q, rows, v) {
     'Also "used": the ids of the pages he should open next, best first (one to five; never ' + SITE_TALK + ', which always closes the answer).\n' +
     'If what he wrote discloses harm to himself or anyone, or danger now, reply only {"unsafe": true}.\n' + HOUSE_RULES + '\n\n' +
     'Reply with only this JSON: {"text": "", "used": ["id"]}\n\nTHE PAGES:\n' + blocks.join('\n\n') + '\n\nHIS WORDS:\n' + q;
-  const r = relay_(input, v);
+  const r = relay_(input, v, !config_().answerFull, 600);
   if (!r.ok) return { kind: 'error', error: r.error || 'failed' };
   const a = r.data || {};
   if (a.unsafe === true) return { kind: 'safety' };
@@ -645,7 +670,7 @@ function ask_(req) {
   const cfg = config_();
   const askId = Utilities.getUuid().replace(/-/g, '').slice(0, 10);
   const at = new Date();
-  const concerns = concerns_();
+  const concerns = concernsFast_();
   const door = concernFor_(req.door, concerns);
   const doorName = door ? door.name : '';
 
@@ -664,7 +689,7 @@ function ask_(req) {
 
   // 2. Claude reads the list (titles and one line each) and picks three to five, or says none / close / outside / safety
   const site = site_();
-  const pick = relay_(pickInstruction_(q, list, concerns, door, site), v, true);   // choosing only: the relay's faster model
+  const pick = relay_(pickInstruction_(q, list, concerns, door, site), v, true, 400);   // choosing only: the faster model
   if (!pick.ok) { record_(at, askId, q, doorName, 'error', doorName, '', []); return { ok: false, error: pick.error || 'failed' }; }
   const d = pick.data || {};
   let outcome = String(d.outcome || '').toLowerCase();
@@ -681,8 +706,8 @@ function ask_(req) {
     if (siteById[SITE_TALK] && !chosenSite.some(p => p.id === SITE_TALK)) chosenSite.push(siteById[SITE_TALK]);
     const cards = chosenSite.filter(p => p.id !== SITE_TALK).slice(0, 5);
     if (req.two === true) {
-      record_(at, askId, q, doorName, 'site', concern, topic, cards.map(p => p.id));
-      CacheService.getScriptCache().put('ask:' + askId, JSON.stringify({ q: q, ids: chosenSite.map(p => p.id), outcome: 'site', concern: concern, topic: topic, v: v }), 900);
+      const row = record_(at, askId, q, doorName, 'site', concern, topic, cards.map(p => p.id));
+      CacheService.getScriptCache().put('ask:' + askId, JSON.stringify({ q: q, ids: chosenSite.map(p => p.id), outcome: 'site', concern: concern, topic: topic, v: v, row: row }), 900);
       return { ok: true, askId: askId, outcome: 'site', concern: concern, topic: topic, pending: true, pieces: cards.map(siteCard_) };
     }
     const sw = siteStep_(q, chosenSite, v);
@@ -697,8 +722,8 @@ function ask_(req) {
 
   // 3a. two steps (guide.js build 3): the outcome and the pieces now, the answer on the next call — he sees the pieces in seconds
   if (req.two === true) {
-    record_(at, askId, q, doorName, outcome, concern, topic, chosen.slice(0, 3).map(p => p.id));
-    CacheService.getScriptCache().put('ask:' + askId, JSON.stringify({ q: q, ids: chosen.map(p => p.id), outcome: outcome, concern: concern, topic: topic, v: v }), 900);
+    const row = record_(at, askId, q, doorName, outcome, concern, topic, chosen.slice(0, 3).map(p => p.id));
+    CacheService.getScriptCache().put('ask:' + askId, JSON.stringify({ q: q, ids: chosen.map(p => p.id), outcome: outcome, concern: concern, topic: topic, v: v, row: row }), 900);
     return { ok: true, askId: askId, outcome: outcome, concern: concern, topic: topic, pending: true, pieces: chosen.slice(0, 3).map(card_) };
   }
 
@@ -726,25 +751,25 @@ function answer_(req) {
     const sById = {}; site_().forEach(p => { sById[p.id] = p; });
     const rows = (ctx.ids || []).map(id => sById[id]).filter(Boolean);
     const sw = rows.length ? siteStep_(ctx.q, rows, v) : { kind: 'error', error: 'failed' };
-    if (sw.kind === 'error') { updateAsk_(askId, 'error', null); return { ok: false, error: sw.error }; }
-    if (sw.kind === 'safety') { updateAsk_(askId, 'safety', []); return Object.assign(base, { outcome: 'safety', pieces: [] }); }
-    updateAsk_(askId, 'site', sw.shown.map(p => p.id));
+    if (sw.kind === 'error') { updateAsk_(ctx.row, askId, 'error', null); return { ok: false, error: sw.error }; }
+    if (sw.kind === 'safety') { updateAsk_(ctx.row, askId, 'safety', []); return Object.assign(base, { outcome: 'safety', pieces: [] }); }
+    updateAsk_(ctx.row, askId, 'site', sw.shown.map(p => p.id));
     return Object.assign(base, { outcome: 'site', answer: sw.answer, pieces: sw.shown.map(siteCard_) });
   }
   const byId = {}; pieces_().forEach(p => { byId[p.id] = p; });
   const chosen = (ctx.ids || []).map(id => byId[id]).filter(Boolean);
-  if (!chosen.length) { updateAsk_(askId, 'none', []); return Object.assign(base, { outcome: 'none', pieces: [] }); }
+  if (!chosen.length) { updateAsk_(ctx.row, askId, 'none', []); return Object.assign(base, { outcome: 'none', pieces: [] }); }
   const w = windowStep_(ctx.q, chosen, ctx.outcome, v);
-  if (w.kind === 'error') { updateAsk_(askId, 'error', null); return { ok: false, error: w.error }; }
-  if (w.kind === 'safety') { updateAsk_(askId, 'safety', []); return Object.assign(base, { outcome: 'safety', pieces: [] }); }
-  if (w.kind === 'none') { updateAsk_(askId, 'none', []); return Object.assign(base, { outcome: 'none', pieces: [] }); }
-  updateAsk_(askId, ctx.outcome, w.shown.map(p => p.id));
+  if (w.kind === 'error') { updateAsk_(ctx.row, askId, 'error', null); return { ok: false, error: w.error }; }
+  if (w.kind === 'safety') { updateAsk_(ctx.row, askId, 'safety', []); return Object.assign(base, { outcome: 'safety', pieces: [] }); }
+  if (w.kind === 'none') { updateAsk_(ctx.row, askId, 'none', []); return Object.assign(base, { outcome: 'none', pieces: [] }); }
+  updateAsk_(ctx.row, askId, ctx.outcome, w.shown.map(p => p.id));
   return Object.assign(base, { outcome: ctx.outcome, answer: w.answer, pieces: w.shown.map(card_) });
 }
 
 /** Claude reads only the chosen pieces and answers under the Window. Returns { kind: answer | none | safety | error }. */
 function windowStep_(q, chosen, outcome, v) {
-  const read = relay_(windowInstruction_(q, chosen, outcome), v);
+  const read = relay_(windowInstruction_(q, chosen, outcome), v, !config_().answerFull, 1000);
   if (!read.ok) return { kind: 'error', error: read.error || 'failed' };
   const a = read.data || {};
   if (a.unsafe === true) return { kind: 'safety' };
@@ -756,7 +781,7 @@ function windowStep_(q, chosen, outcome, v) {
     close: String(a.close || '').toLowerCase() === 'begin' ? 'begin' : 'talk'
   };
   if (answer.problem && sameWords_(answer.problem, q)) answer.problem = '';          // only his words back: nothing named, so nothing shown
-  if (answer.scripture && !/["“”]/.test(answer.scripture)) answer.scripture = '';    // "What Scripture says" quotes a verse, or it is not shown
+  if (answer.scripture && (!/["“”]/.test(answer.scripture) || !/\b(?:[1-3]\s?)?[A-Z][a-z]+\.?\s+\d{1,3}:\d{1,3}/.test(answer.scripture))) answer.scripture = '';    // a quoted verse with its reference, or it is not shown
   if (!answer.problem && !answer.scripture && !answer.decision) return { kind: 'none' };
   if (outcome === 'close') answer.closeNote = oneLine_(a.closeNote, 240) || 'This is close to what you asked, not the exact thing.';
   return { kind: 'answer', answer: answer, shown: shown };
@@ -773,9 +798,15 @@ function sameWords_(a, b) {
 }
 
 /** Step two's result written onto the row step one made: the outcome and the pieces shown (null leaves the pieces as they were). */
-function updateAsk_(askId, outcome, ids) {
+function updateAsk_(row, askId, outcome, ids) {
   try {
-    const sh = sheet_().getSheetByName('Asks'), H = headerIndex_(sh), data = sh.getDataRange().getValues();
+    const sh = sheet_().getSheetByName('Asks'), H = asksHeader_(sh);
+    if (row > 1 && String(sh.getRange(row, H['ask id'] + 1).getValue()) === askId) {   // the row step one wrote: no search
+      sh.getRange(row, H['outcome'] + 1).setValue(outcome);
+      if (ids) sh.getRange(row, H['pieces shown'] + 1).setValue(ids.join(', '));
+      return;
+    }
+    const data = sh.getDataRange().getValues();
     for (let i = data.length - 1; i >= 1; i--) {
       if (String(data[i][H['ask id']]) !== askId) continue;
       sh.getRange(i + 1, H['outcome'] + 1).setValue(outcome);
@@ -788,11 +819,16 @@ function updateAsk_(askId, outcome, ids) {
 function card_(p) { return { id: p.id, source: p.source, kind: p.kind, title: p.title, who: p.who, line: p.description, address: p.address, concern: p.concern || '' }; }
 
 function record_(at, askId, q, door, outcome, concern, topic, ids) {
-  const sh = sheet_().getSheetByName('Asks'), H = headerIndex_(sh);
+  const sh = sheet_().getSheetByName('Asks'), H = asksHeader_(sh);
   const row = new Array(GUIDE.TABS.Asks.length).fill('');
   row[H['at']] = at; row[H['ask id']] = askId; row[H['question']] = q; row[H['door']] = door || ''; row[H['outcome']] = outcome; row[H['concern']] = concern || ''; row[H['topic']] = topic || '';
   row[H['pieces shown']] = (ids || []).join(', '); row[H['email given']] = 'no'; row[H['build']] = GUIDE.BUILD;
   sh.appendRow(row);
+  try { return sh.getLastRow(); } catch (e) { return 0; }
+}
+function asksHeader_(sh) {
+  const hit = bigGet_('H:Asks'); if (hit) return hit;
+  const H = headerIndex_(sh); bigPut_('H:Asks', H, 21600); return H;
 }
 
 /** The disclosure screen. A hit means the safeguarding line and Let's talk, nothing else. Kept wide on purpose. */
@@ -850,7 +886,7 @@ function windowInstruction_(q, chosen, outcome) {
   return GUIDE.HOUSE_MARK + ' A man typed what he is carrying into the ask box on our Read page. You have read only the pieces below — stories men wrote and offered, and our short articles. ' +
     'They are the only source. Answer him in the shape of the Wisdom of the Window, in five short moves written as four parts:\n' +
     '1. "problem": name what he is carrying underneath the sentence he typed — one plain sentence to him, the thing under his words. Never give his sentence back to him or reword it; add what it is. No diagnosis. If you cannot name more than he said, write "".\n' +
-    '2. "scripture": what Scripture says about it, drawn only from these pieces — quote at least one verse word for word as the piece has it, inside quotation marks, with its reference, and name the piece. A reference with no quoted words is not enough. Two to four sentences. If the pieces quote no verse, write "".\n' +
+    '2. "scripture": what Scripture says about it, drawn only from these pieces — quote at least one Bible verse word for word as the piece has it, inside quotation marks, with its reference (book chapter:verse), and name the piece. A reference with no quoted words is not enough. An article or story speaking in its own words is never Scripture — quote only the Bible verses the piece itself quotes. Two to four sentences. If the pieces quote no verse, write "".\n' +
     '3. "people": people first — who this touches and what justice and mercy look like toward them today, from what the pieces say; one to three sentences.\n' +
     '4. "decision": one decision he can make today from a place of faith, God\'s rule over his own — concrete, small enough to do tonight, drawn from what the pieces ask of a man; one to three sentences.\n' +
     'Then "close": "begin" when the right next step is to write his own story on our site (the pieces are stories, or his concern is about his own past and naming it), or "talk" when the right next step is thirty minutes with one of our team (the concern is live, relational, or heavy).\n' +
@@ -866,11 +902,65 @@ function windowInstruction_(q, chosen, outcome) {
 
 // ───────────────────────────── the relay (the key never lives here) ─────────────────────────────
 
-function relay_(input, id, fast) {
+function relay_(input, id, fast, maxTokens) {
+  const key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
+  if (key) {   // build 10: ask Claude here — no hand-off back from the relay
+    let d = direct_(key, input, fast, maxTokens);
+    if (!d.ok && fast && d.error === 'network') d = direct_(key, input, false, maxTokens);   // the faster model did not answer: the usual one does
+    if (d.ok || d.error === 'rate_limited' || d.error === 'refused') return d;
+    log_('claude', 'direct failed (' + d.error + '); trying the relay');
+  }
   let r = relayOnce_(input, id, fast);
   if (!r.ok && (r.error === 'network' || r.error === 'bad_request')) { Utilities.sleep(1200); r = relayOnce_(input, id, fast); }   // a dropped redirect or a cold start: once more
   return r;
 }
+function direct_(key, input, fast, maxTokens) {
+  const props = PropertiesService.getScriptProperties();
+  const model = fast ? (props.getProperty('FAST_MODEL') || GUIDE.FAST_MODEL) : (props.getProperty('MODEL') || GUIDE.FULL_MODEL);
+  const body = { model: model, max_tokens: maxTokens || 1500, system: 'Reply with only the JSON object the instructions ask for. No preface, no code fence, no words outside the JSON.', messages: [{ role: 'user', content: String(input).slice(0, 60000) }] };
+  let resp;
+  try {
+    resp = UrlFetchApp.fetch(GUIDE.API_URL, { method: 'post', contentType: 'application/json', headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01' }, payload: JSON.stringify(body), muteHttpExceptions: true });
+  } catch (e) { return { ok: false, error: 'network' }; }
+  const status = resp.getResponseCode(), text = resp.getContentText() || '';
+  if (status === 429 || status === 529) return { ok: false, error: 'rate_limited' };
+  if (status < 200 || status >= 300) { log_('claude', 'api ' + status + ' ' + text.slice(0, 160)); return { ok: false, error: 'network' }; }
+  let msg; try { msg = JSON.parse(text); } catch (e) { return { ok: false, error: 'network' }; }
+  if (msg && msg.stop_reason === 'refusal') return { ok: false, error: 'refused' };
+  let reply = ''; ((msg && msg.content) || []).forEach(b => { if (b && b.type === 'text' && b.text) reply += b.text; });
+  const data = parseJSON_(reply.trim());
+  if (!data || typeof data !== 'object') return { ok: false, error: 'network' };
+  return { ok: true, data: data };
+}
+function parseJSON_(s) {
+  try { return JSON.parse(s); } catch (e) {}
+  const m = s.match(/```(?:json)?\s*([\s\S]*?)```/i); if (m) { try { return JSON.parse(m[1]); } catch (e) {} }
+  const a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a >= 0 && b > a) { try { return JSON.parse(s.slice(a, b + 1)); } catch (e) {} }
+  return null;
+}
+
+/** The cache holds 100 KB a key; a long list is kept in parts under one name. */
+function bigPut_(name, obj, secs) {
+  try {
+    const s = JSON.stringify(obj), size = 90000, parts = {};
+    const n = Math.ceil(s.length / size) || 1;
+    for (let i = 0; i < n; i++) parts[name + ':' + i] = s.slice(i * size, (i + 1) * size);
+    parts[name + ':n'] = String(n);
+    CacheService.getScriptCache().putAll(parts, secs);
+  } catch (e) {}
+}
+function bigGet_(name) {
+  try {
+    const c = CacheService.getScriptCache(), n = parseInt(c.get(name + ':n'), 10);
+    if (!n) return null;
+    const keys = []; for (let i = 0; i < n; i++) keys.push(name + ':' + i);
+    const got = c.getAll(keys); let s = '';
+    for (let i = 0; i < n; i++) { if (got[keys[i]] == null) return null; s += got[keys[i]]; }
+    return JSON.parse(s);
+  } catch (e) { return null; }
+}
+function bigDel_(name) { try { CacheService.getScriptCache().remove(name + ':n'); } catch (e) {} }
+
 function relayOnce_(input, id, fast) {
   let resp;
   try {
