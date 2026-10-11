@@ -1,4 +1,11 @@
-/* AP-GUIDE build 15 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (11 Oct 2026)
+/* AP-GUIDE build 17 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (11 Oct 2026)
+ *   build 17: a question about his own life that Claude answers only with the Contact page ("how do I talk to my teenage son about
+ *   his faith") is not a site question either: it is answered as close or none (the four choices). A habit he cannot stop (drinking,
+ *   a screen, food) is his own life, inside what we do, never "outside".
+ *   build 16: an ask id always starts with a letter, so the sheet keeps it as written (one read as a number, 6.43E+07, and a choice
+ *   on that ask could not find its row). A question about a man's own life is never "site": when Claude calls it site but names
+ *   none of our pages, it is answered as close (when pieces fit) or none (the four choices), not a bare Let's talk. The concern and
+ *   topic are named on every ask, site asks too. A step two with no saved row writes its row instead of calling itself.
  *   build 15: inside a quoted verse, a quote within the verse reads as curly single marks (“…said, ‘Where are you?’…”), never straight
  *   marks inside curly ones. The hourly read no longer asks Claude again about a piece it already found no concern for, while the
  *   piece's words are unchanged ("What Is Biblical Coaching?" was asked every hour).
@@ -97,7 +104,7 @@
  */
 
 const GUIDE = {
-  BUILD: 15,
+  BUILD: 17,
   SHEET_NAME: 'Ancient Path — Guide',
   DOORS: ['Shame', 'Pornography', 'What people think of me', 'Anger', 'Where I’m from', 'Endings and new beginnings', 'Grief and lament', 'Fathers and children', 'Writing my story', 'How to be known in community'],
   SITE: 'https://www.ancientpathcoaching.com',
@@ -525,6 +532,7 @@ const SITE_SEED = [
   ['site:contact', 'Contact', 'Contact', '', '/contact', 'Open it'],
   ['site:begin', 'Let’s talk', 'Let’s talk', 'Thirty minutes with one of our team, free. You tell us where you are and what you are carrying.', '/begin', 'Let’s talk']
 ];
+const SITE_CONTACT = 'site:contact';
 const SITE_TALK = 'site:begin';   // drawn as the closing Let's talk box, never as a card
 
 /** The Site tab, made and seeded the first time it is needed. */
@@ -680,7 +688,7 @@ function ask_(req) {
   const v = /^[a-f0-9]{32}$/.test(String(req.v || '')) ? String(req.v) : '';
   if (q.length < 3) return { ok: false, error: 'bad_request' };
   const cfg = config_();
-  const askId = Utilities.getUuid().replace(/-/g, '').slice(0, 10);
+  const askId = 'a' + Utilities.getUuid().replace(/-/g, '').slice(0, 9);   // a letter first: the sheet keeps it as text
   const at = new Date();
   const concerns = concernsFast_();
   const door = concernFor_(req.door, concerns);
@@ -713,6 +721,7 @@ function ask_(req) {
   const siteById = {}; site.forEach(p => { siteById[p.id] = p; });
   let chosenSite = (Array.isArray(d.site) ? d.site : []).map(String).filter(id => siteById[id]).slice(0, 6).map(id => siteById[id]);
   if (['answer', 'close', 'none', 'outside', 'safety', 'site'].indexOf(outcome) < 0) outcome = chosen.length ? 'answer' : 'none';
+  if (outcome === 'site' && !chosenSite.some(p => p.id !== SITE_TALK && !(concern && p.id === SITE_CONTACT))) outcome = chosen.length ? 'close' : 'none';   // no page of ours that answers it (Contact alone, for a man carrying something, is not one): it was about his life
   if (outcome === 'site') {
     // a question about the site or the work: a plain answer from our own pages, the pages as cards, then Let's talk
     if (siteById[SITE_TALK] && !chosenSite.some(p => p.id === SITE_TALK)) chosenSite.push(siteById[SITE_TALK]);
@@ -760,7 +769,7 @@ function answer_(req) {
   /* the ask is written once, here, with how it ended (build 14); an older step one wrote its row already and is updated */
   const fin = (outcome, ids) => ctx.rec
     ? record_(new Date(ctx.rec.at), askId, ctx.q, ctx.rec.door, outcome, ctx.concern, ctx.topic, ids || (ctx.ids || []).slice(0, 3))
-    : fin(outcome, ids);
+    : record_(new Date(), askId, ctx.q, '', outcome, ctx.concern, ctx.topic, ids || (ctx.ids || []).slice(0, 3));
   if (ctx.outcome === 'site') {
     const sById = {}; site_().forEach(p => { sById[p.id] = p; });
     const rows = (ctx.ids || []).map(id => sById[id]).filter(Boolean);
@@ -901,11 +910,11 @@ function pickInstruction_(q, list, concerns, door, site) {
     'Decide the outcome:\n' +
     '"answer" — we have a piece written for this very thing: the same situation he names, not only the same family of feeling. When you are unsure, it is close.\n' +
     '"close" — no piece was written for his situation, but the nearest one touches it and is worth his reading (a piece on why hurt stays, offered to a man who is grieving, is close, not an answer; a man whose father died and who feels nothing, offered a piece on bitterness, is close; a man fighting pornography, offered a piece on shame, is close).\n' +
-    '"none" — his concern is inside what we do (a man\'s life before God: shame, anger, grief, fear, what people think, marriage and fatherhood as a man carries them, faith, calling, the past that stays, story and testimony) but we have not written on it' + (door ? ' behind this door' : '') + '.\n' +
+    '"none" — his concern is inside what we do (a man\'s life before God: shame, anger, grief, fear, what people think, marriage and fatherhood as a man carries them, a habit or addiction he cannot stop, faith, calling, the past that stays, story and testimony) but we have not written on it' + (door ? ' behind this door' : '') + '.\n' +
     '"outside" — his concern is outside what we do here (legal, medical, financial or technical advice; politics; doctrine debates; homework; anything not about a man carrying his own life). Then write one plain sentence, "ack", that names what he brought without judging it.\n' +
-    '"site" — he is asking about our site or our work rather than carrying something to read about: how to write or tell his story, how to start, where something is, how a piece or course works, what coaching or a course costs, how to join a group or the cohort, how to talk with someone, who we are. Then pick from OUR PAGES ("site", one to five ids, best first) and no pieces. When he both carries something and asks how to begin, choose by what he asked for.\n' +
+    '"site" — he is asking about our site or our work rather than carrying something to read about: how to write or tell his story, how to start, where something is, how a piece or course works, what coaching or a course costs, how to join a group or the cohort, how to talk with someone, who we are. How to handle something in his own life (how do I lead my family, how do I forgive, how do I stop) is never "site", and neither is a question only our Contact page would answer. Then pick from OUR PAGES ("site", one to five ids, best first) and no pieces. When he both carries something and asks how to begin, choose by what he asked for.\n' +
     '"safety" — he discloses harm to himself or to anyone, or danger now. Pick nothing.\n\n' +
-    'Also name the one concern from our list his words belong to ("concern", exact words from the list, or "" if none fits) — judge it by what HE typed, never by the pieces you picked: a man asking about pornography belongs to Pornography even when the nearest piece is on shame; a man whose father died belongs to Fathers and children or to Grief and lament by what he says most. And the topic in two or three plain lowercase words as he would say it ("topic", for example "temper with my kids").\n\n' +
+    'On every outcome, "site" included, also name the one concern from our list his words belong to ("concern", exact words from the list, or "" if none fits) — judge it by what HE typed, never by the pieces you picked: a man asking about pornography belongs to Pornography even when the nearest piece is on shame; a man whose father died belongs to Fathers and children or to Grief and lament by what he says most. And the topic in two or three plain lowercase words as he would say it ("topic", for example "temper with my kids").\n\n' +
     'OUR CONCERNS:\n' + concerns.map(c => c.name).join('\n') + '\n\n' +
     'Reply with only this JSON: {"outcome": "answer|close|none|outside|site|safety", "pieces": ["id", "id"], "site": ["id"], "concern": "one from the list or empty", "topic": "two or three words", "ack": "one sentence, only when outside"}\n\n' +
     'THE PIECES (id | kind | title | concern | one line):\n' + lines.join('\n') + '\n\n' +
