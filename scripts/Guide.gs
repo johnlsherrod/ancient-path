@@ -1,4 +1,7 @@
-/* AP-GUIDE build 14 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (11 Oct 2026)
+/* AP-GUIDE build 15 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (11 Oct 2026)
+ *   build 15: inside a quoted verse, a quote within the verse reads as curly single marks (“…said, ‘Where are you?’…”), never straight
+ *   marks inside curly ones. The hourly read no longer asks Claude again about a piece it already found no concern for, while the
+ *   piece's words are unchanged ("What Is Biblical Coaching?" was asked every hour).
  *   build 14: speed again. A two-step ask is written to the Asks tab once, after its answer, with its final outcome (step one no
  *   longer waits on the sheet). guide.js build 5: the first look — the moment he presses Ask, the page shows the closest door and
  *   its pieces from what it already holds, under his words, while Claude reads; Claude's answer then takes its place. The verse check
@@ -94,7 +97,7 @@
  */
 
 const GUIDE = {
-  BUILD: 14,
+  BUILD: 15,
   SHEET_NAME: 'Ancient Path — Guide',
   DOORS: ['Shame', 'Pornography', 'What people think of me', 'Anger', 'Where I’m from', 'Endings and new beginnings', 'Grief and lament', 'Fathers and children', 'Writing my story', 'How to be known in community'],
   SITE: 'https://www.ancientpathcoaching.com',
@@ -433,11 +436,11 @@ function refreshPieces() {
     if (prevC && prevBy === 'hand') { p.concern = prevC.name; p.by = 'hand'; return; }
     const givenC = concernFor_(p.given, list);
     if (givenC) { p.concern = givenC.name; p.by = p.givenBy; return; }
-    if (prevC && prevBy && String(prev['body'] || '') === p.body) { p.concern = prevC.name; p.by = prevBy; return; }   // the words are the same: the pick stands
+    if (prev && prevBy && String(prev['body'] || '') === p.body && (prevC || prevBy === 'claude')) { p.concern = prevC ? prevC.name : ''; p.by = prevBy; return; }   // the words are the same: the pick stands, a "none" too
     if (asked >= 25) { p.concern = prevC ? prevC.name : ''; p.by = prevC ? prevBy : ''; return; }   // a very large first run finishes next hour
     asked++;
     const c = assignConcern_(p, list);
-    p.concern = c ? c.name : ''; p.by = c ? 'claude' : '';
+    p.concern = c ? c.name : ''; p.by = 'claude';   // "claude" with no concern = asked, none fits; kept until the words change
   });
 
   const out = pieces.map(p => {
@@ -816,7 +819,10 @@ function verseLine_(v, note, chosen) {
     if (after >= 0 && after <= 40) near = true;   // the reference set right after the verse, the way every piece sets it
   }
   if (!near) return '';
-  return '“' + words + '” ' + ref + ', from “' + piece.title + '.”' + (clean_(note) ? ' ' + oneLine_(note, 400) : '');
+  let inner = words.replace(/"([^"]*)"/g, '‘$1’').replace(/“([^”]*)”/g, '‘$1’');   // a quote inside the verse: single marks
+  if (/["“]/.test(inner)) inner = inner.replace(/["“]/, '‘') + '’';   // one left open: it closes where the verse ends
+  inner = inner.replace(/["”]/g, '’');
+  return '“' + inner + '” ' + ref + ', from “' + piece.title + '.”' + (clean_(note) ? ' ' + oneLine_(note, 400) : '');
 }
 
 /** True when a line only gives his own words back (the same words, "I" turned to "you"). */
