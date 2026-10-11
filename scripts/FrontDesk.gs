@@ -1,4 +1,22 @@
 /**
+ * Ancient Path — Front Desk · build 19
+ *   build 19 (Oct 11): the cohort's weeks, written down once, so the desk and the reminder can anticipate the week.
+ *     1. A Weeks tab: one row per cohort Wednesday — week · Wednesday · what opens · piece introduced · piece address ·
+ *        article (filled by the script) · facilitator's one ask. Seeded once with Breaking Free's twelve Wednesdays
+ *        (section titles as the course player shows them); the lament in week 2, Where I'm From in week 9, Ending Well
+ *        then Set a Stone in week 12. A second cohort is twelve new rows. The one-ask column stays blank until ruled.
+ *     2. The article column fills itself from the blog's own public list (published date, Central): every article
+ *        published Thursday through Wednesday of that row's week, title and bare address, one per line. The three
+ *        Your Story signposts on the blog are skipped (Config "articles skip"). Only this column is ever rewritten.
+ *     3. The Tuesday reminder reads tomorrow's row. When the row names a piece, one line naming it and its bare address
+ *        on its own line go in under the reading paragraph. Nothing else in the reminder changes.
+ *        sendTuesdayReminderTest now sends the email the men will get for the NEXT cohort night (subject marked [TEST],
+ *        founders only), so the piece line can be read before Tuesday.
+ *     4. A seeded Pieces tab: name · address · pace · what this asks of you, from the pace table ruled Oct 9 and Oct 11.
+ *        The record only; nothing reads it yet.
+ *     No setup step and no new deployment: the next 5-minute run makes and seeds both tabs. The page (desk.js 15) is unchanged.
+ */
+/**
  * Ancient Path — Front Desk · build 18
  *   build 18 (Oct 9): a button must show that it worked. Pressing Done / "I closed it" used to mark the row in the Actions tab and then
  *     show the old feed, so the card stayed until the next 5-minute run and a man could think the press had failed. Now the script takes the
@@ -123,7 +141,7 @@
  */
 
 const FD = {
-  BUILD: 18,
+  BUILD: 19,
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SEARCH_SHEET_ID: '1V84E1Wg33DaI89wAP0GvDR5iHQX3ZFsM3kRzu1LatCE',
   LABEL: 'FD-captured',
@@ -149,7 +167,8 @@ const FD = {
     Asks:     ['asked','email','question','answer','build'],
     Sends:    ['sent','what','subject','to','bcc','note'],
     Answers:  ['received','email','name','door','kind','added','hash','answers (JSON)'],
-    Pieces:   ['name','address','pace','what this asks of you','added','note']
+    Pieces:   ['name','address','pace','what this asks of you','added','note'],
+    Weeks:    ['week','Wednesday','what opens','piece introduced','piece address','article (filled by the script)','facilitator\'s one ask']
   },
   // The two founders, written to People the first time the tab is empty. Everyone else is added by hand on the sheet.
   FOUNDERS: [
@@ -188,6 +207,7 @@ function run() {
     const captured = captureMail_(ss, cfg);
     const cal = calendarSessions_(cfg);
     try { ensureBuild17_(ss); } catch (e) { alert_('Build 17 setup failed: ' + e + '\n' + (e.stack || '')); }
+    try { ensureBuild19_(ss); fillWeekArticles_(ss, cfg); } catch (e) { alert_('Build 19 (the Weeks tab) failed: ' + e + '\n' + (e.stack || '')); }
     const search = searchStory_(cfg);
     rebuildStages_(ss, cfg);
     rebuildRoom_(ss, cfg);
@@ -274,7 +294,9 @@ function readConfig_() {
     answersReminderDays: Number(c['answers reminder days'] || 3),
     // build 17 — the search story
     searchSheetId: String(c['search profile sheet id'] || FD.SEARCH_SHEET_ID).trim(),
-    searchOwner: String(c['search owner'] || 'John').trim()
+    searchOwner: String(c['search owner'] || 'John').trim(),
+    // build 19 — the Weeks tab
+    articlesSkip: splitList_(c['articles skip'] || 'where-i-am-from, write-a-lament, poetry').map(s => s.toLowerCase())
   };
 }
 function splitList_(v) { return String(v || '').split(/[,\n;]+/).map(s => s.trim()).filter(Boolean); }
@@ -1057,6 +1079,147 @@ function ensureBuild17_(ss) {
   if (props.getProperty('fd:b17') !== '1') { ensureConfig_(); props.setProperty('fd:b17', '1'); }
 }
 
+// ───────────────────────────── build 19 · the Weeks tab and the seeded Pieces tab ─────────────────────────────
+
+const SITE_ = 'https://www.ancientpathcoaching.com';
+/** Breaking Free — Jeremiah's Journey, as ruled Oct 11, 2026. Section titles read from the course player (student-course) that day. */
+const WEEKS_SEED_ = [
+  [1, '2026-10-07', 'Start Here, Orientation and Week 1 — The Enemy Knows You', '', ''],
+  [2, '2026-10-14', 'Week 2 — There Are No Rules In This Fight', 'Write a Lament', SITE_ + '/write-a-lament'],
+  [3, '2026-10-21', 'Week 3 — Dad Knew What He Was Doing', '', ''],
+  [4, '2026-10-28', 'Week 4 — Battle Is in the Brain', '', ''],
+  [5, '2026-11-04', 'Week 5 — The Ancient Path Is Not Linear', '', ''],
+  [6, '2026-11-11', 'Week 6 — Stand Firm Then', '', ''],
+  [7, '2026-11-18', "Week 7 — How You're Being Attacked", '', ''],
+  [8, '2026-11-25', 'Week 8 — Memories Are Roots', '', ''],
+  [9, '2026-12-02', 'Week 9 — Roots Run Deep', "Where I'm From", SITE_ + '/where-i-am-from'],
+  [10, '2026-12-09', 'Week 10 — Knowing Is Half the Battle', '', ''],
+  [11, '2026-12-16', 'Week 11 — Prepare for Enemy Reinforcements', '', ''],
+  [12, '2026-12-23', 'Week 12 — Orientation Is Over', 'Ending Well, then Set a Stone',
+    SITE_ + '/path-player?courseid=student-course&unit=6ac01a803708b7aebd0eef32Unit\n' + SITE_ + '/set-a-stone']
+];
+const DIRECTION_ = 'One sitting.';
+const WORK_ = 'Take your time. Come back to it over a few days.';
+const WALK_ = 'Built to be taken slowly. Do the work in each section before you move on.';
+/** The pace table, ruled Oct 9 and Oct 11, 2026: name · address · pace · what this asks of you · note. */
+const PIECES_SEED_ = [
+  ['What Kind of Light Am I', SITE_ + '/what-kind-of-light', 'Direction', DIRECTION_, ''],
+  ['Asked of Me', SITE_ + '/asked-of-me', 'Direction', DIRECTION_, ''],
+  ['Where Are You?', SITE_ + '/where-are-you', 'Direction', DIRECTION_, ''],
+  ['Bitter', SITE_ + '/blog/bitter', 'Direction', DIRECTION_, 'hub reading'],
+  ['What Your Anger Is For', SITE_ + '/blog/what-your-anger-is-for', 'Direction', DIRECTION_, 'hub reading'],
+  ['Why It Stays With You', SITE_ + '/blog/why-it-stays-with-you', 'Direction', DIRECTION_, 'hub reading'],
+  ["When You're Angry With Him", SITE_ + '/blog/angry-with-him', 'Direction', DIRECTION_, 'hub reading'],
+  ["Where I'm From", SITE_ + '/where-i-am-from', 'Work', WORK_, ''],
+  ['Write a Lament', SITE_ + '/write-a-lament', 'Work', WORK_, ''],
+  ['Your Next Step', '', 'Work', WORK_, 'the story piece at the end of a course; no page of its own'],
+  ['Ending Well', SITE_ + '/path-player?courseid=student-course&unit=6ac01a803708b7aebd0eef32Unit', 'Work', WORK_, 'Breaking Free, Week 12'],
+  ['Set a Stone', SITE_ + '/set-a-stone', 'Return', 'Set it once, then choose when you come back: three months or a year.', ''],
+  ['Known by Jesus', SITE_ + '/course/i-want-you-to-know-me', 'Walk', WALK_, 'course'],
+  ['Do Hard Things', SITE_ + '/course/do-hard-things', 'Walk', WALK_, 'course'],
+  ['Walk With Me', SITE_ + '/course/walk-with-me', 'Walk', WALK_, 'course'],
+  ['Story Path', SITE_ + '/course/the-story-path', 'Walk', 'A set of pieces. There is no order to keep.', 'course'],
+  ['Breaking Free', SITE_ + '/course/student-course', 'Walk', 'Twelve Wednesdays. Come with the reading done. The group time builds on what each man brings.', 'on the calendar'],
+  ['Weekly Coaching', 'https://calendly.com/john-ancientpathcoaching/weekly-coaching', 'Walk', 'One session a week.', 'coaching'],
+  ['Introduction', 'https://calendly.com/john-ancientpathcoaching/introductions', 'Direction', 'One conversation.', 'coaching']
+];
+
+/** yyyy-MM-dd (Central) for a Date or a date-like cell. */
+function dayOf_(v) { return Utilities.formatDate(toDate_(v), FD.TZ, 'yyyy-MM-dd'); }
+/** yyyy-MM-dd plus n days, by the calendar (no clock-change drift). */
+function addDays_(day, n) { const p = day.split('-').map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2] + n)).toISOString().slice(0, 10); }
+/** A yyyy-MM-dd as a Date at noon Central-ish, safe to show as a day. */
+function dayDate_(day) { const p = day.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2], 12); }
+
+/** Makes the Weeks tab and seeds both tabs the first time a run finds them empty. Never writes over a row somebody filled. */
+function ensureBuild19_(ss) {
+  let wk = ss.getSheetByName('Weeks');
+  if (!wk) {
+    wk = ss.insertSheet('Weeks');
+    wk.getRange(1, 1, 1, FD.TABS.Weeks.length).setValues([FD.TABS.Weeks]);
+    wk.setFrozenRows(1);
+    [60, 130, 380, 220, 380, 420, 320].forEach((w, i) => wk.setColumnWidth(i + 1, w));
+  }
+  if (wk.getLastRow() < 2) {
+    wk.getRange(2, 1, WEEKS_SEED_.length, 7).setValues(WEEKS_SEED_.map(r => [r[0], dayDate_(r[1]), r[2], r[3], r[4], '', '']));
+    wk.getRange(2, 2, 200, 1).setNumberFormat('ddd mmm d, yyyy');
+    wk.getRange(2, 1, 200, 7).setVerticalAlignment('top').setWrap(true);
+  }
+  const pc = ss.getSheetByName('Pieces');
+  if (pc && pc.getLastRow() < 2) {
+    const now = new Date();
+    pc.getRange(2, 1, PIECES_SEED_.length, 6).setValues(PIECES_SEED_.map(r => [r[0], r[1], r[2], r[3], now, r[4]]));
+    pc.getRange(2, 5, PIECES_SEED_.length, 1).setNumberFormat('mmm d, yyyy');
+  }
+}
+
+/** The blog's own public list: [{ title, address, day (yyyy-MM-dd Central) }], newest first. Cached an hour. */
+function blogPosts_(cfg) {
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get('fd:blog');
+  if (hit) return JSON.parse(hit);
+  const out = [];
+  for (let page = 1; page <= 5; page++) {
+    const res = UrlFetchApp.fetch(SITE_ + '/api/blogPostsAllPublicPaginated?limit=40&page=' + page + '&site_template=true', { muteHttpExceptions: true });
+    if (res.getResponseCode() !== 200) throw new Error('the blog list answered ' + res.getResponseCode());
+    const j = JSON.parse(res.getContentText());
+    (j.blogPosts || []).forEach(p => {
+      const when = Number(p.published || p.created || 0);
+      if (!p.slug || !when) return;
+      out.push({ title: String(p.title || p.slug), slug: String(p.slug), address: SITE_ + '/blog/' + p.slug, day: dayOf_(new Date(when * 1000)), at: when * 1000 });
+    });
+    const pg = j.pagination || {};
+    if (!pg.totalPages || page >= pg.totalPages) break;
+  }
+  out.sort((a, b) => b.at - a.at);
+  cache.put('fd:blog', JSON.stringify(out), 3600);
+  return out;
+}
+
+/** Fills the article column: every post published Thursday through Wednesday of the row's week, once that week has begun. */
+function fillWeekArticles_(ss, cfg) {
+  const sh = ss.getSheetByName('Weeks');
+  if (!sh || sh.getLastRow() < 2) return;
+  const H = headerIndex_(sh);
+  const cWed = H['Wednesday'], cArt = H['article (filled by the script)'];
+  if (cWed === undefined || cArt === undefined) return;
+  const n = sh.getLastRow() - 1;
+  const wed = sh.getRange(2, cWed + 1, n, 1).getValues();
+  const have = sh.getRange(2, cArt + 1, n, 1).getValues();
+  const today = dayOf_(new Date()), now = Date.now();
+  const posts = blogPosts_(cfg).filter(p => p.at <= now && cfg.articlesSkip.indexOf(p.slug.toLowerCase()) < 0);
+  let changed = false;
+  const want = wed.map((r, i) => {
+    if (!(r[0] instanceof Date)) return [have[i][0]];
+    const end = dayOf_(r[0]), start = addDays_(end, -6);
+    if (start > today) return [have[i][0]];
+    const text = posts.filter(p => p.day >= start && p.day <= end).reverse().map(p => p.title + '\n' + p.address).join('\n\n');
+    if (text !== String(have[i][0] || '')) changed = true;
+    return [text];
+  });
+  if (changed) sh.getRange(2, cArt + 1, n, 1).setValues(want);
+}
+
+/** The Weeks row for a cohort night (yyyy-MM-dd), or null. */
+function weekRow_(ss, night) {
+  const sh = ss.getSheetByName('Weeks');
+  if (!sh) return null;
+  return rows_(sh).find(r => r['Wednesday'] instanceof Date && dayOf_(r['Wednesday']) === night) || null;
+}
+
+/** The piece lines for the reminder: one line naming the piece(s), then each bare address alone on its line. [] when the row names none. */
+function pieceLines_(week) {
+  if (!week) return [];
+  const names = String(week['piece introduced'] || '').trim();
+  const addrs = String(week['piece address'] || '').split(/\s*\n\s*/).map(s => s.trim()).filter(s => /^https?:\/\//.test(s));
+  if (!names || !addrs.length) return [];
+  const each = names.split(/\s*,\s*then\s+|\s*,\s*|\s+then\s+|\s+and\s+/).filter(Boolean);
+  if (addrs.length === 1 || each.length !== addrs.length) return ['This week introduces ' + names + ':', '', addrs[0], ''];
+  const out = ['This week introduces ' + names + '.', ''];
+  each.forEach((nm, i) => { out.push(nm + ':', '', addrs[i], ''); });
+  return out;
+}
+
 const MONTH3_ = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 /** "Oct 2026", "October 2026" or "2026-10-01" → "2026-10". Anything else → "". */
 function monthKey_(v) {
@@ -1296,7 +1459,7 @@ function whenText_(d) {
 // ───────────────────────────── build 9: the Tuesday reminder ─────────────────────────────
 
 const REMINDER_SUBJECT = 'Tomorrow night, 7:00';
-function reminderText_(cfg) {
+function reminderText_(cfg, week) {
   return [
     'Hello,',
     '',
@@ -1304,6 +1467,7 @@ function reminderText_(cfg) {
     '',
     "Come with this week's reading done and your notes in hand. The group time builds on what each man brings to it.",
     '',
+  ].concat(pieceLines_(week), [
     "Sign in, open Breaking Free, and press Join on this week's session card. Give yourself five minutes before seven in case the site asks you to sign in again.",
     '',
     'https://www.ancientpathcoaching.com/path-player?courseid=' + cfg.courseId,
@@ -1311,7 +1475,7 @@ function reminderText_(cfg) {
     "If you can't be there, reply to this email and tell me before Wednesday. The room is built on the men in it showing up for each other, so every night matters.",
     '',
     'John'
-  ].join('\n');
+  ]).join('\n');
 }
 /** The cohort's Wednesdays as yyyy-MM-dd (Central): "first night" on Config, then every seven days for "cohort weeks". */
 function cohortNights_(cfg) {
@@ -1323,14 +1487,18 @@ function cohortNights_(cfg) {
 }
 /** The timer's job. Sends only when tomorrow is one of the cohort's nights, and only once per night. */
 function sendTuesdayReminder() { sendReminder_(false); }
-/** The same email to the founders only (to john@, cc Jason), subject marked [TEST]; nothing goes to the men and nothing is marked sent. */
+/** The email the men will get for the next cohort night, to the founders only (to john@, cc Jason), subject marked [TEST]; nothing goes to the men and nothing is marked sent. */
 function sendTuesdayReminderTest() { sendReminder_(true); }
 function sendReminder_(test) {
   const cfg = readConfig_();
   if (!cfg.reminderOn && !test) { Logger.log('Tuesday reminder is off on Config.'); return; }
   const ss = SpreadsheetApp.openById(FD.SHEET_ID);
-  const tomorrow = Utilities.formatDate(new Date(Date.now() + 864e5), FD.TZ, 'yyyy-MM-dd');
+  let tomorrow = Utilities.formatDate(new Date(Date.now() + 864e5), FD.TZ, 'yyyy-MM-dd');
+  // build 19: a test shows the email for the next cohort night, so its piece line can be read before Tuesday.
+  if (test && !cohortNights_(cfg).includes(tomorrow)) tomorrow = cohortNights_(cfg).find(d => d >= tomorrow) || tomorrow;
   if (!test && !cohortNights_(cfg).includes(tomorrow)) { Logger.log('No session tomorrow (' + tomorrow + '); nothing sent.'); return; }
+  let week = null;
+  try { ensureBuild19_(ss); week = weekRow_(ss, tomorrow); } catch (e) { alert_('The Tuesday reminder could not read the Weeks tab (sent without a piece line): ' + e); }
   const props = PropertiesService.getScriptProperties();
   const stamp = 'reminderSent:' + tomorrow;
   if (!test && props.getProperty(stamp)) { Logger.log('Already sent for ' + tomorrow + '.'); return; }
@@ -1341,10 +1509,10 @@ function sendReminder_(test) {
   const opts = { name: 'John Sherrod' };
   if (cfg.reminderCc) opts.cc = cfg.reminderCc;
   if (!test) opts.bcc = men.join(',');
-  GmailApp.sendEmail(me, subject, reminderText_(cfg), opts);
+  GmailApp.sendEmail(me, subject, reminderText_(cfg, week), opts);
   if (!test) props.setProperty(stamp, new Date().toISOString());
   const sends = ss.getSheetByName('Sends');
-  if (sends) append_(sends, [[new Date(), test ? 'Tuesday reminder (test)' : 'Tuesday reminder', subject, me + (cfg.reminderCc ? ' · cc ' + cfg.reminderCc : ''), test ? 0 : men.length, test ? 'founders only' : 'for the session on ' + tomorrow]]);
+  if (sends) append_(sends, [[new Date(), test ? 'Tuesday reminder (test)' : 'Tuesday reminder', subject, me + (cfg.reminderCc ? ' · cc ' + cfg.reminderCc : ''), test ? 0 : men.length, (test ? 'founders only · as for ' : 'for the session on ') + tomorrow + (pieceLines_(week).length ? ' · piece: ' + week['piece introduced'] : '')]]);
   Logger.log((test ? 'Test sent to ' + me : 'Reminder sent to ' + men.length + ' men') + '.');
 }
 
