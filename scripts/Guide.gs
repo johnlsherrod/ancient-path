@@ -1,4 +1,7 @@
-/* AP-GUIDE build 8 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (10 Oct 2026)
+/* AP-GUIDE build 9 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (10 Oct 2026)
+ *   build 9: the first step (choosing the pieces or pages) asks the relay for its faster model ("fast": true — the relay falls back
+ *   to its usual model if the faster one does not answer); an ask about writing his story says to start with Where I Am From, as
+ *   the Your Story page does, and offers The Story Path to walk all nine — and those two pages lead the cards.
  *   build 8: a Site row whose body starts "hand: " keeps the words typed there (Your Page needs a sign-in, so its page cannot be
  *   read — a signed-out read lands on /read); Your Page joins the seed and Facilitator Training (our own team's course) leaves it.
  *   build 7: the box answers questions about the site and points to the doors. A Site tab lists our pages a man can go to
@@ -76,7 +79,7 @@
  */
 
 const GUIDE = {
-  BUILD: 8,
+  BUILD: 9,
   SHEET_NAME: 'Ancient Path — Guide',
   DOORS: ['Shame', 'Pornography', 'What people think of me', 'Anger', 'Where I’m from', 'Endings and new beginnings', 'Grief and lament', 'Fathers and children', 'Writing my story', 'How to be known in community'],
   SITE: 'https://www.ancientpathcoaching.com',
@@ -100,7 +103,8 @@ const GUIDE = {
   MAX_Q: 600,
   MAX_PIECE_CHARS: 9000,
   MAX_READ_CHARS: 30000,
-  STORY_LINE: 'We have several ways to engage your story — from poems to a lament, to setting a remembrance stone, to courses. Take a look below and see if one matches what you need.'
+  STORY_LINE: 'We have several ways to engage your story — from poems to a lament, to setting a remembrance stone, to courses. Take a look below and see if one matches what you need.',
+  STORY_START: 'Start with Where I Am From. If you want to walk all nine as one path, The Story Path is the way.'
 };
 
 const CHOICES = { talk: "Let's talk", write: 'Write about it', story: 'A story to write', group: 'A group on this' };
@@ -547,7 +551,7 @@ function siteStep_(q, rows, v) {
   const input = GUIDE.HOUSE_MARK + ' A man typed a question into the ask box on our Read page. It is about our site or our work: how to do something here, where something is, what it costs, how to start, write, join or talk with someone. ' +
     'Below are the only pages you may draw from. Answer his question in one to three plain sentences, to him as "you", using only what these pages say. ' +
     'If the pages do not answer it, say so plainly in one sentence and say that Let’s talk is the way to ask our team. Never invent a price, date, time, name or promise. ' +
-    'If he is asking for help writing or telling his story, begin with exactly this sentence: "' + GUIDE.STORY_LINE + '" and then, in one more sentence at most, say where most men start, from the pages. ' +
+    'If he is asking for help writing or telling his story, write exactly these two sentences and nothing else: "' + GUIDE.STORY_LINE + ' ' + GUIDE.STORY_START + '" ' +
     'Also "used": the ids of the pages he should open next, best first (one to five; never ' + SITE_TALK + ', which always closes the answer).\n' +
     'If what he wrote discloses harm to himself or anyone, or danger now, reply only {"unsafe": true}.\n' + HOUSE_RULES + '\n\n' +
     'Reply with only this JSON: {"text": "", "used": ["id"]}\n\nTHE PAGES:\n' + blocks.join('\n\n') + '\n\nHIS WORDS:\n' + q;
@@ -560,6 +564,12 @@ function siteStep_(q, rows, v) {
   const shown = (used.length ? used : rows.map(p => p.id).filter(id => id !== SITE_TALK)).slice(0, 5).map(id => byId[id]);
   const text = oneLine_(a.text, 700);
   if (!text) return { kind: 'error', error: 'failed' };
+  if (text.indexOf(GUIDE.STORY_LINE.slice(0, 40)) === 0) {   // his story: Where I Am From and The Story Path lead the cards, as the line says
+    const all = {}; site_().forEach(p => { all[p.id] = p; });
+    const lead = ['site:where-i-am-from', 'site:the-story-path'].map(id => byId[id] || all[id]).filter(Boolean);
+    const rest = shown.filter(p => lead.indexOf(p) < 0 && ['site:where-i-am-from', 'site:the-story-path'].indexOf(p.id) < 0);
+    return { kind: 'site', answer: { text: text, close: 'talk' }, shown: lead.concat(rest).slice(0, 5) };
+  }
   return { kind: 'site', answer: { text: text, close: 'talk' }, shown: shown };
 }
 
@@ -654,7 +664,7 @@ function ask_(req) {
 
   // 2. Claude reads the list (titles and one line each) and picks three to five, or says none / close / outside / safety
   const site = site_();
-  const pick = relay_(pickInstruction_(q, list, concerns, door, site), v);
+  const pick = relay_(pickInstruction_(q, list, concerns, door, site), v, true);   // choosing only: the relay's faster model
   if (!pick.ok) { record_(at, askId, q, doorName, 'error', doorName, '', []); return { ok: false, error: pick.error || 'failed' }; }
   const d = pick.data || {};
   let outcome = String(d.outcome || '').toLowerCase();
@@ -856,15 +866,15 @@ function windowInstruction_(q, chosen, outcome) {
 
 // ───────────────────────────── the relay (the key never lives here) ─────────────────────────────
 
-function relay_(input, id) {
-  let r = relayOnce_(input, id);
-  if (!r.ok && (r.error === 'network' || r.error === 'bad_request')) { Utilities.sleep(1200); r = relayOnce_(input, id); }   // a dropped redirect or a cold start: once more
+function relay_(input, id, fast) {
+  let r = relayOnce_(input, id, fast);
+  if (!r.ok && (r.error === 'network' || r.error === 'bad_request')) { Utilities.sleep(1200); r = relayOnce_(input, id, fast); }   // a dropped redirect or a cold start: once more
   return r;
 }
-function relayOnce_(input, id) {
+function relayOnce_(input, id, fast) {
   let resp;
   try {
-    resp = UrlFetchApp.fetch(GUIDE.RELAY, { method: 'post', contentType: 'text/plain', payload: JSON.stringify({ input: input, id: id || '' }), muteHttpExceptions: true, followRedirects: true });
+    resp = UrlFetchApp.fetch(GUIDE.RELAY, { method: 'post', contentType: 'text/plain', payload: JSON.stringify(fast ? { input: input, id: id || '', fast: true } : { input: input, id: id || '' }), muteHttpExceptions: true, followRedirects: true });
   } catch (e) { log_('relay', 'fetch failed: ' + String(e).slice(0, 160)); return { ok: false, error: 'network' }; }
   const text = resp.getContentText() || '';
   let j; try { j = JSON.parse(text); } catch (e) { log_('relay', 'not json: ' + text.slice(0, 160)); return { ok: false, error: 'network' }; }
