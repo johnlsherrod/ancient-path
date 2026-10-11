@@ -1,4 +1,9 @@
-/* AP-GUIDE build 11 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (11 Oct 2026)
+/* AP-GUIDE build 13 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (11 Oct 2026)
+ *   build 13: the verse check is tight — the quoted words may not carry a reference inside them, and the reference must sit right
+ *   right after the words in the piece (within a few characters), the way each piece sets its verses.
+ *   build 12: "What Scripture says" is built here from three parts Claude names — the verse's exact words, its reference and the
+ *   piece — and is shown only when those words and that reference both appear in that piece; one plain sentence follows. An
+ *   article's own sentence can no longer sit under the Scripture heading.
  *   build 11: "What Scripture says" must carry a Bible reference (book chapter:verse) or it is dropped — the faster model once
  *   quoted an article's own sentence there; the instruction now says an article's words are never Scripture.
  *   build 10: speed. The Guide asks Claude itself when its own Script Properties carry ANTHROPIC_API_KEY (the hand-off back from
@@ -85,7 +90,7 @@
  */
 
 const GUIDE = {
-  BUILD: 11,
+  BUILD: 13,
   SHEET_NAME: 'Ancient Path — Guide',
   DOORS: ['Shame', 'Pornography', 'What people think of me', 'Anger', 'Where I’m from', 'Endings and new beginnings', 'Grief and lament', 'Fathers and children', 'Writing my story', 'How to be known in community'],
   SITE: 'https://www.ancientpathcoaching.com',
@@ -777,14 +782,35 @@ function windowStep_(q, chosen, outcome, v) {
   const used = (Array.isArray(a.used) ? a.used : []).map(String).filter(id => byId[id]);
   const shown = (used.length ? used : chosen.map(p => p.id)).slice(0, 3).map(id => byId[id]);
   const answer = {
-    problem: oneLine_(a.problem, 400), scripture: oneLine_(a.scripture, 700), people: oneLine_(a.people, 500), decision: oneLine_(a.decision, 500),
+    problem: oneLine_(a.problem, 400), scripture: verseLine_(a.verse, a.scripture, chosen), people: oneLine_(a.people, 500), decision: oneLine_(a.decision, 500),
     close: String(a.close || '').toLowerCase() === 'begin' ? 'begin' : 'talk'
   };
   if (answer.problem && sameWords_(answer.problem, q)) answer.problem = '';          // only his words back: nothing named, so nothing shown
-  if (answer.scripture && (!/["“”]/.test(answer.scripture) || !/\b(?:[1-3]\s?)?[A-Z][a-z]+\.?\s+\d{1,3}:\d{1,3}/.test(answer.scripture))) answer.scripture = '';    // a quoted verse with its reference, or it is not shown
   if (!answer.problem && !answer.scripture && !answer.decision) return { kind: 'none' };
   if (outcome === 'close') answer.closeNote = oneLine_(a.closeNote, 240) || 'This is close to what you asked, not the exact thing.';
   return { kind: 'answer', answer: answer, shown: shown };
+}
+
+/** "What Scripture says", built here: the verse's words and reference must both be in the named piece (the reference within
+ *  a short reach of the words), or the section is not shown. Returns '"words" Ref, from "Title." note' or ''. */
+function verseLine_(v, note, chosen) {
+  if (!v || typeof v !== 'object') return '';
+  const words = clean_(String(v.words || '')).replace(/^["“”']+|["“”']+$/g, ''), ref = clean_(String(v.ref || ''));
+  if (words.length < 12 || words.length > 420 || !/^(?:[1-3]\s?)?[A-Z][a-z]+\.?\s+\d{1,3}:\d{1,3}/.test(ref)) return '';
+  if (/(?:[1-3]\s?)?[A-Z][a-z]+\.?\s+\d{1,3}:\d{1,3}/.test(words)) return '';   // a reference inside the words: the piece's own sentence, not the verse
+  const norm = t => String(t || '').toLowerCase().replace(/[’‘`]/g, "'").replace(/[“”]/g, '"').replace(/[—–]/g, '-').replace(/\s+/g, ' ');
+  const piece = chosen.find(p => p.id === String(v.piece || '')) || chosen.find(p => norm(p.body).indexOf(norm(words)) >= 0);
+  if (!piece) return '';
+  const body = norm(piece.body), at = body.indexOf(norm(words));
+  if (at < 0) return '';
+  const nref = norm(ref).replace(/\.$/, ''), nw = norm(words);
+  let near = false;
+  for (let r = body.indexOf(nref); r >= 0 && !near; r = body.indexOf(nref, r + 1)) {
+    const after = r - (at + nw.length);
+    if (after >= 0 && after <= 40) near = true;   // the reference set right after the verse, the way every piece sets it
+  }
+  if (!near) return '';
+  return '“' + words + '” ' + ref + ', from “' + piece.title + '.”' + (clean_(note) ? ' ' + oneLine_(note, 400) : '');
 }
 
 /** True when a line only gives his own words back (the same words, "I" turned to "you"). */
@@ -886,7 +912,7 @@ function windowInstruction_(q, chosen, outcome) {
   return GUIDE.HOUSE_MARK + ' A man typed what he is carrying into the ask box on our Read page. You have read only the pieces below — stories men wrote and offered, and our short articles. ' +
     'They are the only source. Answer him in the shape of the Wisdom of the Window, in five short moves written as four parts:\n' +
     '1. "problem": name what he is carrying underneath the sentence he typed — one plain sentence to him, the thing under his words. Never give his sentence back to him or reword it; add what it is. No diagnosis. If you cannot name more than he said, write "".\n' +
-    '2. "scripture": what Scripture says about it, drawn only from these pieces — quote at least one Bible verse word for word as the piece has it, inside quotation marks, with its reference (book chapter:verse), and name the piece. A reference with no quoted words is not enough. An article or story speaking in its own words is never Scripture — quote only the Bible verses the piece itself quotes. Two to four sentences. If the pieces quote no verse, write "".\n' +
+    '2. "verse": one Bible verse that one of these pieces itself quotes, copied word for word from the piece ("words", without quotation marks), its reference exactly as the piece gives it ("ref", book chapter:verse), and the piece id ("piece"). An article or story speaking in its own words is never a verse. Then "scripture": one or two plain sentences on what that verse says to him. If the pieces quote no Bible verse, give verse {} and scripture "".\n' +
     '3. "people": people first — who this touches and what justice and mercy look like toward them today, from what the pieces say; one to three sentences.\n' +
     '4. "decision": one decision he can make today from a place of faith, God\'s rule over his own — concrete, small enough to do tonight, drawn from what the pieces ask of a man; one to three sentences.\n' +
     'Then "close": "begin" when the right next step is to write his own story on our site (the pieces are stories, or his concern is about his own past and naming it), or "talk" when the right next step is thirty minutes with one of our team (the concern is live, relational, or heavy).\n' +
@@ -895,7 +921,7 @@ function windowInstruction_(q, chosen, outcome) {
     'If what he wrote discloses harm to himself or anyone, or danger now, reply only {"unsafe": true}.\n' +
     'Anyone you name — a person in Scripture or in a piece — is introduced in a few words the first time (for example "Naomi, who lost her husband and both sons"); never name someone you have not introduced.\n' +
     'Write to him, plainly, as "you". Short: the whole answer under 170 words. ' + HOUSE_RULES + '\n\n' +
-    'Reply with only this JSON: {"problem": "", "scripture": "", "people": "", "decision": "", "close": "begin|talk", "used": ["id"]' + (outcome === 'close' ? ', "closeNote": ""' : '') + '}\n\n' +
+    'Reply with only this JSON: {"problem": "", "verse": {"words": "", "ref": "", "piece": "id"}, "scripture": "", "people": "", "decision": "", "close": "begin|talk", "used": ["id"]' + (outcome === 'close' ? ', "closeNote": ""' : '') + '}\n\n' +
     'THE PIECES:\n' + blocks.join('\n\n') + '\n\n' +
     'HIS WORDS:\n' + q;
 }
