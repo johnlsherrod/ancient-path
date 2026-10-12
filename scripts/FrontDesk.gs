@@ -1,4 +1,14 @@
 /**
+ * Ancient Path — Front Desk · build 19.1
+ *   build 19.1 (Oct 11): the Tuesday reminder asks for the answers, only of the men who have not given them.
+ *     The reminder now goes out as two emails. Men on the Room tab whose answers are not on the Answers tab get one more
+ *     paragraph under the piece line: the ask, and the Breaking Free answers address alone on its own line. Men who have
+ *     answered get the reminder as before. Both carry the same subject; each man sees only his own (bcc).
+ *     Config "answers ask in reminder" (default yes) turns the paragraph off. sendTuesdayReminderTest sends the version
+ *     with the ask, and the Sends row says how many men got each version.
+ *     No setup step and no new deployment: the page (desk.js 15) is unchanged.
+ */
+/**
  * Ancient Path — Front Desk · build 19
  *   build 19 (Oct 11): the cohort's weeks, written down once, so the desk and the reminder can anticipate the week.
  *     1. A Weeks tab: one row per cohort Wednesday — week · Wednesday · what opens · piece introduced · piece address ·
@@ -141,7 +151,7 @@
  */
 
 const FD = {
-  BUILD: 19,
+  BUILD: '19.1',
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SEARCH_SHEET_ID: '1V84E1Wg33DaI89wAP0GvDR5iHQX3ZFsM3kRzu1LatCE',
   LABEL: 'FD-captured',
@@ -296,6 +306,7 @@ function readConfig_() {
     searchSheetId: String(c['search profile sheet id'] || FD.SEARCH_SHEET_ID).trim(),
     searchOwner: String(c['search owner'] || 'John').trim(),
     // build 19 — the Weeks tab
+    answersAskOn: String(c['answers ask in reminder'] || 'yes').toLowerCase().startsWith('y'),
     articlesSkip: splitList_(c['articles skip'] || 'where-i-am-from, write-a-lament, poetry').map(s => s.toLowerCase())
   };
 }
@@ -1459,7 +1470,15 @@ function whenText_(d) {
 // ───────────────────────────── build 9: the Tuesday reminder ─────────────────────────────
 
 const REMINDER_SUBJECT = 'Tomorrow night, 7:00';
-function reminderText_(cfg, week) {
+/** build 19.1: the answers ask, for a man whose answers are not in yet. The address sits alone on its own line.
+ *  A function, not a constant: ANSWERS_URL is declared further down the file. */
+function answersAsk_() { return [
+  'One more thing before Wednesday: answer the questions about why you came and what you want to learn about yourself. A few sentences each is enough. Our team reads them. No one else does, and nothing there is ever published.',
+  '',
+  ANSWERS_URL + '?door=bf',
+  ''
+]; }
+function reminderText_(cfg, week, askAnswers) {
   return [
     'Hello,',
     '',
@@ -1467,7 +1486,7 @@ function reminderText_(cfg, week) {
     '',
     "Come with this week's reading done and your notes in hand. The group time builds on what each man brings to it.",
     '',
-  ].concat(pieceLines_(week), [
+  ].concat(pieceLines_(week), askAnswers ? answersAsk_() : [], [
     "Sign in, open Breaking Free, and press Join on this week's session card. Give yourself five minutes before seven in case the site asks you to sign in again.",
     '',
     'https://www.ancientpathcoaching.com/path-player?courseid=' + cfg.courseId,
@@ -1508,11 +1527,21 @@ function sendReminder_(test) {
   const subject = (test ? '[TEST] ' : '') + REMINDER_SUBJECT;
   const opts = { name: 'John Sherrod' };
   if (cfg.reminderCc) opts.cc = cfg.reminderCc;
-  if (!test) opts.bcc = men.join(',');
-  GmailApp.sendEmail(me, subject, reminderText_(cfg, week), opts);
-  if (!test) props.setProperty(stamp, new Date().toISOString());
+  // build 19.1: men whose answers are not in get the version with the ask; the rest get the reminder as before.
+  const answered = answersFirstIn_(ss);
+  const ask = cfg.answersAskOn ? men.filter(e => !answered.has(e)) : [];
+  const plain = men.filter(e => ask.indexOf(e) < 0);
+  if (test) {
+    GmailApp.sendEmail(me, subject, reminderText_(cfg, week, cfg.answersAskOn), opts);
+  } else {
+    if (ask.length) GmailApp.sendEmail(me, subject, reminderText_(cfg, week, true), Object.assign({}, opts, { bcc: ask.join(',') }));
+    const opts2 = Object.assign({}, opts, { bcc: plain.join(',') });
+    if (ask.length) delete opts2.cc; // the cc gets one copy, not two
+    if (plain.length) GmailApp.sendEmail(me, subject, reminderText_(cfg, week, false), opts2);
+    props.setProperty(stamp, new Date().toISOString());
+  }
   const sends = ss.getSheetByName('Sends');
-  if (sends) append_(sends, [[new Date(), test ? 'Tuesday reminder (test)' : 'Tuesday reminder', subject, me + (cfg.reminderCc ? ' · cc ' + cfg.reminderCc : ''), test ? 0 : men.length, (test ? 'founders only · as for ' : 'for the session on ') + tomorrow + (pieceLines_(week).length ? ' · piece: ' + week['piece introduced'] : '')]]);
+  if (sends) append_(sends, [[new Date(), test ? 'Tuesday reminder (test)' : 'Tuesday reminder', subject, me + (cfg.reminderCc ? ' · cc ' + cfg.reminderCc : ''), test ? 0 : men.length, (test ? 'founders only · as for ' : 'for the session on ') + tomorrow + (pieceLines_(week).length ? ' · piece: ' + week['piece introduced'] : '') + (test ? (cfg.answersAskOn ? ' · with the answers ask (' + ask.length + ' of ' + men.length + ' men would get it)' : '') : ' · ' + ask.length + ' with the answers ask, ' + plain.length + ' without')]]);
   Logger.log((test ? 'Test sent to ' + me : 'Reminder sent to ' + men.length + ' men') + '.');
 }
 
