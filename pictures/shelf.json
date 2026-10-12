@@ -3,7 +3,7 @@
  "rules": [
   "Every picture is landscape, 16:9, 1456 by 819, muted and natural, no faces, no words, nothing posed; the subject sits in the middle third because the title band crops to the middle on a phone.",
   "Addresses are stable: a file on this shelf is never replaced or renamed. A re-cut gets a new name and a new row.",
-  "The Monday/Thursday search-article task picks from this list by the article's theme and ring, preferring a picture not yet used by a live post; when nothing fits it proposes a new picture, marked new in the doc, and that picture joins the shelf only on John's keep.",
+  "The Monday/Thursday search-article task picks from this list by the article's theme and ring. John's rule (Oct 12, 2026): each post gets its own picture, never one already on another post — so only a picture with an empty used_by, and not in the Search profile sheet's Picture column, is available. When no available picture fits, the task proposes a new one, marked new in the doc, and that picture joins the shelf only on John's keep.",
   "The posting run fetches the picked picture from its address and sets the card picture (Post image), the share preview picture (SEO Image) and the title band from it. No hand step.",
   "Rings: 1 Center (ready to act, we are the answer) · 2 Pain (he names the feeling) · 3 Turn (a life ending or beginning) · 4 Bible (the Scripture question)."
  ],
@@ -294,7 +294,9 @@
    ],
    "size": "1456x819",
    "source": "Pexels 12153091",
-   "used_by": [],
+   "used_by": [
+    "/blog/stones-of-remembrance-in-the-bible"
+   ],
    "added": "2026-10-12"
   },
   {
@@ -351,5 +353,5 @@
    "added": "2026-10-12"
   }
  ],
- "commit": "1df9bb0e4cdaef25667a5b9e342a6c4add94ed11 (Oct 12, 2026)"
+ "commit": "1df9bb0e4cdaef25667a5b9e342a6c4add94ed11 (pictures, Oct 12, 2026); shelf.json revised the same day"
 }
