@@ -1,5 +1,9 @@
 /**
- * Ancient Path — Front Desk · build 20
+ * Ancient Path — Front Desk · build 20.1
+ *   build 20.1 (Oct 12): two corrections from the first live feed — "This week" counts the agreement and the answers over the
+ *     seated men only (it said 8 of 8 while one seated man had not signed); the room's themes come first in the pathway's
+ *     proposals and the list holds fifteen, so they are never cut off behind the search signals. No deploy needed for the script
+ *     half; desk.js 16 unchanged.
  *   build 20 (Oct 11): the desk fixes what it finds, and names the next move.
  *     1. Pathway for success. A new Moves tab (key · signal · from · move · owner · due · check · status · written · written by ·
  *        note · link). Every signal the desk reads gets ONE proposed move from a fixed list — page fix · search article · poem or
@@ -184,7 +188,7 @@
  */
 
 const FD = {
-  BUILD: '20',
+  BUILD: '20.1',
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SEARCH_SHEET_ID: '1V84E1Wg33DaI89wAP0GvDR5iHQX3ZFsM3kRzu1LatCE',
   FORECAST_SHEET_ID: '1cbd4pxTh8oaFIX1iwEWSap1sZ3dkoOAWaLb-I6kZqno',
@@ -1725,6 +1729,9 @@ function movesFeed_(ss, cfg, search, themes) {
   const proposed = [];
   const push = (p) => { if (!have.has(p.key) && !proposed.some(x => x.key === p.key)) proposed.push(p); };
   const sheetUrl = 'https://docs.google.com/spreadsheets/d/' + (cfg.searchSheetId || FD.SEARCH_SHEET_ID) + '/edit';
+  // the room's themes first: the warmest signal the desk has
+  (themes || []).forEach(t => push({ key: 'theme:' + t.week + ':' + slug_(t.theme), kind: 'theme', signal: t.theme + (t.words ? ' — ' + t.words : ''),
+    from: 'The room · Week ' + t.week + (t.speaks ? ' · already speaks to it: ' + t.speaks : ''), move: moveForTheme_(t), owner: moveForTheme_(t) === 'group' ? cfg.groupOwner : cfg.coachingOwner, link: t.url, phrase: '' }));
   try {
     const sp = SpreadsheetApp.openById(cfg.searchSheetId || FD.SEARCH_SHEET_ID);
     const table = (name) => { const t = sp.getSheetByName(name); if (!t || t.getLastRow() < 2) return []; const d = t.getDataRange().getDisplayValues(), H = d[0]; return d.slice(1).filter(r => r.some(v => v !== '')).map(r => { const o = {}; H.forEach((h, i) => { o[h] = r[i]; }); return o; }); };
@@ -1746,12 +1753,9 @@ function movesFeed_(ss, cfg, search, themes) {
       .forEach(r => push({ key: 'phrase:' + slug_(r['Phrase']), kind: 'phrase', signal: '“' + String(r['Phrase']).trim() + '”' + (r['The man'] ? ' — ' + String(r['The man']).trim() : ''),
         from: 'Search profile · ' + String(r['Theme'] || '').trim() + (r['Ring'] ? ' · ring ' + String(r['Ring']).split('—')[0].trim() : ''), move: 'search article', owner: cfg.searchOwner, link: sheetUrl, phrase: String(r['Phrase']).trim() }));
   } catch (e) { alert_('The search signals could not be read: ' + e); }
-  // the room's themes
-  (themes || []).forEach(t => push({ key: 'theme:' + t.week + ':' + slug_(t.theme), kind: 'theme', signal: t.theme + (t.words ? ' — ' + t.words : ''),
-    from: 'The room · Week ' + t.week + (t.speaks ? ' · already speaks to it: ' + t.speaks : ''), move: moveForTheme_(t), owner: moveForTheme_(t) === 'group' ? cfg.groupOwner : cfg.coachingOwner, link: t.url, phrase: '' }));
   const today = dayOf_(new Date());
   return { list: MOVES_.slice(), owners: people_().filter(p => p.role === 'admin').map(p => p.name), dueDay: addDays_(today, cfg.moveDueDays), checkDay: addDays_(today, cfg.moveDueDays + cfg.moveCheckDays),
-    proposed: proposed.slice(0, 12), taken: taken.filter(t => t.status !== 'dropped').sort((a, b) => (a.due || '9').localeCompare(b.due || '9')), sheet: 'https://docs.google.com/spreadsheets/d/' + FD.SHEET_ID + '/edit#gid=' + movesGid_(ss) };
+    proposed: proposed.slice(0, 15), taken: taken.filter(t => t.status !== 'dropped').sort((a, b) => (a.due || '9').localeCompare(b.due || '9')), sheet: 'https://docs.google.com/spreadsheets/d/' + FD.SHEET_ID + '/edit#gid=' + movesGid_(ss) };
 }
 /** The desk's "Add this move": writes one Moves row, and for a search article the phrase's Next cell on the Search profile. Admins only. */
 function moveAdd_(who, b) {
@@ -1837,7 +1841,8 @@ function weekStory_(ss, cfg, feed, search, ac) {
   const money = (n) => '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const s = [];
   // 1 · the room and the list
-  let s1 = (c.seated || 0) + ' of ' + (c.roomSize || 0) + ' seats are taken' + ((c.openSpots || 0) === 0 ? ' — the room is full' : ', ' + times_(c.openSpots, 'open spot', 'open spots')) + '; ' + (c.agreementSigned || 0) + ' of the ' + (c.seated || 0) + ' seated men have signed the agreement and ' + (c.answersIn || 0) + ' ' + ((c.answersIn || 0) === 1 ? 'has' : 'have') + ' answered the questions.';
+  const seatedMen = (feed.roster || []).filter(r => r.seated), seatedSigned = seatedMen.filter(r => r.agreementSigned).length, seatedAnswered = seatedMen.filter(r => r.answersIn).length;
+  let s1 = (c.seated || 0) + ' of ' + (c.roomSize || 0) + ' seats are taken' + ((c.openSpots || 0) === 0 ? ' — the room is full' : ', ' + times_(c.openSpots, 'open spot', 'open spots')) + '; ' + seatedSigned + ' of the ' + seatedMen.length + ' seated men have signed the agreement and ' + seatedAnswered + ' ' + (seatedAnswered === 1 ? 'has' : 'have') + ' answered the questions.';
   const men = ac && ac.stages && ac.stages.men;
   if (men && men.on_the_list != null) s1 += ' The list holds ' + times_(Number(men.on_the_list || 0), 'man', 'men') + (men.hand_raised != null ? ', ' + men.hand_raised + ' with a hand raised' : '') + (men.wait_list != null ? ' and ' + men.wait_list + ' on the wait list' : '') + (ac.generated ? ' (counted ' + Utilities.formatDate(toDate_(ac.generated), FD.TZ, 'EEE MMM d') + ')' : '') + '.';
   s.push(s1);
