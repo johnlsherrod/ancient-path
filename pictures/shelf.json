@@ -1,0 +1,355 @@
+{
+ "shelf": "Ancient Path blog picture shelf",
+ "rules": [
+  "Every picture is landscape, 16:9, 1456 by 819, muted and natural, no faces, no words, nothing posed; the subject sits in the middle third because the title band crops to the middle on a phone.",
+  "Addresses are stable: a file on this shelf is never replaced or renamed. A re-cut gets a new name and a new row.",
+  "The Monday/Thursday search-article task picks from this list by the article's theme and ring, preferring a picture not yet used by a live post; when nothing fits it proposes a new picture, marked new in the doc, and that picture joins the shelf only on John's keep.",
+  "The posting run fetches the picked picture from its address and sets the card picture (Post image), the share preview picture (SEO Image) and the title band from it. No hand step.",
+  "Rings: 1 Center (ready to act, we are the answer) · 2 Pain (he names the feeling) · 3 Turn (a life ending or beginning) · 4 Bible (the Scripture question)."
+ ],
+ "base": "https://raw.githubusercontent.com/johnlsherrod/ancient-path/main/pictures/",
+ "pictures": [
+  {
+   "name": "willow",
+   "file": "willow.jpg",
+   "picture": "A willow in fog beside a road, grey and still",
+   "themes": [
+    "What people think",
+    "lament",
+    "grief"
+   ],
+   "rings": [
+    "2 Pain"
+   ],
+   "size": "1456x819",
+   "source": "site gallery, John's Oct 8 upload",
+   "used_by": [
+    "/blog/why-do-i-care-so-much-what-people-think"
+   ]
+  },
+  {
+   "name": "home-forest",
+   "file": "home-forest.jpg",
+   "picture": "Sunlight coming down through tall trees onto a forest path",
+   "themes": [
+    "the path",
+    "Biblical coaching",
+    "Men's coaching"
+   ],
+   "rings": [
+    "1 Center"
+   ],
+   "size": "1456x819",
+   "source": "home page hero (Unsplash photo-1441974231531)",
+   "used_by": []
+  },
+  {
+   "name": "integrity",
+   "file": "integrity.jpg",
+   "picture": "A gravel road climbing toward a lit ridge at evening",
+   "themes": [
+    "Manhood",
+    "Men's coaching",
+    "a man ready to walk"
+   ],
+   "rings": [
+    "1 Center",
+    "3 Turn"
+   ],
+   "size": "1456x819",
+   "source": "path card, First Light treatment, Pexels",
+   "used_by": []
+  },
+  {
+   "name": "mending",
+   "file": "mending.jpg",
+   "picture": "Hands stitching a hole in grey cloth, needle mid-stitch",
+   "themes": [
+    "Why it stays",
+    "Shame",
+    "what gets mended"
+   ],
+   "rings": [
+    "2 Pain"
+   ],
+   "size": "1456x819",
+   "source": "path card, First Light treatment, Pexels",
+   "used_by": []
+  },
+  {
+   "name": "pastor",
+   "file": "pastor.jpg",
+   "picture": "Water falling into a wooden trough, rings going out",
+   "themes": [
+    "Feelings and Scripture",
+    "rest",
+    "burnout"
+   ],
+   "rings": [
+    "4 Bible",
+    "2 Pain"
+   ],
+   "size": "1456x819",
+   "source": "path card, First Light treatment, Pexels",
+   "used_by": []
+  },
+  {
+   "name": "crossing",
+   "file": "crossing.jpg",
+   "picture": "A plank bridge on a stone footing, the far bank in mist",
+   "themes": [
+    "When the job ends",
+    "Single and unsure",
+    "a crossing"
+   ],
+   "rings": [
+    "3 Turn"
+   ],
+   "size": "1456x819",
+   "source": "path card, First Light treatment, Pexels",
+   "used_by": []
+  },
+  {
+   "name": "guide",
+   "file": "guide.jpg",
+   "picture": "Old stone stairs in a narrow lane, every tread worn by use",
+   "themes": [
+    "the ancient path",
+    "Biblical coaching",
+    "Manhood"
+   ],
+   "rings": [
+    "1 Center",
+    "4 Bible"
+   ],
+   "size": "1456x819",
+   "source": "path card, First Light treatment, Pexels",
+   "used_by": []
+  },
+  {
+   "name": "shame-door",
+   "file": "shame-door.jpg",
+   "picture": "A door standing open onto a lit room, the rest in dark",
+   "themes": [
+    "Shame"
+   ],
+   "rings": [
+    "2 Pain"
+   ],
+   "size": "1456x819",
+   "source": "site gallery, Oct 8",
+   "used_by": [
+    "/blog/how-to-deal-with-shame-as-a-christian-man"
+   ]
+  },
+  {
+   "name": "coaching-forest-road",
+   "file": "coaching-forest-road.jpg",
+   "picture": "A misty forest road in autumn leaves",
+   "themes": [
+    "Biblical coaching",
+    "Men's coaching"
+   ],
+   "rings": [
+    "1 Center"
+   ],
+   "size": "1456x819",
+   "source": "site gallery, Oct 8",
+   "used_by": [
+    "/blog/what-is-biblical-coaching"
+   ]
+  },
+  {
+   "name": "bitter-tree",
+   "file": "bitter-tree.jpg",
+   "picture": "A bare tree standing in still water under a pale sky",
+   "themes": [
+    "Bitter"
+   ],
+   "rings": [
+    "2 Pain"
+   ],
+   "size": "1456x819",
+   "source": "site gallery, Oct 8",
+   "used_by": [
+    "/blog/bitter"
+   ]
+  },
+  {
+   "name": "anger-storm",
+   "file": "anger-storm.jpg",
+   "picture": "A storm sky over a field of hay bales",
+   "themes": [
+    "Anger"
+   ],
+   "rings": [
+    "2 Pain"
+   ],
+   "size": "1456x819",
+   "source": "site gallery, Oct 8",
+   "used_by": [
+    "/blog/what-your-anger-is-for"
+   ]
+  },
+  {
+   "name": "angry-waves",
+   "file": "angry-waves.jpg",
+   "picture": "Waves breaking on dark rocks at evening",
+   "themes": [
+    "Angry with him"
+   ],
+   "rings": [
+    "2 Pain"
+   ],
+   "size": "1456x819",
+   "source": "site gallery, Oct 8",
+   "used_by": [
+    "/blog/angry-with-him"
+   ]
+  },
+  {
+   "name": "why-it-stays-fog",
+   "file": "why-it-stays-fog.jpg",
+   "picture": "A green field under fog, a treeline fading into it",
+   "themes": [
+    "Why it stays",
+    "What men struggle with"
+   ],
+   "rings": [
+    "2 Pain"
+   ],
+   "size": "1456x819",
+   "source": "site gallery, Oct 8",
+   "used_by": [
+    "/blog/why-it-stays-with-you"
+   ]
+  },
+  {
+   "name": "poetry-journal",
+   "file": "poetry-journal.jpg",
+   "picture": "An open journal and a pen on a wooden table by a window",
+   "themes": [
+    "Your Story",
+    "poetry",
+    "writing"
+   ],
+   "rings": [
+    "any"
+   ],
+   "size": "1456x819",
+   "source": "site gallery, Oct 8",
+   "used_by": [
+    "/blog/poetry"
+   ]
+  },
+  {
+   "name": "where-im-from-road",
+   "file": "where-im-from-road.jpg",
+   "picture": "A country road under evening light leading to a house",
+   "themes": [
+    "Where I'm from",
+    "home",
+    "Single and unsure"
+   ],
+   "rings": [
+    "3 Turn"
+   ],
+   "size": "1456x819",
+   "source": "site gallery, Oct 8",
+   "used_by": [
+    "/blog/where-i-am-from"
+   ]
+  },
+  {
+   "name": "lament-rainbow",
+   "file": "lament-rainbow.jpg",
+   "picture": "A double rainbow against grey cloud, John Sherrod's own photograph",
+   "themes": [
+    "Write a lament",
+    "promise",
+    "after the storm"
+   ],
+   "rings": [
+    "4 Bible",
+    "3 Turn"
+   ],
+   "size": "1456x819",
+   "source": "John Sherrod, Oct 8",
+   "used_by": [
+    "/blog/write-a-lament"
+   ]
+  },
+  {
+   "name": "stones-field",
+   "file": "stones-field.jpg",
+   "picture": "A heap of field stones at the edge of a plowed field, flat country, soft light",
+   "themes": [
+    "Remembrance stones",
+    "memorial",
+    "witness"
+   ],
+   "rings": [
+    "4 Bible",
+    "3 Turn"
+   ],
+   "size": "1456x819",
+   "source": "Pexels 12153091",
+   "used_by": [],
+   "added": "2026-10-12"
+  },
+  {
+   "name": "table-two-chairs",
+   "file": "table-two-chairs.jpg",
+   "picture": "Two wooden chairs and a small table by a sunlit window",
+   "themes": [
+    "Men's coaching",
+    "Men's coaching, local",
+    "Men's groups",
+    "a place to talk"
+   ],
+   "rings": [
+    "1 Center"
+   ],
+   "size": "1456x819",
+   "source": "Pexels 34361571",
+   "used_by": [],
+   "added": "2026-10-12"
+  },
+  {
+   "name": "gate-stone-wall",
+   "file": "gate-stone-wall.jpg",
+   "picture": "A wooden gate in a dry stone wall below a wood",
+   "themes": [
+    "The gate",
+    "Single and unsure",
+    "what he says"
+   ],
+   "rings": [
+    "3 Turn",
+    "2 Pain"
+   ],
+   "size": "1456x819",
+   "source": "Pexels 39381581",
+   "used_by": [],
+   "added": "2026-10-12"
+  },
+  {
+   "name": "field-after-harvest",
+   "file": "field-after-harvest.jpg",
+   "picture": "Rows of cut stubble running into morning mist",
+   "themes": [
+    "When the job ends",
+    "What men struggle with",
+    "an ending"
+   ],
+   "rings": [
+    "3 Turn"
+   ],
+   "size": "1456x819",
+   "source": "Pexels 1481264",
+   "used_by": [],
+   "added": "2026-10-12"
+  }
+ ],
+ "commit": "1df9bb0e4cdaef25667a5b9e342a6c4add94ed11 (Oct 12, 2026)"
+}
