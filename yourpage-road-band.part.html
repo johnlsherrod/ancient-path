@@ -1,0 +1,186 @@
+<!-- AP-ROAD-BAND (build 1, 13 Oct 2026): the course road. A man enrolled in a course sees the course by name, then its story work in order, above his chronicle. The road is read from the Front Desk sheet's Weeks tab through the Front Desk web app (action road), so a new course gets a road by adding rows. Each card carries his state from the engine (the page's own reads, handed over by ap:states, ap:courses and ap:stones). Never locked, except a piece the Weeks tab holds until a date and he has nothing saved in. -->
+<style id="apRoadStyle">
+.ap-home .ap-road-line { font: 400 14px/1.5 var(--ap-sans) !important; color: var(--ap-quiet) !important; margin: -6px 0 16px; }
+.ap-home .ap-road-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 560px) { .ap-home .ap-road-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .ap-home .ap-road-grid { grid-template-columns: repeat(var(--ap-road-n, 4), minmax(0, 1fr)); } }
+.ap-home .ap-road .ap-card { min-height: 0; }
+.ap-home .ap-road .ap-btn { line-height: 1.3 !important; text-align: center; }
+.ap-home .ap-road .ap-card.is-held { background: transparent; border-style: dashed; }
+.ap-home .ap-road .ap-card.is-wait .ap-card-state, .ap-home .ap-road .ap-card.is-wait .ap-card-actions { visibility: hidden; }
+.ap-home .ap-road .ap-card-held { font: 400 14px/1.5 var(--ap-sans) !important; color: var(--ap-quiet) !important; margin: 0; }
+</style>
+<script id="apRoadBand">
+(function () {
+    "use strict";
+    var BUILD = "AP-ROAD-BAND build 1";
+    var DESK = "https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec";
+    var CACHE_KEY = "ap_road_v1";
+    var KEYS = { writealament: "lament", whereimfrom: "wif", whereiamfrom: "wif", endingwell: "ew", setastone: "stones" };
+    var PAGES = { lament: "/write-a-lament", wif: "/where-i-am-from", stones: "/set-a-stone" };
+    var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var roads = null, mine = null, states = null, surfaces = null, stoneList = null, stonesDone = false, started = Date.now();
+
+    function el(id) { return document.getElementById(id); }
+    function esc(t) {
+        return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; });
+    }
+    function norm(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
+    function nb(s) { return String(s || "").replace(/ (\S+)$/, " $1"); }
+    function todayCentral() {
+        try {
+            var p = {};
+            new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+            return p.year + "-" + p.month + "-" + p.day;
+        } catch (e) {
+            var d = new Date();
+            return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+        }
+    }
+    function dayParts(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || "")); return m ? { y: +m[1], m: +m[2], d: +m[3] } : null; }
+    function longDay(iso) { var p = dayParts(iso); return p ? MONTHS[p.m - 1] + " " + p.d : ""; }
+    function shortDay(iso) { var p = dayParts(iso); return p ? MONTHS[p.m - 1].slice(0, 3) + " " + p.d : ""; }
+
+    function validRoads(j) {
+        if (!j || !Array.isArray(j)) { return null; }
+        var out = j.filter(function (r) { return r && r.course && Array.isArray(r.weeks) && Array.isArray(r.pieces) && r.pieces.length; });
+        return out;
+    }
+    function readCache() {
+        try {
+            var c = JSON.parse(window.localStorage.getItem(CACHE_KEY) || "null");
+            return c && c.roads ? validRoads(c.roads) : null;
+        } catch (e) { return null; }
+    }
+    function writeCache(r) { try { window.localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), roads: r })); } catch (e) {} }
+
+    function fetchRoad() {
+        if (!window.fetch) { return; }
+        var ctl = window.AbortController ? new window.AbortController() : null;
+        var timer = ctl ? setTimeout(function () { try { ctl.abort(); } catch (e) {} }, 10000) : null;
+        window.fetch(DESK, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "road" }), credentials: "omit", signal: ctl ? ctl.signal : undefined })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (j) {
+                if (timer) { clearTimeout(timer); }
+                var r = j && j.ok ? validRoads(j.roads) : null;
+                if (r) { roads = r; writeCache(r); render(); }
+            })
+            .catch(function () { if (timer) { clearTimeout(timer); } });
+    }
+
+    function stateOf(key) {
+        if (!states) { return null; }
+        for (var i = 0; i < states.length; i++) { if (states[i] && states[i].key === key) { return states[i]; } }
+        return null;
+    }
+    function pageOf(key) { var s = surfaces && surfaces[key]; return (s && s.page) || PAGES[key] || ""; }
+    function stoneCount() {
+        var n = 0;
+        (stoneList || []).forEach(function (s) { if (s && s.from === "set-a-stone") { n++; } });
+        return n;
+    }
+    function safeHref(h) { h = String(h || "").trim(); return /^(\/(?!\/)|https?:\/\/)/i.test(h) ? h : ""; }
+    function withOpen(p) { return p + (p.indexOf("?") >= 0 ? "&open=1" : "?open=1"); }
+
+    /* one piece, as the man sees it: his state from the engine, never locked unless the course holds it and he has nothing saved */
+    function pieceView(p, today) {
+        var key = KEYS[norm(p.name)] || "";
+        var v = { key: key, name: p.name, week: p.week, day: p.day, asks: p.asks || "", status: "none", held: false, opens: p.opens || "", state: "", label: "Begin", href: p.url || pageOf(key), wait: false };
+        if (key === "stones") {
+            var n = stoneCount();
+            v.wait = !stonesDone;
+            if (n > 0) { v.status = "finished"; v.state = n === 1 ? "One stone set" : n + " stones set"; v.label = "Set another"; v.href = pageOf("stones") || v.href; }
+            else { v.state = "Not started"; }
+        } else if (key) {
+            var st = stateOf(key), s = surfaces && surfaces[key];
+            if (st && st.status === "progress") {
+                v.status = "progress";
+                v.state = "In progress" + (s && st.step ? " — you stopped at " + s.partWord + " " + st.step + " of " + s.parts : "") + (st.when ? " · saved " + st.when : "");
+                v.label = "Pick up where you left off"; v.href = withOpen(pageOf(key) || v.href);
+            } else if (st && st.status === "finished") {
+                v.status = "finished"; v.state = "Finished" + (st.when ? " · saved " + st.when : ""); v.label = "Open it"; v.href = withOpen(pageOf(key) || v.href);
+            } else { v.state = "Not started"; }
+        } else { v.state = ""; }
+        v.href = safeHref(v.href);
+        if (v.status === "none" && v.opens && v.opens > today) {
+            v.held = true; v.state = "Held by the course until " + longDay(v.opens); v.href = ""; v.label = "";
+        }
+        return v;
+    }
+
+    /* the current week is the desk's: the first Wednesday that is today or later (Central). The lit card is the first piece of that week that is open and not finished; a week that introduces nothing lights the latest earlier piece still to do. */
+    function build(road, today) {
+        var weeks = road.weeks.slice().sort(function (a, b) { return a.week - b.week; });
+        var cur = null;
+        for (var i = 0; i < weeks.length; i++) { if (weeks[i].day >= today) { cur = weeks[i]; break; } }
+        var views = road.pieces.slice().sort(function (a, b) { return a.week - b.week; }).map(function (p) { return pieceView(p, today); });
+        var lit = -1, j;
+        if (cur) {
+            for (j = 0; j < views.length; j++) { if (views[j].week === cur.week && !views[j].held && views[j].status !== "finished") { lit = j; break; } }
+            if (lit < 0 && !views.some(function (v) { return v.week === cur.week; })) {
+                for (j = views.length - 1; j >= 0; j--) { if (views[j].week < cur.week && !views[j].held && views[j].status !== "finished") { lit = j; break; } }
+            }
+        }
+        return { cur: cur, total: weeks.length ? weeks[weeks.length - 1].week : 0, views: views, lit: lit };
+    }
+
+    function cardHtml(v, isLit, cur) {
+        var thisWeek = isLit && cur && v.week === cur.week;
+        var kind = thisWeek ? "This week" + (v.day ? " \u00b7 " + shortDay(v.day) : "") : "Week " + v.week + (v.day ? " \u00b7 " + shortDay(v.day) : "");
+        var cls = "ap-card" + (isLit ? " is-next" : "") + (v.held ? " is-held" : "") + (v.wait ? " is-wait" : "");
+        var h = '<div class="' + cls + '" data-road="' + esc(v.key || norm(v.name)) + '">';
+        h += '<p class="ap-card-kind">' + esc(kind) + '</p><p class="ap-card-title">' + esc(v.name) + '</p>';
+        if (v.state) { h += '<p class="ap-card-state">' + esc(nb(v.state)) + '</p>'; }
+        if (v.asks) { h += '<p class="ap-card-body">' + esc(nb(v.asks)) + '</p>'; }
+        if (v.href) { h += '<div class="ap-card-actions"><a class="ap-btn ' + (isLit ? "ap-btn-primary" : "ap-btn-ghost") + '" href="' + esc(v.href) + '">' + esc(v.label) + '</a></div>'; }
+        return h + "</div>";
+    }
+
+    function host(course) {
+        var id = "apRoad-" + course, box = el(id);
+        if (box) { return box; }
+        box = document.createElement("div");
+        box.className = "ap-sec ap-road"; box.id = id; box.setAttribute("data-course", course);
+        var head = el("apStoriesHead"), shelf = head && head.closest ? head.closest(".ap-sec") : null;
+        if (shelf && shelf.parentNode) { shelf.parentNode.insertBefore(box, shelf); }
+        else if (el("apHome")) { el("apHome").appendChild(box); }
+        else { return null; }
+        return box;
+    }
+
+    function render() {
+        if (!roads || !mine || !states) { return; }
+        var today = todayCentral();
+        roads.forEach(function (road) {
+            if (!mine[road.course]) { return; }
+            var box = host(road.course); if (!box) { return; }
+            var b = build(road, today);
+            var title = road.name || road.course;
+            var note = b.cur ? "Week " + b.cur.week + " of " + b.total : "All " + b.total + " weeks have met";
+            var line = b.cur ? "Your story work, in order. Open any card any time." : "Everything here stays open to you.";
+            var h = '<div class="ap-sec-head"><h2 class="ap-h2">' + esc(title) + '</h2><p class="ap-sec-note">' + esc(note) + '</p></div>';
+            h += '<p class="ap-road-line">' + esc(nb(line)) + '</p><div class="ap-road-grid" style="--ap-road-n:' + Math.max(1, Math.min(4, b.views.length)) + '">';
+            b.views.forEach(function (v, i) { h += cardHtml(v, i === b.lit, b.cur); });
+            box.innerHTML = h + "</div>";
+            box.setAttribute("data-build", BUILD);
+        });
+    }
+
+    function take() {
+        if (window.apMine) { mine = window.apMine; }
+        if (window.apStates) { states = window.apStates; }
+        if (window.apSurfaces) { surfaces = window.apSurfaces; }
+        if (window.apStones) { stoneList = window.apStones; stonesDone = true; }
+    }
+    document.addEventListener("ap:courses", function () { take(); render(); });
+    document.addEventListener("ap:states", function () { take(); render(); });
+    document.addEventListener("ap:stones", function () { take(); stonesDone = true; render(); });
+    /* a man with no stones never fires ap:stones; give the engine a moment, then stop waiting */
+    setTimeout(function () { if (!stonesDone) { stonesDone = true; render(); } }, 3000);
+
+    roads = readCache();
+    take();
+    render();
+    fetchRoad();
+})();
+</script>
