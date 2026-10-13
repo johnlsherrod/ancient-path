@@ -1,5 +1,9 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v19
+   AP-STORY-MODULE-v19.1
+
+   v19.1 (13 Oct 2026) — Save on the first step of Asked of Me. The step row gives Save the same look as Back by copying Back's
+     classes; on a page that hides Back on its first step with a class (Asked of Me: is-off), Save vanished with it — found in
+     the Speak it 2 button audit. Back's hidden state is never copied now. Nothing else changes.
 
    v19 (13 Oct 2026) — Speak it 2: keep and mic (John, Oct 13, "Go"). (1) Keep as he speaks: signed in, what he says is saved to
      his page every few seconds as new words land and once more when he stops (Story.keep, a quiet save; road.js keeps the Road
@@ -1160,7 +1164,8 @@
       row.classList.add("aps-step");
       var back = null, save = null;
       for (var j = 0; j < row.children.length; j++) { var k = row.children[j]; if (k.tagName !== "BUTTON") { continue; } var sl = slotFor(k); if (sl === 1 && !back) { back = k; } if (sl === 4 && !save) { save = k; } }
-      if (back && save && save.className !== back.className) { save.className = back.className; }   /* v10: Save carries the same weight as Back, never greyed */
+      /* v10: Save carries the same weight as Back, never greyed · v19.1: but never Back's hidden state (Asked of Me hides Back on its first step with is-off, and Save vanished with it) */
+      if (back && save) { var want = back.className.replace(/\b(is-off|is-hidden|hidden|is-gone)\b/g, "").replace(/\s+/g, " ").trim(); if (save.className !== want) { save.className = want; } }
     }
   }
   /* a page that shows every field at once is stacked; one that shows a few at a time is stepped */
@@ -2611,7 +2616,7 @@
   };
 
   window.APStory = {
-    version: "19",
+    version: "19.1",
     assistant: ASSIST,
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
