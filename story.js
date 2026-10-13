@@ -1,5 +1,19 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v18.8
+   AP-STORY-MODULE-v19
+
+   v19 (13 Oct 2026) — Speak it 2: keep and mic (John, Oct 13, "Go"). (1) Keep as he speaks: signed in, what he says is saved to
+     his page every few seconds as new words land and once more when he stops (Story.keep, a quiet save; road.js keeps the Road
+     and Where Are You? the same way); signed out, the device hold keeps it and the sign-in door waits for Save. (2) The
+     microphone is a round icon in the bottom-right corner of every writing box, inside the box; "Talk" under it the first time
+     he sees one on this device, the icon alone after. (3) It pulses while listening, his words appear as he says them, a second
+     tap stops it. (4) A pause does not end his turn: the listener is started again under him. (5) Spoken words come out as
+     sentences: capitals, a period at each pause, "period" / "comma" / "question mark" / "new line" as marks, I and the holy
+     names capital. (6) Read it back, Hear it and Save let the last spoken words land first. (7) When the microphone fails, one
+     line under the box: "Type it instead, or continue on your phone." ("Type it instead." on a phone) — nothing else.
+     (8) One spot on every device: "Read it to me" is a small link under the question, above the box. The voice note is true
+     again: signed in, "…saved to your page as you speak"; signed out, "Nothing is saved until you press Save." (9) The
+     Story assistant heading with its ⓘ sits over the row of buttons it names (Read it back · Five questions · Hear it), the
+     buttons stay verbs. Also: APStory.version said "18.6" since 18.7 — it now says "19".
 
    v18.8 (5 Oct 2026) — a man's voice (John, Oct 5: a woman's voice is not the right one for a men's site; one voice
      across the engine). bestVoice() now puts a man's voice first: a man's natural voice (Guy, Andrew, Brian,
@@ -691,15 +705,25 @@
      whatever history already exists so this save can add to it rather
      than clobber it. A form without the block skips that read entirely
      and this is byte-for-byte the v5 save. */
-  Story.prototype.save = function (ui, answersOverride) {
+  Story.prototype.save = function (ui, answersOverride, quiet) {
     var self = this;
-    if (this.busy) { return; }
-
     var answers = answersOverride || this.answers();
+    if (this.busy) {
+      /* v19: a pressed Save while a quiet keep is in flight: the press takes over that save's report, and runs again after it if the words moved on */
+      if (this._saving && this._saving.quiet) {
+        this._saving.quiet = false; this._saving.ui = ui; ui.working();
+        if (JSON.stringify(answers) !== this._saving.answers) { this._again = ui; }
+      }
+      return;
+    }
+
     if (!this.document(answers)) {
       ui.fail("There is nothing written yet. Write something first, then save.");
       return;
     }
+
+    /* v19: already on his page exactly as it stands (a keep just took it): say so, send nothing twice */
+    if (this.saved && this.savedAnswers && JSON.stringify(answers) === this.savedAnswers) { ui.done(this.saved); return; }
 
     /* THE DOOR. Not signed in: keep his words, send him to sign in.
        When he comes back, start() finds the stash and finishes this save. */
@@ -711,8 +735,9 @@
     }
 
     this.busy = true;
+    var ref = this._saving = { ui: ui, quiet: !!quiet, answers: JSON.stringify(answers) };
     ui.working();
-    var slow = window.setTimeout(function () { ui.stillWorking(); }, SLOW_AT);
+    var slow = window.setTimeout(function () { ref.ui.stillWorking(); }, SLOW_AT);
 
     var historyBlock = this.cfg.lw.blocks.history;
     var readFirst = historyBlock
@@ -749,17 +774,34 @@
         if (result.newEntryId) { self.openEntryId = result.newEntryId; }
         stashClear(self.cfg.form);
         /* v16 · the count: a confirmed save, and a finished piece once per page */
-        track("story_save", self.cfg.form);
+        /* v19: a keep counts as one save per sitting, not one every few seconds */
+        if (!ref.quiet || !self._keepCounted) { track("story_save", self.cfg.form); if (ref.quiet) { self._keepCounted = true; } }
         if (self.progress(answers).finished && !self._finishSent) { self._finishSent = true; track("story_finish", self.cfg.form); }
         /* "Saved" is set ONLY here — when LearnWorlds has said submitted. */
-        ui.done(result.sub);
+        self._saving = null;
+        ref.ui.done(result.sub);
+        if (self._again) { var u = self._again; self._again = null; self.save(u); }
       })
       .catch(function (err) {
         window.clearTimeout(slow);
-        self.busy = false;
+        self.busy = false; self._saving = null;
         var why = (err && err.serviceError) ? err.message : "The connection dropped.";
-        ui.fail("It did not save. " + why + " Your words are still here — nothing has been lost. Try again, or copy them before you close the page.");
+        ref.ui.fail("It did not save. " + why + " Your words are still here — nothing has been lost. Try again, or copy them before you close the page.");
+        if (self._again) { var u2 = self._again; self._again = null; self.save(u2); }
       });
+  };
+
+  /* v19 · keep as he speaks: a quiet save while he is signed in and the piece has changed since the last one. Nothing is said
+     on the way (no "Saving"); when the site confirms it, the same "Saved to your page" line as a pressed Save. Signed out, nothing
+     here: the device hold keeps his words and the sign-in door waits for his Save. A failure says nothing; his next Save will. */
+  Story.prototype.keep = function () {
+    var self = this;
+    if (!signedIn() || this.busy || !this.ui) { return false; }
+    var a = this.answers(); if (!this.document(a)) { return false; }
+    if (this.savedAnswers && JSON.stringify(a) === this.savedAnswers) { return false; }
+    var ui = this.ui;
+    this.save({ working: function () {}, stillWorking: function () {}, signingIn: function () {}, done: function (sub) { ui.done(sub); }, fail: function () {} }, a, true);
+    return true;
   };
 
   /* Start a new piece rather than continuing the one that was open. A
@@ -977,7 +1019,7 @@
       fail: function (msg) { btn.disabled = false; btn.textContent = "Save"; note.textContent = msg; }
     };
 
-    btn.addEventListener("click", function () { self.save(ui); });
+    btn.addEventListener("click", function () { LISTEN.settle(function () { self.save(ui); }); });   /* v19: the last spoken words land first */
 
     row.appendChild(btn);
     /* v18.1: mountEditAll is no longer called — one Edit (John, 29 Sept) */
@@ -1073,16 +1115,16 @@
     for (var i = 0; i < ORDER.length; i++) { if (ORDER[i][0].test(t)) { return ORDER[i][1]; } }
     return 5;
   }
-  /* the finish, v18.5: 5 saved + what's left · 7 Save · 10 break · 21 Your Page · 22 break · 23 the help lines (Read it back · Five questions · Hear it), each full width · 24 the ⓘ line, results and the five cards · 25 rule · 30 the quiet things (Edit · Back · Download · Copy · Continue on your phone) */
+  /* the finish, v19: 5 saved + what's left · 7 Save · 10 break · 21 Your Page · 22 break · 23 the Story assistant heading with its ⓘ · 24 the help lines under it (Read it back · Five questions · Hear it), each full width, the results and the five cards · 25 rule · 30 the quiet things (Edit · Back · Download · Copy · Continue on your phone) */
   function finishOrder(node, slot) {
     if (node.classList.contains("aps-status")) { return 5; }
     if (node.classList.contains("aps-edit-main")) { return 29; }   /* v18.5: Edit leads the quiet line */
-    if (node.classList.contains("aps-assist")) { return 24; }
-    if (node.classList.contains("aps-act")) { return 23; }
+    if (node.classList.contains("aps-assist")) { return 23; }   /* v19: the Story assistant heading sits OVER the buttons it names */
+    if (node.classList.contains("aps-act")) { return 24; }
     if (node.classList.contains("aps-read")) { return 24; }
-    if (node.classList.contains("aps-after")) { return 23; }
+    if (node.classList.contains("aps-after")) { return 24; }
     if (node.classList.contains("aps-break")) { var at = node.getAttribute("data-at"); return at === "a" ? 10 : at === "c" ? 22 : 25; }
-    if (slot === 8) { return 23; }
+    if (slot === 8) { return 24; }
     if (slot === 4) { return 7; }
     if (slot === 6) { return 21; }
     return 30;
@@ -1141,7 +1183,7 @@
         ".aps-row .aps-page-link{margin-left:auto}" +
         ".aps-row .aps-break{flex:1 1 100%;height:0;margin:0;padding:0}" +
         ".aps-row.aps-finish{padding:22px 20px 16px;gap:14px 16px}" +
-        ".aps-row.aps-finish .aps-assist{flex:1 1 100%;margin:0 0 2px}" +
+        ".aps-row.aps-finish .aps-assist{flex:1 1 100%;margin:0 0 -4px}" +
         ".aps-row.aps-finish .aps-read{flex:1 1 100%;width:100%;max-width:none;margin:0}.aps-row.aps-finish .aps-read > *{max-width:62ch}" +
         ".aps-row.aps-finish .aps-read[hidden]{display:none!important}" +
         ".aps-row.aps-finish .aps-after{flex:1 1 100%;width:100%;max-width:none;margin:0}.aps-row.aps-finish .aps-after > *{max-width:62ch}" +
@@ -1770,7 +1812,8 @@
        order a writer needs it: what a stranger hears · what still needs a look, each with the way back to its line ·
        any real person named. The checks Check it ran are the "open" items of this one read. */
     var hear = el("button", (cfg.buttonClass || "") + " " + (cfg.ghostClass || ""), "Read it back"); hear.id = "apsHeard"; hear.type = "button";
-    hear.addEventListener("click", function () {
+    hear.addEventListener("click", function () { LISTEN.settle(readNow); });   /* v19: Read it back works on what he just spoke */
+    function readNow() {
       var sig = begin(hear, "Reading the whole piece…"); if (!sig) { return; }
       ASSIST.heard({ story: text(), about: "", profile: profile, signal: sig, onStep: status }).then(function (r) {
         busy = null; working(false);
@@ -1782,7 +1825,7 @@
         else if (h.text) { html += '<p class="aps-note">Nothing to raise. You can ask again after you change something.</p>'; }
         show(html);
       }).catch(function (e) { busy = null; working(false); show(ASSIST.copyFor(e) ? '<p class="aps-note">' + esc(ASSIST.copyFor(e)) + '</p>' : ""); });
-    });
+    }
 
     if (!$("aps-read-css")) {
       var st = el("style"); st.id = "aps-read-css";
@@ -1792,7 +1835,7 @@
         ".aps-read .aps-num{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:50%;background:#C9A227;color:#1F2A44;font-size:12px;font-weight:700;letter-spacing:0;margin-right:6px}.aps-read .aps-walkrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 4px}.aps-read .aps-walkrow span{font-size:14.5px;color:#6B6358}.aps-walk{font:inherit;font-size:14px;font-weight:700;color:#fff;background:#1F2A44;border:1px solid #1F2A44;border-radius:2px;padding:10px 18px;cursor:pointer}.aps-walk:hover{background:#2B3856}" +
         ".aps-guide{margin:10px 0 14px;border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px;font-size:15.5px;line-height:1.5;max-width:62ch}.aps-guide .aps-guide-top{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8C6A3F;margin:0 0 6px}.aps-guide .aps-guide-top b{color:#1F2A44}.aps-guide .aps-guide-part{color:#1F2A44}.aps-guide .aps-quoted{border-left:3px solid #C9A227;padding-left:12px;color:#6B6358;margin:6px 0;white-space:pre-wrap}.aps-guide .aps-ask{color:#1F2A44;font-weight:600;margin:6px 0}.aps-guide .aps-help{font-size:14.5px;color:#6B6358;margin:4px 0 0}.aps-guide .aps-guide-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0 0}.aps-guide .aps-guide-state{font-size:14.5px;color:#6B6358}.aps-guide .aps-guide-state.aps-done{color:#8C6A3F;font-weight:600}.aps-guide .aps-guide-quit{font:inherit;font-size:14px;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;color:#8C6A3F;margin-left:auto}" +
         "@media (max-width:620px){.aps-row.aps-finish > .aps-act{gap:3px}}" +
-        ".aps-assist{margin:10px 0 0}.aps-assist summary{display:inline-flex;align-items:center;gap:8px;color:#6B6358;font-size:14px;cursor:pointer;list-style:none}.aps-assist summary::-webkit-details-marker{display:none}.aps-assist .aps-assist-name{font-weight:700;color:#1F2A44}.aps-assist .aps-info{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid #8C6A3F;color:#8C6A3F;font-family:Georgia,serif;font-style:italic;font-size:12px;font-weight:700;line-height:1}.aps-assist .aps-how{color:#8C6A3F;text-decoration:underline}.aps-assist p{margin:10px 0 0;max-width:62ch;font-size:15.5px;line-height:1.5;border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px}";
+        ".aps-assist{margin:6px 0 0}.aps-assist summary{display:inline-flex;align-items:center;gap:8px;color:#6B6358;font-size:14px;cursor:pointer;list-style:none}.aps-assist summary::-webkit-details-marker{display:none}.aps-assist .aps-assist-name{font-weight:700;color:#1F2A44;font-size:15.5px;letter-spacing:.01em}.aps-assist .aps-info{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid #8C6A3F;color:#8C6A3F;font-family:Georgia,serif;font-style:italic;font-size:12px;font-weight:700;line-height:1}.aps-assist .aps-how{color:#8C6A3F;text-decoration:underline}.aps-assist p{margin:10px 0 0;max-width:62ch;font-size:15.5px;line-height:1.5;border:1px solid #E5DCC8;border-left:3px solid #C9A227;background:#FBF7EF;padding:12px 16px}";
       document.head.appendChild(st);
     }
     /* v12: each button says what it does, beside it, so a man knows before he presses (John, 28 Sept: "it's not clear what check it does or read it back") */
@@ -2043,76 +2086,193 @@
   })();
 
 
-  /* the voice controls for a set of boxes: Tap and talk beside each, Read it to me under its question, the note once per page.
-     Used by the engine for a piece's own boxes and by road.js for the boxes it draws (APStory.voice.attach). */
+  /* ======================================================================
+     9e2. v19 — SPEAK IT 2: the microphone in the box, keep as he speaks
+     ------------------------------------------------------------------
+     John, Oct 13: a mic icon replaces the words Tap and talk on every
+     box, bottom-right, inside the box; "Talk" under it the first time he
+     sees one on this device, the icon alone after. It pulses while it
+     listens, his words appear in the box as he says them, a pause does
+     not end his turn (the device's listener is started again under him),
+     and a second tap ends it. Spoken words come out as sentences: a
+     capital to start, a period at each pause, "period" / "comma" /
+     "question mark" / "new line" as marks, I and the holy names capital.
+     Keep as he speaks: while he is signed in, what he says is saved to
+     his page every few seconds as new words land and once more when he
+     stops; signed out, the device hold does the keeping and the sign-in
+     door is never opened mid-sentence. When the microphone fails, one
+     line under the box — "Type it instead, or continue on your phone."
+     (on a phone, "Type it instead.") — and nothing else (John, Oct 10:
+     we are not tech support). "Read it to me" sits in one spot on every
+     device: a small link under the question, above the box.
+     ====================================================================== */
   var VOICE_CSS_DONE = false, VOICE_NOTE_DONE = false, VOICE_LIVE = null;
-  /* v17.1 · ONE listener per page. The first cut made a new listener on every tap, and a phone (Safari above all) will not start a
-     second one while the first is still winding down — so the second question's tap did nothing. Now one listener is made once,
-     a tap points it at that box, a pause or a second tap ends it, and a tap on another box waits for the first to end before it
-     starts. It listens for one stretch of speech at a time (no "continuous" mode: phones cut it off unpredictably), and it never
-     raises the keyboard. John, Sept 29: "lots of pop ups and things happening between the phone and webpage". */
+  var TALKED_KEY = "apVoiceTalked";   /* this device has used the microphone once: the word "Talk" comes off */
+  function talked() { try { return window.localStorage.getItem(TALKED_KEY) === "1"; } catch (e) { return true; } }
+  var PLACES = [];   /* every mounted microphone's place(): run again when the page moves or the word Talk comes off */
+  function placeAll() { for (var i = 0; i < PLACES.length; i++) { try { PLACES[i](); } catch (e) {} } }
+  function setTalked() {
+    try { window.localStorage.setItem(TALKED_KEY, "1"); } catch (e) {}
+    Array.prototype.forEach.call(document.querySelectorAll(".aps-mic-word"), function (w) { if (w.parentNode) { w.parentNode.removeChild(w); } });
+    placeAll();
+  }
+  /* spoken text as written text. `before` is what already stands in the box, so the first letter knows whether it starts a sentence. */
+  var HOLY = [["god", "God"], ["jesus", "Jesus"], ["christ", "Christ"], ["lord", "Lord"], ["holy spirit", "Holy Spirit"], ["scripture", "Scripture"], ["bible", "Bible"]];
+  function punctuate(text, before) {
+    var s = " " + String(text || "").replace(/\s+/g, " ").trim() + " ";
+    if (s === "  ") { return ""; }
+    s = s.replace(/\s(?:period|full stop)[\s,]/gi, ". ").replace(/\s(?:comma)[\s,]/gi, ", ").replace(/\s(?:question mark)[\s,]/gi, "? ")
+         .replace(/\s(?:exclamation (?:point|mark))[\s,]/gi, "! ").replace(/\s(?:semicolon|semi colon)[\s,]/gi, "; ").replace(/\s(?:colon)[\s,]/gi, ": ")
+         .replace(/\s(?:new paragraph)[\s,]/gi, "\n\n").replace(/\s(?:new line)[\s,]/gi, "\n");
+    s = s.replace(/ +([.,?!;:])/g, "$1").replace(/([.,?!;:])(?=[A-Za-z])/g, "$1 ").replace(/[ \t]*\n[ \t]*/g, function (m) { return m.replace(/[ \t]/g, ""); }).replace(/ {2,}/g, " ").trim();
+    s = s.replace(/\bi\b/g, "I").replace(/\bi'(m|ll|ve|d)\b/gi, function (m, p) { return "I'" + p.toLowerCase(); });
+    HOLY.forEach(function (pair) { s = s.replace(new RegExp("\\b" + pair[0] + "\\b", "gi"), pair[1]); });
+    var tail = String(before || "").replace(/\s+$/, "");
+    var startsSentence = !tail || /[.!?]$/.test(tail) || /\n$/.test(before || "");
+    if (startsSentence) { s = s.charAt(0).toUpperCase() + s.slice(1); }
+    s = s.replace(/([.!?]\s+|\n+)([a-z])/g, function (m, a, b) { return a + b.toUpperCase(); });
+    return s;
+  }
+  /* a final phrase is a sentence: a period at its end unless he spoke a mark, and never after a line break he asked for */
+  function closeSentence(s) { s = String(s || "").replace(/\s+$/, ""); if (!s) { return ""; } if (/[.!?,;:\n]$/.test(s)) { return s; } return s + "."; }
+  function joinText(base, more, lineBreak) {
+    base = String(base || "").replace(/\s+$/, ""); more = String(more || "").replace(/^\s+/, "");
+    if (!base) { return more; } if (!more) { return base; }
+    return base + (lineBreak ? "\n" : " ") + more;
+  }
+
+  /* v19 · ONE listener per page (v17.1 kept that: a phone will not start a second while the first winds down). A tap points it
+     at a box; it listens continuously, paints his words into the box as they come, closes each phrase as a sentence, starts
+     itself again when the device ends it on a pause, keeps his words every few seconds while he is signed in, and stops on his
+     second tap or when he taps another box. */
   var LISTEN = (function () {
-    var rec = null, btn = null, land = null, on = false, want = null, ending = false;
-    function reset(b) { if (b) { b.classList.remove("is-on"); b.textContent = "Tap and talk"; } }
+    var rec = null, btn = null, node = null, on = false, want = null, ending = false, base = "", finals = "", keepFn = null, failFn = null;
+    var restarts = 0, silent = 0, keepTimer = null, lastKept = null, startedAt = 0;
+    var KEEP_EVERY = 4000, MAX_RESTARTS = 60;
+    function paint(interim) {
+      if (!node) { return; }
+      var text = joinText(finals, interim);
+      var v = joinText(base, text);
+      if (node.value !== v) { node.value = v; try { node.dispatchEvent(new window.Event("input", { bubbles: true })); } catch (e) {} }
+    }
+    function gather(ev) {
+      var fin = "", interim = "", had = false;
+      for (var k = 0; k < ev.results.length; k++) {
+        var r = ev.results[k], tr = (r && r[0] && r[0].transcript) || "";
+        if (!tr) { continue; }
+        if (r.isFinal) { fin = joinText(fin, closeSentence(punctuate(tr, joinText(base, fin)))); had = true; }
+        else { interim = joinText(interim, tr); }
+      }
+      if (had) { finals = fin; silent = 0; keepSoon(); }
+      paint(interim);
+    }
+    function keepSoon() { if (keepTimer || !keepFn) { return; } keepTimer = window.setTimeout(function () { keepTimer = null; keepNow(); }, KEEP_EVERY); }
+    function keepNow() {
+      window.clearTimeout(keepTimer); keepTimer = null;
+      if (!keepFn || !node) { return; }
+      var v = node.value; if (v === lastKept) { return; }
+      lastKept = v;
+      try { keepFn(node); } catch (e) {}
+    }
     function make() {
       var SR = VOICE.SR(); if (!SR) { return null; }
       var r = new SR();
-      r.lang = document.documentElement.lang || "en-US"; r.continuous = false; r.interimResults = false; r.maxAlternatives = 1;
-      r.onresult = function (ev) {
-        var out = "";
-        for (var k = ev.resultIndex || 0; k < ev.results.length; k++) { if (ev.results[k].isFinal) { out += (out ? " " : "") + (ev.results[k][0].transcript || ""); } }
-        if (land) { land(out); }
-      };
+      r.lang = document.documentElement.lang || "en-US"; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
+      r.onresult = function (ev) { if (!on) { return; } try { gather(ev); } catch (e) {} };
       r.onerror = function (ev) {
-        var why = ev && ev.error;
+        var why = (ev && ev.error) || "";
+        if (why === "no-speech") { silent++; return; }                 /* nothing said yet: the end that follows starts it again */
+        if (why === "aborted") { ending = true; return; }               /* the page or the device cut it: stop quietly */
         if (why === "not-allowed" || why === "service-not-allowed") {
-          VOICE.denied(true); finish();
-          Array.prototype.forEach.call(document.querySelectorAll(".aps-voice .aps-talk"), function (b) { b.parentNode.removeChild(b); });
+          VOICE.denied(true);
+          var b0 = btn; ending = true; finish();
+          Array.prototype.forEach.call(document.querySelectorAll(".aps-micwrap"), function (w) { if (w !== (b0 && b0.parentNode)) { w.parentNode.removeChild(w); } });
           Array.prototype.forEach.call(document.querySelectorAll(".aps-voice-note"), function (n) { n.parentNode.removeChild(n); });
+          if (b0) { fail(b0); if (b0.parentNode) { b0.parentNode.removeChild(b0); } }
           return;
+        }
+        /* audio-capture, network, bad-grammar, language-not-supported: one line, nothing else */
+        var b1 = btn; ending = true; finish(); if (b1) { fail(b1); }
+      };
+      r.onend = function () {
+        if (on && !ending) {
+          /* the device ended it on a pause: start it again under him, keeping what he has said so far as the base */
+          if (restarts < MAX_RESTARTS && silent < 3) {
+            restarts++; base = node ? String(node.value || "") : base; finals = "";
+            window.setTimeout(function () { if (on && !ending) { try { rec.start(); } catch (e) { finish(); } } }, 120);
+            return;
+          }
         }
         finish();
       };
-      r.onend = finish;
       return r;
     }
-    function finish() {
-      on = false; ending = false; reset(btn); btn = null; land = null; VOICE_LIVE = null;
-      if (want) { var w = want; want = null; window.setTimeout(function () { start(w.b, w.l); }, 150); }
+    function fail(b) {
+      var wrap = b && b.closest ? b.closest(".aps-micwrap") : null; if (!wrap) { return; }
+      var nx = wrap.nextElementSibling; if (nx && nx.classList.contains("aps-voice-fail")) { return; }
+      var p = el("p", "aps-voice-fail", VOICE.touch() ? "Type it instead." : "Type it instead, or continue on your phone.");
+      wrap.parentNode.insertBefore(p, wrap.nextSibling);
     }
-    function start(b, l) {
+    function finish() {
+      var b = btn, n = node;
+      on = false; ending = false; VOICE_LIVE = null;
+      if (b) { b.classList.remove("is-on"); b.setAttribute("aria-pressed", "false"); }
+      if (n) { paint(""); }   /* the words he spoke stand; anything still interim is dropped */
+      keepNow();   /* what changed since the last keep goes now, while the box is still known */
+      btn = null; node = null; failFn = null; keepFn = null; restarts = 0; silent = 0;
+      if (want) { var w = want; want = null; window.setTimeout(function () { start(w.b, w.n, w.k); }, 150); }
+    }
+    function start(b, n, k) {
       if (!rec) { rec = make(); if (!rec) { return; } }
-      btn = b; land = l; on = true; VOICE_LIVE = b;
-      b.classList.add("is-on"); b.textContent = "Listening\u2026";
-      try { rec.start(); } catch (e) { /* a phone still winding the last one down: try once more shortly */ window.setTimeout(function () { try { rec.start(); } catch (e2) { finish(); } }, 250); }
+      btn = b; node = n; keepFn = k || null; on = true; ending = false; VOICE_LIVE = b;
+      base = String(n.value || ""); finals = ""; lastKept = base; restarts = 0; silent = 0; startedAt = Date.now();
+      b.classList.add("is-on"); b.setAttribute("aria-pressed", "true");
+      setTalked();
+      try { rec.start(); } catch (e) { window.setTimeout(function () { try { rec.start(); } catch (e2) { finish(); } }, 250); }
     }
     function stop() { if (!on || ending) { return; } ending = true; try { rec.stop(); } catch (e) { finish(); } }
-    function toggle(b, l) {
+    function toggle(b, n, k) {
       if (on && btn === b) { stop(); return; }
-      if (on) { want = { b: b, l: l }; stop(); return; }
-      start(b, l);
+      if (on) { want = { b: b, n: n, k: k }; stop(); return; }
+      start(b, n, k);
     }
-    return { toggle: toggle, stop: stop, listening: function () { return on; } };
+    /* let the last words land before something reads the box: Save, Read it back, Hear it */
+    function settle(cb) {
+      if (!on) { cb(); return; }
+      stop();
+      var tries = 0, iv = window.setInterval(function () { if (!on || ++tries > 20) { window.clearInterval(iv); cb(); } }, 50);
+    }
+    return { toggle: toggle, stop: stop, settle: settle, listening: function () { return on; }, _keepNow: keepNow };
   })();
+  var MIC_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 1 0-8 0v5a4 4 0 0 0 4 4z"/><path d="M18.5 11a1 1 0 0 0-2 0 4.5 4.5 0 0 1-9 0 1 1 0 0 0-2 0 6.5 6.5 0 0 0 5.5 6.42V20H9a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-2v-2.58A6.5 6.5 0 0 0 18.5 11z"/></svg>';
   function voiceCSS() {
     if (VOICE_CSS_DONE || $("aps-voice-css")) { VOICE_CSS_DONE = true; return; }
     VOICE_CSS_DONE = true;
     var st = el("style"); st.id = "aps-voice-css";
-    st.textContent = ".aps-voice{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:6px 0 10px}" +
-      ".aps-voice button{font:inherit;font-size:14px;line-height:1.2;background:#fff;border:1px solid #C9A227;color:#1F2A44;border-radius:999px;padding:7px 14px;cursor:pointer;min-height:0;height:auto;width:auto;box-shadow:none;text-transform:none;letter-spacing:normal}" +
-      ".aps-voice button.aps-talk{padding-left:32px;position:relative}.aps-voice button.aps-talk::before{content:\"\";position:absolute;left:12px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#C9A227}" +
-      ".aps-voice button.aps-talk.is-on{background:#1F2A44;color:#fff;border-color:#1F2A44}.aps-voice button.aps-talk.is-on::before{background:#F3EDE3;animation:aps-pulse 1s ease-in-out infinite}" +
+    st.textContent =
+      /* the microphone, inside the box's bottom-right corner */
+      ".aps-micwrap{position:relative;height:0;margin:0;padding:0;overflow:visible;pointer-events:none}" +
+      ".aps-mic{pointer-events:auto;position:absolute;right:8px;width:36px;height:36px;margin:0;padding:0;border-radius:50%;border:1px solid #C9A227;background:#fff;color:#1F2A44;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 2px rgba(31,42,68,.12);min-height:0;line-height:1;text-transform:none;letter-spacing:normal;z-index:2}" +
+      ".aps-mic svg{width:20px;height:20px;fill:currentColor;display:block}.aps-mic.aps-mic-small svg{width:16px;height:16px}" +
+      ".aps-mic:hover{background:#FBF7EF}.aps-mic:focus-visible{outline:2px solid #C9A227;outline-offset:2px}" +
+      ".aps-mic.is-on{background:#1F2A44;color:#fff;border-color:#1F2A44;animation:aps-ring 1.2s ease-out infinite}" +
+      "@keyframes aps-ring{0%{box-shadow:0 0 0 0 rgba(31,42,68,.45)}70%{box-shadow:0 0 0 12px rgba(31,42,68,0)}100%{box-shadow:0 0 0 0 rgba(31,42,68,0)}}" +
       "@keyframes aps-pulse{0%,100%{opacity:.3}50%{opacity:1}}" +
-      ".aps-voice button.is-on{background:#1F2A44;color:#fff;border-color:#1F2A44}" +
-      ".aps-voice.aps-touch button{font-size:16px;padding:12px 18px;min-height:44px}.aps-voice.aps-touch button.aps-talk{padding-left:40px}.aps-voice.aps-touch button.aps-talk::before{left:16px}" +
-      ".aps-voice-note{flex:1 1 100%;font-size:13.5px;line-height:1.45;color:#6B6358;margin:0}" +
-      ".aps-voice button.aps-readq{background:none;border:0;padding:0;border-radius:0;font-size:13.5px;color:#8C6A3F;text-decoration:underline;text-underline-offset:3px;min-height:0}.aps-voice.aps-touch button.aps-readq{font-size:14px;padding:0;min-height:0}.aps-voice button.aps-readq.is-on{background:none;color:#1F2A44;border:0}" +
-      ".aps-voice-q{margin:2px 0 2px}.aps-voice-q button.aps-readq{font-size:15px!important;padding:11px 0!important;min-height:44px!important;display:inline-flex;align-items:center}" +
-      ".aps-voice.aps-touch{flex-direction:column;align-items:stretch;gap:10px}.aps-voice.aps-touch button.aps-talk{width:100%;text-align:center;font-size:17px;padding:14px 18px 14px 40px}" +
-      ".aps-hear.aps-act > button{font:inherit}" +
+      ".aps-mic-word{pointer-events:none;position:absolute;font-size:11.5px;line-height:1;letter-spacing:.02em;color:#8C6A3F;font-family:inherit;text-transform:none}" +
+      ".aps-mic.aps-touch{width:42px;height:42px}.aps-mic.aps-touch svg{width:22px;height:22px}.aps-mic.aps-touch.aps-mic-small svg{width:16px;height:16px}" +
+      ".aps-voice-fail{font-size:14px;line-height:1.45;color:#6B6358;margin:8px 0 6px}" +
+      /* Read it to me: one small link under the question, above the box, on every device */
+      ".aps-voice-q{margin:2px 0 4px;display:block}" +
+      ".aps-voice-q button.aps-readq{font:inherit;font-size:13.5px;line-height:1.2;background:none;border:0;padding:0;border-radius:0;color:#8C6A3F;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:0;height:auto;width:auto;box-shadow:none;text-transform:none;letter-spacing:normal;display:inline-flex;align-items:center}" +
+      ".aps-voice-q button.aps-readq.is-on{color:#1F2A44}" +
+      ".aps-voice-q.aps-touch{margin:4px 0 2px}.aps-voice-q.aps-touch button.aps-readq{font-size:15px!important;padding:11px 0!important;min-height:44px!important}" +
+      /* the one note per page */
+      "p.aps-voice-note{font-size:13.5px!important;font-weight:400!important;line-height:1.45!important;color:#6B6358!important;margin:8px 0 10px!important;text-align:left}" +
+      /* one question at a time (unchanged) */
       ".aps-one .aps-q-off{display:none!important}.aps-q-row{display:flex;flex-direction:column;gap:10px;margin:4px 0 22px}" +
       ".aps-q-row button.aps-q-next{font:inherit;font-size:17px;min-height:48px;padding:12px 18px;border-radius:8px;border:1px solid #1F2A44;background:#1F2A44;color:#fff;cursor:pointer;width:100%}" +
-      ".aps-q-row .aps-q-line{font-size:13.5px;color:#6B6358;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.aps-q-row .aps-q-line button{font:inherit;font-size:13.5px;color:#8C6A3F;background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:0}.aps-q-row .aps-q-line .aps-dot{color:#B7AFA4}";
+      ".aps-q-row .aps-q-line{font-size:13.5px;color:#6B6358;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.aps-q-row .aps-q-line button{font:inherit;font-size:13.5px;color:#8C6A3F;background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:0}.aps-q-row .aps-q-line .aps-dot{color:#B7AFA4}" +
+      ".aps-hear.aps-act > button{font:inherit}";
     document.head.appendChild(st);
   }
   /* the words a box asks, when no page hook says: its label, else the nearest text above it */
@@ -2124,7 +2284,7 @@
     while (e && depth < 4) {
       var p = e.previousElementSibling;
       while (p) {
-        if (!/^(INPUT|TEXTAREA|BUTTON|SELECT|SCRIPT|STYLE)$/.test(p.tagName) && !p.querySelector("input,textarea,button") && !p.classList.contains("aps-voice") && !p.classList.contains("aps-voice-q")) {
+        if (!/^(INPUT|TEXTAREA|BUTTON|SELECT|SCRIPT|STYLE)$/.test(p.tagName) && !p.querySelector("input,textarea,button") && !p.classList.contains("aps-voice") && !p.classList.contains("aps-voice-q") && !p.classList.contains("aps-micwrap") && !p.classList.contains("aps-voice-fail")) {
           var t = clean(p.textContent); if (t.length >= 3) { return t.slice(0, 300); }
         }
         p = p.previousElementSibling;
@@ -2133,8 +2293,45 @@
     }
     return "";
   }
-  VOICE.attach = function (nodes, askFn) {
+  /* a pinned sentence stem beside or over the box (Asked of Me "I came from", What Kind of Light "To" / "am I"): the Read it to me row goes above the whole line */
+  function lineOf(node) {
+    var anchor = node;
+    try {
+      var sib = node.previousElementSibling;
+      while (sib) {
+        var pos = window.getComputedStyle(sib).position;
+        if (sib.tagName !== "LABEL" && (pos === "absolute" || pos === "fixed") && String(sib.textContent || "").replace(/\s+/g, "").length > 0) {   /* a label for a screen reader is pinned too, but it is no stem */
+          var sr = sib.getBoundingClientRect(), nr = node.getBoundingClientRect();
+          var measurable = sr.width > 0 && sr.height > 0;
+          if (!measurable || (sr.top < nr.bottom && sr.bottom > nr.top)) { anchor = node.parentNode; break; }
+        }
+        sib = sib.previousElementSibling;
+      }
+    } catch (e) {}
+    return anchor;
+  }
+  /* put the microphone in the box's bottom-right corner, whatever sits between the box and the holder (a margin, a stem line) */
+  function placeMic(node, wrap, mic, word, touch) {
+    try {
+      var nr = node.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+      if (!(nr.width > 0 && nr.height > 0)) { return false; }
+      var full = touch ? 42 : 36, size = nr.height < full + 8 ? 28 : full;   /* a short box takes a smaller icon, centered on its right */
+      mic.style.width = size + "px"; mic.style.height = size + "px"; mic.classList.toggle("aps-mic-small", size === 28);
+      var gap = size === 28 ? Math.round((nr.height - size) / 2) : Math.max(4, Math.min(8, Math.round((nr.height - size) / 2)));
+      var under = !!word && nr.height >= size + 40;   /* room for the word under the icon, inside the box */
+      var top = (nr.bottom - wr.top) - gap - size - (under ? 15 : 0);
+      mic.style.top = top + "px";
+      mic.style.right = (wr.right - nr.right + 8) + "px";
+      if (word) {
+        if (under) { word.style.top = (top + size + 3) + "px"; word.style.right = (wr.right - nr.right + 8 + Math.max(0, (size - word.offsetWidth) / 2)) + "px"; }
+        else { word.style.top = (top + (size - 12) / 2) + "px"; word.style.right = (wr.right - nr.right + 8 + size + 7) + "px"; }
+      }
+      return true;
+    } catch (e) { return false; }
+  }
+  VOICE.attach = function (nodes, askFn, opts) {
     var SR = VOICE.SR(), TTS = VOICE.TTS();
+    opts = opts || {};
     if (!SR && !TTS) { return 0; }
     voiceCSS();
     var touch = VOICE.touch(), done = 0;
@@ -2143,7 +2340,6 @@
       if (!node || node.type === "hidden" || node.readOnly || node.disabled || node.hidden) { return; }
       if (node.getAttribute("data-aps-voice")) { return; }
       node.setAttribute("data-aps-voice", "1");
-      var row = el("div", "aps-voice" + (touch ? " aps-touch" : ""), "");
       var ask = ""; try { ask = (askFn && askFn(node)) || askOf(node); } catch (e) { ask = askOf(node); }
       if (TTS && ask) {
         var rb = el("button", "aps-readq", "Read it to me"); rb.type = "button";
@@ -2153,50 +2349,48 @@
           rb.classList.add("is-on"); rb.textContent = "Stop";
           VOICE.say(ask, function () { rb.classList.remove("is-on"); rb.textContent = "Read it to me"; });
         });
-        if (touch) {
-          var rq = el("div", "aps-voice aps-voice-q", ""); rq.appendChild(rb);
-          /* v18.3: a box whose line carries a pinned sentence stem (a sibling placed over the box) keeps the row above the whole line */
-          var anchor = node;
-          try {
-            var sib = node.previousElementSibling;
-            while (sib) {
-              var pos = window.getComputedStyle(sib).position;
-              if ((pos === "absolute" || pos === "fixed") && String(sib.textContent || "").replace(/\s+/g, "").length > 0) {
-                var sr = sib.getBoundingClientRect(), nr = node.getBoundingClientRect();
-                /* v18.5: a step that is not showing yet measures as nothing; a pinned, non-empty sibling is a stem whether or not it can be measured */
-                var measurable = sr.width > 0 && sr.height > 0;
-                if (!measurable || (sr.top < nr.bottom && sr.bottom > nr.top)) { anchor = node.parentNode; break; }
-              }
-              sib = sib.previousElementSibling;
-            }
-          } catch (e) {}
-          anchor.parentNode.insertBefore(rq, anchor);
-        }
-        else { row.appendChild(rb); }
+        var rq = el("div", "aps-voice-q" + (touch ? " aps-touch" : ""), ""); rq.appendChild(rb);
+        var anchor = lineOf(node);
+        anchor.parentNode.insertBefore(rq, anchor);
       }
+      var mounted = false;
       if (SR && !VOICE.denied()) {
-        var tb = el("button", "aps-talk", "Tap and talk"); tb.type = "button";
-        var land = function (text) {
-          text = String(text || "").trim(); if (!text) { return; }
-          var v = String(node.value || ""), tail = v.replace(/\s+$/, "");
-          if (!tail || /[.!?]$/.test(tail)) { text = text.charAt(0).toUpperCase() + text.slice(1); }
-          if (node.tagName === "TEXTAREA" && !/[.!?,;:]$/.test(text)) { text += "."; }
-          node.value = tail + (tail ? " " : "") + text;
-          node.dispatchEvent(new window.Event("input", { bubbles: true }));
-        };
-        /* v17.1 · one listener for the whole page (LISTEN): a tap starts it for this box, a pause or a second tap ends it; no keyboard is raised */
-        tb.addEventListener("click", function () { LISTEN.toggle(tb, land); });
-        row.appendChild(tb);
+        var wrap = el("div", "aps-micwrap", "");
+        var mic = el("button", "aps-mic" + (touch ? " aps-touch" : ""), ""); mic.type = "button"; mic.innerHTML = MIC_SVG;
+        mic.setAttribute("aria-label", "Talk. Tap to speak, tap again to stop."); mic.setAttribute("aria-pressed", "false");
+        wrap.appendChild(mic);
+        var word = null;
+        if (!talked()) { word = el("span", "aps-mic-word", "Talk"); word.setAttribute("aria-hidden", "true"); wrap.appendChild(word); }
+        var keep = typeof opts.keep === "function" ? opts.keep : null;
+        mic.addEventListener("click", function () { LISTEN.toggle(mic, node, keep); });
+        node.parentNode.insertBefore(wrap, node.nextSibling);
+        /* room for the icon so his last line never runs under it */
+        try { var cs = window.getComputedStyle(node), pr = parseFloat(cs.paddingRight) || 0, need = (touch ? 42 : 36) + 16; if (pr < need) { node.style.paddingRight = need + "px"; } } catch (e) {}
+        var place = function () { placeMic(node, wrap, mic, wrap.querySelector(".aps-mic-word"), touch); };
+        PLACES.push(place); place();
+        try { if (window.ResizeObserver) { new window.ResizeObserver(place).observe(node); } } catch (e) {}
+        node.addEventListener("input", place);
+        window.setTimeout(place, 400); window.setTimeout(place, 1500);
+        mounted = true;
       }
-      if (!row.children.length) { return; }
-      if (!VOICE_NOTE_DONE && SR && !VOICE.denied()) {
+      if (mounted && !VOICE_NOTE_DONE) {
         VOICE_NOTE_DONE = true;
-        row.appendChild(el("p", "aps-voice-note", (touch ? "Your phone" : "Your computer") + " turns your voice into words. Nothing is recorded, and nothing is sent to us."));
+        var dev = touch ? "Your phone" : "Your computer";
+        var note = el("p", "aps-voice-note", signedIn()
+          ? dev + " turns your voice into words, and they are saved to your page as you speak."
+          : dev + " turns your voice into words. Nothing is saved until you press Save.");
+        var after = node.nextSibling; node.parentNode.insertBefore(note, after && after.nextSibling ? after.nextSibling : null);
       }
-      node.parentNode.insertBefore(row, node.nextSibling); done++;
+      if (mounted || (TTS && ask)) { done++; }
     });
     return done;
   };
+  window.addEventListener("resize", placeAll);
+  VOICE.settle = LISTEN.settle;
+  VOICE.listening = LISTEN.listening;
+  VOICE.stopListening = LISTEN.stop;
+  VOICE.punctuate = punctuate;
+  VOICE.closeSentence = closeSentence;
   if (!VOICE._hidden) {
     VOICE._hidden = true;
     document.addEventListener("visibilitychange", function () { if (document.hidden) { VOICE.stop(); LISTEN.stop(); } });
@@ -2274,7 +2468,7 @@
   Story.prototype.mountVoice = function () {
     var self = this, cfg = this.cfg, TTS = VOICE.TTS();
     if (cfg.voice === false || (!VOICE.SR() && !TTS)) { return false; }
-    VOICE.attach(this.boxes(), function (node) { return self.askFor(node); });
+    VOICE.attach(this.boxes(), function (node) { return self.askFor(node); }, { keep: function () { self.keep(); } });   /* v19: keep as he speaks */
     /* Hear it: the finish reads his piece back */
     var actionsRow = document.querySelector(cfg.actionsRow);
     if (TTS && actionsRow && !$("apsHear")) {
@@ -2283,11 +2477,14 @@
       var wrap = el("div", "aps-act aps-hear", ""); wrap.appendChild(hb); wrap.appendChild(el("span", "aps-act-what", "Reads your piece back to you in a plain voice. Nothing is sent."));
       hb.addEventListener("click", function () {
         if (hb.classList.contains("is-on")) { VOICE.stop(); hb.classList.remove("is-on"); hb.textContent = "Hear it"; return; }
+        LISTEN.settle(function () { hearNow(); });
+      });
+      var hearNow = function () {
         var text = self.document();
         if (!text) { wrap.querySelector(".aps-act-what").textContent = "There is nothing written yet. Write something first, then hear it."; return; }
         hb.classList.add("is-on"); hb.textContent = "Stop";
         VOICE.say(text.replace(/\n{2,}/g, ". ").replace(/\n/g, ", "), function () { hb.classList.remove("is-on"); hb.textContent = "Hear it"; });
-      });
+      };
       actionsRow.appendChild(wrap);
     }
     return true;
@@ -2414,7 +2611,7 @@
   };
 
   window.APStory = {
-    version: "18.6",
+    version: "19",
     assistant: ASSIST,
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
