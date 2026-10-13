@@ -1,5 +1,13 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v19.1
+   AP-STORY-MODULE-v19.2
+
+   v19.2 (13 Oct 2026) — the row standard lives in the engine (ap-story-navigation, John Oct 13: "a prescribed flow in all our
+     stories"). APStory.row: css() injects the one row stylesheet (the engine's own rows and the standard's), html(o) draws a row
+     at the foot of a stop — one named way back on the left (a link when it has an address), the quiet things between as small
+     underlined links, Saved as words with the time, ONE navy next step on the right — inside the sheet on the words' left edge
+     (the cushion, aps-in), pinned to the foot of a phone screen on a stepped piece (aps-pin), and check(row) names what a row
+     gets wrong (two next steps, none, a navy of the piece's own). road.js v39 draws every Road and Where Are You? row through
+     it, so the cushion cannot go missing on one page. The engine's own step and finish rows are unchanged in this cut.
 
    v19.1 (13 Oct 2026) — Save on the first step of Asked of Me. The step row gives Save the same look as Back by copying Back's
      classes; on a page that hides Back on its first step with a class (Asked of Me: is-off), Save vanished with it — found in
@@ -1179,8 +1187,8 @@
     }
     return total > 3 && shown >= total * 0.8;
   };
-  Story.prototype.oneRow = function () {
-    var cfg = this.cfg, self = this;
+  /* v19.2 · one stylesheet for every row: the engine's own step and finish rows, and the standard row any piece draws through APStory.row */
+  function rowCSS() {
     if (!$("aps-row-css")) {
       var st = el("style"); st.id = "aps-row-css";
       st.textContent = ".aps-row{display:flex!important;flex-wrap:wrap;gap:12px 14px;align-items:center;background:#fff;padding:16px 18px;border-top:1px solid #E5DCC8}" +
@@ -1213,9 +1221,32 @@
         ".aps-row.aps-finish .aps-after{flex:1 1 100%;width:100%;margin:0}.aps-row.aps-finish .aps-after .aps-after-row{margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}.aps-row.aps-finish .aps-after .aps-after-what{font-size:14px;line-height:1.45;color:#6B6358;max-width:52ch}.aps-row.aps-finish .aps-after > .aps-after-card,.aps-row.aps-finish .aps-after > .aps-after-done,.aps-row.aps-finish .aps-after > .aps-note:not(.aps-after-row){flex:1 1 100%}" +
         "@media (max-width:620px){.aps-row.aps-finish > .aps-act{flex:1 1 100%}}" +
         ".aps-row.aps-finish > .aps-edit-main{order:29}" +
-        "@media print{.aps-row{position:static}}";
+        "@media print{.aps-row{position:static}}" +
+        /* v19.2 · the standard row (ap-story-navigation): back · the quiet things · Saved · one next step; aps-in = inside the sheet, the sheet's padding is the cushion */
+        ".aps-row.aps-std{display:flex!important;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:22px}" +
+        ".aps-row.aps-std.aps-in{padding:14px 0 0!important;background:transparent;border-top:1px solid #E5DCC8}" +
+        ".aps-row.aps-std.aps-in.aps-pin{background:#fff;padding-bottom:12px!important}" +
+        ".aps-row.aps-std > .aps-back{order:1}.aps-row.aps-std > .aps-mid{order:2;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;flex:1 1 auto}.aps-row.aps-std > .aps-next{order:3;margin-left:auto}" +
+        ".aps-row.aps-std > .aps-back,.aps-row.aps-std > .aps-next{font-family:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif!important;font-size:15px!important;font-weight:600!important;line-height:1.3!important;padding:11px 18px!important;border:1.5px solid #1F2A44!important;border-radius:0!important;box-shadow:none!important;text-shadow:none!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;min-width:0!important;width:auto!important;margin:0!important;cursor:pointer;text-decoration:none!important;text-align:center;display:inline-block}" +
+        ".aps-row.aps-std > .aps-back{background:#fff!important;color:#1F2A44!important}.aps-row.aps-std > .aps-next{background:#1F2A44!important;color:#fff!important}" +
+        ".aps-row.aps-std > .aps-next:hover{background:#2B3A5E!important}.aps-row.aps-std > .aps-back:hover{background:#F1EADB!important}" +
+        ".aps-row.aps-std .aps-quiet{font-family:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif!important;font-size:14px!important;font-weight:400!important;line-height:1.4!important;color:#6B6358!important;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important;min-height:0!important;height:auto!important;min-width:0!important;width:auto!important;text-decoration:underline!important;text-underline-offset:3px;cursor:pointer;text-transform:none!important;letter-spacing:normal!important;border-radius:0!important}" +
+        ".aps-row.aps-std .aps-quiet:hover{color:#1F2A44!important}" +
+        ".aps-row.aps-std .aps-saved{font-family:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif;font-size:14px;color:#1F2A44;white-space:nowrap}" +
+        ".aps-row.aps-std .aps-quiet[hidden],.aps-row.aps-std .aps-saved[hidden],.aps-row.aps-std > .aps-back[hidden],.aps-under [hidden]{display:none!important}" +
+        ".aps-under{margin:8px 0 0;font-family:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif;font-size:14px;color:#6B6358}.aps-under:empty{display:none}" +
+        ".aps-under .aps-quiet{font:inherit;color:inherit;background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer}" +
+        ".aps-row.aps-std:focus-within{outline:0}.aps-row.aps-std > .aps-back:focus-visible,.aps-row.aps-std > .aps-next:focus-visible,.aps-row.aps-std .aps-quiet:focus-visible{outline:3px solid #C9A227;outline-offset:2px}" +
+        /* a phone: the way back and the next step share the first line; the quiet things drop under them */
+        "@media (max-width:620px){.aps-row.aps-std{gap:10px 14px}.aps-row.aps-std > .aps-mid{order:4;flex:1 1 100%;gap:6px 16px}.aps-row.aps-std > .aps-back,.aps-row.aps-std > .aps-next{flex:1 1 auto;white-space:nowrap;padding-inline:12px!important}}" +
+        /* no lonely words: a button never breaks its words across two lines; when the way back and the next step cannot share a phone's line, the next step takes a line of its own */
+        "@media print{.aps-row.aps-std{display:none!important}.aps-under{display:none!important}}";
       document.head.appendChild(st);
     }
+  }
+  Story.prototype.oneRow = function () {
+    var cfg = this.cfg, self = this;
+    rowCSS();
     /* the step row is wherever the page keeps its Next: pages name navHost "…Off" to keep holdPlace quiet, so find the row itself */
     var root = document.querySelector(cfg.root) || document, stepRow = null;
     Array.prototype.forEach.call(root.querySelectorAll("button"), function (b) {
@@ -2581,6 +2612,60 @@
   function handoffBoxHTML(link) {
     return qrSVG(link, 132) + '<div><p><b>Point your phone’s camera at this.</b> It opens this piece where you left off. Sign in once on the phone, and the microphone is there.</p><p class="aps-handoff-url">' + link.replace(/^https?:\/\/(www\.)?/, "") + '</p><button type="button" class="aps-handoff-done">Done</button></div>';
   }
+  /* v19.2 · the row standard (ap-story-navigation). Every row at the foot of every stop, every piece, laptop and phone the same:
+       left: one way back, named for where it goes ("← Your page", "← Your words") — a link when it has an address;
+       between: the quiet things (Download · Copy · Print) as small underlined links, and "Saved · 2:14 PM" as words, never a button;
+       right: ONE navy button, the one next step, saying what happens or where it goes (Begin, Next, Finish, Make it one story, Your page).
+     The row sits inside the sheet on the words' left edge (inSheet → aps-in: the sheet's padding is the cushion) and stays at the
+     foot of a phone screen on a stepped piece (pin → aps-pin). Anything under the row ("Continue on your phone", a note) goes in
+     o.under, a line of its own. The engine owns this so it cannot go missing on one page. */
+  var ROW = (function () {
+    function esc(x) { return String(x == null ? "" : x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+    function attrs(o) {
+      var a = o.attrs ? " " + String(o.attrs).trim() : "";
+      if (o.id) { a += ' id="' + esc(o.id) + '"'; }
+      if (o.hidden) { a += " hidden"; }
+      return a;
+    }
+    function piece(o, cls) {
+      if (!o) { return ""; }
+      var c = cls + (o.cls ? " " + o.cls : "");
+      if (o.href) { return '<a class="' + c + '" href="' + esc(o.href) + '"' + (o.target ? ' target="' + esc(o.target) + '" rel="noopener"' : "") + attrs(o) + ">" + esc(o.text) + "</a>"; }
+      return '<button type="button" class="' + c + '"' + attrs(o) + ">" + esc(o.text) + "</button>";
+    }
+    /* o = { back, quiet: [], saved, next, under, inSheet, pin, cls, id } · back/next/quiet items: { text, attrs, href, target, id, cls, hidden } */
+    function html(o) {
+      o = o || {};
+      var quiet = o.quiet || [];
+      if (quiet.some(function (x) { return x && x.navy; })) { throw new Error("APStory.row: a quiet thing is never navy — the row has one next step"); }
+      var cls = "aps-row aps-std" + (o.inSheet === false ? "" : " aps-in") + (o.pin ? " aps-pin" : "") + (o.cls ? " " + o.cls : "");
+      var h = '<div class="' + cls + '"' + (o.id ? ' id="' + esc(o.id) + '"' : "") + ' data-aps-row="1">';
+      h += piece(o.back, "aps-back");
+      h += '<span class="aps-mid">';
+      for (var i = 0; i < quiet.length; i++) { if (quiet[i]) { h += piece(quiet[i], "aps-quiet"); } }
+      h += '<span class="aps-saved"' + (o.saved ? "" : " hidden") + '>' + esc(o.saved || "") + '</span>';
+      h += '</span>';
+      h += piece(o.next, "aps-next");
+      h += '</div>';
+      if (o.under) { h += '<div class="aps-under">' + o.under + '</div>'; }
+      return h;
+    }
+    /* what a row gets wrong, in words; [] when it meets the standard */
+    function check(row) {
+      var out = [];
+      if (!row || !row.querySelectorAll) { return ["no row"]; }
+      var next = row.querySelectorAll(".aps-next").length;
+      if (next === 0) { out.push("no next step: a row has one navy button"); }
+      if (next > 1) { out.push("two next steps (" + next + "): a row has one navy button"); }
+      if (row.querySelectorAll(".btn.main, .main").length) { out.push("a navy button of the piece's own in the row"); }
+      var saved = row.querySelector(".aps-saved"); if (saved && saved.tagName === "BUTTON") { out.push("Saved is words, never a button"); }
+      if (row.isConnected && row.closest && !row.closest(".sheet, .card, .coursecard, section, article, form, main")) { out.push("the row sits outside the sheet (no cushion)"); }
+      var backs = row.querySelectorAll(".aps-back").length; if (backs > 1) { out.push("two ways back"); }
+      return out;
+    }
+    return { css: rowCSS, html: html, check: check };
+  })();
+
   Story.prototype.mountHandoff = function () {
     var self = this, cfg = this.cfg;
     if (cfg.handoff === false || VOICE.touch()) { return false; }
@@ -2616,8 +2701,9 @@
   };
 
   window.APStory = {
-    version: "19.1",
+    version: "19.2",
     assistant: ASSIST,
+    row: ROW,   /* v19.2: the row standard every piece draws its foot rows through */
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
 
     init: function (cfg) {

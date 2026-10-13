@@ -1,4 +1,4 @@
-/* AP-ROAD-v1 (v38: Speak it 2 — keep as he speaks on the Road and Where Are You? (the engine's microphone saves what he says every few seconds while he is signed in, through a quiet save that says nothing on failure); the Story assistant heading with its ⓘ sits over every row of its buttons (Better questions · Check it · Smooth it · Read it back) and the line at the top of Your story is gone; a press on one of those buttons lets the last spoken words land first) (v37: Speak it — Tap and talk and Read it to me on every box the Road and Where Are You? draw, and Continue on your phone in the save row, all through story.js v17 (APStory.voice.attach, handoffLink); nothing here listens or speaks on its own) (v36: the count — story_start · story_save · story_finish through APStory.track (story.js v16), the piece named road or where, nothing of what he wrote) (v35: The Word for It is read from the engine (story.js v15, APStory.wordForIt) on the Road's feel step and on Where Are You?; road.js keeps one fallback copy, identical, for a page whose engine predates v15. v34: "a reader", never "a stranger", wherever a man reads it (John, 28 Sept). v33: one engine — the Story assistant (the house document, the four asks and their second reads, the relay, the page-side guards) now lives in story.js as APStory.assistant and this file calls it with the Road profile; a page that runs without story.js must inline it first. v32: one row on every screen — Back or Edit · Download · Copy · Save · Next · Your page — the screen's own bottom row, kept at the foot of the screen; no "leave this page?" box: what he types is held on this device (a day) and put back and saved when he returns, unless a newer save exists; his page opens in the full window from inside a course frame. v31: on Your story a man can edit any of his lines where it sits (Edit beside the line, Done, Cancel); the chapter keeps its wording and "Changed from your chapter · Undo" puts it back; the edited line is what Put it together, Better questions, the turn picker and the story page use. v30: the Story assistant line is small and plainly pressable — "Story assistant ⓘ How it helps" in the sheet's small-link style; the cream box appears only when it is open. v29: Story assistant — the four Claude buttons (Better questions · Check it · Smooth it · Read it back) named once as one helper at the top of Your story, with a circled i that opens what it does and what it never does; the "Four buttons send your story to Claude" paragraph retired. v28: the story he makes in Make it one story — the answers between his lines, each movement put together, smoothed, with where it starts and where God was — is the story his page and his PDF carry; a finished story that is still a list invites him to make it one. v27: one PDF from every Download button — the story first, flowing beginning to end under its three movements, then the road, the plate and the Lower Still page; the plate is fetched before the PDF is made. v26: the Lower Still page after the plate at the end of a finished story's PDF, John's notes set as teaching. v25: after the last map, the Lower Still plate — the road back down, with the act named; the road on the story page; the last line of a finished story; the plate on the last page of the PDF. v24: the map is cumulative and a low answer that is good news is left out; the Numbers 33 chain replaces the between step; short choices on a 3; The Word for It feeling words; Read more under pruning; the story page opens on the newest chapter; his name as byline; one button size) · The Road I Walked · Walk With Me. One file: styles, the ten chapters, the story, the save. Built from the walk-through modules. */
+/* AP-ROAD-v1 (v39: story navigation — the one road through the Road (ap-story-navigation, John Oct 13, 2026: "a prescribed flow in all our stories, a defined map that navigates with integrity and logic"). Begin · Write · Read · Your page. Every row at the foot of a screen is drawn by the engine's row standard (story.js v19.2, APStory.row): the way back on the left named for where it goes, the quiet things (Download · Copy) between as small links, Saved as words with the time, ONE navy next step on the right, the row inside the sheet on the words' left edge — the cushion lives in the engine so it cannot go missing here. The story screens are two: Your words (his lines in order with the map; tap any line to change it — Edit lives there and nowhere else) and One story (the workshop; ← Your words on the left, Finish on the right). The chapter list, the edit-everything screen and the chapter page (Save as a door) are gone: Finish on the last step saves the chapter and lands on Your words; the discipline picker is the last step of the chapters that have one. No button is named Chapters, Story, Read, Open it or Done-that-goes-somewhere. "Your Story" names the shelf, never a screen here. Where Are You? draws its rows through the same standard. Two things left with the chapter page: the tap-to-read-aloud mark (nothing else showed it) and the "word you keep using" list) (v38: Speak it 2 — keep as he speaks on the Road and Where Are You? (the engine's microphone saves what he says every few seconds while he is signed in, through a quiet save that says nothing on failure); the Story assistant heading with its ⓘ sits over every row of its buttons (Better questions · Check it · Smooth it · Read it back) and the line at the top of Your story is gone; a press on one of those buttons lets the last spoken words land first) (v37: Speak it — Tap and talk and Read it to me on every box the Road and Where Are You? draw, and Continue on your phone in the save row, all through story.js v17 (APStory.voice.attach, handoffLink); nothing here listens or speaks on its own) (v36: the count — story_start · story_save · story_finish through APStory.track (story.js v16), the piece named road or where, nothing of what he wrote) (v35: The Word for It is read from the engine (story.js v15, APStory.wordForIt) on the Road's feel step and on Where Are You?; road.js keeps one fallback copy, identical, for a page whose engine predates v15. v34: "a reader", never "a stranger", wherever a man reads it (John, 28 Sept). v33: one engine — the Story assistant (the house document, the four asks and their second reads, the relay, the page-side guards) now lives in story.js as APStory.assistant and this file calls it with the Road profile; a page that runs without story.js must inline it first. v32: one row on every screen — Back or Edit · Download · Copy · Save · Next · Your page — the screen's own bottom row, kept at the foot of the screen; no "leave this page?" box: what he types is held on this device (a day) and put back and saved when he returns, unless a newer save exists; his page opens in the full window from inside a course frame. v31: on Your story a man can edit any of his lines where it sits (Edit beside the line, Done, Cancel); the chapter keeps its wording and "Changed from your chapter · Undo" puts it back; the edited line is what Put it together, Better questions, the turn picker and the story page use. v30: the Story assistant line is small and plainly pressable — "Story assistant ⓘ How it helps" in the sheet's small-link style; the cream box appears only when it is open. v29: Story assistant — the four Claude buttons (Better questions · Check it · Smooth it · Read it back) named once as one helper at the top of Your story, with a circled i that opens what it does and what it never does; the "Four buttons send your story to Claude" paragraph retired. v28: the story he makes in Make it one story — the answers between his lines, each movement put together, smoothed, with where it starts and where God was — is the story his page and his PDF carry; a finished story that is still a list invites him to make it one. v27: one PDF from every Download button — the story first, flowing beginning to end under its three movements, then the road, the plate and the Lower Still page; the plate is fetched before the PDF is made. v26: the Lower Still page after the plate at the end of a finished story's PDF, John's notes set as teaching. v25: after the last map, the Lower Still plate — the road back down, with the act named; the road on the story page; the last line of a finished story; the plate on the last page of the PDF. v24: the map is cumulative and a low answer that is good news is left out; the Numbers 33 chain replaces the between step; short choices on a 3; The Word for It feeling words; Read more under pruning; the story page opens on the newest chapter; his name as byline; one button size) · The Road I Walked · Walk With Me. One file: styles, the ten chapters, the story, the save. Built from the walk-through modules. */
 (function(){
 
 if(!window.AP_ROAD||window.__apRoadStarted)return;window.__apRoadStarted=1;
@@ -7,7 +7,124 @@ var host=document.getElementById("ap-road");if(!host)return;
 /* v35 · The Word for It lives in the engine (story.js v15, APStory.wordForIt) and every piece reads it from there. The copy
    below is used only on a page whose story.js predates v15, and must stay identical to the engine's list until then. */
 var WORD_FOR_IT=(function(){var e=window.APStory&&window.APStory.wordForIt;return (e&&e.length)?e.slice():["ashamed", "exposed", "afraid", "angry", "sad", "alone", "numb", "tired", "stuck", "restless", "convicted", "sorry", "tender", "relieved", "seen", "hopeful", "grateful", "steady", "free", "glad"];})();
-var st=document.createElement("style");st.id="ap-road-css";st.textContent="#ap-road,#ap-road *{text-align:left;text-transform:none;letter-spacing:normal;box-sizing:border-box;float:none}#ap-road button{text-align:center;border-radius:0;box-shadow:none;text-shadow:none;min-width:0;min-height:0;height:auto;width:auto;line-height:1.3;margin:0;text-decoration:none}#ap-road p{margin:1em 0;padding:0}#ap-road ul,#ap-road ol{margin:1em 0;padding-left:1.4em}#ap-road li{margin:0;padding:0}#ap-road label{display:block;margin:0}#ap-road a{color:inherit}#ap-road svg{max-width:100%;height:auto}#ap-road{--navy:#1F2A44;--bronze:#8C6A3F;--gold:#C9A227;--cream:#FBF7EF;--paper:#FFFFFF;--sand:#F1EADB;--line:#E5DCC8;--ink:#2A2723;--soft:#6B6358;\n  --serif:\"Source Serif 4\",Georgia,\"Times New Roman\",serif;--sans:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif}#ap-road, #ap-road *{box-sizing:border-box}#ap-road{background:var(--cream);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:0 80px}#ap-road .top{max-width:720px;margin:0 auto;padding-block:18px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}#ap-road .top .what{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:0}#ap-road .top .what b{color:var(--ink)}#ap-road .switch{display:flex;flex-wrap:wrap;gap:8px}#ap-road .switch button{font-family:var(--sans);font-size:14px;font-weight:600;padding:8px 14px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer}#ap-road .switch button[aria-pressed=\"true\"]{background:var(--navy);color:#fff}#ap-road #ap-road-app{max-width:720px;margin:28px auto 0}#ap-road .sheet{background:var(--paper);border:1px solid var(--line);box-shadow:0 1px 0 var(--line),0 18px 40px -28px rgba(31,42,68,.35);padding:clamp(20px,5vw,44px)}#ap-road .eyebrow{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze)}#ap-road h1{font-size:clamp(26px,5vw,34px);line-height:1.15;color:var(--navy);margin:6px 0 10px;font-weight:600;text-wrap:balance}#ap-road h2{font-size:22px;line-height:1.2;color:var(--navy);margin:4px 0 6px;font-weight:600}#ap-road .fixed{margin:0 0 22px;max-width:60ch}#ap-road .cards{display:flex;flex-direction:column;gap:14px}#ap-road .card{border:1px solid var(--line);padding:18px 20px;background:var(--cream)}#ap-road .card.main{background:#fff;border:1.5px solid var(--navy)}#ap-road .card.dim{opacity:.62}#ap-road .state{margin:0;font-family:var(--sans);font-size:15px;color:var(--ink)}#ap-road .quiet{margin:2px 0 0;font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}#ap-road .row.bar{margin-top:22px}#ap-road .btn{font-family:var(--sans);font-size:15px;font-weight:600;padding:11px 18px;border:1.5px solid var(--navy);color:var(--navy);background:#fff;cursor:pointer}#ap-road .btn.main{background:var(--navy);color:#fff}#ap-road .btn:focus-visible,#ap-road .switch button:focus-visible,#ap-road .link:focus-visible,#ap-road .toggle:focus-visible,#ap-road input:focus-visible,#ap-road textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#ap-road .links{margin:14px 0 0;display:flex;flex-wrap:wrap;gap:6px 22px}#ap-road .link{font-family:var(--sans);font-size:14px;color:var(--soft);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}#ap-road .say{font-family:var(--sans);font-size:14.5px;color:var(--navy);background:var(--sand);padding:10px 14px;margin:16px 0 0}#ap-road .ch-head{text-align:center;margin-bottom:22px}#ap-road .ch-head .t{font-size:clamp(28px,6vw,38px);color:var(--navy);font-weight:600;line-height:1.12;margin:6px 0 4px;text-wrap:balance}#ap-road .ch-head .by{font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .rule{width:64px;height:3px;background:var(--gold);margin:16px auto 0}#ap-road .ours{font-style:italic;color:var(--bronze);font-size:16px;line-height:1.5;margin:18px 0;text-align:center;text-wrap:balance}#ap-road .ours.left{text-align:left;font-size:15px;margin:2px 0 6px}#ap-road .ours cite{display:block;font-style:normal;font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}#ap-road .his{font-size:20px;line-height:1.45;margin:10px 0}#ap-road .his .lead{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:2px}#ap-road .stage{font-style:italic;color:var(--navy);font-size:17px;margin:6px 0 0}#ap-road .then-now{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin:8px 0}#ap-road .then-now>div{padding:18px}#ap-road .then-now>div+div{border-left:1px solid var(--line);background:var(--cream)}#ap-road .then-now .when{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:6px}#ap-road .then-now p{margin:0;font-size:18px;line-height:1.4}#ap-road .road svg{width:100%;height:auto;display:block}#ap-road .road .cap{font-size:17px;color:var(--navy);margin:8px 0 4px;text-align:center;text-wrap:balance}#ap-road .road .sub{font-family:var(--sans);font-size:14px;color:var(--soft);text-align:center;margin:0 0 14px}#ap-road .divide{height:1px;background:var(--line);margin:26px 0}#ap-road .thread{font-size:18px;color:var(--navy);text-align:center;margin:0;text-wrap:balance}#ap-road .thread b{font-weight:600;border-bottom:2px solid var(--gold)}#ap-road .chap{padding:16px 0;border-bottom:1px solid var(--line)}#ap-road .part{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:4px}#ap-road .movement{display:flex;align-items:center;gap:14px;margin:34px 0 6px;font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--navy)}#ap-road .movement::before,#ap-road .movement::after{content:\"\";flex:1;height:1px;background:var(--gold)}#ap-road .recall{color:var(--soft);margin:6px 0 12px;padding:2px 0 2px 14px;border-left:3px solid var(--gold)}#ap-road .recall span{display:block;font-family:var(--sans);font-size:14.5px;line-height:1.45}#ap-road .recall p{font-style:italic;font-size:17.5px;line-height:1.45;color:var(--ink);margin:4px 0}#ap-road .prose{font-size:18.5px;line-height:1.6;padding:14px 16px}#ap-road .prose-p{font-size:19px;line-height:1.65;margin:0 0 16px}#ap-road .tellpart{margin-bottom:10px}#ap-road .note{border:1px solid var(--line);border-left:3px solid var(--gold);background:var(--cream);padding:16px 18px;margin:16px 0}#ap-road .note .his.quoted{margin-top:4px}#ap-road .note textarea{margin-top:4px}#ap-road .his.bridge{color:var(--navy);margin:6px 0 6px 14px;padding-left:12px;border-left:2px solid var(--gold);font-size:18.5px}#ap-road .his.bridge .link{font-size:13px;margin-left:6px}#ap-road .gaprow{margin:2px 0 2px 14px}#ap-road .gaprow .link{color:var(--bronze)}#ap-road select{font-family:var(--serif);font-size:16px;color:var(--ink);padding:10px 12px;border:1px solid var(--bronze);background:#fff;width:100%;border-radius:0}#ap-road .field .words{margin:4px 0 6px}#ap-road .field .help{margin:4px 0 0}#ap-road .gap{border-left:2px dashed var(--bronze);margin:4px 0 4px 10px;padding:10px 0 10px 16px}#ap-road .gap .ask.small{color:var(--navy);margin:0 0 8px}#ap-road .gap .links{margin:6px 0 0}#ap-road .his.mine{margin:12px 0}#ap-road .ask.small{font-size:16.5px;font-weight:400;margin:0 0 12px}#ap-road .carebox{max-width:720px;margin:18px auto 0;border-left:4px solid var(--navy)}#ap-road .his .gloss{display:block;font-family:var(--sans);font-size:14px;font-style:italic;color:var(--soft);margin-bottom:3px}#ap-road .where{list-style:none;padding:0;margin:14px auto 0;max-width:54ch;display:flex;flex-direction:column;gap:12px}#ap-road .where li{font-size:17.5px;line-height:1.45}#ap-road .where li span{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:1px}#ap-road .where li b{font-weight:600;border-bottom:2px solid var(--gold)}#ap-road .ours.closing{margin-top:34px}#ap-road .straight .movement{margin-top:26px}#ap-road .tail{font-size:22px;font-weight:600;color:var(--navy);text-align:center;margin:30px 0 8px;text-wrap:balance}#ap-road .refs{text-align:center;margin-top:28px}#ap-road .refs p{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:4px 0 0}#ap-road .copybox{width:100%;min-height:180px;margin-top:12px;font-family:var(--sans);font-size:14px;padding:10px;border:1px solid var(--bronze)}#ap-road .field{display:flex;flex-direction:column;gap:4px;margin:0 0 14px}#ap-road .field label,#ap-road .edit-top label{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--soft);letter-spacing:.04em}#ap-road input,#ap-road textarea{font-family:var(--serif);font-size:17px;line-height:1.4;color:var(--ink);padding:10px 12px;border:1px solid var(--bronze);background:#fff;width:100%;border-radius:0}#ap-road textarea{resize:vertical}#ap-road .edit-ch{border-top:1px solid var(--line);padding:18px 0 6px}#ap-road .edit-line{margin:0 0 14px}#ap-road .edit-line.off textarea{color:var(--soft);background:var(--cream);border-color:var(--line)}#ap-road .edit-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}#ap-road .toggle{font-family:var(--sans);font-size:13px;font-weight:700;padding:5px 12px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer}#ap-road .toggle[aria-pressed=\"true\"]{background:var(--navy);color:#fff}#ap-road .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}#ap-road .wq{margin:0 0 8px}#ap-road .q{font-size:20px;line-height:1.4;color:var(--navy);margin:8px 0 12px}#ap-road .scale{display:flex;gap:10px;align-items:center;margin:6px 0}#ap-road .dot{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--bronze);background:#fff;font-family:var(--sans);font-size:16px;color:var(--bronze);cursor:pointer}#ap-road .dot.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}#ap-road .ends{display:flex;justify-content:space-between;max-width:260px;font-family:var(--sans);font-size:12px;color:var(--soft);margin-bottom:18px}#ap-road .beneath{border-top:1px solid var(--line);padding-top:16px;margin-bottom:10px}#ap-road .ask{font-size:19px;color:var(--navy);margin:0 0 4px;font-weight:600}#ap-road .help{font-family:var(--sans);font-size:14.5px;color:var(--soft);margin:0 0 12px}#ap-road .words{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}#ap-road .word{font-family:var(--sans);font-size:14.5px;padding:8px 13px;border:1px solid var(--line);background:var(--cream);color:var(--ink);cursor:pointer}#ap-road .word.pick{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}#ap-road .word:focus-visible,#ap-road .dot:focus-visible,#ap-road .pickline:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#ap-road .verse{font-size:17px;margin:0 0 6px}#ap-road .ref{font-style:normal;font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}#ap-road .care{font-size:15.5px;color:var(--ink);background:var(--sand);padding:10px 12px;margin:6px 0 12px}#ap-road .ex{font-family:var(--sans);font-size:14px;color:var(--soft);margin:6px 0 0}#ap-road .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}#ap-road .pickline{font:inherit;color:inherit;text-align:left;background:none;border:0;padding:2px 6px;margin:0 -6px;cursor:pointer;display:block;width:calc(100% + 12px)}#ap-road .pickline.on{background:var(--sand)}#ap-road .his.quoted{border-left:3px solid var(--gold);padding-left:12px;color:var(--soft);font-size:18px}#ap-road .stage.big{font-size:20px;text-align:center}#ap-road .center{text-align:center}#ap-road .orig{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:6px 0 0}#ap-road .straight .part,#ap-road .straight .ours.left{display:none}#ap-road .straight .chap{border:0;padding:8px 0}#ap-road .straight .chap .stage{margin-bottom:6px}@media (max-width:620px){#ap-road .then-now,#ap-road .pair{grid-template-columns:minmax(0,1fr)}#ap-road .then-now>div+div{border-left:0;border-top:1px solid var(--line)}#ap-road .his{font-size:18.5px}}@media print{#ap-road{background:#fff;padding:0}#ap-road .top,#ap-road .row,#ap-road .say,#ap-road .copybox{display:none!important}#ap-road .sheet{border:0;box-shadow:none;padding:0}#ap-road #ap-road-app{margin:0;max-width:none}}\n#ap-road .prose-p .bridge{color:var(--navy)}#ap-road .prose-p .pickline{display:inline;width:auto;margin:0;padding:1px 4px;border-radius:3px}#ap-road .prose-p .stage{display:inline;font:inherit;margin:0;padding:0}#ap-road .map{max-width:520px;margin:12px auto}#ap-road .map.small{max-width:360px}#ap-road .byline{font-family:var(--sans);font-size:13px;color:var(--soft);margin:0 0 14px}#ap-road .line{font-size:19px;line-height:1.5;margin:10px 0}#ap-road .line .his{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);margin-bottom:2px}#ap-road .agency{border-left:3px solid var(--gold);padding-left:12px;color:var(--navy)}#ap-road input[type=text]{font:inherit;font-size:17px;padding:8px 10px;border:1px solid var(--line);background:#fff;width:100%;max-width:360px;margin:0 0 14px}#ap-road label.ask{display:block}#ap-road{display:block;text-align:left;max-width:100%;padding-block:0 40px;border-radius:0}#ap-road .top{display:none}#ap-road .savebar{max-width:720px;margin:18px auto 0}#ap-road [hidden]{display:none!important}@media print{body *{visibility:hidden!important}#ap-road,#ap-road *{visibility:visible!important}#ap-road{position:absolute;left:0;top:0;width:100%}#ap-road .savebar{display:none!important}}\n/* v23 · the chapter page standard */#ap-road .ours.epi{text-align:left;color:var(--soft);font-size:17px;margin:0 0 26px}#ap-road .lbl{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze)}#ap-road .blk{display:grid;gap:6px;margin:0 0 24px}#ap-road .blk .ours.left{margin:0;color:var(--soft);font-size:16.5px}#ap-road .blk .pickline,#ap-road .lookback .pickline{font-size:20px;line-height:1.45}#ap-road .lookback{background:var(--sand);padding:18px 20px;margin:0 0 30px;display:grid;gap:8px}#ap-road .lookback .from,#ap-road .closing .from{font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .lookback .quote{margin:0;padding-left:14px;border-left:2px solid var(--gold);font-style:italic;font-size:18px}#ap-road .closing{margin:34px 0 0;padding-top:22px;border-top:1px solid var(--line);display:grid;gap:8px}#ap-road .closing .stageline{margin:0;font-size:19px}#ap-road .feeling{margin:26px 0 0;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}#ap-road .feeling .feelword{font-size:22px;font-weight:600;color:var(--navy)}#ap-road .chapter .quiet{margin-top:22px}#ap-road .road .lbl{margin-bottom:8px}#ap-road .road .mapnote{text-align:left;font-size:15px;color:var(--ink);margin:0}#ap-road .stand{border:1px solid var(--line);background:var(--cream);padding:14px 16px;margin:12px 0}#ap-road .btn,#ap-road .savebar .btn{font-family:var(--sans)!important;font-size:15px!important;font-weight:600!important;line-height:1.3!important;padding:11px 18px!important;border-width:1.5px!important;border-style:solid!important;min-height:0!important;height:auto!important;min-width:0!important;border-radius:0!important;box-shadow:none!important;text-transform:none!important;letter-spacing:normal!important}#ap-road .word{text-wrap:balance;max-width:100%;line-height:1.3}#ap-road details.more{margin:0 0 14px}#ap-road details.more summary{font-family:var(--sans);font-size:14px;color:var(--bronze);cursor:pointer;text-decoration:underline;list-style:none}#ap-road details.more summary::-webkit-details-marker{display:none}#ap-road details.more p{margin:8px 0 0;max-width:60ch}#ap-road .stand .q{font-size:18px;margin:0 0 10px}#ap-road .stand .ends{margin-bottom:4px}#ap-road .stand .words{margin-bottom:6px}/* v25 · the plate */#ap-road figure.plate{margin:22px auto 0;padding:0;max-width:520px}#ap-road figure.plate img{display:block;width:100%;height:auto;border:1px solid var(--line)}#ap-road figure.plate figcaption{margin:12px 0 0;font-size:16.5px;line-height:1.5;color:var(--ink);text-align:left}#ap-road figure.plate figcaption .lbl{margin-bottom:4px}#ap-road .ours.lower{margin-top:8px}#ap-road .invite{margin:30px 0 0;padding:18px 20px;background:var(--sand);border-left:3px solid var(--gold)}#ap-road .invite p{margin:6px 0 0;font-size:17px;line-height:1.5}#ap-road .invite .row{margin-top:14px}@media print{#ap-road figure.plate{break-inside:avoid}}/* v29 · story assistant · v30: a quiet line, not a box; the box appears only when it is open */#ap-road details.assist{margin:-8px 0 22px;padding:0;border:0;background:none}details.assist.rowhead{margin:14px 0 4px}details.assist.rowhead + .row{margin-top:6px}details.assist.rowhead .assist-name{font-size:15.5px}#ap-road details.assist summary{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--soft);font-family:var(--sans);font-size:14px;font-weight:400;letter-spacing:0;cursor:pointer;width:auto}#ap-road details.assist .assist-name{font-weight:700;color:var(--navy)}#ap-road details.assist .info{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--bronze);color:var(--bronze);font-family:Georgia,serif;font-style:italic;font-size:12px;font-weight:700;line-height:1;flex:none}#ap-road details.assist .how{color:var(--bronze);text-decoration:underline}#ap-road details.assist summary:hover .how{color:var(--navy)}#ap-road details.assist[open] .how{text-decoration:none}#ap-road details.assist p{margin:10px 0 0;max-width:62ch;font-size:15.5px;line-height:1.5;color:var(--ink);border:1px solid var(--line);border-left:3px solid var(--gold);background:var(--cream);padding:12px 16px}#ap-road details.assist p b{color:var(--navy)}/* v31 · a line he can edit */#ap-road .his.mine .link{font-size:13px;margin-left:8px;color:var(--bronze)}#ap-road .ledit{margin:10px 0}#ap-road .ledit textarea{font-size:19px;line-height:1.45;margin-top:4px}#ap-road .ledit .row{margin-top:10px}#ap-road .quiet.lchg{margin:-6px 0 10px;font-size:13.5px}/* v32 · one row: the screen's bottom row carries Save and stays at the foot of the screen */#ap-road .row.bar{position:sticky;bottom:0;z-index:3;background:var(--paper);padding:12px 0 0;margin-top:22px;border-top:1px solid var(--line);align-items:center}#ap-road .row.bar{padding-bottom:12px}#ap-road .row.bar .savelink{font-family:var(--sans);font-size:14px;color:var(--navy);text-decoration:underline;margin-left:auto}#ap-road .row.bar .savenote{flex:1 1 100%;margin:6px 0 0}#ap-road .row.bar .handofflink{font-family:var(--sans);font-size:14px;color:var(--soft);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}#ap-road .row.bar .handoffbox{flex:1 1 100%;margin-top:6px}#ap-road .row.bar .handoffbox[hidden]{display:none!important}#ap-road .savebar .row[hidden]{display:none!important}@media (max-width:620px){#ap-road .row.bar .btn{flex:1 1 auto;padding-inline:12px!important}#ap-road .row.bar .savelink{flex:1 1 100%;margin:4px 0 0;text-align:center}}";document.head.appendChild(st);
+/* v39 · the row standard lives in the engine (story.js v19.2, APStory.row) and every piece draws its foot rows through it. */
+var ROW_STD = (function () {
+  var e = window.APStory && window.APStory.row; if (e && e.html && e.css && e.check) return e;
+  /* the engine predates 19.2: this copy is generated from story.js by patch-road-v39.py and is identical to it */
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function rowCSS() {
+    if (!$("aps-row-css")) {
+      var st = el("style"); st.id = "aps-row-css";
+      st.textContent = ".aps-row{display:flex!important;flex-wrap:wrap;gap:12px 14px;align-items:center;background:#fff;padding:16px 18px;border-top:1px solid #E5DCC8}" +
+        ".aps-row.aps-pin{position:sticky;bottom:0;z-index:3}" +
+        ".aps-row .aps-page-link{margin-left:auto}" +
+        ".aps-row .aps-break{flex:1 1 100%;height:0;margin:0;padding:0}" +
+        ".aps-row.aps-finish{padding:22px 20px 16px;gap:14px 16px}" +
+        ".aps-row.aps-finish .aps-assist{flex:1 1 100%;margin:0 0 -4px}" +
+        ".aps-row.aps-finish .aps-read{flex:1 1 100%;width:100%;max-width:none;margin:0}.aps-row.aps-finish .aps-read > *{max-width:62ch}" +
+        ".aps-row.aps-finish .aps-read[hidden]{display:none!important}" +
+        ".aps-row.aps-finish .aps-after{flex:1 1 100%;width:100%;max-width:none;margin:0}.aps-row.aps-finish .aps-after > *{max-width:62ch}" +
+        ".aps-row.aps-finish > .aps-break[data-at=\"b\"]{height:1px;background:#E5DCC8;margin:10px 0 2px}" +
+        ".aps-row.aps-finish > .aps-break[data-at=\"c\"]{margin-top:6px}" +
+        ".aps-row.aps-finish > .aps-quiet{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-height:0!important;height:auto!important;font-size:14px!important;font-weight:400!important;color:#6B6358!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-right:6px}" +
+        ".aps-row.aps-finish > .aps-quiet:hover{color:#1F2A44!important}" +
+        ".aps-row.aps-finish > .aps-page-link{margin-left:0;font-size:15px}" +
+        ".aps-row > button[disabled]{opacity:.7;cursor:progress}" +
+        ".aps-row.aps-step{justify-content:flex-start;gap:12px}.aps-row.aps-step > *{margin-left:0!important;margin-right:0!important}" +
+        ".aps-row.aps-finish .aps-status{flex:1 1 100%;margin:0 0 4px;font-size:16px;line-height:1.5}.aps-row.aps-finish .aps-status .aps-saved{display:block;color:#1F2A44}.aps-row.aps-finish .aps-status .aps-left{display:block;color:#6B6358;font-size:15px}" +
+        ".aps-row.aps-finish > .aps-page-btn{text-decoration:none!important;display:inline-block}.aps-row.aps-finish > button[disabled].aps-quiet{opacity:1}" +
+        /* v11: the eighteen-and-older line at the top comes down (John, 17 Sept); the tick box shows only if Save is pressed before it is ticked */
+        ".ap-age-line{display:none!important}.ap-age:not(.is-blocked){display:none!important}" +
+        ".aps-about{margin:0 0 22px}.aps-about summary{cursor:pointer;color:#8C6A3F;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;list-style:none}.aps-about summary::-webkit-details-marker{display:none}.aps-about[hidden]{display:none!important}.aps-about > div{margin-top:12px;border-left:3px solid #C9A227;padding-left:14px}" +
+        "@media (max-width:620px){.aps-row.aps-step > button{flex:1 1 0}}" +
+        "@media (max-width:620px){.aps-row>button{flex:1 1 auto}.aps-row .aps-page-link{flex:1 1 100%;text-align:center;margin:4px 0 0}.aps-row.aps-finish > .aps-quiet{flex:0 1 auto}.aps-row.aps-finish > .aps-page-link{flex:0 1 auto;text-align:left;margin:0}}" +
+        /* v18: the quiet line: Read it back, Hear it, Five questions read as links, not buttons; on a phone the words beside them come off */
+        ".aps-row.aps-finish > .aps-act{flex:1 1 100%;display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin:0}.aps-row.aps-finish .aps-act-what{font-size:14px;line-height:1.45;color:#6B6358;max-width:52ch}.aps-row.aps-finish > .aps-act > button{flex:0 0 auto;order:0}" +
+        ".aps-row.aps-finish > .aps-act > button,.aps-row.aps-finish .aps-after .aps-after-open{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;min-height:0!important;height:auto!important;font-size:15px!important;font-weight:600!important;color:#8C6A3F!important;text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:0!important;width:auto!important}" +
+        ".aps-row.aps-finish > .aps-act > button:hover,.aps-row.aps-finish .aps-after .aps-after-open:hover{color:#1F2A44!important}" +
+        ".aps-row.aps-finish .aps-after{flex:1 1 100%;width:100%;margin:0}.aps-row.aps-finish .aps-after .aps-after-row{margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}.aps-row.aps-finish .aps-after .aps-after-what{font-size:14px;line-height:1.45;color:#6B6358;max-width:52ch}.aps-row.aps-finish .aps-after > .aps-after-card,.aps-row.aps-finish .aps-after > .aps-after-done,.aps-row.aps-finish .aps-after > .aps-note:not(.aps-after-row){flex:1 1 100%}" +
+        "@media (max-width:620px){.aps-row.aps-finish > .aps-act{flex:1 1 100%}}" +
+        ".aps-row.aps-finish > .aps-edit-main{order:29}" +
+        "@media print{.aps-row{position:static}}" +
+        /* v19.2 · the standard row (ap-story-navigation): back · the quiet things · Saved · one next step; aps-in = inside the sheet, the sheet's padding is the cushion */
+        ".aps-row.aps-std{display:flex!important;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:22px}" +
+        ".aps-row.aps-std.aps-in{padding:14px 0 0!important;background:transparent;border-top:1px solid #E5DCC8}" +
+        ".aps-row.aps-std.aps-in.aps-pin{background:#fff;padding-bottom:12px!important}" +
+        ".aps-row.aps-std > .aps-back{order:1}.aps-row.aps-std > .aps-mid{order:2;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;flex:1 1 auto}.aps-row.aps-std > .aps-next{order:3;margin-left:auto}" +
+        ".aps-row.aps-std > .aps-back,.aps-row.aps-std > .aps-next{font-family:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif!important;font-size:15px!important;font-weight:600!important;line-height:1.3!important;padding:11px 18px!important;border:1.5px solid #1F2A44!important;border-radius:0!important;box-shadow:none!important;text-shadow:none!important;text-transform:none!important;letter-spacing:normal!important;min-height:0!important;height:auto!important;min-width:0!important;width:auto!important;margin:0!important;cursor:pointer;text-decoration:none!important;text-align:center;display:inline-block}" +
+        ".aps-row.aps-std > .aps-back{background:#fff!important;color:#1F2A44!important}.aps-row.aps-std > .aps-next{background:#1F2A44!important;color:#fff!important}" +
+        ".aps-row.aps-std > .aps-next:hover{background:#2B3A5E!important}.aps-row.aps-std > .aps-back:hover{background:#F1EADB!important}" +
+        ".aps-row.aps-std .aps-quiet{font-family:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif!important;font-size:14px!important;font-weight:400!important;line-height:1.4!important;color:#6B6358!important;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important;min-height:0!important;height:auto!important;min-width:0!important;width:auto!important;text-decoration:underline!important;text-underline-offset:3px;cursor:pointer;text-transform:none!important;letter-spacing:normal!important;border-radius:0!important}" +
+        ".aps-row.aps-std .aps-quiet:hover{color:#1F2A44!important}" +
+        ".aps-row.aps-std .aps-saved{font-family:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif;font-size:14px;color:#1F2A44;white-space:nowrap}" +
+        ".aps-row.aps-std .aps-quiet[hidden],.aps-row.aps-std .aps-saved[hidden],.aps-row.aps-std > .aps-back[hidden],.aps-under [hidden]{display:none!important}" +
+        ".aps-under{margin:8px 0 0;font-family:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif;font-size:14px;color:#6B6358}.aps-under:empty{display:none}" +
+        ".aps-under .aps-quiet{font:inherit;color:inherit;background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer}" +
+        ".aps-row.aps-std:focus-within{outline:0}.aps-row.aps-std > .aps-back:focus-visible,.aps-row.aps-std > .aps-next:focus-visible,.aps-row.aps-std .aps-quiet:focus-visible{outline:3px solid #C9A227;outline-offset:2px}" +
+        /* a phone: the way back and the next step share the first line; the quiet things drop under them */
+        "@media (max-width:620px){.aps-row.aps-std{gap:10px 14px}.aps-row.aps-std > .aps-mid{order:4;flex:1 1 100%;gap:6px 16px}.aps-row.aps-std > .aps-back,.aps-row.aps-std > .aps-next{flex:1 1 auto;white-space:nowrap;padding-inline:12px!important}}" +
+        /* no lonely words: a button never breaks its words across two lines; when the way back and the next step cannot share a phone's line, the next step takes a line of its own */
+        "@media print{.aps-row.aps-std{display:none!important}.aps-under{display:none!important}}";
+      document.head.appendChild(st);
+    }
+  }
+    function esc(x) { return String(x == null ? "" : x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+    function attrs(o) {
+      var a = o.attrs ? " " + String(o.attrs).trim() : "";
+      if (o.id) { a += ' id="' + esc(o.id) + '"'; }
+      if (o.hidden) { a += " hidden"; }
+      return a;
+    }
+    function piece(o, cls) {
+      if (!o) { return ""; }
+      var c = cls + (o.cls ? " " + o.cls : "");
+      if (o.href) { return '<a class="' + c + '" href="' + esc(o.href) + '"' + (o.target ? ' target="' + esc(o.target) + '" rel="noopener"' : "") + attrs(o) + ">" + esc(o.text) + "</a>"; }
+      return '<button type="button" class="' + c + '"' + attrs(o) + ">" + esc(o.text) + "</button>";
+    }
+    /* o = { back, quiet: [], saved, next, under, inSheet, pin, cls, id } · back/next/quiet items: { text, attrs, href, target, id, cls, hidden } */
+    function html(o) {
+      o = o || {};
+      var quiet = o.quiet || [];
+      if (quiet.some(function (x) { return x && x.navy; })) { throw new Error("APStory.row: a quiet thing is never navy — the row has one next step"); }
+      var cls = "aps-row aps-std" + (o.inSheet === false ? "" : " aps-in") + (o.pin ? " aps-pin" : "") + (o.cls ? " " + o.cls : "");
+      var h = '<div class="' + cls + '"' + (o.id ? ' id="' + esc(o.id) + '"' : "") + ' data-aps-row="1">';
+      h += piece(o.back, "aps-back");
+      h += '<span class="aps-mid">';
+      for (var i = 0; i < quiet.length; i++) { if (quiet[i]) { h += piece(quiet[i], "aps-quiet"); } }
+      h += '<span class="aps-saved"' + (o.saved ? "" : " hidden") + '>' + esc(o.saved || "") + '</span>';
+      h += '</span>';
+      h += piece(o.next, "aps-next");
+      h += '</div>';
+      if (o.under) { h += '<div class="aps-under">' + o.under + '</div>'; }
+      return h;
+    }
+    /* what a row gets wrong, in words; [] when it meets the standard */
+    function check(row) {
+      var out = [];
+      if (!row || !row.querySelectorAll) { return ["no row"]; }
+      var next = row.querySelectorAll(".aps-next").length;
+      if (next === 0) { out.push("no next step: a row has one navy button"); }
+      if (next > 1) { out.push("two next steps (" + next + "): a row has one navy button"); }
+      if (row.querySelectorAll(".btn.main, .main").length) { out.push("a navy button of the piece's own in the row"); }
+      var saved = row.querySelector(".aps-saved"); if (saved && saved.tagName === "BUTTON") { out.push("Saved is words, never a button"); }
+      if (row.isConnected && row.closest && !row.closest(".sheet, .card, .coursecard, section, article, form, main")) { out.push("the row sits outside the sheet (no cushion)"); }
+      var backs = row.querySelectorAll(".aps-back").length; if (backs > 1) { out.push("two ways back"); }
+      return out;
+    }
+  return { css: rowCSS, html: html, check: check };
+})();
+/* v39 · every foot row on the Road and on Where Are You? goes through this: the engine's standard row. */
+function stdRow(o) { try { ROW_STD.css(); } catch (e) {} return ROW_STD.html(o); }
+/* the way out: his page, in the full window from inside a course frame */
+function pageLink(extra) {
+  var C = window.AP_ROAD || {}, inFrame = false; try { inFrame = window.top !== window.self; } catch (e) { inFrame = true; }
+  var o = { text: "Your page", href: C.pagePath || "/start", attrs: 'data-page="1"' }; if (C.course || inFrame) o.target = "_top";
+  if (extra) for (var k in extra) o[k] = extra[k];
+  return o;
+}
+function pageBack() { return pageLink({ text: "\u2190 Your page", attrs: 'data-page="back"' }); }
+var st=document.createElement("style");st.id="ap-road-css";st.textContent="#ap-road,#ap-road *{text-align:left;text-transform:none;letter-spacing:normal;box-sizing:border-box;float:none}#ap-road button{text-align:center;border-radius:0;box-shadow:none;text-shadow:none;min-width:0;min-height:0;height:auto;width:auto;line-height:1.3;margin:0;text-decoration:none}#ap-road p{margin:1em 0;padding:0}#ap-road ul,#ap-road ol{margin:1em 0;padding-left:1.4em}#ap-road li{margin:0;padding:0}#ap-road label{display:block;margin:0}#ap-road a{color:inherit}#ap-road svg{max-width:100%;height:auto}#ap-road{--navy:#1F2A44;--bronze:#8C6A3F;--gold:#C9A227;--cream:#FBF7EF;--paper:#FFFFFF;--sand:#F1EADB;--line:#E5DCC8;--ink:#2A2723;--soft:#6B6358;\n  --serif:\"Source Serif 4\",Georgia,\"Times New Roman\",serif;--sans:\"Source Sans 3\",\"Helvetica Neue\",Arial,sans-serif}#ap-road, #ap-road *{box-sizing:border-box}#ap-road{background:var(--cream);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:0 80px}#ap-road .top{max-width:720px;margin:0 auto;padding-block:18px 14px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}#ap-road .top .what{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:0}#ap-road .top .what b{color:var(--ink)}#ap-road .switch{display:flex;flex-wrap:wrap;gap:8px}#ap-road .switch button{font-family:var(--sans);font-size:14px;font-weight:600;padding:8px 14px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer}#ap-road .switch button[aria-pressed=\"true\"]{background:var(--navy);color:#fff}#ap-road #ap-road-app{max-width:720px;margin:28px auto 0}#ap-road .sheet{background:var(--paper);border:1px solid var(--line);box-shadow:0 1px 0 var(--line),0 18px 40px -28px rgba(31,42,68,.35);padding:clamp(20px,5vw,44px)}#ap-road .eyebrow{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze)}#ap-road h1{font-size:clamp(26px,5vw,34px);line-height:1.15;color:var(--navy);margin:6px 0 10px;font-weight:600;text-wrap:balance}#ap-road h2{font-size:22px;line-height:1.2;color:var(--navy);margin:4px 0 6px;font-weight:600}#ap-road .fixed{margin:0 0 22px;max-width:60ch}#ap-road .cards{display:flex;flex-direction:column;gap:14px}#ap-road .card{border:1px solid var(--line);padding:18px 20px;background:var(--cream)}#ap-road .card.main{background:#fff;border:1.5px solid var(--navy)}#ap-road .card.dim{opacity:.62}#ap-road .state{margin:0;font-family:var(--sans);font-size:15px;color:var(--ink)}#ap-road .quiet{margin:2px 0 0;font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}#ap-road .row.bar{margin-top:22px}#ap-road .btn{font-family:var(--sans);font-size:15px;font-weight:600;padding:11px 18px;border:1.5px solid var(--navy);color:var(--navy);background:#fff;cursor:pointer}#ap-road .btn.main{background:var(--navy);color:#fff}#ap-road .btn:focus-visible,#ap-road .switch button:focus-visible,#ap-road .link:focus-visible,#ap-road .toggle:focus-visible,#ap-road input:focus-visible,#ap-road textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#ap-road .links{margin:14px 0 0;display:flex;flex-wrap:wrap;gap:6px 22px}#ap-road .link{font-family:var(--sans);font-size:14px;color:var(--soft);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}#ap-road .say{font-family:var(--sans);font-size:14.5px;color:var(--navy);background:var(--sand);padding:10px 14px;margin:16px 0 0}#ap-road .ch-head{text-align:center;margin-bottom:22px}#ap-road .ch-head .t{font-size:clamp(28px,6vw,38px);color:var(--navy);font-weight:600;line-height:1.12;margin:6px 0 4px;text-wrap:balance}#ap-road .ch-head .by{font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .rule{width:64px;height:3px;background:var(--gold);margin:16px auto 0}#ap-road .ours{font-style:italic;color:var(--bronze);font-size:16px;line-height:1.5;margin:18px 0;text-align:center;text-wrap:balance}#ap-road .ours.left{text-align:left;font-size:15px;margin:2px 0 6px}#ap-road .ours cite{display:block;font-style:normal;font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}#ap-road .his{font-size:20px;line-height:1.45;margin:10px 0}#ap-road .his .lead{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:2px}#ap-road .stage{font-style:italic;color:var(--navy);font-size:17px;margin:6px 0 0}#ap-road .then-now{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin:8px 0}#ap-road .then-now>div{padding:18px}#ap-road .then-now>div+div{border-left:1px solid var(--line);background:var(--cream)}#ap-road .then-now .when{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:6px}#ap-road .then-now p{margin:0;font-size:18px;line-height:1.4}#ap-road .road svg{width:100%;height:auto;display:block}#ap-road .road .cap{font-size:17px;color:var(--navy);margin:8px 0 4px;text-align:center;text-wrap:balance}#ap-road .road .sub{font-family:var(--sans);font-size:14px;color:var(--soft);text-align:center;margin:0 0 14px}#ap-road .divide{height:1px;background:var(--line);margin:26px 0}#ap-road .thread{font-size:18px;color:var(--navy);text-align:center;margin:0;text-wrap:balance}#ap-road .thread b{font-weight:600;border-bottom:2px solid var(--gold)}#ap-road .chap{padding:16px 0;border-bottom:1px solid var(--line)}#ap-road .part{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:4px}#ap-road .movement{display:flex;align-items:center;gap:14px;margin:34px 0 6px;font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--navy)}#ap-road .movement::before,#ap-road .movement::after{content:\"\";flex:1;height:1px;background:var(--gold)}#ap-road .recall{color:var(--soft);margin:6px 0 12px;padding:2px 0 2px 14px;border-left:3px solid var(--gold)}#ap-road .recall span{display:block;font-family:var(--sans);font-size:14.5px;line-height:1.45}#ap-road .recall p{font-style:italic;font-size:17.5px;line-height:1.45;color:var(--ink);margin:4px 0}#ap-road .prose{font-size:18.5px;line-height:1.6;padding:14px 16px}#ap-road .prose-p{font-size:19px;line-height:1.65;margin:0 0 16px}#ap-road .tellpart{margin-bottom:10px}#ap-road .note{border:1px solid var(--line);border-left:3px solid var(--gold);background:var(--cream);padding:16px 18px;margin:16px 0}#ap-road .note .his.quoted{margin-top:4px}#ap-road .note textarea{margin-top:4px}#ap-road .his.bridge{color:var(--navy);margin:6px 0 6px 14px;padding-left:12px;border-left:2px solid var(--gold);font-size:18.5px}#ap-road .his.bridge .link{font-size:13px;margin-left:6px}#ap-road .gaprow{margin:2px 0 2px 14px}#ap-road .gaprow .link{color:var(--bronze)}#ap-road select{font-family:var(--serif);font-size:16px;color:var(--ink);padding:10px 12px;border:1px solid var(--bronze);background:#fff;width:100%;border-radius:0}#ap-road .field .words{margin:4px 0 6px}#ap-road .field .help{margin:4px 0 0}#ap-road .gap{border-left:2px dashed var(--bronze);margin:4px 0 4px 10px;padding:10px 0 10px 16px}#ap-road .gap .ask.small{color:var(--navy);margin:0 0 8px}#ap-road .gap .links{margin:6px 0 0}#ap-road .his.mine{margin:12px 0}#ap-road .ask.small{font-size:16.5px;font-weight:400;margin:0 0 12px}#ap-road .carebox{max-width:720px;margin:18px auto 0;border-left:4px solid var(--navy)}#ap-road .his .gloss{display:block;font-family:var(--sans);font-size:14px;font-style:italic;color:var(--soft);margin-bottom:3px}#ap-road .where{list-style:none;padding:0;margin:14px auto 0;max-width:54ch;display:flex;flex-direction:column;gap:12px}#ap-road .where li{font-size:17.5px;line-height:1.45}#ap-road .where li span{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bronze);margin-bottom:1px}#ap-road .where li b{font-weight:600;border-bottom:2px solid var(--gold)}#ap-road .ours.closing{margin-top:34px}#ap-road .straight .movement{margin-top:26px}#ap-road .tail{font-size:22px;font-weight:600;color:var(--navy);text-align:center;margin:30px 0 8px;text-wrap:balance}#ap-road .refs{text-align:center;margin-top:28px}#ap-road .refs p{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:4px 0 0}#ap-road .copybox{width:100%;min-height:180px;margin-top:12px;font-family:var(--sans);font-size:14px;padding:10px;border:1px solid var(--bronze)}#ap-road .field{display:flex;flex-direction:column;gap:4px;margin:0 0 14px}#ap-road .field label,#ap-road .edit-top label{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--soft);letter-spacing:.04em}#ap-road input,#ap-road textarea{font-family:var(--serif);font-size:17px;line-height:1.4;color:var(--ink);padding:10px 12px;border:1px solid var(--bronze);background:#fff;width:100%;border-radius:0}#ap-road textarea{resize:vertical}#ap-road .edit-ch{border-top:1px solid var(--line);padding:18px 0 6px}#ap-road .edit-line{margin:0 0 14px}#ap-road .edit-line.off textarea{color:var(--soft);background:var(--cream);border-color:var(--line)}#ap-road .edit-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}#ap-road .toggle{font-family:var(--sans);font-size:13px;font-weight:700;padding:5px 12px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer}#ap-road .toggle[aria-pressed=\"true\"]{background:var(--navy);color:#fff}#ap-road .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}#ap-road .wq{margin:0 0 8px}#ap-road .q{font-size:20px;line-height:1.4;color:var(--navy);margin:8px 0 12px}#ap-road .scale{display:flex;gap:10px;align-items:center;margin:6px 0}#ap-road .dot{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--bronze);background:#fff;font-family:var(--sans);font-size:16px;color:var(--bronze);cursor:pointer}#ap-road .dot.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}#ap-road .ends{display:flex;justify-content:space-between;max-width:260px;font-family:var(--sans);font-size:12px;color:var(--soft);margin-bottom:18px}#ap-road .beneath{border-top:1px solid var(--line);padding-top:16px;margin-bottom:10px}#ap-road .ask{font-size:19px;color:var(--navy);margin:0 0 4px;font-weight:600}#ap-road .help{font-family:var(--sans);font-size:14.5px;color:var(--soft);margin:0 0 12px}#ap-road .words{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}#ap-road .word{font-family:var(--sans);font-size:14.5px;padding:8px 13px;border:1px solid var(--line);background:var(--cream);color:var(--ink);cursor:pointer}#ap-road .word.pick{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}#ap-road .word:focus-visible,#ap-road .dot:focus-visible,#ap-road .pickline:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#ap-road .verse{font-size:17px;margin:0 0 6px}#ap-road .ref{font-style:normal;font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}#ap-road .care{font-size:15.5px;color:var(--ink);background:var(--sand);padding:10px 12px;margin:6px 0 12px}#ap-road .ex{font-family:var(--sans);font-size:14px;color:var(--soft);margin:6px 0 0}#ap-road .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}#ap-road .pickline{font:inherit;color:inherit;text-align:left;background:none;border:0;padding:2px 6px;margin:0 -6px;cursor:pointer;display:block;width:calc(100% + 12px)}#ap-road .pickline.on{background:var(--sand)}#ap-road .his.quoted{border-left:3px solid var(--gold);padding-left:12px;color:var(--soft);font-size:18px}#ap-road .stage.big{font-size:20px;text-align:center}#ap-road .center{text-align:center}#ap-road .orig{font-family:var(--sans);font-size:13.5px;color:var(--soft);margin:6px 0 0}#ap-road .straight .part,#ap-road .straight .ours.left{display:none}#ap-road .straight .chap{border:0;padding:8px 0}#ap-road .straight .chap .stage{margin-bottom:6px}@media (max-width:620px){#ap-road .then-now,#ap-road .pair{grid-template-columns:minmax(0,1fr)}#ap-road .then-now>div+div{border-left:0;border-top:1px solid var(--line)}#ap-road .his{font-size:18.5px}}@media print{#ap-road{background:#fff;padding:0}#ap-road .top,#ap-road .row,#ap-road .say,#ap-road .copybox{display:none!important}#ap-road .sheet{border:0;box-shadow:none;padding:0}#ap-road #ap-road-app{margin:0;max-width:none}}\n#ap-road .prose-p .bridge{color:var(--navy)}#ap-road .hisline{font:inherit;color:inherit;background:none;border:0;padding:1px 4px;margin:0 -4px;border-radius:3px;cursor:pointer;text-align:left;display:inline;line-height:inherit}#ap-road .hisline:hover{background:var(--sand)}#ap-road .hisline.on{background:var(--sand)}#ap-road .hisline:focus-visible{outline:3px solid var(--gold);outline-offset:2px}#ap-road .tapline{font-family:var(--sans);font-size:14px;color:var(--soft);margin:4px 0 0}#ap-road .ledit.onwords{margin:4px 0 18px}#ap-road .aps-under .aps-quiet{font-family:var(--sans);font-size:14px;color:var(--soft);background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer}#ap-road .aps-under .savenote{margin:6px 0 0}#ap-road .aps-under .savebeneath{margin:8px 0 0}#ap-road .aps-under .handoffbox{margin-top:8px}#ap-road .aps-under .handoffbox[hidden]{display:none!important}@media print{#ap-road .aps-row,#ap-road .aps-under,#ap-road .tapline{display:none!important}}#ap-road .prose-p .pickline{display:inline;width:auto;margin:0;padding:1px 4px;border-radius:3px}#ap-road .prose-p .stage{display:inline;font:inherit;margin:0;padding:0}#ap-road .map{max-width:520px;margin:12px auto}#ap-road .map.small{max-width:360px}#ap-road .byline{font-family:var(--sans);font-size:13px;color:var(--soft);margin:0 0 14px}#ap-road .line{font-size:19px;line-height:1.5;margin:10px 0}#ap-road .line .his{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);margin-bottom:2px}#ap-road .agency{border-left:3px solid var(--gold);padding-left:12px;color:var(--navy)}#ap-road input[type=text]{font:inherit;font-size:17px;padding:8px 10px;border:1px solid var(--line);background:#fff;width:100%;max-width:360px;margin:0 0 14px}#ap-road label.ask{display:block}#ap-road{display:block;text-align:left;max-width:100%;padding-block:0 40px;border-radius:0}#ap-road .top{display:none}#ap-road .savebar{max-width:720px;margin:18px auto 0}#ap-road [hidden]{display:none!important}@media print{body *{visibility:hidden!important}#ap-road,#ap-road *{visibility:visible!important}#ap-road{position:absolute;left:0;top:0;width:100%}#ap-road .savebar{display:none!important}}\n/* v23 · the chapter page standard */#ap-road .ours.epi{text-align:left;color:var(--soft);font-size:17px;margin:0 0 26px}#ap-road .lbl{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze)}#ap-road .blk{display:grid;gap:6px;margin:0 0 24px}#ap-road .blk .ours.left{margin:0;color:var(--soft);font-size:16.5px}#ap-road .blk .pickline,#ap-road .lookback .pickline{font-size:20px;line-height:1.45}#ap-road .lookback{background:var(--sand);padding:18px 20px;margin:0 0 30px;display:grid;gap:8px}#ap-road .lookback .from,#ap-road .closing .from{font-family:var(--sans);font-size:14px;color:var(--soft)}#ap-road .lookback .quote{margin:0;padding-left:14px;border-left:2px solid var(--gold);font-style:italic;font-size:18px}#ap-road .closing{margin:34px 0 0;padding-top:22px;border-top:1px solid var(--line);display:grid;gap:8px}#ap-road .closing .stageline{margin:0;font-size:19px}#ap-road .feeling{margin:26px 0 0;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}#ap-road .feeling .feelword{font-size:22px;font-weight:600;color:var(--navy)}#ap-road .chapter .quiet{margin-top:22px}#ap-road .road .lbl{margin-bottom:8px}#ap-road .road .mapnote{text-align:left;font-size:15px;color:var(--ink);margin:0}#ap-road .stand{border:1px solid var(--line);background:var(--cream);padding:14px 16px;margin:12px 0}#ap-road .btn,#ap-road .savebar .btn{font-family:var(--sans)!important;font-size:15px!important;font-weight:600!important;line-height:1.3!important;padding:11px 18px!important;border-width:1.5px!important;border-style:solid!important;min-height:0!important;height:auto!important;min-width:0!important;border-radius:0!important;box-shadow:none!important;text-transform:none!important;letter-spacing:normal!important}#ap-road .word{text-wrap:balance;max-width:100%;line-height:1.3}#ap-road details.more{margin:0 0 14px}#ap-road details.more summary{font-family:var(--sans);font-size:14px;color:var(--bronze);cursor:pointer;text-decoration:underline;list-style:none}#ap-road details.more summary::-webkit-details-marker{display:none}#ap-road details.more p{margin:8px 0 0;max-width:60ch}#ap-road .stand .q{font-size:18px;margin:0 0 10px}#ap-road .stand .ends{margin-bottom:4px}#ap-road .stand .words{margin-bottom:6px}/* v25 · the plate */#ap-road figure.plate{margin:22px auto 0;padding:0;max-width:520px}#ap-road figure.plate img{display:block;width:100%;height:auto;border:1px solid var(--line)}#ap-road figure.plate figcaption{margin:12px 0 0;font-size:16.5px;line-height:1.5;color:var(--ink);text-align:left}#ap-road figure.plate figcaption .lbl{margin-bottom:4px}#ap-road .ours.lower{margin-top:8px}#ap-road .invite{margin:30px 0 0;padding:18px 20px;background:var(--sand);border-left:3px solid var(--gold)}#ap-road .invite p{margin:6px 0 0;font-size:17px;line-height:1.5}#ap-road .invite .row{margin-top:14px}@media print{#ap-road figure.plate{break-inside:avoid}}/* v29 · story assistant · v30: a quiet line, not a box; the box appears only when it is open */#ap-road details.assist{margin:-8px 0 22px;padding:0;border:0;background:none}details.assist.rowhead{margin:14px 0 4px}details.assist.rowhead + .row{margin-top:6px}details.assist.rowhead .assist-name{font-size:15.5px}#ap-road details.assist summary{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--soft);font-family:var(--sans);font-size:14px;font-weight:400;letter-spacing:0;cursor:pointer;width:auto}#ap-road details.assist .assist-name{font-weight:700;color:var(--navy)}#ap-road details.assist .info{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--bronze);color:var(--bronze);font-family:Georgia,serif;font-style:italic;font-size:12px;font-weight:700;line-height:1;flex:none}#ap-road details.assist .how{color:var(--bronze);text-decoration:underline}#ap-road details.assist summary:hover .how{color:var(--navy)}#ap-road details.assist[open] .how{text-decoration:none}#ap-road details.assist p{margin:10px 0 0;max-width:62ch;font-size:15.5px;line-height:1.5;color:var(--ink);border:1px solid var(--line);border-left:3px solid var(--gold);background:var(--cream);padding:12px 16px}#ap-road details.assist p b{color:var(--navy)}/* v31 · a line he can edit */#ap-road .his.mine .link{font-size:13px;margin-left:8px;color:var(--bronze)}#ap-road .ledit{margin:10px 0}#ap-road .ledit textarea{font-size:19px;line-height:1.45;margin-top:4px}#ap-road .ledit .row{margin-top:10px}#ap-road .quiet.lchg{margin:-6px 0 10px;font-size:13.5px}/* v32 · one row: the screen's bottom row carries Save and stays at the foot of the screen */#ap-road .row.bar{position:sticky;bottom:0;z-index:3;background:var(--paper);padding:12px 0 0;margin-top:22px;border-top:1px solid var(--line);align-items:center}#ap-road .row.bar{padding-bottom:12px}#ap-road .row.bar .savelink{font-family:var(--sans);font-size:14px;color:var(--navy);text-decoration:underline;margin-left:auto}#ap-road .row.bar .savenote{flex:1 1 100%;margin:6px 0 0}#ap-road .row.bar .handofflink{font-family:var(--sans);font-size:14px;color:var(--soft);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}#ap-road .row.bar .handoffbox{flex:1 1 100%;margin-top:6px}#ap-road .row.bar .handoffbox[hidden]{display:none!important}#ap-road .savebar .row[hidden]{display:none!important}@media (max-width:620px){#ap-road .row.bar .btn{flex:1 1 auto;padding-inline:12px!important}#ap-road .row.bar .savelink{flex:1 1 100%;margin:4px 0 0;text-align:center}}";document.head.appendChild(st);
 if(!document.getElementById("ap-road-fonts")){var lk=document.createElement("link");lk.id="ap-road-fonts";lk.rel="stylesheet";lk.href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&family=Source+Sans+3:wght@400;600;700&display=swap";document.head.appendChild(lk);}
 host.innerHTML="<div id=\"ap-road-care\" class=\"care carebox\" role=\"alert\" hidden><b>If you or anyone else is in danger right now, stop here.</b> Call 911, or call or text 988. Then tell one man you trust today. What you have written is still here when you come back.</div><div id=\"ap-road-app\"></div>";
 /* ---- road_data.js ---- */
@@ -1310,7 +1427,7 @@ var WRITER = (function () {
   }
   function part() { return ROAD_PARTS[P]; }
   function Q() { return part().Q; }
-  function steps() { var s = ["intro"]; if (lastWeek()) s.push("follow"); if (part().evidence) s.push("witness"); Q().forEach(function (q, i) { s.push("q" + i); if (i === 0 && part().stand) s.push("stand"); }); s.push("feel", "stage"); return s; }
+  function steps() { var s = ["intro"]; if (lastWeek()) s.push("follow"); if (part().evidence) s.push("witness"); Q().forEach(function (q, i) { s.push("q" + i); if (i === 0 && part().stand) s.push("stand"); }); s.push("feel", "stage"); if (part().picker) s.push("disc"); return s; }
   function esc(s) { return APP.esc(s); }
   /* 1 or 2 opens one line, 4 or 5 the other. A 3 is some of each, so he chooses which line is truer for him. */
   function band(i) { var w = W(), v = w.n[i]; return v == null ? null : v >= 4 ? "hi" : v <= 2 ? "lo" : ((w.mid || [])[i] || null); }
@@ -1425,18 +1542,39 @@ var WRITER = (function () {
     return h + '</section>';
   }
 
-  function stepHTML(kind) { return kind === "witness" ? witnessHTML() : kind === "follow" ? followHTML() : kind === "between" ? betweenHTML() : kind === "feel" ? feelHTML() : kind === "stage" ? stageHTML() : kind === "stand" ? standHTML() : qHTML(+kind.slice(1)); }
+  function stepHTML(kind) { return kind === "witness" ? witnessHTML() : kind === "follow" ? followHTML() : kind === "between" ? betweenHTML() : kind === "feel" ? feelHTML() : kind === "stage" ? stageHTML() : kind === "stand" ? standHTML() : kind === "disc" ? discHTML() : qHTML(+kind.slice(1)); }
+  /* v39 · the discipline picker was the chapter page's last block; it is the last step now, with the map it reads from */
+  function leanText(m) {
+    return m.lean === "formation" ? "Your answers lean toward the formation side of the road. The road opens next toward other men."
+      : m.lean === "discipleship" ? "Your answers lean toward the discipleship side of the road. The road opens next toward time alone with God."
+      : "Your answers sit close to the road on both sides. Keep walking.";
+  }
+  function discHTML() {
+    var w = W(), m = markFor(), x = ownX(), h = '<section class="step disc">';
+    if (m) h += '<div class="road"><span class="lbl">The map</span>' + markSVG(m, x) + '<p class="cap">' + leanText(m) + '</p>' +
+      '<p class="sub">' + (ROAD.whereTxt(m) ? esc(ROAD.whereTxt(m)) + ' ' : '') + 'This shows direction, never rank. We move from glory to glory, and the road is not straight.' + (x ? ' The X is where you said you stand: “' + esc(x.text) + '.”' : "") + '</p></div>';
+    else h += '<div class="road"><span class="lbl">The map</span><p class="sub mapnote">' + esc(mapNote()) + '</p></div>';
+    var set = m && m.lean === "formation" ? ["service", "confession", "guidance", "celebration"] : m && m.lean === "discipleship" ? ["meditation", "prayer", "fasting", "study"] : ["prayer", "study", "confession", "service"];
+    var lead = m && m.lean === "formation" ? "Disciplines that put a rooted faith to work:" : m && m.lean === "discipleship" ? "Disciplines that send roots down:" : "One discipline for each side of the road:";
+    h += '<p class="ours left">' + lead + '</p><div class="words">' + set.map(function (s) { return '<button class="word' + (w.disc === s ? " pick" : "") + '" data-disc="' + s + '" aria-pressed="' + (w.disc === s) + '">' + s + '</button>'; }).join("") + '</div>' +
+      (w.disc ? '<div class="field"><label for="t-disc">How will you practice ' + esc(w.disc) + ' this week?</label><input id="t-disc" data-w="discText" value="' + esc(w.discText) + '" placeholder="Saturday mornings at the food pantry with my son."></div>' : "");
+    return h + '</section>';
+  }
 
   function stepsHTML() {
     var w = W(), st = steps(), h = '<div class="sheet" id="writer"><div class="eyebrow">Walk With Me · ' + esc(part().part) + '</div><h1>' + esc(part().name) + '</h1>';
-    if (w.all) return h + '<p class="fixed">Every step is open. Change anything, then go back to your chapter.</p>' + st.slice(1).map(stepHTML).join("") + '<div class="row bar"><button class="btn main" data-wgo="chapter">Done</button></div></div>';
     if (w.step >= st.length) w.step = st.length - 1;
     if (w.step < 1) w.step = 1;
     if (w.step === 1) h += '<p class="fixed">Chapter ' + NUMS[P] + ' of your story. Five to ten minutes. Five honest statements, and one sentence of your own under each. There are no grades here.</p>' +
-      '<p class="fixed"><b>When you press Save, this chapter is saved to your page — yours to read, change or delete. Ancient Path reads only what you choose to publish.</b></p>';
+      '<p class="fixed"><b>When you press Finish, this chapter is saved to your page — yours to read, change or delete. Ancient Path reads only what you choose to publish.</b></p>';
     h += '<p class="quiet">Step ' + w.step + ' of ' + (st.length - 1) + '</p>' + stepHTML(st[w.step]);
-    return h + '<div class="row bar">' + (w.step > 1 ? '<button class="btn" data-wstep="' + (w.step - 1) + '">Back</button>' : "") +
-      (w.step < st.length - 1 ? '<button class="btn main" data-wstep="' + (w.step + 1) + '">Next</button>' : '<button class="btn main" data-wgo="chapter">Finish</button>') + '</div></div>';
+    /* v39 · the row, from the engine: the way back on the left (his page from the first step, the step before after that), Save as a quiet link
+       placed here by the save bar, Next or Finish on the right. Finish saves. */
+    return h + stdRow({
+      back: w.step > 1 ? { text: "Back", attrs: 'data-wstep="' + (w.step - 1) + '"' } : pageBack(),
+      next: w.step < st.length - 1 ? { text: "Next", attrs: 'data-wstep="' + (w.step + 1) + '"' } : { text: "Finish", attrs: 'data-wgo="story"' },
+      pin: true
+    }) + '</div>';
   }
 
   /* his lines, in chapter order; a blank line drops out */
@@ -1476,40 +1614,7 @@ var WRITER = (function () {
       '<text x="' + (m.x + 16) + '" y="' + (m.y + 6) + '" ' + F + ' font-size="15.5" font-weight="700" fill="#1F2A44">today</text></svg>';
   }
 
-  /* v23 · the chapter page, set to the standard John approved Sept 25, 2026: a label over each of his lines, our line in italic above it,
-     the look-back with its context, the closing form under Numbers 33, the feeling word on its own, and the map last. The story in prose lives on his story page. */
-  function chapterHTML() {
-    var w = W(), pt = part(), ls = lines(), m = markFor(), x = ownX(), sv = pt.stage || STAGE, sp = ROAD.stageParts({ setOut: w.setOut, camped: w.camped }), feel = null;
-    ls.forEach(function (l, i) { l.i = i; if (l.k === "feel") feel = l; });
-    function pick(l) { return '<button class="pickline' + (w.aloud === l.i ? " on" : "") + '" data-aloud="' + l.i + '" aria-pressed="' + (w.aloud === l.i) + '">' + esc(ROAD.endTidy(l.text)) + '</button>'; }
-    var h = '<div class="sheet chapter" id="writer"><div class="ch-head"><div class="eyebrow">Walk With Me · Chapter ' + NUMS[P] + ' of ' + NUMS[ROAD_PARTS.length - 1] + '</div><div class="t">' + esc(pt.name) + '</div><div class="rule"></div></div>';
-    if (pt.ours) h += '<p class="ours epi">' + esc(pt.ours) + '</p>';
-    if (!ls.length && !sp.length) h += '<p class="fixed">Nothing written yet. Press Edit to go back in.</p>';
-    ls.forEach(function (l) {
-      if (l.k === "feel") return;
-      if (l.k === "did" && l.ctx) { h += '<div class="lookback"><span class="lbl">What happened</span><span class="from">' + esc(l.ctx.lead) + '</span><p class="quote">“' + esc(ROAD.tidy(l.ctx.quote)) + '.”</p>' + pick(l) + '</div>'; return; }
-      var br = l.k.charAt(0) === "q" && l.k.length <= 3 ? ROAD.bridgeFor(P, +l.k.slice(1), l.side) : "";
-      h += '<div class="blk"><span class="lbl">' + esc(l.label) + '</span>' + (br ? '<p class="ours left">' + esc(br.replace(/:\s*$/, ".")) + '</p>' : "") + pick(l) + '</div>';
-    });
-    if (sp.length) h += '<div class="closing"><span class="lbl">Where I set out from, and where I camped</span><span class="from">' + esc(sv.ref) + ' · “' + esc(sv.text) + '”</span>' + sp.map(function (t) { return '<p class="his stageline">' + esc(t) + '</p>'; }).join("") + '</div>';
-    if (feel) h += '<div class="feeling"><span class="lbl">What this stirred in me</span><span class="feelword">' + esc(feel.text.replace(/\.$/, "")) + '</span></div>';
-    if (ls.length) h += '<p class="quiet">Tap one line to mark it as the one you will read aloud at group.</p>';
-    if (m) {
-      var leanTxt = m.lean === "formation" ? "Your answers lean toward the formation side of the road. The road opens next toward other men."
-        : m.lean === "discipleship" ? "Your answers lean toward the discipleship side of the road. The road opens next toward time alone with God."
-        : "Your answers sit close to the road on both sides. Keep walking.";
-      h += '<div class="divide"></div><div class="road"><span class="lbl">The map</span>' + markSVG(m, x) + '<p class="cap">' + leanTxt + '</p>' +
-        '<p class="sub">' + (ROAD.whereTxt(m) ? esc(ROAD.whereTxt(m)) + ' ' : '') + 'This shows direction, never rank. We move from glory to glory, and the road is not straight.' + (x ? ' The X is where you said you stand: “' + esc(x.text) + '.”' : "") + '</p>' + lastPlate() + '</div>';
-      if (pt.picker) {
-        var set = m.lean === "formation" ? ["service", "confession", "guidance", "celebration"] : m.lean === "discipleship" ? ["meditation", "prayer", "fasting", "study"] : ["prayer", "study", "confession", "service"];
-        var lead = m.lean === "formation" ? "Disciplines that put a rooted faith to work:" : m.lean === "discipleship" ? "Disciplines that send roots down:" : "One discipline for each side of the road:";
-        h += '<p class="ours left">' + lead + '</p><div class="words">' + set.map(function (s) { return '<button class="word' + (w.disc === s ? " pick" : "") + '" data-disc="' + s + '" aria-pressed="' + (w.disc === s) + '">' + s + '</button>'; }).join("") + '</div>' +
-          (w.disc ? '<div class="field"><label for="t-disc">How will you practice ' + esc(w.disc) + ' this week?</label><input id="t-disc" data-w="discText" value="' + esc(w.discText) + '" placeholder="Saturday mornings at the food pantry with my son."></div>' : "");
-      }
-    } else h += '<div class="divide"></div><div class="road"><span class="lbl">The map</span><p class="sub mapnote">' + esc(mapNote()) + '</p>' + lastPlate() + '</div>';
-    return h + '<div class="row bar"><button class="btn main" data-wgo="story">Save</button><button class="btn" data-wgo="print">Print</button><button class="btn" data-wgo="all">Edit</button></div>' +
-      '<p class="quiet">' + (window.AP_ROAD && window.AP_ROAD.course ? "Save puts this chapter on your page — yours to read, change or delete. Ancient Path reads only what you choose to publish." : window.AP_ROAD ? "Save puts this chapter on your page — yours to read, change or delete. Ancient Path reads only what you choose to publish. You’ll be asked to sign in the first time." : APP.stage === "me" ? "Save keeps this chapter with your Claude account, private to you, and adds it to your story." : "In this walk-through nothing is saved. Save puts the chapter into the sample story. In the course it puts the chapter on his page.") + '</p></div>';
-  }
+  /* v39 · the chapter page (his lines, the map, Save · Print · Edit) is gone: Finish saves, and Your words carries his lines and the map. */
 
   function intoStory() {
     var D = APP.D, w = W(), pt = part(), ls = lines(), story = ls.slice();
@@ -1543,13 +1648,9 @@ var WRITER = (function () {
     else if ((a = b.getAttribute("data-feel"))) { w.feel = w.feel === a ? "" : a; w.feelOwn = ""; APP.render(true); }
     else if ((a = b.getAttribute("data-bop"))) { w.between = BETWEEN_OPS[+a].replace(/…\s*$/, ""); APP.render(true); var tb = document.getElementById("t-between"); if (tb) { tb.focus(); tb.setSelectionRange(tb.value.length, tb.value.length); } }
     else if ((a = b.getAttribute("data-disc"))) { w.disc = w.disc === a ? "" : a; APP.render(true); }
-    else if ((a = b.getAttribute("data-aloud"))) { w.aloud = w.aloud === +a ? -1 : +a; APP.render(true); }
     else if ((a = b.getAttribute("data-wstep"))) { w.step = Math.max(0, +a); APP.render(); APP.keep(); }
     else if ((a = b.getAttribute("data-wgo"))) {
-      if (a === "chapter") { w.view = "chapter"; w.all = false; APP.render(); APP.keep(); }
-      else if (a === "all") { w.view = "steps"; w.all = true; APP.render(); }
-      else if (a === "print") window.print();
-      else if (a === "story") intoStory();
+      if (a === "story") intoStory();   /* v39 · Finish: the chapter is saved and he reads Your words */
     }
   });
   document.addEventListener("input", function (e) {
@@ -1559,7 +1660,9 @@ var WRITER = (function () {
     else if (t.hasAttribute("data-feelown")) { w.feelOwn = t.value; if (t.value) w.feel = ""; }
   });
 
-  return { trail: trail, html: function () { return W().view === "chapter" ? chapterHTML() : stepsHTML(); }, open: function (p) { P = p; var w = W(); if (w.view === "chapter") { w.view = "steps"; w.all = true; } },
+  return { trail: trail, html: function () { return stepsHTML(); }, open: function (p) { P = p; var w = W(); w.view = "steps"; w.all = false; },
+           /* v39 · for Your words: the mark a chapter left, and the words for which way it leans */
+           markAt: function (i) { try { return cumMark(i, null); } catch (e) { return null; } }, leanText: leanText,
            get state() { return W(); }, get part() { return P; }, begun: function (p) { var x = ALL[p]; if (!x) return false; return (x.n || []).some(function (v) { return v; }) || (x.t || []).some(function (v) { return v && String(v).trim(); }) || !!(x.follow && x.follow.trim()); }, dump: function () { return ALL; }, load: function (o) { ALL = o || {}; }, clear: function () { ALL = {}; } };
 })();
 
@@ -1658,7 +1761,7 @@ var TELL = (function () {
 
   function start(d, stage) {
     if (!T || T.stage !== stage) {
-      T = { stage: stage, parts: null, aside: [], view: "work", showAll: false, heard: null, heardBusy: "", heardErr: "", open: "", editing: "", shape: { start: "", about: "", turn: "", god: "" }, moves: [] };
+      T = { stage: stage, parts: null, aside: [], view: "read", showAll: false, heard: null, heardBusy: "", heardErr: "", open: "", editing: "", shape: { start: "", about: "", turn: "", god: "" }, moves: [] };
       T.parts = draft(d, stage);
       /* a new chapter must never cost him work he has already done on his story: carry it across */
       if (carry && carry.stage === stage) {
@@ -1784,7 +1887,6 @@ var TELL = (function () {
     return '<div class="gap" id="open-gap"><p class="ask small">' + esc(q) + '</p>' + (l.weekly ? '<p class="help">You wrote this after that week’s section.</p>' : "") +
       '<div class="words">' + openingsFor(l, pvId).map(function (o, x) { return '<button class="word" data-tell="gopt" data-id="' + id + '" data-x="' + x + '">' + esc(o) + '</button>'; }).join("") + '</div>' +
       '<label class="sr" for="gap-' + id + '">What happened between these two lines</label><textarea id="gap-' + id + '" data-gap="' + id + '" rows="3" placeholder="In your own words. Something that happened: a day, a place, something said or done.">' + esc(l.answer) + '</textarea>' +
-      '<p class="help">On a phone you can press the microphone on your keyboard and say it.</p>' +
       '<div class="row"><button class="btn main" data-tell="gnext" data-id="' + id + '">Next</button><button class="btn" data-tell="gskip" data-id="' + id + '">Skip</button></div>' +
       '<p class="links"><button class="link" data-tell="para" data-id="' + id + '" aria-pressed="' + l.para + '">' + (l.para ? "Undo new paragraph" : "New paragraph") + '</button>' +
       '<button class="link" data-tell="lineout" data-id="' + id + '">Remove the next line</button></p></div>';
@@ -1797,8 +1899,8 @@ var TELL = (function () {
       if (l.out) return;
       if (pvId) { h += gapHTML(p, i, l, k, pvId); total++; if (!(l.answer || "").trim() && !l.para && !l.skip) open++; }
       pvId = l.id;
-      if (T.editing === l.id) h += '<div class="his mine ledit"><span class="lead">' + esc(l.label) + '</span><label class="sr" for="led-' + l.id + '">Your line</label><textarea id="led-' + l.id + '" data-led="' + l.id + '" rows="2">' + esc(l.draft != null ? l.draft : lineText(l)) + '</textarea><div class="row"><button class="btn main" data-tell="ldone" data-id="' + l.id + '">Done</button><button class="btn" data-tell="lcancel" data-id="' + l.id + '">Cancel</button></div></div>';
-      else h += '<p class="his mine"><span class="lead">' + esc(l.label) + '</span>' + esc(lineText(l)) + ' <button class="link" data-tell="ledit" data-id="' + l.id + '">Edit</button></p>' + (lineChanged(l) ? '<p class="quiet lchg">Changed from your chapter. <button class="link" data-tell="lundo" data-id="' + l.id + '">Undo</button></p>' : "");
+      /* v39 · his line as it reads; changing a line happens on Your words, the one place Edit lives */
+      h += '<p class="his mine"><span class="lead">' + esc(l.label) + '</span>' + esc(lineText(l)) + '</p>';
     });
     if (p.busy) h += '<p class="say" role="status">' + esc(p.busy) + ' This can take up to a minute. <button class="link" data-tell="stop">Stop</button></p>';
     else h += '<p class="quiet">' + (open ? open + " of " + total + " still to answer in this part." : "Every gap in this part has an answer or a choice.") + '</p>' +
@@ -1853,8 +1955,8 @@ var TELL = (function () {
   }
   function workHTML(d, stage) {
     start(d, stage);
-    var h = '<div class="sheet" id="tell"><div class="eyebrow">Walk With Me · ' + esc(d.title) + '</div><h1>Your story</h1>' +
-      '<p class="fixed">Your chapters are the record, and they stay as you wrote them. This is the story: one piece a reader could read. Your kept lines set side by side are a list. The story is in what happened between them. So first, answer what sits between your lines. Then put it together and work on the whole.</p>' +
+    var h = '<div class="sheet" id="tell"><div class="eyebrow">Walk With Me · One story</div><h1>One story</h1>' +
+      '<p class="fixed">Your chapters are the record, and they stay as you wrote them. Your lines set side by side are a list. The story is in what happened between them. Answer what sits between your lines, then put each part together and work on the whole. To change a line itself, go back to Your words and tap it.</p>' +
       /* v38 · the Story assistant heading now sits over each row of its buttons (assistHead), not here at the top */
       "";
     h += movesHTML();
@@ -1898,17 +2000,19 @@ var TELL = (function () {
       }
       h += '</article>';
     }
-    h += '</div><div class="row bar"><button class="btn main" data-tell="read">Read</button><button class="btn" data-go="story">Chapters</button><button class="btn" data-go="page">Back</button></div><p id="say" class="say" hidden></p>';
+    /* v39 · the row, from the engine: ← Your words · Download · Copy · Saved · Finish */
+    h += stdRow({ back: { text: "\u2190 Your words", attrs: 'data-tell="read"' }, quiet: [{ text: "Download", attrs: 'data-tell="pdf"' }, { text: "Copy", attrs: 'data-tell="copy"' }], next: { text: "Finish", attrs: 'data-tell="read"' } }) +
+      '<p id="say" class="say" hidden></p><textarea id="copybox" class="copybox" hidden readonly aria-label="The words of your story, to copy"></textarea></div>';
     return h;
   }
 
   /* v22: the story reads chapter by chapter, each one his lines led in by the bridges (road_bridge.js); what he wrote between lines in the work view rides along */
-  function betweenMap() { var m = {}; if (!T) return m; T.parts.forEach(function (p) { if (p.together) return; p.lines.forEach(function (l) { var a = (l.answer || "").trim(); if (!l.out && (a || lineChanged(l))) m[l.text] = { a: a, t: lineText(l) }; }); }); return m; }
+  function betweenMap() { var m = {}; if (!T) return m; T.parts.forEach(function (p) { if (p.together) return; p.lines.forEach(function (l) { var a = (l.answer || "").trim(); if (!l.out) m[l.text] = { a: a, t: lineText(l), id: l.id, changed: lineChanged(l) }; }); }); return m; }
   function chapterBlocks(d) {
     var chs = ROAD.chapters(d, T.stage), between = betweenMap(), out = [];
     chs.forEach(function (ch, i) {
       var pt = typeof ROAD_PARTS !== "undefined" ? ROAD_PARTS[i] : null, paras = ROAD.chapterProse(d, i, ch, { passages: false });
-      paras.forEach(function (para) { para.forEach(function (x) { if (x.kind === "his" && between[x.text]) { var e = between[x.text], a = e.a; x.text = e.t; if (a) { if (!/[.!?”"]$/.test(a)) a += "."; x.text = a + " " + x.text; } } }); });
+      paras.forEach(function (para) { para.forEach(function (x) { if (x.kind === "his" && between[x.text]) { var e = between[x.text], a = e.a; x.id = e.id; x.changed = e.changed; x.text = e.t; if (a) { if (!/[.!?”"]$/.test(a)) a += "."; x.text = a + " " + x.text; } } }); });
       d.bends.forEach(function (b) { if (b.at === i && b.text.trim()) paras.push([{ kind: "bridge", text: "Where the road bent toward " + b.side + ":" }, { kind: "his", text: b.text.trim(), li: -1 }]); });
       out.push({ i: i, mv: ch.mv, movement: d.movements[ch.mv], part: pt ? pt.part : ch.part, name: pt ? pt.name : ch.name, ours: pt ? pt.ours : "", paras: paras });
     });
@@ -1923,12 +2027,12 @@ var TELL = (function () {
   }
   function readHTML(d) {
     var written = ROAD.chapters(d, T.stage).length, all = d.chapters.length, lastMv = null;
-    var h = '<div class="sheet" id="story-read"><div class="ch-head"><div class="eyebrow">Walk With Me' + (written < all ? " · your story so far" : "") + '</div><div class="t">' + esc(d.title) + '</div><div class="by">' + esc(d.byline) + " · " + esc(d.when) + '</div><div class="rule"></div></div>' +
+    var h = '<div class="sheet" id="story-read"><div class="ch-head"><div class="eyebrow">Walk With Me · Your words</div><div class="t">' + esc(d.title) + '</div><div class="by">' + esc(d.byline) + " · " + esc(d.when) + '</div><div class="rule"></div></div>' +
       '<p class="ours">' + esc(d.opens) + '</p>';
     if (written < all) h += '<p class="quiet center">' + written + ' of ' + all + ' chapters written. Your story grows each time you finish one.</p>' +
       (written > 1 ? '<p class="quiet center"><button class="link" data-tell="all">' + (T.showAll ? "Just the newest chapter" : "Read it all together") + '</button></p>' : "");
     var cr = crafted(), made = !!(cr.start || cr.god || Object.keys(cr.byMv).length || cr.handed);
-    var blocks = chapterBlocks(d), onlyLatest = written < all && written > 1 && !T.showAll;
+    var blocks = chapterBlocks(d), onlyLatest = written < all && written > 1 && !T.showAll, tappable = 0;
     if (onlyLatest) blocks = blocks.slice(-1);
     if (cr.start && !onlyLatest) h += '<p class="his prose-p">' + esc(cr.start) + '</p>';
     var shownMv = {};
@@ -1937,20 +2041,39 @@ var TELL = (function () {
       /* v28 · a movement he has put together reads as his own prose, one piece */
       if (cr.byMv[c.mv]) { if (!shownMv[c.mv]) { shownMv[c.mv] = 1; cr.byMv[c.mv].split(/\n\s*\n/).forEach(function (t) { if (t.trim()) h += '<p class="his prose-p">' + esc(t.trim()) + '</p>'; }); } return; }
       h += '<div class="part">' + esc(c.part + " · " + c.name) + '</div>' + (c.ours ? '<p class="ours">' + esc(c.ours) + '</p>' : "");
-      c.paras.forEach(function (para) { h += '<p class="his prose-p">' + para.map(function (x) { return x.kind === "bridge" ? '<span class="bridge">' + esc(x.text) + '</span>' : esc(x.text); }).join(" ") + '</p>'; });
+      /* v39 · his lines can be tapped to change them, here and nowhere else; the open one gets its box under the paragraph */
+      c.paras.forEach(function (para) {
+        var editing = null;
+        h += '<p class="his prose-p">' + para.map(function (x) {
+          if (x.kind === "bridge") return '<span class="bridge">' + esc(x.text) + '</span>';
+          if (x.id) { tappable++; if (T.editing === x.id) editing = lineById(x.id); return '<button type="button" class="hisline' + (T.editing === x.id ? " on" : "") + '" data-tell="ledit" data-id="' + x.id + '">' + esc(x.text) + '</button>'; }
+          return esc(x.text);
+        }).join(" ") + '</p>';
+        if (editing) h += '<div class="his mine ledit onwords"><span class="lead">' + esc(editing.label) + '</span><label class="sr" for="led-' + editing.id + '">Your line</label><textarea id="led-' + editing.id + '" data-led="' + editing.id + '" rows="2">' + esc(editing.draft != null ? editing.draft : lineText(editing)) + '</textarea><div class="row"><button class="btn main" data-tell="ldone" data-id="' + editing.id + '">Done</button><button class="btn" data-tell="lcancel" data-id="' + editing.id + '">Cancel</button></div></div>';
+        para.forEach(function (x) { if (x.id && x.changed && T.editing !== x.id) h += '<p class="quiet lchg">Changed from your chapter. <button class="link" data-tell="lundo" data-id="' + x.id + '">Undo</button></p>'; });
+      });
     });
+    if (tappable) h += '<p class="tapline">Tap any line to change it.</p>';
     if (cr.handed) { h += '<div class="movement"><span>' + esc(ROAD.HANDED) + '</span></div>'; cr.handed.split(/\n\s*\n/).forEach(function (t) { if (t.trim()) h += '<p class="his prose-p">' + esc(t.trim()) + '</p>'; }); }
     else { var hd = ROAD.handed(d, T.stage); if (hd.length) { h += '<div class="movement"><span>' + esc(ROAD.HANDED) + '</span></div>'; hd.forEach(function (l) { h += '<p class="his prose-p">' + esc(l.text) + '</p>'; }); } }
     var done = ROAD.finished(d, T.stage);
     if (done) h += (d.tail.trim() && !cr.tailIn ? '<p class="his prose-p">' + esc("Today I am camped at " + d.tail.trim()) + '</p>' : "") + (cr.god ? '<p class="his prose-p">' + esc(cr.god) + '</p>' : "") + '<p class="ours closing">' + esc(d.closes) + '</p><p class="ours lower">' + esc(ROAD.LOWER) + '</p>';
-    if (done && !made) h += '<div class="invite"><span class="lbl">Make it one story</span><p>This is your story in your own lines, set in order. It is not one story yet: the story is in what happened between your lines. Press Make it one story. Answer what sits between your lines, put each movement together, and let it be read back. Then this page, and your download, carry the story you made.</p><p class="row"><button class="btn main" data-tell="work">Make it one story</button></p></div>';
+    if (done && !made) h += '<div class="invite"><span class="lbl">Make it one story</span><p>This is your story in your own lines, set in order. It is not one story yet: the story is in what happened between your lines. Press Make it one story below. Answer what sits between your lines, put each part together, and let it be read back. Then this page, and your download, carry the story you made.</p></div>';
     h += storyMap(d, written, done);
     var site = !!window.AP_ROAD, course = !!(window.AP_ROAD && window.AP_ROAD.course), next = written < all && typeof ROAD_PARTS !== "undefined" ? ROAD_PARTS[written] : null;
-    h += '</div><div class="row bar">' +
-      (next && site && !course && T.stage === "me" ? '<button class="btn main" data-do="pickup">Continue to ' + esc(next.part.toLowerCase().replace("part", "chapter")) + ' →</button>' : "") +
-      '<button class="btn' + (next && site && !course && T.stage === "me" ? "" : " main") + '" data-tell="pdf">Download</button><button class="btn" data-tell="copy">Copy</button><button class="btn" data-tell="work">' + (ROAD.finished(d, T.stage) ? "Make it one story" : "Edit") + '</button><button class="btn" data-go="page">Back</button></div>' +
-      (next && course ? '<p class="quiet">Your next chapter is ' + esc(next.part + " · " + next.name) + '. Go on to the next section with “next” at the top of this page.</p>' : "") +
-      '<p id="say" class="say" hidden></p><textarea id="copybox" class="copybox" hidden readonly aria-label="The words of your story, to copy"></textarea>';
+    /* v39 · the row, from the engine. The way back is the door (The Road I Walked), or One story once he has made it one. The next step:
+       on the Road page with chapters still to write, the next chapter; in a course, his page (the course's own "next" goes on); finished
+       and still a list, Make it one story; finished and made, his page. Download and Copy are the quiet things. */
+    var under = typeof WRITER !== "undefined" && WRITER.begun && WRITER.begun(written);
+    var nextStep = !done
+      ? (next && site && !course && T.stage === "me" ? { text: under ? "Pick up where you left off" : "Begin " + esc(next.part.toLowerCase().replace("part", "chapter")), attrs: 'data-do="pickup"' } : pageLink())
+      : (!made ? { text: "Make it one story", attrs: 'data-tell="work"' } : pageLink());
+    h += stdRow({
+      back: made ? { text: "\u2190 One story", attrs: 'data-tell="work"' } : { text: "\u2190 The Road I Walked", attrs: 'data-go="page"' },
+      quiet: [{ text: "Download", attrs: 'data-tell="pdf"' }, { text: "Copy", attrs: 'data-tell="copy"' }],
+      next: nextStep,
+      under: next && course ? '<p class="quiet">Your next chapter is ' + esc(next.part + " · " + next.name) + '. Go on to the next section with “next” at the top of this page.</p>' : ""
+    }) + '<p id="say" class="say" hidden></p><textarea id="copybox" class="copybox" hidden readonly aria-label="The words of your story, to copy"></textarea></div>';
     return h;
   }
 
@@ -1961,7 +2084,8 @@ var TELL = (function () {
     pts = (pts || []).filter(Boolean);
     if (!pts.length) return "";
     if (done) ROAD.loadPlate();
-    return '<div class="divide"></div><div class="road"><span class="lbl">' + (done ? "The road I walked" : "The road so far") + '</span>' + ROAD.trailSVG(pts) +
+    var lean = ""; try { var lm = d.mine && typeof WRITER !== "undefined" && WRITER.markAt ? WRITER.markAt(written - 1) : null; if (lm) lean = '<p class="cap">' + WRITER.leanText(lm) + (ROAD.whereTxt(lm) ? " " + esc(ROAD.whereTxt(lm)) : "") + '</p>'; } catch (e) { lean = ""; }
+    return '<div class="divide"></div><div class="road"><span class="lbl">' + (done ? "The road I walked" : "The road so far") + '</span>' + ROAD.trailSVG(pts) + lean +
       '<p class="sub">One mark for each chapter, the newest in gold. The faint dashed line is the road on the map. This shows direction, never rank: from glory to glory.</p>' + (done ? ROAD.plateHTML() : "") + '</div>';
   }
   function html(d, stage) { start(d, stage); return T.view === "read" ? readHTML(d) : workHTML(d, stage); }
@@ -2067,7 +2191,7 @@ if (typeof module !== "undefined") module.exports = TELL;
   var C = window.AP_ROAD; if (!C) return;
   var STASH = "apStoryPending:road", TTL = 30 * 60 * 1000, HELD_TTL = 24 * 60 * 60 * 1000;
   var lastSeen = "", blocked = false, tHold = null;
-  var state = "idle", dirtyFlag = false, typed = false, savedOnce = false, note = "", t5 = null, bar = null;
+  var state = "idle", dirtyFlag = false, typed = false, savedOnce = false, note = "", t5 = null, bar = null, savedAt = null;   /* v39 · savedAt: the time Saved shows as words */
   var startSent = false, finishSent = false, opened = false, keepCounted = false;   /* v36 · the count · v38 keepCounted */
   var W = {
     beneath: "Saving puts your story on your page, where you can read it, change it or delete it whenever you want. You will be asked to sign in — that is the only thing an account is for here.",
@@ -2125,32 +2249,37 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (!bar) return;
     /* v37 · Speak it: the engine puts Tap and talk and Read it to me on the boxes this screen drew (idempotent; a box gets them once) */
     try { var A = api(); if (A && A.voice && A.voice.attach) { A.voice.attach(document.getElementById("ap-road-app"), null, { keep: function () { save(true); } }); } } catch (e) {}   /* v38: keep as he speaks */
-    var label = state === "saving" ? "Saving" : state === "still" ? "Still saving" : (state === "saved" && !dirtyFlag) ? "Saved" : "Save";
-    var onChapter = !!document.querySelector('#ap-road-app [data-wgo="story"]');
-    var btn = bar.saveBtn, nt = bar.saveNote, be = bar.querySelector(".savebeneath");
-    btn.textContent = label; btn.disabled = state === "saving" || state === "still"; btn.hidden = onChapter && state !== "saving" && state !== "still";
+    /* v39 · the row standard: Save is a quiet link while there is something to save; once saved, "Saved · 2:14 PM" as words, never a button */
+    var btn = bar.saveBtn, nt = bar.saveNote, be = bar.beneath, sv = bar.savedEl, appEl = document.getElementById("ap-road-app");
+    var saved = state === "saved" && !dirtyFlag, writing = !!(appEl && appEl.querySelector("textarea, input[type=text]"));
+    btn.textContent = state === "saving" ? "Saving…" : state === "still" ? "Still saving…" : "Save"; btn.disabled = state === "saving" || state === "still";
+    btn.hidden = saved || !(writing || dirtyFlag || typed);
+    sv.textContent = saved ? savedWords() : ""; sv.hidden = !saved;
     nt.textContent = note || (typed && savedOnce ? "You have written something that is not saved yet." : ""); nt.hidden = !nt.textContent;
-    be.hidden = savedOnce || onChapter;
-    var link = bar.saveLink; link.hidden = !(state === "saved" && !dirtyFlag);
+    be.hidden = savedOnce || !writing;
     place();
+    /* the way out shows beside Saved only where the row's own next step is not his page */
+    var link = bar.saveLink, rowNow = appEl && appEl.querySelector(".aps-row.aps-std"); link.hidden = !(saved && !(rowNow && rowNow.querySelector('[data-page="1"]')));
     /* inside a course section the card stands alone: no Save bar under it unless something is waiting to be saved or said */
     if (C.course) bar.hidden = !!document.querySelector("#ap-road-app .coursecard") && !dirtyFlag && !typed && !note;
   }
-  /* v32 · one row. Save, the note and the way back sit in the screen's own bottom row, in the one order every piece keeps:
-     Back or Edit · Download · Copy or Print · Save · the next step · Your page. The row stays at the foot of the screen on a phone. */
-  var ORDER = [[/^(back|edit|chapters|cancel|change the words|go back|back to the)/i, 1], [/^download/i, 2], [/^(copy|print)/i, 3], [/^(save|saving|still saving|saved)$/i, 4]];
-  function slot(el) {
-    if (el === bar.saveBtn) return 4; if (el === bar.saveLink) return 6; if (el === bar.saveNote) return 7; if (el === bar.handLink) return 8; if (el === bar.handBox) return 9;
-    var t = (el.textContent || "").trim(); for (var i = 0; i < ORDER.length; i++) if (ORDER[i][0].test(t)) return ORDER[i][1];
-    return 5;
+  function savedWords() {
+    var d = savedAt instanceof Date && !isNaN(savedAt) ? savedAt : null; if (!d) return "Saved";
+    var now = new Date(), sameDay = d.toDateString() === now.toDateString();
+    try { return "Saved · " + (sameDay ? d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) : d.toLocaleDateString("en-US", { month: "short", day: "numeric" })); } catch (e) { return "Saved"; }
   }
+  /* v39 · the row standard (story.js v19.2): the screen draws its row through APStory.row; the save bar puts Save (a quiet link), Your page
+     and the Saved words into the row's middle, and the note, "Continue on your phone" and its box on the line under the row. */
   function place() {
-    var app = document.getElementById("ap-road-app"), rows = app ? app.querySelectorAll(".row.bar") : [], row = rows.length ? rows[rows.length - 1] : null, home = bar.querySelector(".row");
-    var into = row || home;
-    [bar.saveBtn, bar.saveLink, bar.saveNote, bar.handLink, bar.handBox].forEach(function (el) { if (el && el.parentNode !== into) into.appendChild(el); });
-    if (row) { row.classList.add("onerow"); if (row.querySelector('[data-go="1"]') && !savedOnce && !typed && !dirtyFlag) bar.saveBtn.hidden = true; }
-    Array.prototype.forEach.call(into.children, function (el) { el.style.order = String(slot(el)); });
-    home.hidden = !!row;
+    var app = document.getElementById("ap-road-app"), rows = app ? app.querySelectorAll(".aps-row.aps-std") : [], row = rows.length ? rows[rows.length - 1] : null, home = bar.querySelector(".aps-row");
+    var mid = (row || home).querySelector(".aps-mid") || row || home;
+    Array.prototype.forEach.call(mid.querySelectorAll(".aps-saved"), function (x) { if (x !== bar.savedEl) x.parentNode.removeChild(x); });   /* the builder's empty Saved span gives way to the bar's */
+    [bar.saveBtn, bar.saveLink, bar.savedEl].forEach(function (el) { if (el && el.parentNode !== mid) mid.appendChild(el); });
+    var under = null;
+    if (row) { under = row.nextElementSibling && row.nextElementSibling.classList.contains("aps-under") ? row.nextElementSibling : null; if (!under) { under = document.createElement("div"); under.className = "aps-under"; row.parentNode.insertBefore(under, row.nextSibling); } }
+    else under = bar.querySelector(".aps-under");
+    [bar.saveNote, bar.handLink, bar.handBox, bar.beneath].forEach(function (el) { if (el && el.parentNode !== under) under.appendChild(el); });
+    home.hidden = !!row; bar.querySelector(".aps-under").hidden = !!row;
   }
   function openSignIn() {
     try { if (window.l_settings && typeof window.l_settings === "object") window.l_settings.redirectUrl = window.location.pathname + window.location.search; } catch (e) {}
@@ -2185,7 +2314,7 @@ if (typeof module !== "undefined") module.exports = TELL;
       });
     }
     api()._submit(C.lw.unit, p.answers).then(function () { return readBack(3); }).then(function () {
-      clearTimeout(t5); stashClear(); lastSeen = p.json; savedOnce = true; dirtyFlag = false; typed = false; set("saved", W.landed);
+      clearTimeout(t5); stashClear(); lastSeen = p.json; savedOnce = true; dirtyFlag = false; typed = false; savedAt = new Date(); set("saved", "");   /* v39 · "Saved · 2:14 PM" in the row says it; no second note */
       /* v36 · the count: a confirmed save, and a finished piece once per page (finished is read from the meta this save carried) */
       try {
         var fin = false, mb = C.lw.blocks.meta;
@@ -2223,7 +2352,7 @@ if (typeof module !== "undefined") module.exports = TELL;
       var when = latest && latest.when ? Date.parse(latest.when) : 0;
       if (pending && !(when && when > held.t)) { restore(pending); savedOnce = !!snap; dirtyFlag = true; typed = true; again = true; return; }
       if (pending) stashClear();
-      if (snap) { restore(snap); savedOnce = true; state = "saved"; }
+      if (snap) { restore(snap); savedOnce = true; state = "saved"; savedAt = when ? new Date(when) : null; }
     }).catch(function () { blocked = true; note = "Your saved words could not be loaded just now. Reload the page before you write. Nothing can be saved until they load, so nothing is written over."; }).then(function () { done(); if (again) save(); });
     var again = false;
   }
@@ -2231,12 +2360,14 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (bar) return;
     var host = document.getElementById("ap-road"); if (!host) return;
     bar = document.createElement("div"); bar.className = "savebar";
-    bar.innerHTML = '<div class="row"><button class="btn main" data-site="save">Save</button><a class="link savelink" hidden></a><button type="button" class="link handofflink" hidden>Continue on your phone</button><div class="aps-handoff handoffbox" hidden></div></div><p class="say savenote" role="status" hidden></p><p class="quiet savebeneath"></p>';
+    try { ROW_STD.css(); } catch (e) {}
+    bar.innerHTML = '<div class="aps-row aps-std aps-in" hidden><span class="aps-mid"><button type="button" class="aps-quiet" data-site="save">Save</button><a class="aps-quiet savelink" hidden></a><span class="aps-saved" hidden></span></span></div>' +
+      '<div class="aps-under"><p class="say savenote" role="status" hidden></p><button type="button" class="aps-quiet handofflink" hidden>Continue on your phone</button><div class="aps-handoff handoffbox" hidden></div><p class="quiet savebeneath"></p></div>';
     bar.querySelector(".savebeneath").textContent = C.course && signedIn() ? W.beneathIn : W.beneath;
-    var a = bar.querySelector(".savelink"); a.textContent = C.pageLabel || "Go to your page"; a.href = C.pagePath || "/start";
+    var a = bar.querySelector(".savelink"); a.textContent = C.pageLabel || "Your page"; a.href = C.pagePath || "/start";
     /* v32 · a piece inside a course runs in the player's frame: his page opens in the full window, never inside the frame */
     if (C.course || inFrame()) { a.target = "_top"; }
-    bar.saveBtn = bar.querySelector("[data-site=save]"); bar.saveLink = a; bar.saveNote = bar.querySelector(".savenote");
+    bar.saveBtn = bar.querySelector("[data-site=save]"); bar.saveLink = a; bar.saveNote = bar.querySelector(".savenote"); bar.savedEl = bar.querySelector(".aps-saved"); bar.beneath = bar.querySelector(".savebeneath");
     bar.handLink = bar.querySelector(".handofflink"); bar.handBox = bar.querySelector(".handoffbox");
     host.appendChild(bar);
     bar.saveBtn.addEventListener("click", function () { save(); });
@@ -2244,7 +2375,7 @@ if (typeof module !== "undefined") module.exports = TELL;
     (function () {
       var A = api(); if (!A || !A.voice || !A.handoffLink || A.voice.touch()) { return; }
       try { A.handoffCSS(); } catch (e) {}
-      bar.handLink.hidden = false;
+      bar.handLink.hidden = false; bar.handLink.classList.add("aps-quiet");
       var show = function () { bar.handBox.innerHTML = A.handoffBoxHTML(A.handoffLink()); bar.handBox.hidden = false; bar.handBox.querySelector(".aps-handoff-done").addEventListener("click", function () { bar.handBox.hidden = true; }); };
       bar.handLink.addEventListener("click", function () {
         if (!bar.handBox.hidden) { bar.handBox.hidden = true; return; }
@@ -2346,7 +2477,7 @@ var WHERE = (function () {
   function intro() {
     return '<p class="fixed">The first question God ever asked a man was asked to a man hiding. It was not an accusation. He already knew where Adam was. He was asking him to come out of the trees, and He was already walking toward him when He asked.</p>' + verse(SCRIPT.walk) + verse(SCRIPT.q) +
       '<p class="fixed">This is that question, asked to you, today. Fifteen minutes. You will say what you are walking away from, put your own X on a map, and choose one step. Nobody places the X for you, and nobody grades it.</p>' + keepLine() +
-      '<div class="row bar"><button class="btn main" data-go="1">Begin</button></div>';
+      stdRow({ next: { text: "Begin", attrs: 'data-go="1"' } });
   }
   function away() {
     return '<p class="fixed">Adam hid among the trees. Every man has a place he goes to not be seen. Name yours, plainly. Something a man could picture.</p>' +
@@ -2402,8 +2533,8 @@ var WHERE = (function () {
   function stepsHTML() {
     var i = Math.max(0, Math.min(ORDER.length - 1, A.step)), k = ORDER[i];
     var body = k === "intro" ? intro() : k === "away" ? away() : k === "feel" ? feel() : k === "map" ? map() : k === "standing" ? standing() : k === "step" ? step() : going();
-    var h = '<div class="sheet" id="writer"><div class="eyebrow">Your Story · Where Are You?</div><h1>' + esc(TITLES[k]) + '</h1>' + (i ? '<p class="quiet">Step ' + i + ' of ' + (ORDER.length - 1) + '</p>' : "") + body;
-    if (i) h += '<div class="row bar"><button class="btn" data-go="' + (i - 1) + '">Back</button>' + (i < ORDER.length - 1 ? '<button class="btn main" data-go="' + (i + 1) + '">Next</button>' : '<button class="btn main" data-finish="1">Finish</button>') + '</div>';
+    var h = '<div class="sheet" id="writer"><div class="eyebrow">Where Are You?</div><h1>' + esc(TITLES[k]) + '</h1>' + (i ? '<p class="quiet">Step ' + i + ' of ' + (ORDER.length - 1) + '</p>' : "") + body;
+    if (i) h += stdRow({ back: { text: "Back", attrs: 'data-go="' + (i - 1) + '"' }, next: i < ORDER.length - 1 ? { text: "Next", attrs: 'data-go="' + (i + 1) + '"' } : { text: "Finish", attrs: 'data-finish="1"' }, pin: true });
     return h + '<p id="say" class="say"' + (sayText ? "" : " hidden") + '>' + esc(sayText) + '</p></div>';
   }
   function lines() {
@@ -2421,12 +2552,12 @@ var WHERE = (function () {
   function agency() { return "You put the X there. Nobody placed it for you. You named which way you lean. You chose the step."; }
   function finishedHTML() {
     var m = mark(), s = stopOf(m);
-    return '<div class="sheet" id="finished"><div class="eyebrow">Your Story · Where Are You?</div><h1>Where Are You?</h1><p class="byline">' + esc(A.byline) + ' · ' + esc(A.when) + '</p>' +
+    return '<div class="sheet" id="finished"><div class="eyebrow">Where Are You?</div><h1>Where Are You?</h1><p class="byline">' + esc(A.byline) + ' · ' + esc(A.when) + '</p>' +
       '<div class="map">' + mapSVG(m) + '</div>' + (s ? '<p class="quiet">A man who stood here: ' + esc(s.who) + '. ' + esc(s.line) + '</p>' : "") +
       lines().map(function (l) { return '<p class="line"><span class="his">' + esc(l.label) + '</span> ' + esc(l.text) + '</p>'; }).join("") +
       '<p class="fixed agency">' + esc(agency()) + '</p>' +
       '<p class="quiet">He asked where you are so that you would come out of the trees, and He was already walking toward you when He asked. That is the whole story, and the next name on it is yours.</p>' +
-      '<div class="row bar"><button class="btn" data-do="download">Download</button><button class="btn" data-do="copy">Copy the words</button><button class="btn" data-do="change">Change the words</button></div>' +
+      stdRow({ back: { text: "\u2190 Change the words", attrs: 'data-do="change"' }, quiet: [{ text: "Download", attrs: 'data-do="download"' }, { text: "Copy", attrs: 'data-do="copy"' }], next: pageLink() }) +
       (C.storyPath ? '<p class="quiet">The road goes on from here. <a href="' + esc(C.storyPath) + '">Walk With Me</a> asks this question ten times over, and the X you placed today is where the road starts.</p>' : "") +
       '<p id="say" class="say"' + (sayText ? "" : " hidden") + '>' + esc(sayText) + '</p></div>';
   }
@@ -2447,7 +2578,7 @@ var WHERE = (function () {
 
   /* ---------- the keepsake ---------- */
   function pdf() {
-    var J = window.jspdf && window.jspdf.jsPDF; if (!J) { say("The download is not available on this device. Use Copy the words instead."); return; }
+    var J = window.jspdf && window.jspdf.jsPDF; if (!J) { say("The download is not available on this device. Use Copy instead."); return; }
     var doc = new J({ unit: "pt", format: "letter" }), W = 612, H = 792, M = 72, y = M, NAVY = [31, 42, 68], BRONZE = [140, 106, 63], GOLD = [201, 162, 39], INK = [42, 39, 35], SOFT = [107, 99, 88];
     function para(t, o) { doc.setFont(o.font || "times", o.style || "normal"); doc.setFontSize(o.size); doc.setTextColor(o.color[0], o.color[1], o.color[2]); var ls = doc.splitTextToSize(t, o.width || (W - 2 * M)), lh = o.size * (o.lead || 1.4); if (y + ls.length * lh > H - 64) { doc.addPage(); y = M; } ls.forEach(function (ln) { doc.text(ln, o.center ? W / 2 : M, y + o.size * 0.82, o.center ? { align: "center" } : undefined); y += lh; }); y += (o.after || 0); }
     para("YOUR STORY · WHERE ARE YOU?", { font: "helvetica", style: "bold", size: 9, color: BRONZE, center: true, after: 6 });
@@ -2541,7 +2672,7 @@ window.AP_WHERE = WHERE;
   }
   var ME = emptyMan(), meT = null, D = SAMPLE, startOver = false;
   var SITE = window.AP_ROAD || null;
-  var stage = "finished", screen = "page", delArmed = false, straight = false, app = document.getElementById("ap-road-app") || document.getElementById("app");
+  var stage = "finished", screen = "page", delArmed = false, app = document.getElementById("ap-road-app") || document.getElementById("app");
   if (SITE) { stage = "me"; D = ME; }
 
   /* A floor that works with no key: a short list of plain phrases. It shows help; it never blocks his writing. */
@@ -2583,9 +2714,9 @@ window.AP_WHERE = WHERE;
       '<div class="cards"><article class="card main"><div class="eyebrow">Walk With Me</div><h2>' + esc(D.title) + '</h2>' +
       (walking
         ? '<p class="state"><b>In progress</b> — Pick up where you left off</p><p class="quiet">Last written: ' + esc(chTitle(lastCh)) + '</p>' +
-          '<div class="row"><button class="btn main" data-do="pickup">Pick up where you left off</button><button class="btn" data-do="readstory">Read</button></div>'
+          stdRow({ next: { text: "Pick up where you left off", attrs: 'data-do="pickup"' }, quiet: [{ text: "Your words", attrs: 'data-do="readstory"' }] })
         : '<p class="state"><b>Finished</b></p><p class="quiet">Ten sections. Your words, your road.</p>' +
-          '<div class="row"><button class="btn main" data-go="tell">Open it</button><button class="btn" data-do="download">Download</button></div>' +
+          stdRow({ next: { text: "Your words", attrs: 'data-do="readstory"' }, quiet: [{ text: "Download", attrs: 'data-do="download"' }] }) +
           '<p class="links"><button class="link" data-go="evidence">Evidence</button><button class="link" data-do="offer">Offer it for publishing</button><button class="link" data-do="delete">' + (delArmed ? "Delete permanently — press again" : "Delete this story") + '</button></p>') +
       '</article>' +
       '<article class="card dim"><div class="eyebrow">Your Story</div><h2>Where I Am From</h2><p class="state"><b>Finished</b></p><p class="quiet">Shown for context. Not part of this walk-through.</p></article>' +
@@ -2601,66 +2732,7 @@ window.AP_WHERE = WHERE;
     return esc(text).replace(new RegExp("\\b(" + word + ")\\b", "gi"), "<b>$1</b>");
   }
 
-  function storyScreen() {
-    var chs = ROAD.chapters(D, stage), tn = ROAD.thenNow(D, stage), th = ROAD.thread(D, stage), walking = !ROAD.finished(D, stage);
-    var h = '<div class="sheet' + (straight ? " straight" : "") + '" id="story"><div class="ch-head"><div class="eyebrow">Walk With Me' + (walking ? " · the road so far" : "") + '</div>' +
-      '<div class="t">' + esc(D.title) + '</div><div class="by">' + esc(D.byline) + " · " + esc(D.when) + '</div><div class="rule"></div></div>' +
-      '<p class="ours">' + esc(D.opens) + '</p>';
-    if (tn) h += '<div class="then-now"><div><div class="when">Where I started · ' + esc(ROAD.fullPart(tn.first.ch)) + '</div><p>' + esc(tn.first.l.text) + '</p></div>' +
-      '<div><div class="when">' + (walking ? "Where I am today" : "Where I am") + " · " + esc(ROAD.fullPart(tn.last.ch)) + '</div><p>' + esc(tn.last.l.text) + '</p></div></div>';
-    h += '<div class="road">' + map() + '<p class="cap">' + (walking ? "This is the road you have walked so far." : "This is the road you walked.") +
-      (D.bends.filter(function (b) { return b.at < chs.length; }).length ? " It bent. Most men’s do." : "") + '</p>' +
-      '<p class="sub">The faint dashed line is the road on the map. The gold trail is yours, one mark for each section. It shows direction, never rank: from glory to glory.</p>' + (walking ? "" : ROAD.plateHTML()) + '</div>' +
-      '<p class="ours">“Moses wrote down their starting places, stage by stage, by command of the LORD.”<cite>Numbers 33:2</cite></p>';
-    D.bends.forEach(function (b) {
-      if (b.at < chs.length && b.text.trim()) h += '<p class="his"><span class="lead">' + esc(ROAD.bendLabel(D, b)) + '</span>' + (ROAD.bendGloss(D, b) ? '<span class="gloss">' + esc(ROAD.bendGloss(D, b)) + '</span>' : "") + esc(b.text) + '</p>';
-    });
-    if (th) h += '<div class="divide"></div><p class="thread">A word you keep using: <b>' + esc(th.word) + '</b>. Here is each place you wrote it.</p><ul class="where">' +
-      th.where.map(function (w) { return '<li><span>' + esc(w.part) + '</span>' + mark(w.text, th.word) + '</li>'; }).join("") + '</ul>';
-    h += '<div class="divide"></div>';
-    var lastMv = 0;
-    chs.forEach(function (ch) {
-      var ls = ROAD.onLines(ch), st = ROAD.stageLine(ch), rc = ROAD.recallLine(D, ch);
-      if (!ls.length && !st) return;
-      if (ch.mv !== lastMv) { lastMv = ch.mv; h += '<div class="movement"><span>' + esc(D.movements[ch.mv]) + '</span></div>'; }
-      h += '<section class="chap"><div class="part">' + esc(chTitle(ch)) + '</div>' + (ch.ours ? '<p class="ours left">' + esc(ch.ours) + '</p>' : "") +
-        (rc ? recallHTML(rc.lead, rc.text, rc.bridge) : "") +
-        ls.map(function (l) { return (l.ctx ? recallHTML(l.ctx.lead, l.ctx.quote, "") : "") + '<p class="his">' + esc(ROAD.shown(l)) + '</p>'; }).join("") + (st ? '<p class="stage">' + esc(st) + '</p>' : "") + '</section>';
-    });
-    var hd = ROAD.handed(D, stage);
-    if (hd.length) h += '<div class="movement"><span>' + esc(ROAD.HANDED) + '</span></div><section class="chap">' + hd.map(function (l) { return '<div class="part">' + esc(l.part + " · " + l.label) + '</div><p class="his">' + esc(l.text) + '</p>'; }).join("") + '</section>';
-    if (!walking) h += '<p class="ours closing">' + esc(D.closes) + '</p>';
-    if (!walking && D.tail.trim()) h += '<p class="tail">Today I am camped at ' + esc(D.tail) + '</p>';
-    h += '<div class="refs"><div class="eyebrow">Where these words come from</div><p>' + D.refs.map(esc).join(" · ") + '</p></div></div>' +
-      '<div class="row bar"><button class="btn main" data-do="download">Download</button><button class="btn" data-do="print">Print</button>' +
-      '<button class="btn" data-go="edit">Edit</button><button class="btn" data-go="tell">Story</button><button class="btn" data-go="page">Back</button></div><p id="say" class="say" hidden></p>' +
-      '<textarea id="copybox" class="copybox" hidden readonly aria-label="The words of your story, to copy"></textarea>';
-    return h;
-  }
-
-  function editScreen() {
-    var chs = ROAD.chapters(D, stage);
-    var h = '<div class="sheet"><div class="eyebrow">Edit</div><h1>Make it read clearly</h1>' +
-      '<p class="fixed">Choose which lines carry your story. Fix a word or smooth a sentence so it reads the way you meant it. Each chapter stays the way you wrote it on the day.</p>' +
-      '<div class="field"><label for="f-title">Title</label><input id="f-title" data-k="title" value="' + esc(D.title) + '"></div>' +
-      '<div class="field"><label for="f-by">Your name, the way you want it shown</label><input id="f-by" data-k="byline" value="' + esc(D.byline) + '"></div>';
-    chs.forEach(function (ch, c) {
-      h += '<section class="edit-ch"><div class="part">' + esc(chTitle(ch)) + '</div>';
-      ch.lines.forEach(function (l, i) {
-        h += '<div class="edit-line' + (l.on ? "" : " off") + '"><div class="edit-top"><label for="ln-' + c + "-" + i + '">' + esc(l.label) + '</label>' +
-          '<button class="toggle" data-tog="' + c + "-" + i + '" aria-pressed="' + l.on + '">' + (l.on ? "In the story" : "Left out") + '</button></div>' +
-          '<textarea id="ln-' + c + "-" + i + '" data-ln="' + c + "-" + i + '" rows="2">' + esc(l.text) + '</textarea>' +
-          '<p class="orig" data-orig="' + c + "-" + i + '"' + (l.text !== l.first ? "" : " hidden") + '>As you wrote it on the day: <i>' + esc(l.first) + '</i> <button class="link" data-back="' + c + "-" + i + '">Undo</button></p></div>';
-      });
-      h += '<div class="pair"><div class="field"><label for="so-' + c + '">I set out from…</label><input id="so-' + c + '" data-so="' + c + '" value="' + esc(ch.setOut) + '"></div>' +
-        '<div class="field"><label for="ca-' + c + '">I camped at…</label><input id="ca-' + c + '" data-ca="' + c + '" value="' + esc(ch.camped) + '"></div></div></section>';
-    });
-    D.bends.forEach(function (b, i) {
-      if (b.at < chs.length) h += '<div class="field"><label for="bd-' + i + '">' + esc(ROAD.bendLabel(D, b)) + '. ' + esc(ROAD.bendGloss(D, b)) + ' What was happening in your life here?</label><textarea id="bd-' + i + '" data-bd="' + i + '" rows="2">' + esc(b.text) + '</textarea></div>';
-    });
-    if (ROAD.finished(D, stage)) h += '<div class="field"><label for="f-tail">One closing line. Today I am camped at…</label><input id="f-tail" data-k="tail" value="' + esc(D.tail) + '"></div>';
-    return h + '<div class="row bar"><button class="btn main" data-go="story">Done</button></div></div>';
-  }
+  /* v39 · the chapter list (storyScreen) and the edit-everything screen (editScreen) are gone: Your words carries his lines, tap a line to change it. */
 
   /* The Enemy brings his case day and night. This is the man's own file: what he has done and what he has come through, in his words.
      Open to him any day from his page. Nothing counted, nothing praised, nothing of ours but the section's own line. */
@@ -2672,7 +2744,7 @@ window.AP_WHERE = WHERE;
     e.seen.forEach(function (x) {
       h += '<div class="recall"><span>' + esc(x.said ? (x.saidPart || x.part) : x.part) + (x.said ? ' · You had said: “' + esc(x.said) + '”' : ' · ' + esc(x.label)) + '</span><p>“' + esc(x.text) + '”</p></div>';
     });
-    return h + '</div><div class="row bar"><button class="btn main" data-go="page">Back</button></div>';
+    return h + stdRow({ back: { text: "\u2190 The Road I Walked", attrs: 'data-go="page"' }, next: pageLink() }) + '</div>';
   }
 
   /* Inside a course section: one card for this section's chapter. He never leaves the course. His story is written in order,
@@ -2680,31 +2752,31 @@ window.AP_WHERE = WHERE;
   function coursePage(chs) {
     var n = chs.length, all = D.chapters.length, here = Math.max(0, Math.min(all - 1, (SITE.course.part || 1) - 1)), me = ROAD_PARTS[here], next = ROAD_PARTS[n];
     var under = n < all && WRITER.begun && WRITER.begun(n);
-    var storyLink = '<a class="btn" href="' + esc(SITE.course.storyPath || "/the-road-i-walked") + '" target="_blank" rel="noopener">Open my story</a>';
-    var h = '<div class="sheet coursecard"><div class="eyebrow">Your story · The Road I Walked</div><h1>Five minutes: write this part of your story</h1>';
+    var h = '<div class="sheet coursecard"><div class="eyebrow">The Road I Walked</div><h1>Five minutes: write this part of your story</h1>';
     if (n > here) {
       h += '<p class="state"><b>Written</b></p><p class="fixed">You have written your chapter for ' + esc(me.part + " · " + me.name) + '. It is in your story.</p>' +
-        '<div class="row"><button class="btn main" data-do="readstory">Read my story so far</button>' + storyLink + '</div>' +
-        '<p class="quiet">To change or delete anything you wrote, open your story.' + (n < all ? ' When you are ready, go on to the next section with "next" at the top of this page.' : '') + '</p>';
+        stdRow({ next: { text: "Your words", attrs: 'data-do="readstory"' }, quiet: [pageLink()] }) +
+        '<p class="quiet">To change anything you wrote, open Your words and tap the line.' + (n < all ? ' When you are ready, go on to the next section with "next" at the top of this page.' : '') + '</p>';
     } else {
-      h += '<p class="fixed">Before you go on, take five minutes. Answer five statements honestly and write a few sentences. <b>When you press Save, this chapter is saved to your page — yours to read, change or delete. Ancient Path reads only what you choose to publish.</b></p>';
+      h += '<p class="fixed">Before you go on, take five minutes. Answer five statements honestly and write a few sentences. <b>When you press Finish, this chapter is saved to your page — yours to read, change or delete. Ancient Path reads only what you choose to publish.</b></p>';
       if (n < here) h += '<p class="say">Your story is written in order, and your next chapter is ' + esc(next.part + " · " + next.name) + '. Write that one first. Then come back here for ' + esc(me.part) + '.</p>';
       h += (under ? '<p class="state"><b>In progress</b> — Pick up where you left off</p>' : "") +
-        '<div class="row"><button class="btn main" data-do="pickup">' + (under ? "Pick up where you left off" : "Write " + esc(next.part) + " of my story") + '</button>' + (n ? '<button class="btn" data-do="readstory">Read my story so far</button>' : "") + '</div>' + ROAD.paperLine();
+        stdRow({ next: { text: under ? "Pick up where you left off" : n ? "Begin " + esc(next.part.toLowerCase().replace("part", "chapter")) : "Begin", attrs: 'data-do="pickup"' }, quiet: (n ? [{ text: "Your words", attrs: 'data-do="readstory"' }] : []).concat([pageLink()]) }) + ROAD.paperLine();
     }
     return h + '<p id="say" class="say" hidden></p></div>';
   }
 
   function minePage(chs) {
-    var n = chs.length, all = D.chapters.length, next = ROAD_PARTS[n], h = '<div class="sheet"><div class="eyebrow">' + (SITE ? "Your Story" : "Your page") + '</div><h1>Welcome' + (n ? " back" : "") + '.</h1>' +
-      '<p class="fixed">This one is yours. Write a chapter after each section of the course, and watch your story grow. ' + (SITE ? '<b>When you press Save, this chapter is saved to your page — yours to read, change or delete. Ancient Path reads only what you choose to publish. You’ll be asked to sign in the first time.</b>' : 'What you write here is kept with your Claude account, private to you.') + '</p>' +
+    var n = chs.length, all = D.chapters.length, next = ROAD_PARTS[n], h = '<div class="sheet"><div class="eyebrow">' + (SITE ? "The Road I Walked" : "Your page") + '</div><h1>Welcome' + (n ? " back" : "") + '.</h1>' +
+      '<p class="fixed">This one is yours. Write a chapter after each section of the course, and watch your story grow. ' + (SITE ? '<b>When you press Finish, the chapter is saved to your page — yours to read, change or delete. Ancient Path reads only what you choose to publish. You’ll be asked to sign in the first time.</b>' : 'What you write here is kept with your Claude account, private to you.') + '</p>' +
       '<div class="cards"><article class="card main"><div class="eyebrow">Walk With Me</div><h2>' + esc(D.title) + '</h2>';
     var under = SITE && n < all && WRITER.begun && WRITER.begun(n);
-    if (!n && under) h += '<p class="state"><b>In progress</b> — Pick up where you left off</p><p class="quiet">' + esc(next.part + " · " + next.name) + ' is under way.</p><div class="row"><button class="btn main" data-do="pickup">Pick up where you left off</button></div>';
-    else if (!n) h += '<p class="state"><b>Not started</b></p><p class="quiet">Ten sections. Five to ten minutes after each one.</p><div class="row"><button class="btn main" data-do="pickup">Begin</button></div>' + (SITE ? ROAD.paperLine() : "");
+    /* v39 · one next step on the card: Begin, Pick up where you left off, or Your words once it is finished; the quiet things beside it */
+    if (!n && under) h += '<p class="state"><b>In progress</b> — Pick up where you left off</p><p class="quiet">' + esc(next.part + " · " + next.name) + ' is under way.</p>' + stdRow({ next: { text: "Pick up where you left off", attrs: 'data-do="pickup"' } });
+    else if (!n) h += '<p class="state"><b>Not started</b></p><p class="quiet">Ten sections. Five to ten minutes after each one.</p>' + stdRow({ next: { text: "Begin", attrs: 'data-do="pickup"' } }) + (SITE ? ROAD.paperLine() : "");
     else if (n < all) h += '<p class="state"><b>In progress</b> — Pick up where you left off</p><p class="quiet">' + n + ' of ' + all + ' sections written. Next: ' + esc(next.part + " · " + next.name) + '</p>' +
-      '<div class="row"><button class="btn main" data-do="pickup">Pick up where you left off</button><button class="btn" data-do="readstory">Read</button></div>';
-    else h += '<p class="state"><b>Finished</b></p><p class="quiet">Ten sections. Your words, your road.</p><div class="row"><button class="btn main" data-go="tell">Open it</button><button class="btn" data-do="download">Download</button></div>';
+      stdRow({ next: { text: "Pick up where you left off", attrs: 'data-do="pickup"' }, quiet: [{ text: "Your words", attrs: 'data-do="readstory"' }] });
+    else h += '<p class="state"><b>Finished</b></p><p class="quiet">Ten sections. Your words, your road.</p>' + stdRow({ next: { text: "Your words", attrs: 'data-do="readstory"' }, quiet: [{ text: "Download", attrs: 'data-do="download"' }] });
     if (n) h += '<p class="links"><button class="link" data-go="evidence">Evidence</button><button class="link" data-do="startover">' + (SITE ? (startOver ? "Delete permanently — press again" : "Delete this story") : (startOver ? "Erase everything you wrote here — press again" : "Start over")) + '</button></p>';
     return h + '</article></div><p id="say" class="say" hidden>' + '</p><p class="quiet" id="keepnote">' + esc(keepNote) + '</p></div>';
   }
@@ -2740,7 +2812,8 @@ window.AP_WHERE = WHERE;
   function render(keep) {
     var y = window.scrollY;
     try { if (ROAD.finished(D, stage)) ROAD.loadPlate(); } catch (e) {}
-    app.innerHTML = screen === "page" ? pageScreen() : screen === "story" ? storyScreen() : screen === "write" ? WRITER.html() : screen === "tell" ? TELL.html(D, stage) : screen === "evidence" ? evidenceScreen() : editScreen();
+    if (screen === "story" || screen === "edit") { TELL.show(D, stage, "read"); screen = "tell"; }   /* v39 · the old chapter list and edit screen open Your words */
+    app.innerHTML = screen === "page" ? pageScreen() : screen === "write" ? WRITER.html() : screen === "tell" ? TELL.html(D, stage) : screen === "evidence" ? evidenceScreen() : pageScreen();
     document.querySelectorAll("[data-stage]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-stage") === stage); });
     if (SITE) { if (!keep && app.scrollIntoView && app.getBoundingClientRect().top < 0) app.scrollIntoView(); if (window.AP_ROAD_SITE) window.AP_ROAD_SITE.paint(); }
     else if (keep) window.scrollTo(0, y); else window.scrollTo(0, 0);
@@ -2771,15 +2844,12 @@ window.AP_WHERE = WHERE;
     if (SITE && !(e.target.closest && e.target.closest("#ap-road"))) return;
     var b = e.target.closest("button"); if (!b) return;
     if (screen === "tell" && TELL.click(b)) { keep(); return; }
-    var st = b.getAttribute("data-stage"), go = b.getAttribute("data-go"), act = b.getAttribute("data-do"), tog = b.getAttribute("data-tog"), back = b.getAttribute("data-back");
+    var st = b.getAttribute("data-stage"), go = b.getAttribute("data-go"), act = b.getAttribute("data-do");
     if (st) { if (stage === "me") meT = TELL.dump(); stage = st; D = st === "me" ? ME : SAMPLE; screen = "page"; delArmed = false; startOver = false; TELL.forget(); if (st === "me") TELL.load(meT); render(); }
-    else if (go) { screen = go; delArmed = false; render(); }
-    else if (tog) { var p = tog.split("-"), l = D.chapters[p[0]].lines[p[1]]; l.on = !l.on; render(true); }
-    else if (back) { var q = back.split("-"), m = D.chapters[q[0]].lines[q[1]]; m.text = m.first; render(true); }
+    else if (go) { if (go === "tell" || go === "story" || go === "edit") { TELL.show(D, stage, "read"); go = "tell"; } screen = go; delArmed = false; render(); }
     else if (act === "download") download();
     else if (act === "copy") copy();
     else if (act === "print") window.print();
-    else if (act === "straight") { straight = !straight; render(); }
     else if (act === "readstory") { TELL.show(D, stage, "read"); screen = "tell"; render(); }
     else if (act === "startover") { if (startOver) { startOver = false; ME = emptyMan(); D = ME; meT = null; WRITER.clear(); TELL.forget(); render(); keepNow(); if (SITE && window.AP_ROAD_SITE) window.AP_ROAD_SITE.erased(); } else { startOver = true; render(true); } }
     else if (act === "pickup") { if (stage === "me") { WRITER.open(Math.min(D.meCount || 0, ROAD_PARTS.length - 1)); screen = "write"; render(); } else if (stage === "three" && !D.threeDone) { WRITER.open(2); screen = "write"; render(); } else say("On the course page this opens his next chapter. In this walk-through the chapter writer is built for Part Three only: use the third button at the top."); }
@@ -2794,11 +2864,6 @@ window.AP_WHERE = WHERE;
     keep();
     if (screen === "tell" && TELL.input(t)) return;
     if (t.hasAttribute("data-k")) D[t.getAttribute("data-k")] = v;
-    else if (t.hasAttribute("data-ln")) { var p = t.getAttribute("data-ln").split("-"), ln = D.chapters[p[0]].lines[p[1]]; ln.text = v;
-      var bk = document.querySelector('[data-orig="' + t.getAttribute("data-ln") + '"]'); if (bk) bk.hidden = v === ln.first; }
-    else if (t.hasAttribute("data-so")) D.chapters[t.getAttribute("data-so")].setOut = v;
-    else if (t.hasAttribute("data-ca")) D.chapters[t.getAttribute("data-ca")].camped = v;
-    else if (t.hasAttribute("data-bd")) D.bends[t.getAttribute("data-bd")].text = v;
   });
 
   window.__road = { get data() { return D; }, get stage() { return stage; } };
