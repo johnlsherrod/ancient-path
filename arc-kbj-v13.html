@@ -1,0 +1,473 @@
+<!-- AP-HIA-KBJ-v13 (v13, 14 Oct 2026: the Before You Begin unit is gone and its framing is the opening of this page — John's copy, Ayeka to the table, with the worksheet link under it as a small line; the privacy line moves to the foot under the writing, above the 988 line, in the house words (first sentence bold, nothing after it) and the old second paragraph is gone; the example naming Luis now says a man in my group, and that prompt asks by role, not name) (v12, 12 Sept: the answer box reads as one paragraph: the opening words sit at the start of the first line and his words wrap back to the left edge under them, instead of the second line starting under where his words began (stem placed at the top-left of the box, the box gets a first-line indent the width of the stem, recomputed on resize)) (v11, 12 Sept: Save and stop for now keeps the piece unfinished: the stored meta says finished:false with the part he was on, so his page offers "Pick up where you left off" and a return opens the writer at that part with his words in the boxes; Finish, then Save, still records finished:true. The page reads its meta back on restore instead of forcing the finished view; the meta listener the other two poem pages already had is added here) (v10: Download makes the keepsake PDF — course label, centered title, name and date, Ancient Path mark; the finished view on the page shows the byline too) (v9, John's poem review: two new lines — the men who walked with him (Unlearning) and who stayed / who moved on (The Table); "Where I served" broadened to "Where I tried hardest" so a man who never led still has a line; table opener "Now my table is" → "Around my table now are"; 27 lines now) (v8: a saved poem comes back when he taps Open it — the course player strips ?open=1 from its address, so his page also leaves a short-lived note in the browser and this page reads it; plus a "Your page" link at the top that jumps the whole window back to his page, not the course frame) (v7: "Download it" — a clean PDF of the poem, keepable and printable; replaces the old Print button; falls back to a text file if the PDF library can't load) (v6, John's walk: wrapped answers left-align in the box, no longer centered; every prompt reviewed line by line for clarity; reworded: What You Feared, What Came Off, What You No Longer Pretend to Be, What You Knew About, The Measure, What Grace Came As, What Was Under Your Feet, The Line That Became Ground) (v5: the last line of a part always closes with a full stop; a quoted answer keeps its ? or !) (v4, 7 Sept: every line starts for him and he finishes it in his own words — no splicing; whole examples; the finished poem can be changed line by line) · Here I Am · Known by Jesus · Sept 7 2026 -->
+<div class="arc-root" id="arcRoot">
+<style>
+.arc-root{--a-navy:#1F2A44;--a-bronze:#B8945F;--a-paper:#FBF9F5;--a-rule:#E2DCD1;--a-ink:#2B3040;--a-quiet:#6B7280;--a-serif:'Source Serif 4',Georgia,'Times New Roman',serif;--a-sans:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;all:initial;font-family:var(--a-sans) !important;color:var(--a-ink) !important;display:block;box-sizing:border-box;max-width:720px;margin:0 auto;padding:28px 20px 48px;text-align:left;line-height:1.5 !important;-webkit-font-smoothing:antialiased}
+.arc-root *{box-sizing:border-box;text-align:left}
+.arc-top-nav{margin:0 0 18px}
+.arc-page-link{font:600 13px/1.4 var(--a-sans) !important;color:var(--a-navy) !important;text-decoration:none;border-bottom:1px solid var(--a-rule);padding-bottom:1px}
+.arc-page-link:hover{border-bottom-color:var(--a-bronze)}
+.arc-eyebrow{font:600 12px/1.4 var(--a-sans);letter-spacing:.22em;text-transform:uppercase;color:var(--a-bronze);margin:0 0 10px}
+.arc-h1{font:600 36px/1.15 var(--a-serif);color:var(--a-navy);margin:0 0 14px}
+.arc-lede{font:400 18px/1.55 var(--a-sans);margin:0 0 10px}
+.arc-paper{font:400 14px/1.5 var(--a-sans);color:var(--a-quiet);margin:6px 0 26px}
+.arc-paper a{color:var(--a-navy)}
+.arc-progress{display:flex;justify-content:space-between;font:600 12px/1.4 var(--a-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--a-quiet);margin:0 0 6px}
+.arc-track{height:2px;background:var(--a-rule);margin:0 0 22px}
+.arc-fill{height:2px;width:0%;background:var(--a-bronze);transition:width .45s ease}
+.arc-part{display:none;padding:6px 0 18px 16px;border-left:2px solid var(--a-bronze)}
+.arc-part.is-active{display:block}
+.arc-part-title{font:600 26px/1.2 var(--a-serif);color:var(--a-navy);margin:0 0 4px}
+.arc-part-scene{font:italic 400 16px/1.5 var(--a-serif);color:var(--a-quiet);margin:0 0 6px}
+.arc-part-frame{font:400 15px/1.5 var(--a-sans);color:var(--a-ink);margin:0 0 16px;padding:10px 12px;background:var(--a-paper);border:1px solid var(--a-rule)}
+.arc-slot{margin:0 0 20px}
+.arc-slot-name{font:600 18px/1.3 var(--a-serif);color:var(--a-navy);margin:0 0 2px}
+.arc-slot-scene{font:italic 400 14px/1.45 var(--a-serif);color:var(--a-quiet);margin:0 0 4px}
+.arc-slot-prompt{font:400 16px/1.5 var(--a-sans);margin:0 0 4px}
+.arc-slot-shape{font:400 13px/1.4 var(--a-sans);color:var(--a-quiet);margin:0 0 8px}
+.arc-slot-shape b{font-weight:600;color:var(--a-ink)}
+.arc-in,.arc-area{display:block;width:100%;padding:10px 12px;font:400 17px/1.5 var(--a-sans);color:var(--a-ink);background:var(--a-paper);border:1px solid var(--a-rule);border-radius:2px;outline:none}
+.arc-area{min-height:84px;resize:vertical}
+.arc-in:focus,.arc-area:focus{border-color:var(--a-bronze)}
+.arc-line{display:block;position:relative;width:100%;padding:10px 12px;background:var(--a-paper);border:1px solid var(--a-rule);border-radius:2px}
+.arc-line:focus-within{border-color:var(--a-bronze)}
+.arc-stem{position:absolute;left:12px;top:10px;font:400 17px/1.5 var(--a-serif);color:var(--a-quiet);white-space:nowrap;pointer-events:none}
+.arc-root textarea.arc-rest{display:block;width:100%;min-width:0;border:0 !important;outline:none !important;box-shadow:none !important;background:transparent !important;padding:0 !important;margin:0 !important;border-radius:0 !important;resize:none;overflow:hidden;font:400 17px/1.5 var(--a-serif) !important;color:var(--a-ink) !important;text-align:left !important;min-height:1.5em;height:auto}
+.arc-rest::placeholder{color:#B9B2A6;font-style:italic}
+.arc-root textarea.arc-editor{display:none;width:100%;min-height:360px;padding:14px 16px !important;font:400 18px/1.55 var(--a-serif) !important;color:var(--a-ink) !important;background:#fff !important;border:1px solid var(--a-bronze) !important;border-radius:2px !important;box-shadow:none !important;outline:none !important;resize:vertical;white-space:pre-wrap}
+.arc-root textarea.arc-editor.is-active{display:block}
+.arc-poem.is-hidden{display:none}
+.arc-nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 0 18px}
+.arc-btn{font:600 14px/1 var(--a-sans) !important;padding:13px 22px;border-radius:2px;border:1px solid transparent;cursor:pointer;transition:background-color .15s ease,border-color .15s ease,color .15s ease}
+.arc-btn-primary{background:var(--a-navy);color:#fff !important;text-decoration:none !important}
+.arc-btn-primary:hover{background:#2C3B5E}
+.arc-btn-ghost{background:transparent;color:var(--a-navy) !important;border-color:var(--a-rule)}
+.arc-btn-ghost:hover,.arc-btn-ghost:focus{background:var(--a-navy);color:#fff !important;border-color:var(--a-navy)}
+.arc-btn[disabled]{opacity:.55;cursor:default}
+.arc-spacer{flex:1}
+.arc-gate{font:400 14px/1.5 var(--a-sans);color:var(--a-quiet);margin:10px 0 0 18px;min-height:1em}
+.arc-panel{background:var(--a-paper);border:1px solid var(--a-rule);padding:22px 24px;margin:26px 0 0}
+.arc-panel-head{font:600 12px/1.4 var(--a-sans);letter-spacing:.18em;text-transform:uppercase;color:var(--a-bronze);margin:0 0 14px}
+.arc-poem{font:400 18px/1.55 var(--a-serif);color:var(--a-ink);white-space:pre-wrap;margin:0}
+.arc-poem p{font:inherit !important;color:inherit;line-height:inherit}
+.arc-poem-empty{color:var(--a-quiet);font-style:italic}
+.arc-poem-title{font:600 14px/1.4 var(--a-sans);letter-spacing:.18em;text-transform:uppercase;color:var(--a-navy);margin:0 0 12px}
+.arc-finish{display:none}
+.arc-finish.is-active{display:block}
+.arc-h2{font:600 28px/1.2 var(--a-serif);color:var(--a-navy);margin:8px 0 8px}
+.arc-note{font:400 16px/1.5 var(--a-sans);color:var(--a-quiet);margin:0 0 18px}
+.arc-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0 0}
+.aps-note{font:400 15px/1.5 var(--a-sans);color:var(--a-quiet);margin:12px 0 0;min-height:1em}
+.aps-panel{margin:6px 0 0}
+.aps-page-link{font:600 15px/1.4 var(--a-sans);color:var(--a-navy);text-decoration:underline}
+.arc-foot{font:400 14px/1.5 var(--a-sans);color:var(--a-quiet);margin:34px 0 0;padding-top:14px;border-top:1px solid var(--a-rule)}
+.arc-foot a{color:var(--a-navy)}
+.arc-foot.arc-keep{margin-bottom:0}
+.arc-foot.arc-keep + .arc-foot{margin-top:10px;padding-top:0;border-top:0}
+@media (max-width:600px){.arc-h1{font-size:30px}.arc-part-title{font-size:22px}.arc-nav{margin-left:0}}
+</style>
+
+<p class="arc-top-nav"><a class="arc-page-link" href="/start" target="_top">&larr; Your page</a></p>
+<p class="arc-eyebrow">Known by Jesus · Here I Am</p>
+<h1 class="arc-h1">Here I Am</h1>
+<p class="arc-lede">In the opening pages of the Bible, God&rsquo;s first question to a hiding Adam was not an accusation. It was <em>Ayeka</em> &mdash; where are you? Known by Jesus is one path into answering it, not the whole of it. The mirror, the slower walk, the table: each one worked on the same hiding Adam knew, and shaped how you would answer.</p>
+<p class="arc-lede">Here I Am is where you give your answer. Twenty-seven lines, five parts. Each line starts for you; you finish it in your own words. What comes out the other side is your answer as a poem &mdash; from the tower you built to the table you sit at now.</p>
+<p class="arc-paper">Prefer paper? <a href="https://lwfiles.mycourse.app/69ff74fa031fcc8033475300-public/publicFiles/Here_I_Am_worksheet.pdf" target="_blank" rel="noopener">Print the worksheet</a>.</p>
+
+<div class="arc-progress"><span id="arcPartLabel">Part 1 of 5</span><span id="arcCount">0 of 27 written</span></div>
+<div class="arc-track"><div class="arc-fill" id="arcFill"></div></div>
+
+<div id="arcParts"><hr style="border:0;margin:0;height:0"></div>
+
+<div class="arc-nav" id="arcNav">
+  <button type="button" class="arc-btn arc-btn-ghost" id="arcBack">Back</button>
+  <button type="button" class="arc-btn arc-btn-primary" id="arcNext">Next</button>
+  <span class="arc-spacer"></span>
+  <button type="button" class="arc-btn arc-btn-ghost" id="arcSaveNow">Save and stop for now</button>
+</div>
+<p class="arc-gate" id="arcGate"></p>
+<div id="arcNavOff" style="display:none"></div>
+
+<div class="arc-panel" id="arcDraftPanel">
+  <p class="arc-panel-head">Your poem so far</p>
+  <div class="arc-poem" id="arcDraft"><span class="arc-poem-empty">It begins when you write the first line.</span></div>
+</div>
+
+<div class="arc-finish" id="arcFinish">
+  <h2 class="arc-h2">Here you are. In your words.</h2>
+  <p class="arc-note">Read it out loud once. Then save it, so it is waiting on your page.</p>
+  <div class="arc-panel" style="margin-top:0">
+    <p class="arc-panel-head">Your poem</p>
+    <div class="arc-poem" id="arcFinal"><hr style="border:0;margin:0;height:0"></div>
+    <textarea class="arc-editor" id="arcEditor" aria-label="Your poem, to change"></textarea>
+  </div>
+  <div class="arc-actions" id="arcActions">
+    <button type="button" class="arc-btn arc-btn-ghost" id="arcDownload">Download</button>
+    <button type="button" class="arc-btn arc-btn-ghost" id="arcCopy">Copy</button>
+    <button type="button" class="arc-btn arc-btn-ghost" id="arcWords">Edit</button>
+    <button type="button" class="arc-btn arc-btn-ghost" id="arcEdit">Back to the questions</button>
+  </div>
+</div>
+
+<input type="hidden" id="arc_meta" value="">
+
+<p class="arc-foot arc-keep"><strong>Nothing you write here reaches us unless you choose to save it with us.</strong> Everything else stays on your device.</p>
+<p class="arc-foot"><strong>If something in this stirred more than you expected:</strong> the 988 Suicide &amp; Crisis Lifeline is there any hour, by call or text. In immediate danger, call 911. <strong>We make mistakes.</strong> If something on this page is broken, <a data-ap-bug href="https://form.jotform.com/262466498821065" target="_blank" rel="noopener">report a bug</a>.</p>
+
+<script>
+(function () {
+  "use strict";
+  function $(id) { return document.getElementById(id); }
+
+  /* Five parts. Each slot: key · name · scene (from the course) · prompt · shape · examples · long (textarea). */
+  var PARTS = [
+    { title: "I. The Voice", scene: "Ayeka. Where are you? Not a question about where a man is standing.", frame: "What you built, who it was for, and where the noise stopped. Each line starts for you — finish it.",
+      slots: [
+        { key: "tower", name: "The Tower", scene: "Adam hid. Most men build something to hide behind instead.", prompt: "What you built to be safe: the work, the duty, the reputation.", stem: "I built", ex: "I built the ministry calendar, and a name people trusted." },
+        { key: "prove", name: "What It Was Meant to Prove", scene: "Every tower has a sentence under it.", prompt: "What the tower was supposed to prove.", stem: "It was meant to prove", ex: "It was meant to prove that I was enough." },
+        { key: "whoFor", name: "Who It Was For", scene: "The audience a man builds for.", prompt: "Who you were proving it to.", stem: "It was for", ex: "It was for my father, who never said so." },
+        { key: "quiet", name: "Where the Noise Stopped", scene: "The voice comes in the cool of the day, when the work is done.", prompt: "Where, or when, the busyness went quiet. The next line is already written: and a voice asked, “Where are you?”", stem: "Then,", end: ",", ex: "Then, on the drive home at midnight, the noise stopped," },
+        { key: "hiding", name: "Where You Were Hiding", scene: "Adam said, “I was afraid, and I hid.”", prompt: "What you were actually hiding in.", stem: "I was hiding in", ex: "I was hiding in the busyness, and the jokes." }
+      ] },
+    { title: "II. Unlearning", scene: "Yada. To know, the way a man is known — not the way he knows a fact.", frame: "The script you used to keep people at a safe distance, and what you put down.",
+      slots: [
+        { key: "script", name: "The Script", scene: "What you reached for when someone got too close.", prompt: "The thing you reached for when someone got close.", stem: "When anyone got close I reached for", ex: "When anyone got close I reached for the argument." },
+        { key: "feared", name: "What You Feared", scene: "The script always guards something.", prompt: "What you were afraid would happen if someone got all the way in.", stem: "I was afraid", ex: "I was afraid that if they saw me they would leave." },
+        { key: "role", name: "The Role You Put Down", scene: "Knowing about is a posture. Being known has no posture.", prompt: "The role you had to put down to be known.", stem: "I put down being", ex: "I put down being the fixer." },
+        { key: "aboutNotKnown", name: "What You Knew About but Did Not Know", scene: "You can know every verse about a thing and not know the thing.", prompt: "Something you knew all about, but had never let get near you.", stem: "I knew all about", ex: "I knew all about God’s love. I had never let it near me." },
+        { key: "firstOne", name: "The First One You Let Know You", scene: "Yada happens with someone.", prompt: "The first person you let know you, and where. By role, not name — a friend, a brother, a man in your group.", stem: "The first one I let know me was", ex: "The first one I let know me was a man in my group, on a Thursday, in a room of eight men." },
+        { key: "walkedWith", name: "The Men Who Walked With You", scene: "Being known becomes being accompanied.", prompt: "The men who walked with you into the hard parts.", stem: "Then came the men who stood in the gap,", ex: "Then came the men who stood in the gap, ready to walk the hard parts with me." }
+      ] },
+    { title: "III. The Mirror", scene: "Mida k’neged mida — measure for measure. The grace you allow yourself is the grace you receive.", frame: "Where you served, what was really driving it, and what came off. Do not stop in the middle of this part — the mirror is the point.",
+      slots: [
+        { key: "served", name: "Where You Tried Hardest", scene: "The place the performance ran.", prompt: "The place you worked hardest to be seen as good — where you served, led, or just tried to measure up.", stem: "Where I tried hardest was", end: ",", ex: "Where I tried hardest was the worship team, every Sunday for nine years." },
+        { key: "driver", name: "The Hidden Driver", scene: "Under the service, a motive.", prompt: "What was really pushing you.", stem: "and what was driving me was", ex: "and what was driving me was not disappointing anyone." },
+        { key: "measure", name: "The Measure", scene: "The sentence you judged yourself by.", prompt: "The standard you held yourself to.", stem: "The measure I used on myself was", quote: true, ex: "The measure I used on myself was “never enough.”" },
+        { key: "cameOff", name: "What Came Off", scene: "The mask, named.", prompt: "The mask that came off when you stopped performing for people.", stem: "What came off was", ex: "What came off was the competent one, the man with the answers." },
+        { key: "graceAs", name: "What Grace Came As", scene: "Grace arrives as something ordinary.", prompt: "What grace looked like when it showed up.", stem: "And grace came as", ex: "And grace came as a friend who said nothing and stayed." }
+      ] },
+    { title: "IV. The Walk", scene: "Halak. To walk. The Sermon is not a checklist; it is the ground.", frame: "Where you used to rush, and what happened when you slowed down.",
+      slots: [
+        { key: "rushed", name: "Where You Used to Rush", scene: "An ordinary moment.", prompt: "The everyday moment you used to sprint through.", stem: "Where I used to rush was", ex: "Where I used to rush was the school run, every morning." },
+        { key: "bodySlowed", name: "What Happened When You Slowed", scene: "The body knows the difference between striving and walking.", prompt: "What happened, in you, when you slowed down.", stem: "When I slowed down,", ex: "When I slowed down, my shoulders came down and I breathed all the way in." },
+        { key: "underfoot", name: "What Was Under Your Feet", scene: "Walking is done on a surface.", prompt: "The ground that was actually under your feet.", stem: "Under my feet was", ex: "Under my feet was gravel, and then the kitchen floor." },
+        { key: "line", name: "The Line That Became Ground", scene: "A line from the Sermon on the Mount that stopped being a rule.", prompt: "A line from the Sermon on the Mount that became ground to stand on.", stem: "The line that became ground was", quote: true, ex: "The line that became ground was “Blessed are the poor in spirit.”" },
+        { key: "carried", name: "What You Carried Into the Ordinary", scene: "Presence goes with a man into a Tuesday.", prompt: "What you carried into an ordinary day.", stem: "Into an ordinary day I carried", ex: "Into an ordinary day I carried patience, and my attention." }
+      ] },
+    { title: "V. The Table", scene: "Not a mountaintop. A table, and chairs pulled out.", frame: "Write what is true. If it is not true yet, write what you want to be true and say so — “not yet” is an honest answer here.",
+      slots: [
+        { key: "table", name: "Your Table", scene: "Who sits there now.", prompt: "The people at your table now.", stem: "Around my table now are", ex: "Around my table now are my wife and two boys, and the men from my small group." },
+        { key: "chair", name: "The Chair You Pulled Out", scene: "Being known becomes making room.", prompt: "Who you made room for.", stem: "I pulled out a chair for", ex: "I pulled out a chair for the new guy, and for my father." },
+        { key: "someLeft", name: "Who Stayed, Who Moved On", scene: "Making room is not the same as keeping everyone.", prompt: "Who stayed at the table, and who moved on.", stem: "Some stayed;", ex: "Some stayed; some moved on to a seat I couldn't follow." },
+        { key: "pretend", name: "What You No Longer Pretend to Be", scene: "The last mask.", prompt: "Who you no longer have to pretend to be, now that these people know you.", stem: "I no longer pretend to be", ex: "I no longer pretend to be bulletproof." },
+        { key: "known", name: "The Man Who Is Known", scene: "Simon was known before he was named.", prompt: "Three words for the man who is known.", stem: "I am", ex: "I am seen, steady, unhurried." },
+        { key: "answer", name: "Your Answer", scene: "Ayeka. Where are you? Hineni — here I am.", prompt: "When He asks where you are: what you say, and where you are when you say it.", stem: "And when He asks where I am, I say:", quote: true, ex: "And when He asks where I am, I say: “Here I am, in the kitchen, at six in the morning.”" }
+      ] }
+  ];
+  /* A line that is already written, placed after the slot named here, whenever that part has anything in it. */
+  var FIXED_AFTER = { quiet: "and a voice asked, “Where are you?”" };
+  var TAIL = "Written at the end of Known by Jesus.";
+  var GATE = ["measure", "cameOff", "table", "answer"];   /* the mirror and the table must be written before Finish */
+
+  var partsEl = $("arcParts"), fill = $("arcFill"), lbl = $("arcPartLabel"), cnt = $("arcCount"), gateEl = $("arcGate");
+  var back = $("arcBack"), next = $("arcNext"), nav = $("arcNav"), finishEl = $("arcFinish"), finalEl = $("arcFinal"), draftEl = $("arcDraft"), draftPanel = $("arcDraftPanel"), meta = $("arc_meta");
+  var ALL = [], cur = 0, finished = false, stopped = false; /* stopped: he pressed Save and stop for now — the piece is held, not finished */
+
+  PARTS.forEach(function (p, pi) {
+    var wrap = document.createElement("div"); wrap.className = "arc-part"; wrap.setAttribute("data-part", pi);
+    var t = document.createElement("p"); t.className = "arc-part-title"; t.textContent = p.title;
+    var sc = document.createElement("p"); sc.className = "arc-part-scene"; sc.textContent = p.scene;
+    var fr = document.createElement("p"); fr.className = "arc-part-frame"; fr.textContent = p.frame;
+    wrap.appendChild(t); wrap.appendChild(sc); wrap.appendChild(fr);
+    p.slots.forEach(function (s) {
+      ALL.push(s);
+      var box = document.createElement("div"); box.className = "arc-slot";
+      var n = document.createElement("p"); n.className = "arc-slot-name"; n.textContent = s.name;
+      var ss = document.createElement("p"); ss.className = "arc-slot-scene"; ss.textContent = s.scene;
+      var pr = document.createElement("p"); pr.className = "arc-slot-prompt"; pr.textContent = s.prompt;
+      var sh = document.createElement("p"); sh.className = "arc-slot-shape"; var b = document.createElement("b"); b.textContent = "Finish the line."; sh.appendChild(b); sh.appendChild(document.createTextNode(" For example: " + s.ex));
+      var line = document.createElement("div"); line.className = "arc-line";
+      var stem = document.createElement("span"); stem.className = "arc-stem"; stem.textContent = s.stem;
+      var inp = document.createElement("textarea"); inp.className = "arc-rest"; inp.id = "arc_" + s.key; inp.rows = 1; inp.setAttribute("aria-label", s.stem + " \u2026"); inp.placeholder = "\u2026";
+      line.appendChild(stem); line.appendChild(inp);
+      line.addEventListener("mousedown", function (e) { if (e.target !== inp) { e.preventDefault(); try { inp.focus(); } catch (err) {} } });
+      keepFocus(inp);
+      box.appendChild(n); box.appendChild(ss); box.appendChild(pr); box.appendChild(sh); box.appendChild(line);
+      wrap.appendChild(box);
+      inp.addEventListener("input", function () { grow(inp); edited = null; render(); });
+    });
+    partsEl.appendChild(wrap);
+  });
+
+  /* The course player pulls focus back to itself on the first click inside this page, so the first box a man clicks goes dead. If a box loses focus within a moment of being clicked, give it back. */
+  function keepFocus(el) {
+    var t0 = 0;
+    el.addEventListener("mousedown", function () { t0 = Date.now(); });
+    el.addEventListener("blur", function () { if (Date.now() - t0 < 400) { setTimeout(function () { try { el.focus({ preventScroll: true }); } catch (e) { try { el.focus(); } catch (e2) {} } }, 0); } });
+  }
+  function val(k) { var n = $("arc_" + k); return n ? String(n.value || "").trim() : ""; }
+  function written() { var n = 0; ALL.forEach(function (s) { if (val(s.key)) n++; }); return n; }
+  function indent(t) { try { var s = t.previousElementSibling; var w = (s && s.className === "arc-stem") ? s.offsetWidth : 0; t.style.textIndent = w ? (w + 8) + "px" : "0"; } catch (e) {} }
+  function grow(t) { try { indent(t); t.style.height = "auto"; t.style.height = Math.max(t.scrollHeight, 26) + "px"; } catch (e) {} }
+  function growAll() { ALL.forEach(function (s) { var t = $("arc_" + s.key); if (t) grow(t); }); }
+  window.addEventListener("resize", growAll);
+  var edited = null;   /* the poem as he changed it by hand, if he did */
+
+  /* One line per slot: the opening words, then his words. Nothing is spliced into the middle of a sentence. */
+  function lineFor(s, text) {
+    var t = String(text || "").trim().replace(/\s+/g, " ");
+    if (!t) return "";
+    var end = s.end || ".";
+    if (s.quote) {
+      t = t.replace(/^[“"']+|[”"']+$/g, "");
+      var keep = /[?!]$/.test(t) ? "" : end;
+      t = t.replace(/[.,]+$/, "");
+      return s.stem + " “" + t.charAt(0).toUpperCase() + t.slice(1) + keep + "”";
+    }
+    if (!/[.!?,;:…”"')]$/.test(t)) t += end;
+    else if (end === "," && /[.]$/.test(t)) t = t.replace(/[.]+$/, ",");
+    return s.stem + " " + t;
+  }
+  function closeLine(l) { return l.replace(/,”$/, ".”").replace(/,$/, "."); }   /* the last line of a part ends with a full stop */
+  function poemLines(A) {
+    var a = A || {}; function g(k) { var v = a[k] != null ? String(a[k]) : val(k); return v.trim(); }
+    var st = [];
+    PARTS.forEach(function (p) {
+      var L = [], any = false;
+      p.slots.forEach(function (s) { if (g(s.key)) any = true; });
+      if (!any) return;
+      p.slots.forEach(function (s) {
+        var l = lineFor(s, g(s.key));
+        if (l && !L.length) l = l.charAt(0).toUpperCase() + l.slice(1);   /* a line that opens a part starts with a capital */
+        if (l) L.push(l);
+        if (FIXED_AFTER[s.key] && (l || (s.key === "quiet" && g("hiding")))) L.push(FIXED_AFTER[s.key]);
+      });
+      if (L.length) { L[L.length - 1] = closeLine(L[L.length - 1]); st.push(L.join("\n")); }
+    });
+    return st;
+  }
+  function assembled(A) { var st = poemLines(A); return st.length ? "HERE I AM\n\n" + st.join("\n\n") + "\n\nHere I am.\n\n" + TAIL : ""; }
+  function poemText(A) { if (!A && edited) return edited; return assembled(A); }
+  window.arcDocument = poemText;
+
+  function paintPoem(host, empty) {
+    host.innerHTML = "";
+    if (host === finalEl && edited) {
+      edited.split("\n\n").forEach(function (blk, i) { var p = document.createElement("p"); p.style.margin = i ? "16px 0 0" : "0"; if (i === 0) { p.className = "arc-poem-title"; } p.textContent = blk; host.appendChild(p); });
+      return;
+    }
+    var st = poemLines();
+    if (!st.length) { if (empty) { var e = document.createElement("span"); e.className = "arc-poem-empty"; e.textContent = empty; host.appendChild(e); } return; }
+    var t = document.createElement("p"); t.className = "arc-poem-title"; t.textContent = "Here I Am"; host.appendChild(t);
+    st.forEach(function (s, i) { var p = document.createElement("p"); p.style.margin = i ? "16px 0 0" : "0"; p.textContent = s; host.appendChild(p); });
+    var c = document.createElement("p"); c.style.margin = "16px 0 0"; c.textContent = "Here I am."; host.appendChild(c);
+    if (finished) { var tl = document.createElement("p"); tl.style.margin = "18px 0 0"; tl.style.color = "#6B7280"; tl.style.fontSize = "15px"; tl.textContent = TAIL; host.appendChild(tl); if (typeof __apAuthor === "string" && __apAuthor) { var bl = document.createElement("p"); bl.style.margin = "4px 0 0"; bl.style.color = "#6B7280"; bl.style.fontSize = "15px"; bl.style.fontStyle = "italic"; bl.textContent = "Written by " + __apAuthor + " · " + apMonthYear(); host.appendChild(bl); } }
+  }
+  function gateMissing() { return GATE.filter(function (k) { return !val(k); }); }
+  function writeMeta() { var m = { step: cur, finished: finished && !stopped }; if (edited) m.poem = edited; meta.value = JSON.stringify(m); }
+  function render() {
+    var n = written();
+    fill.style.width = Math.round(100 * n / ALL.length) + "%";
+    cnt.textContent = n + " of " + ALL.length + " written";
+    lbl.textContent = "Part " + (cur + 1) + " of " + PARTS.length;
+    back.disabled = cur === 0;
+    next.textContent = cur === PARTS.length - 1 ? "Finish" : "Next";
+    if (cur === PARTS.length - 1) {
+      var m = gateMissing();
+      gateEl.textContent = m.length ? "Before you finish, the mirror and the table need their words: " + m.map(function (k) { return ALL.filter(function (s) { return s.key === k; })[0].name; }).join(", ") + ". Use Back." : "";
+    } else { gateEl.textContent = ""; }
+    if (!finished) paintPoem(draftEl, "It begins when you write the first line.");
+    else paintPoem(finalEl);
+    growAll();
+    writeMeta();
+  }
+  function seek(el) { try { el.scrollIntoView({ block: "start", behavior: "auto" }); window.scrollBy(0, -20); } catch (e) {} }
+  function show(i, quiet) {
+    cur = Math.max(0, Math.min(PARTS.length - 1, i));
+    var all = partsEl.querySelectorAll(".arc-part");
+    for (var k = 0; k < all.length; k++) { all[k].classList.toggle("is-active", k === cur); }
+    finished = false; stopped = false;
+    finishEl.classList.remove("is-active");
+    partsEl.style.display = ""; nav.style.display = ""; gateEl.style.display = ""; draftPanel.style.display = "";
+    render();
+    if (!quiet) { seek(all[cur]); var f = all[cur].querySelector("input, textarea"); if (f) { try { f.focus({ preventScroll: true }); } catch (e) {} } }
+  }
+  function finish(force) {
+    closeEditor();
+    if (!force && gateMissing().length) { render(); seek(gateEl); return; }
+    if (!force && written() === 0) { seek(partsEl); return; }
+    finished = true;
+    partsEl.style.display = "none"; nav.style.display = "none"; gateEl.style.display = "none"; draftPanel.style.display = "none";
+    finishEl.classList.add("is-active");
+    render();
+    try { apAuthor(function () { if (finished) paintPoem(finalEl); }); } catch (e) {}
+    if (!force) seek(finishEl);
+  }
+  function hold() { stopped = true; finish(true); } /* Save and stop for now: the finished view (where Save and "Saved" live) with the piece still open */
+  window.arcFinish = finish; window.arcShow = show; window.arcHold = hold;
+
+  back.addEventListener("click", function () { show(cur - 1); });
+  next.addEventListener("click", function () { if (cur === PARTS.length - 1) finish(false); else show(cur + 1); });
+  $("arcEdit").addEventListener("click", function () { closeEditor(); show(0); });
+  var editorEl = $("arcEditor"), wordsBtn = $("arcWords");
+  keepFocus(editorEl);
+  function closeEditor() { editorEl.classList.remove("is-active"); finalEl.classList.remove("is-hidden"); wordsBtn.textContent = "Edit"; }
+  wordsBtn.addEventListener("click", function () {
+    if (editorEl.classList.contains("is-active")) {
+      var t = String(editorEl.value || "").trim();
+      edited = (t && t !== assembled()) ? t : null;
+      closeEditor(); render(); return;
+    }
+    editorEl.value = poemText(); editorEl.classList.add("is-active"); finalEl.classList.add("is-hidden"); wordsBtn.textContent = "Done";
+    try { editorEl.focus(); } catch (e) {}
+  });
+  editorEl.addEventListener("input", function () { var t = String(editorEl.value || "").trim(); edited = (t && t !== assembled()) ? t : null; writeMeta(); });
+  $("arcSaveNow").addEventListener("click", function () { hold(); var s = $("apsSave"); if (s) s.click(); });
+  $("arcCopy").addEventListener("click", function () {
+    var txt = poemText(); if (!txt) return;
+    var done = function () { var b = $("arcCopy"); b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy"; }, 2000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(done, done); }
+    else { var ta = document.createElement("textarea"); ta.value = txt; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(ta); done(); }
+  });
+  /* Download it: a clean PDF he can keep or print. jsPDF is pulled only when he asks; if it can't load, he still gets a plain-text file. */
+  function saveBlob(name, text, type) {
+    try {
+      var blob = new Blob([text], { type: type || "text/plain;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a"); a.href = url; a.download = name;
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { try { document.body.removeChild(a); URL.revokeObjectURL(url); } catch (e) {} }, 1500);
+    } catch (e) {}
+  }
+  function withJsPDF(cb) {
+    if (window.jspdf && window.jspdf.jsPDF) { cb(window.jspdf.jsPDF); return; }
+    var s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+    s.onload = function () { cb(window.jspdf && window.jspdf.jsPDF); };
+    s.onerror = function () { cb(null); };
+    document.head.appendChild(s);
+  }
+  var __apAuthor = null;
+  function apAuthor(cb) {
+    if (__apAuthor != null) { cb(__apAuthor); return; }
+    try {
+      fetch("/api/user_stats", { credentials: "include", headers: { "Accept": "application/json" } })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { var me = (j && j.me) || {}; var nm = ((me.first_name || "") + " " + (me.last_name || "")).trim() || me.username || ""; __apAuthor = nm; cb(nm); })
+        .catch(function () { __apAuthor = ""; cb(""); });
+    } catch (e) { __apAuthor = ""; cb(""); }
+  }
+  function apMonthYear() { try { return new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }); } catch (e) { return ""; } }
+  function apLabel(doc, str, size, color, cs, anchor, cx, edgeX, y) {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(size); doc.setTextColor(color[0], color[1], color[2]);
+    var w = doc.getTextWidth(str) + cs * (str.length - 1);
+    var x = anchor === "center" ? (cx - w / 2) : (edgeX - w);
+    doc.text(str, x, y, { charSpace: cs });
+  }
+  function apKeepsake(JsPDF, eyebrow, title, footerNote, author, body) {
+    var NAVY = [31, 42, 68], BRONZE = [184, 148, 95], GREY = [107, 114, 128], INK = [43, 48, 64];
+    var doc = new JsPDF({ unit: "pt", format: "a4" });
+    var pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight();
+    var m = 70, maxW = pw - m * 2, cx = pw / 2, y = 80;
+    apLabel(doc, eyebrow, 8.5, BRONZE, 2.2, "center", cx, 0, y); y += 24;
+    doc.setFont("times", "bold"); doc.setFontSize(26); doc.setTextColor(NAVY[0], NAVY[1], NAVY[2]);
+    doc.text(title, cx, y, { align: "center" }); y += 16;
+    doc.setDrawColor(BRONZE[0], BRONZE[1], BRONZE[2]); doc.setLineWidth(1); doc.line(cx - 26, y, cx + 26, y); y += 26;
+    doc.setFont("times", "normal"); doc.setFontSize(11.5); doc.setTextColor(INK[0], INK[1], INK[2]);
+    var lead = 15, hang = 14;
+    body.split("\n\n").forEach(function (stanza) {
+      stanza.split("\n").forEach(function (t) {
+        var wr = doc.splitTextToSize(t, maxW - hang);
+        for (var w = 0; w < wr.length; w++) { if (y > ph - m) { doc.addPage(); y = 80; } doc.text(wr[w], m + (w ? hang : 0), y); y += lead; }
+      });
+      y += 9;
+    });
+    y += 4;
+    if (y > ph - m - 40) { doc.addPage(); y = 80; }
+    doc.setDrawColor(226, 220, 209); doc.setLineWidth(0.5); doc.line(m, y, pw - m, y); y += 16;
+    doc.setFont("times", "italic"); doc.setFontSize(10.5); doc.setTextColor(GREY[0], GREY[1], GREY[2]);
+    var by = (author ? "Written by " + author + " " : "Written ") + footerNote + " · " + apMonthYear();
+    doc.text(by, m, y);
+    apLabel(doc, "ANCIENT PATH", 7.5, GREY, 1.6, "right", cx, pw - m, y);
+    return doc;
+  }
+  function apBody(txt) { return txt.replace(/^[\s\S]*?\n\n/, "").replace(/\n\n[^\n]*$/, ""); }
+  $("arcDownload").addEventListener("click", function () {
+    var txt = poemText(); if (!txt) return;
+    var b = $("arcDownload"), lab = b.textContent; b.textContent = "Preparing…";
+    apAuthor(function (author) {
+      withJsPDF(function (JsPDF) {
+        if (!JsPDF) { saveBlob("Here I Am.txt", txt); b.textContent = lab; return; }
+        try { apKeepsake(JsPDF, "KNOWN BY JESUS", "Here I Am", "at the end of Known by Jesus", author, apBody(txt)).save("Here I Am.pdf"); }
+        catch (e) { saveBlob("Here I Am.txt", txt); }
+        b.textContent = lab;
+      });
+    });
+  });
+
+  /* Coming back to a saved poem: the meta field is filled LAST by the save module. */
+  meta.addEventListener("input", function () {
+    try { var m = JSON.parse(meta.value || "{}"); edited = (m.poem && String(m.poem).trim()) ? String(m.poem) : null; if (m.finished) finish(true); else show(typeof m.step === "number" ? m.step : 0, true); } catch (e) {}
+  });
+
+  var bug = document.querySelector("a[data-ap-bug]");
+  if (bug) { try { bug.href = bug.href + "?q3_textbox1=" + encodeURIComponent(window.location.pathname); } catch (e) {} }
+
+  window.arcFields = ALL.map(function (s) { return { key: s.key, id: "arc_" + s.key }; });
+  show(0, true);
+})();
+</script>
+
+<script>
+(function () {
+  /* AP-HIA-CONFIG-v2 — the shared save (story.js v4, tag v8, pinned + integrity). Two questions: the whole poem, and every answer as JSON. */
+  var SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@be6150468483fee716043e100c6ef0810219fc3e/story.js";
+  var SRI = "sha384-+FMb4B+b8fmR02nOLqxvv0bvZRVeiAcYVggIdEMB4V3oZ1Mcsj9t7y9A43Asnw7I";
+  var fields = (window.arcFields || []).concat([{ key: "meta", id: "arc_meta" }]);
+  var CONFIG = {
+    form: "hia-kbj",
+    assistant: { kind: "poem", name: "Here I Am" },
+    root: ".arc-root",
+    actionsRow: ".arc-root .arc-actions",
+    stepsHost: "#arcParts",
+    navHost: "#arcNavOff",
+    buttonClass: "arc-btn",
+    primaryClass: "arc-btn-primary",
+    ghostClass: "arc-btn-ghost",
+    pagePath: "/start",
+    pageLabel: "Go to your page",
+    noteBefore: "Saving puts this on your page, where you can read it and change it whenever you want.",
+    signInSelector: 'a[data-interactive-link-type="openformslink"][data-interactive-link-var1="signin"]',
+    onRestored: function () { var held = false; try { held = JSON.parse((document.getElementById("arc_meta") || {}).value || "{}").finished === false; } catch (e) {} if (held && typeof window.arcHold === "function") window.arcHold(); else if (typeof window.arcFinish === "function") window.arcFinish(true); },
+    document: function (a) { return typeof window.arcDocument === "function" ? window.arcDocument(a) : ""; },
+    lw: { unit: "6a9ee0560b663e59d00f52fa", blocks: { whole: "openEnded6a9ee0561523c", json: "openEnded6a9ee0561526d" } },
+    fields: fields
+  };
+  function offline() {
+    if (document.getElementById("apsOffline")) return;
+    var row = document.querySelector(CONFIG.actionsRow); if (!row) return;
+    var p = document.createElement("p"); p.id = "apsOffline"; p.className = "aps-note";
+    p.textContent = "Saving is not available right now. Your words are still on this page — use Copy and paste them somewhere safe before you close it.";
+    row.parentNode.insertBefore(p, row.nextSibling);
+  }
+  /* The course player drops ?open=1 from its address, so his page also leaves a short-lived note in the browser when he taps Open it / Pick up. Either one means: put his saved piece back. */
+  try {
+    var ps = (window.parent && window.parent !== window) ? window.parent.location.search : "";
+    var wantOpen = /[?&]open=1(&|$)/.test(ps);
+    try { var _oi = window.localStorage.getItem("ap_open_intent"); if (_oi && (Date.now() - parseInt(_oi, 10) < 60000)) { wantOpen = true; window.localStorage.removeItem("ap_open_intent"); } } catch (e2) {}
+    if (wantOpen && !/[?&]open=1(&|$)/.test(window.location.search)) {
+      window.history.replaceState(null, "", window.location.pathname + (window.location.search ? window.location.search + "&open=1" : "?open=1"));
+    }
+  } catch (e) {}
+  /* A man reads the poem inside the course player; the only way back it gives him is the course page. Make every "Your page" link jump the whole window to his page, not the little frame the poem sits in. */
+  document.addEventListener("click", function (ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest("a.aps-page-link, a.arc-page-link") : null;
+    if (a && a.getAttribute("href")) { ev.preventDefault(); var h = a.getAttribute("href"); try { window.top.location.href = h; } catch (err) { window.location.href = h; } }
+  }, true);
+  var s = document.createElement("script");
+  s.src = SRC; s.integrity = SRI; s.crossOrigin = "anonymous"; s.async = true;
+  s.addEventListener("error", offline);
+  s.addEventListener("load", function () { if (!window.APStory || !window.APStory.init(CONFIG)) offline(); });
+  document.head.appendChild(s);
+})();    
+</script>
+</div> 
