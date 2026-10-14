@@ -32,9 +32,9 @@ async function load(file) {
 (async () => {
   /* ---------------- Here I Am v13 */
   {
-    const { d, w, errors, html } = await load("arc-kbj-v13.html");
+    const { d, w, errors, html } = await load("arc-kbj-v13.1.html");
     console.log("Here I Am v13");
-    ok(html.startsWith("<!-- AP-HIA-KBJ-v13 ("), "marker v13");
+    ok(html.startsWith("<!-- AP-HIA-KBJ-v13.1 ("), "marker v13.1");
     const ledes = [...d.querySelectorAll(".arc-lede")];
     ok(ledes.length === 2, "two opening paragraphs, got " + ledes.length);
     ok(/^In the opening pages of the Bible, God’s first question to a hiding Adam was not an accusation\. It was Ayeka — where are you\?/.test(ledes[0] && ledes[0].textContent), "first paragraph is John's copy");
@@ -61,7 +61,8 @@ async function load(file) {
     ok(slot && /For example: The first one I let know me was a man in my group, on a Thursday, in a room of eight men\./.test(slot.querySelector(".arc-slot-shape").textContent), "example says a man in my group");
     ok(d.getElementById("arcCount").textContent === "0 of 27 written", "count reads 27: " + d.getElementById("arcCount").textContent);
     ok(d.querySelectorAll(".arc-part").length === 5 && d.querySelectorAll("textarea.arc-rest").length === 27, "5 parts, 27 lines");
-    ok(d.getElementById("arcPartLabel").textContent === "Part 1 of 5", "part label unchanged (Here I Am): " + d.getElementById("arcPartLabel").textContent);
+    ok(d.getElementById("arcPartLabel").textContent === "1 of 5", "label reads 1 of 5: " + d.getElementById("arcPartLabel").textContent);
+    d.getElementById("arcNext").click(); ok(d.getElementById("arcPartLabel").textContent === "2 of 5", "after Next: 2 of 5"); d.getElementById("arcBack").click();
     ok(w.APStory && d.getElementById("apsSave"), "story.js up, Save present");
     ok(d.getElementById("apsHeard") && d.querySelector(".aps-assist"), "story assistant row (Read it back + circled i) present");
     ok(errors.length === 0, "no script errors: " + errors.join(" | "));
@@ -69,9 +70,18 @@ async function load(file) {
     firstOne.value = "a man in my group"; firstOne.dispatchEvent(new w.Event("input"));
     d.getElementById("arc_tower").value = "the ministry calendar"; d.getElementById("arc_tower").dispatchEvent(new w.Event("input"));
     ok(/I built the ministry calendar\./.test(d.getElementById("arcDraft").textContent) && /The first one I let know me was a man in my group\./.test(d.getElementById("arcDraft").textContent), "poem assembles from the lines");
+    /* the step row leaves the screen at the finish, with force; comes back on Back to the questions */
+    ["measure","cameOff","table","answer"].forEach(k => { const x = d.getElementById("arc_" + k); x.value = "x"; x.dispatchEvent(new w.Event("input")); });
+    w.arcFinish(false);
+    const nav = d.getElementById("arcNav");
+    ok(nav.style.getPropertyValue("display") === "none" && nav.style.getPropertyPriority("display") === "important", "step row hidden with force at the finish");
+    ok(d.getElementById("arcFinish").classList.contains("is-active"), "finish view active");
+    d.getElementById("arcEdit").click();
+    ok(nav.style.getPropertyValue("display") === "" && nav.className.indexOf("aps-row") >= 0, "step row back for the questions (engine classes intact)");
+    w.arcHold(); ok(nav.style.getPropertyPriority("display") === "important", "Save and stop for now also hides the row");
   }
   /* ---------------- Your Next Step v7 / v8 */
-  for (const [file, marker, course] of [["nxs-kbj-v7.html", "<!-- AP-NEXTSTEP-KBJ-v7 (", "Known by Jesus"], ["nxs-dht-v8.html", "<!-- AP-NEXTSTEP-DHT-v8 (", "Do Hard Things"]]) {
+  for (const [file, marker, course] of [["nxs-kbj-v7.1.html", "<!-- AP-NEXTSTEP-KBJ-v7.1 (", "Known by Jesus"], ["nxs-dht-v8.1.html", "<!-- AP-NEXTSTEP-DHT-v8.1 (", "Do Hard Things"]]) {
     const { d, w, errors, html } = await load(file);
     console.log(file);
     ok(html.startsWith(marker), "marker");
@@ -93,6 +103,13 @@ async function load(file) {
     ok(errors.length === 0, "no script errors: " + errors.join(" | "));
     /* nothing else moved: six steps, the finish, the keepsake */
     ok(d.querySelectorAll(".nxs-step").length === 6 && d.getElementById("nxsDownload") && d.getElementById("nxsCopy"), "six steps, Download, Copy");
+    const t0 = d.getElementById("nxs_started"); t0.value = "x"; t0.dispatchEvent(new w.Event("input"));
+    for (let i = 0; i < 6; i++) d.getElementById("nxsNext").click();
+    const nav = d.getElementById("nxsNav");
+    ok(d.getElementById("nxsFinish").classList.contains("is-active") && nav.style.getPropertyValue("display") === "none" && nav.style.getPropertyPriority("display") === "important", "step row hidden with force at the finish");
+    d.getElementById("nxsEdit").click();
+    ok(nav.style.getPropertyValue("display") === "" && d.getElementById("nxsStepLabel").textContent === "1 of 6", "step row back on Back to the questions");
+    w.nxsHold(); ok(nav.style.getPropertyPriority("display") === "important", "Save and stop for now also hides the row");
   }
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
