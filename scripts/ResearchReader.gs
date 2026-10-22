@@ -1719,7 +1719,7 @@ function roadLinesFail_(L, map) {
   for (var j = 0; j < pieces.length; j++) {
     var p = pieces[j]; if (!p || p.length < 4) continue;
     var re = new RegExp('\\b' + p.replace(/[^\w\s']/g, ' ').trim().replace(/\s+/g, '\\s+') + '\\b', 'i');
-    if (re.test(L.todo) && !new RegExp('\\bwrite\\b[^.]{0,40}' + p.replace(/[^\w\s']/g, ' ').trim().replace(/\s+/g, '\\s+'), 'i').test(L.todo)) { why.push('the one thing assumes ' + p + ' is already written; say the step first ("Write ' + p + ', about ten minutes, then…")'); break; }
+    if (re.test(L.todo) && !new RegExp('\\bwrite\\b[^.]{0,40}' + p.replace(/[^\w\s']/g, ' ').trim().replace(/\s+/g, '\\s+'), 'i').test(L.todo)) { why.push('the one thing assumes ' + p + ' is already written; say the step first ("' + (/^write\b/i.test(p) ? p : 'Write ' + p) + ', about ten minutes, then…")'); break; }
   }
   if (/\bWhere I'm From\b/i.test(all)) why.push('the piece is named "Where I Am From" on the chronicle');
   return why.join('; ');
@@ -1744,10 +1744,12 @@ function roadLines_(cfg, key, e, map) {
     return { keywords: String(ans.keywords || '').slice(0, 300), road: unlabel(ans.road).slice(0, 900), todo: unlabel(ans.todo).slice(0, 400), question: unlabel(ans.question).slice(0, 300), week: wk };
   };
   try {
+    var titles = (map && map.names || []).map(function (t) { return t.replace(/^(week\s*\d+\s*[—–:-]\s*)/i, '').trim(); }).filter(Boolean);
+    var avoid = titles.length ? ' These are the course\'s week titles; never write any of them, in whole or in part, anywhere in the three lines (say what the week teaches in other words): ' + titles.join(' · ') + '.' : '';
     var L = attempt(''); if (!L) return null;
-    var why = roadLinesFail_(L, map);
-    if (why) { log_(ss, 'road', 'lines read back and rewritten for ' + e.id, why); L = attempt(why); if (!L) return null; why = roadLinesFail_(L, map); }
-    if (why) { log_(ss, 'road', 'lines failed the read twice for ' + e.id + ' (left empty; not given)', why); return null; }
+    var why = roadLinesFail_(L, map), tries = 0;
+    while (why && tries < 2) { tries++; log_(ss, 'road', 'lines read back and rewritten for ' + e.id + ' (' + tries + ')', why); L = attempt(why + avoid); if (!L) return null; why = roadLinesFail_(L, map); }
+    if (why) { log_(ss, 'road', 'lines failed the read three times for ' + e.id + ' (left empty; not given)', why); return null; }
     return L;
   } catch (x) { log_(ss, 'road', 'lines failed for ' + e.id, String(x && (x.code || x.message) || x).slice(0, 160)); return null; }
 }
