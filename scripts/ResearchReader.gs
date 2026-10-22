@@ -1722,7 +1722,19 @@ function roadLinesFail_(L, map) {
     if (re.test(L.todo) && !/^write\b/i.test(p) && !new RegExp('\\bwrite\\b[^.]{0,40}' + p.replace(/[^\w\s']/g, ' ').trim().replace(/\s+/g, '\\s+'), 'i').test(L.todo)) { why.push('the one thing assumes ' + p + ' is already written; say the step first ("' + (/^write\b/i.test(p) ? p : 'Write ' + p) + ', about ten minutes, then…")'); break; }
   }
   if (/\bWhere I'm From\b/i.test(all)) why.push('the piece is named "Where I Am From" on the chronicle');
+  if (/\bwrite\s+write\b/i.test(all)) why.push('a doubled word ("Write Write")');
   return why.join('; ');
+}
+/** Every entry's lines read back against the standard as it stands now; the ones that fail are cleared and written again (run by hand after a rule changes). */
+function roadRewriteFlagged() {
+  var ss = SpreadsheetApp.openById(RE_SHEET_ID), sh = ss.getSheetByName('Entries'), map = courseMap_(ss), bad = [];
+  entries_(ss).forEach(function (e) {
+    if (!(e.status === 'released' || e.status === 'candidate') || !(e.road && e.todo && e.question2)) return;
+    var why = roadLinesFail_({ road: e.road, todo: e.todo, question: e.question2 }, map);
+    if (why) { bad.push(e.id + ': ' + why); sh.getRange(e.row, EC.road, 1, 4).clearContent(); }
+  });
+  log_(ss, 'road', 'lines read back against the standard', bad.length ? bad.join(' | ') : 'every entry passes');
+  return bad.length ? roadWriteLines_(ss, readConfig_(ss), 50) : 0;
 }
 function roadLines_(cfg, key, e, map) {
   var system = 'You write the version of a research entry that a man on the road reads on his own page at Ancient Path Biblical Coaching, a Christian men\'s coaching practice. He is in a group course (twelve weeks; his room meets once a week) or did one-on-one work. He is not a facilitator and never leads the room. ' +
