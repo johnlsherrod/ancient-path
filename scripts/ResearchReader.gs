@@ -1541,7 +1541,9 @@ function dayLabel_(v) { var d = v instanceof Date ? v : new Date(Date.parse(Stri
  *  nearest first, then "any"; an entry fitted to a later week is never chosen. When two fit alike, a lane he has not had lately wins (the whole
  *  man across weeks: spirit, soul and body in turn, never named on the page); then the newest. The fit is Entries AB, a value the writer sets. */
 function roadChoose_(ss, week, had, recentLanes) {
-  var pool = entries_(ss).filter(function (e) { return e.status === 'released' && e.road && e.todo && e.question2 && !had[e.id]; });
+  // the claim reaches the man as written, so a claim in the facilitator's chair keeps its entry off the man's road (4.0.2; a "claim for him" column is the next step)
+  var chair = /\bfacilitat|\b(a man|someone|anyone|the men) in (your|his) room\b|\bhis room\b|\btell the men\b|\bthe men whether\b/i;
+  var pool = entries_(ss).filter(function (e) { return e.status === 'released' && e.road && e.todo && e.question2 && !had[e.id] && !chair.test(e.claim); });
   if (!pool.length) return null;
   var w = week.weekNum || 0, lanes = lanes_(ss), recent = recentLanes || [];
   function fit(e) {
