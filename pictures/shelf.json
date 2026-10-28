@@ -91,7 +91,9 @@
       ],
       "size": "1456x819",
       "source": "path card, First Light treatment, Pexels",
-      "used_by": []
+      "used_by": [
+        "/blog/cant-stop-scrolling-a-christian-way-out"
+      ]
     },
     {
       "name": "crossing",
@@ -353,7 +355,9 @@
       ],
       "size": "1456x819",
       "source": "Pexels 1481264",
-      "used_by": [],
+      "used_by": [
+        "/blog/lost-my-job-where-is-god-in-this"
+      ],
       "added": "2026-10-12"
     },
     {
@@ -449,7 +453,7 @@
       "size": "1456x819",
       "source": "Recraft, house style, Oct 28, 2026",
       "used_by": [
-        "blog/i-said-something-i-regret-what-a-man-does-next"
+        "/blog/i-said-something-i-regret-what-a-man-does-next"
       ],
       "added": "2026-10-28"
     },
