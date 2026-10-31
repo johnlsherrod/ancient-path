@@ -1,6 +1,5 @@
 /**
- * Ancient Path — Research reader · build 10.2.5 (the tick that wrote nothing, the Inbox row by entry id, the newsletters the reader never opened) · road.js 10.2.4 (unchanged) · growth.js 3.9
- * Build 10.2.5 (Oct 31, 2026; built on the live 10.2.4, read through the Google Drive connector; server only, no page changes: road.js, growth.js and their stylesheets are byte for byte the live 10.2.4). 1. The silent tick. Config "transcribe window" had been turned by Sheets into the DATE June 9 (it shows as 6-9), readConfig_ writes a date as 2026-06-09 00:00, and transcribeTick split that on the dash into [2026, 6, …] and shut at its first gate (hour < 2026) in about a second with no Log line, every run, every morning since 9.1.5. windowOf_ now reads the cell's own display text (else the date's month and day), writes it back as plain text and logs once; the row is made as text from the start (ensureBuild3_); every gate has a name (tickGate_); Config "last tick" is written on every run (the time and the gate it stopped at, or transcribing); one Log line a day, from the last hour of the window on, names the gate when the tick transcribed nothing; "transcribe done" counts only when it is at or after "transcribe asked"; a run that ran out of time no longer marks the day done, so the next tick finishes the rest. 2. The Inbox row behind an entry is found by entry id (Inbox column L) first, then by link with http/https, #fragment, utm_* and other tracking tails, a trailing slash and a .mp3 ending ignored (linkKey_); when two Inbox rows carry one id, the row whose link matches the entry, else the row with a transcript or audio address. 3. Newsletters: the reader opened only podcast, YouTube and blog sources, so S090 and S091 (kind newsletter, feed written, status read) were never opened; a newsletter source is now read like any other, its feed address used as written, a web address with no feed resolved like a blog's; a picture enclosure (Substack's post image) is no longer taken as the audio address. First run: none; the tick repairs the window cell and writes its first heartbeat on its own. A Log line "build 10.2.5" is written once.
+ * Ancient Path — Research reader · build 10.2.4 (what he says about a reading shapes the next: What made it a no?, What’s been helping you, the short form) · road.js 10.2.4 · growth.js 3.9
  * Build 10.2.4 (Oct 31, 2026; Your Page build 38; ruled by John the same day; built on the live 10.2.3): road.js 10.2.4 and these server changes. 1. His yes and no shape what he is handed next. roadLearn_ reads his Road rows: a lane's lift is +0.35 for It helped and -0.35 for a no, the newest answer weighing most (x0.7 for each older one), bounded to +0.9 and -0.6, so a lift never reaches a whole fit step (a this-week fit beats an earlier-week fit beats any; the lane floor means a lowered lane is still chosen when it is all there is). A no is Not this one with the reading opened, or with Not what I need behind it; Not this one with the reading never opened, or with Too long right now behind it, is not a no: the same construct is offered once more, from a different entry, shorter (the given row text gains ' · short'; creditOf_ reads it). Hard limits (filters): a construct is offered at most three times; offers of a construct are at least seven days apart; after a third no it rests; after Not what I need the same voice is not offered that construct again and a different voice once. 2. New action road_why (too_long | not_needed; only after a Not this one; the Road row what='why', text = the reason). 3. Entries gains three tally columns after the last used one, helped / not this one / too long, one count per man by his latest answer; recounted per entry under a lock after each answer (tallyEntry_). 4. roadFor_ returns helping (null under three answers) and, on the piece, short and why. 5. The word room is group in what a man reads: the writer prompt ("your group", "a man from your group"), the column notes, the Courses state (Your group) and the lane label (The group); the writer check refuses "your room", "his room" and "our room" in the three lines. A Log line is written once (property b1024).
  * Build 10.2.3 (Oct 31, 2026; Your Page build 38; built to the mockup John ruled the same day, "Your Page Top"; built on the live 10.2.2): road.js 10.2.3 and these server changes. 1. road_did takes most, some or notyet (the old did still reads as most). 2. road_when (morning, pull, bed; the latest wins) and road_remind (twice, daily, few, weekly) are new; road_remind saves to a new Learners column V "reminders" (added once, with a dropdown); nothing is sent. The pace (column N) and the notice (column T) are about the reading he is handed, not a reminder, so they could not carry this. 3. road_witness saves an invitation to his own witness to a new Witness tab (his email, role, their name, their email, asked, status, yes date); one waiting row a man, a new one replaces it; a man in a group is refused; nothing is sent. 4. roadFor_ returns visit (first visit or return, from his own taps of an earlier week), group (in, the group line, the leader, what the group carried) and witness. 5. The group line needs at least four men who marked this week and one mark with more than half of them. 6. What the group carried is read from the Signals sheet: rows with no section opened for his cohort, latest week, split into a title and its words; a cohort is matched by the part after the dash in his room name (the live Signals rows carry the course name, so a row is also taken when its date matches a row that names his cohort). 7. The Course map is read for a "week line" column by its header (none, no line). 8. The hand email names his group's leader. 9. ensureBuild1023_ writes one Log line, once. First run: no sheet setup is needed (column V, the dropdown and the Witness tab are made on first use).
  * Build 10.2.2 (Oct 30, 2026; Your Page build 38; built on the live 10.2.1, read through the Google Drive connector the same night): road.js 10.2.2 and three small server changes. 1. road_mark now takes the word from The Word for It: text '<view|footing|steep|lost>' or '<marker>|<word>' with the word in lower case letters only (a to z, two to twenty-four); the four words of 10.2 (mad, hurt, afraid, ashamed) are no longer the only ones accepted, and a row already written with one of them still reads. The page offers the eight words nearest the marker and then the whole list, read from the story engine (window.APStory.wordForIt). 2. landPractices_ (the week's practices from the Course map, split on the numbered items) no longer cuts a practice at a Bible reference: "Memorize Hebrews 12:11. Say it out loud" had been read as items "2. Memorize Hebrews 12:" and "11. Say it out loud…" because the splitter took "11. " for a numbered item; an item number now counts only when it stands at the start or after a space and is the next number in order (1, 2, 3…). Nine of the twelve Breaking Free weeks carry a reference followed by a period; the same split feeds the land, so it is fixed there too. 3. The Log line "build 10.2.2", once; the ping reads script 10.2.2. The hand email (road_hand) names the word as the man saw it (Ashamed, Glad). No sheet change; no setup run. 4. road.js 10.2.2 also carries the compact card layout (John's walk of 10.2.1: the card took too much space): the four markers in one row of four (a 2x2 grid on a phone), the words as small rounded pills, Did it · Not yet as two equal segments side by side; stamp 305 rules. Also: the note under This Week reads Breaking Free · Week 6 of 12 · “Stand Firm Then” (no dangling comma), the weekly writing question is no longer drawn on the card (road_answer is untouched here, so saved answers still read), and the practices collapse to the chosen row with a Change link. Install: paste over Code.gs, Ctrl+S, Deploy → Manage deployments → the pencil → Version: New version → Deploy.
@@ -242,7 +241,6 @@
 
 var RE_BUILD = 5;
 var GROWTH_BUILD = '3.9';
-var SCRIPT_BUILD = '10.2.5'; // the script's own build (road.js and growth.js carry theirs: ROAD_BUILD, GROWTH_BUILD)
 var RE_FOLDER_ID = '1aXZES2LBmBpNVBfcq89kMnRY019BeBAQ'; // the Research Engine folder in the Ancient Path shared drive; Transcripts lives inside it
 var RE_SHEET_ID = '1FGFqxrOHzwQbDMoywrnGgLGrNlTtlhfcWZjPG9ppmPo';
 var RE_TZ = 'America/Chicago';
@@ -338,9 +336,7 @@ function readFeeds() {
     var kind = String(r[SC.kind - 1]).trim().toLowerCase();
     var st = String(r[SC.status - 1]).trim().toLowerCase();
     if (st !== 'read' && st !== 'no feed yet') return;
-    // 10.2.5: a newsletter is read like any other source (S090 and S091 carried feeds and were never opened); a newsletter with no feed and no web address stays on the mail-label path
-    var webAddr = /^https?:\/\//i.test(String(r[SC.feed - 1]).trim()) || /^https?:\/\//i.test(String(r[SC.where - 1]).trim());
-    if (kind !== 'podcast' && kind !== 'youtube' && kind !== 'blog' && !(kind === 'newsletter' && webAddr)) return;
+    if (kind !== 'podcast' && kind !== 'youtube' && kind !== 'blog') return;
     queue.push({ row: i + 2, id: r[SC.id - 1], voice: r[SC.voice - 1], discipline: r[SC.discipline - 1], kind: kind,
       where: String(r[SC.where - 1]).trim(), feed: String(r[SC.feed - 1]).trim(), status: st, lastRead: r[SC.lastRead - 1] });
   });
@@ -412,7 +408,7 @@ function resolveFeed_(kind, where) {
   if (!where) return '';
   if (kind === 'podcast') return resolvePodcast_(where);
   if (kind === 'youtube') return resolveYouTube_(where);
-  if (kind === 'blog' || kind === 'newsletter') return resolveBlog_(where); // 10.2.5: a newsletter's web address is resolved like a blog's
+  if (kind === 'blog') return resolveBlog_(where);
   return '';
 }
 
@@ -515,26 +511,14 @@ function parseFeed_(xml) {
     var ms = when ? Date.parse(clean_(when)) : NaN;
     var blurb = tag_(b, 'media:description') || tag_(b, 'itunes:summary') || tag_(b, 'description') || tag_(b, 'summary') || tag_(b, 'content') || tag_(b, 'content:encoded') || '';
     // build 3: the show's own transcript (<podcast:transcript>), the audio address (<enclosure>), the length
-    var audio = audioEnclosure_(b); // 10.2.5: the first enclosure that is not a picture
+    var encl = b.match(/<enclosure\b[^>]*url=["']([^"']+)["']/i);
+    var audio = encl ? unescapeXml_(encl[1]).trim() : '';
     var minutes = minutesFromDuration_(clean_(tag_(b, 'itunes:duration')));
     items.push({ title: title, link: unescapeXml_(link).trim(), publishedMs: isNaN(ms) ? 0 : ms, blurb: short_(clean_(blurb), 300),
       transcript: transcriptTags_(b), audio: audio, minutes: minutes });
   });
   items.sort(function (a, b) { return (b.publishedMs || 0) - (a.publishedMs || 0); });
   return items;
-}
-
-/** 10.2.5: the audio (or video) address of a feed item. A Substack post carries its picture as the enclosure; a picture is never the audio address. */
-function audioEnclosure_(block) {
-  var tags = String(block || '').match(/<enclosure\b[^>]*>/gi) || [];
-  for (var i = 0; i < tags.length; i++) {
-    var u = tags[i].match(/\burl=["']([^"']+)["']/i); if (!u) continue;
-    var ty = (tags[i].match(/\btype=["']([^"']+)["']/i) || [])[1] || '';
-    var url = unescapeXml_(u[1]).trim();
-    if (/^image\//i.test(ty) || /substackcdn\.com\/image\//i.test(url) || (!ty && /\.(jpe?g|png|gif|webp|svg)(\?|$)/i.test(url))) continue;
-    return url;
-  }
-  return '';
 }
 
 /** Newsletters that land under the label become Inbox rows; the link opens the mail. */
@@ -763,12 +747,7 @@ function ensureBuild3_(ss) {
   if (!ss.getSheetByName('Transcripts')) { var tr = ss.insertSheet('Transcripts'); tr.getRange(1, 1, 1, TC_HEAD.length).setValues([TC_HEAD]); tr.setFrozenRows(1); did.push('Transcripts tab'); }
   // Config rows (only the ones missing)
   var cfg = readConfig_(ss);
-  CONFIG_3.forEach(function (r) {
-    if (!(r[0] in cfg)) {
-      var cs = ss.getSheetByName('Config'); cs.appendRow(r); did.push('Config ' + r[0]);
-      if (/^\d{1,2}-\d{1,2}$/.test(String(r[1]))) { try { cs.getRange(cs.getLastRow(), 2).setNumberFormat('@').setValue(r[1]); } catch (ex) {} } // 10.2.5: 6-9 typed or appended becomes the date June 9; this row is text from the start
-    }
-  });
+  CONFIG_3.forEach(function (r) { if (!(r[0] in cfg)) { ss.getSheetByName('Config').appendRow(r); did.push('Config ' + r[0]); } });
   // the Transcripts folder
   try {
     cfg = readConfig_(ss);
@@ -850,7 +829,7 @@ function indexEpisode_(feedUrl, link, title) {
   if (!feedUrl) return null;
   var j = piGet_('/episodes/byfeedurl?url=' + encodeURIComponent(feedUrl) + '&max=40'); var items = (j && j.items) || [];
   var want = norm_(title), hit = null;
-  items.forEach(function (it) { if (hit) return; if ((it.link && link && linkKey_(it.link) === linkKey_(link)) || (want && norm_(it.title || '') === want)) hit = it; });
+  items.forEach(function (it) { if (hit) return; if ((it.link && link && String(it.link).replace(/\/$/, '') === String(link).replace(/\/$/, '')) || (want && norm_(it.title || '') === want)) hit = it; });
   if (!hit) return null;
   var tr = [];
   if (hit.transcriptUrl) tr.push(hit.transcriptUrl);
@@ -873,62 +852,27 @@ function youtubeMinutes_(videoId) {
 function videoId_(link) { var m = String(link || '').match(/[?&]v=([\w-]{11})/) || String(link || '').match(/youtu\.be\/([\w-]{11})/) || String(link || '').match(/\/shorts\/([\w-]{11})/); return m ? m[1] : ''; }
 
 /* ---- the day's transcription ---- */
-/** Every ten minutes: inside the window, once the 6:40 task has asked and the day is not yet done, transcribe.
- *  10.2.5: every run writes Config "last tick" (the time and the gate it stopped at, or "transcribing"), and every gate has a name. */
+/** Every ten minutes: inside the window, once the 6:40 task has asked and the day is not yet done, transcribe. */
 function transcribeTick() {
   var ss = SpreadsheetApp.openById(RE_SHEET_ID);
-  try { ensureBuild1025_(ss); } catch (e0) {}
   var cfg = readConfig_(ss);
-  var win = windowOf_(ss);
-  var now = new Date();
-  var hour = Number(Utilities.formatDate(now, RE_TZ, 'H'));
+  var hour = Number(Utilities.formatDate(new Date(), RE_TZ, 'H'));
+  var win = String(cfg['transcribe window'] || '6-9').split('-').map(Number);
+  if (hour < (win[0] || 6) || hour >= (win[1] || 9)) return;
   var t = today_();
-  var gate = tickGate_(cfg, t, win, hour);
-  if (gate) { beat_(ss, now, win, 'stopped at the ' + gate.key + ' gate'); tickNote_(ss, t, hour, win, gate.text); return; }
-  var lock = LockService.getScriptLock();
-  if (!lock.tryLock(5000)) { beat_(ss, now, win, 'stopped at the lock gate'); tickNote_(ss, t, hour, win, 'the lock: another run of the script held it for five seconds'); return; }
-  try { beat_(ss, now, win, 'transcribing'); transcribeToday(); } finally { lock.releaseLock(); }
+  var asked = String(cfg['transcribe asked'] || ''), done = String(cfg['transcribe done'] || '');
+  if (asked.indexOf(t) !== 0) { tickNote_(ss, t, hour, win, 'nothing asked for today (Config "transcribe asked" reads "' + asked + '"); the 6:40 task wrote no entries, or wrote the cell in a form the script could not read'); return; }
+  if (done.indexOf(t) === 0) return;
+  var lock = LockService.getScriptLock(); if (!lock.tryLock(5000)) return;
+  try { transcribeToday(); } finally { lock.releaseLock(); }
 }
-/** 10.2.5: the gate a tick stops at, named, or null when it may go. Day-level gates are read before the hour, so the day's note names the real reason. */
-function tickGate_(cfg, t, win, hour) {
-  var asked = String(cfg['transcribe asked'] || '').trim(), done = String(cfg['transcribe done'] || '').trim();
-  if (asked.indexOf(t) !== 0) return { key: 'asked', text: 'nothing asked for today: Config "transcribe asked" reads "' + asked + '" (the 6:40 task writes it when its entries are written; it may have written none, or written the cell in a form the script could not read)' };
-  if (done.slice(0, 16) >= asked.slice(0, 16) && done.indexOf(t) === 0) return { key: 'done', text: 'already done: Config "transcribe done" reads "' + done + '", at or after "transcribe asked" ("' + asked + '")' };
-  if (hour < win[0] || hour >= win[1]) return { key: 'window', text: 'outside the window: it is hour ' + hour + ' (Central) and Config "transcribe window" reads ' + win[0] + '-' + win[1] };
-  return null;
-}
-/** 10.2.5: Config "last tick", every run: yyyy-MM-dd HH:mm · what it did · the window it read. Text, so Sheets never turns it into a date. */
-function beat_(ss, now, win, what) {
-  setConfig_(ss, 'last tick', Utilities.formatDate(now, RE_TZ, 'yyyy-MM-dd HH:mm') + ' · ' + what + ' · window ' + win[0] + '-' + win[1]);
-}
-/** 10.2.5: the hours the tick may transcribe, [from, to]. The cell is the text 6-9; Sheets had turned it into the date June 9, which readConfig_ writes as 2026-06-09 00:00 and the old tick read as hour 2026.
- *  Read the cell's display text (6-9), else the month and day of the date; write it back as plain text; say so once on the Log. Anything unreadable is 6-9. */
-function windowOf_(ss) {
-  var sh = ss.getSheetByName('Config'), n = sh.getLastRow();
-  var keys = n > 1 ? sh.getRange(2, 1, n - 1, 1).getValues() : [];
-  for (var i = 0; i < keys.length; i++) {
-    if (String(keys[i][0]).trim() !== 'transcribe window') continue;
-    var cell = sh.getRange(i + 2, 2), raw = cell.getValue(), shown = String(cell.getDisplayValue()).trim(), win = null, wasDate = raw instanceof Date;
-    var m = shown.match(/^(\d{1,2})\s*[-–\/]\s*(\d{1,2})$/);
-    if (m) win = [Number(m[1]), Number(m[2])];
-    else if (wasDate) { var tz = ss.getSpreadsheetTimeZone() || RE_TZ; win = [Number(Utilities.formatDate(raw, tz, 'M')), Number(Utilities.formatDate(raw, tz, 'd'))]; }
-    var ok = win && win[0] >= 0 && win[1] <= 24 && win[0] < win[1];
-    if (!ok) win = [6, 9];
-    if (wasDate || !ok) {
-      try { cell.setNumberFormat('@'); cell.setValue(win[0] + '-' + win[1]); } catch (ew) {}
-      log_(ss, 'config', 'Config "transcribe window" ' + (wasDate ? 'was a date (' + shown + '), which the tick read as an hour of 2026' : 'could not be read (' + shown + ')') + '; read as ' + win[0] + '-' + win[1] + ' and written back as plain text');
-    }
-    return win;
-  }
-  return [6, 9];
-}
-/** 10.2.5: once a day, from the last hour of the window on, the tick says on the Log which gate it stopped at when it transcribed nothing, so a silent morning shows. */
+/** 9.1.5: once a day, in the last hour of the window, the tick says on the Log why it transcribed nothing, so a silent morning shows. */
 function tickNote_(ss, t, hour, win, why) {
-  if (hour < (win[1] || 9) - 1) return;
+  if (hour !== (win[1] || 9) - 1) return;
   var props = PropertiesService.getScriptProperties();
-  if (props.getProperty('tick noted') === t || props.getProperty('tick did') === t) return;
+  if (props.getProperty('tick noted') === t) return;
   props.setProperty('tick noted', t);
-  log_(ss, 'transcribe', 'the tick transcribed nothing today', 'the gate: ' + why);
+  log_(ss, 'transcribe', 'the tick ran through its window and transcribed nothing', why);
 }
 /** By hand: transcribe now, whatever the Config cells say — every entry of the last ten days without a transcript, newest first, no daily cap (9.1.5). */
 function transcribeNow() { transcribeToday(true); }
@@ -941,10 +885,10 @@ function transcribeToday(byHand) {
   var back = byHand ? 10 : 2; // the tick looks back two days; a by-hand run catches up ten
   var todays = entries_(ss).filter(function (e) { return e.status !== 'retired' && !done[e.id] && (e.written === t || daysAgo_(e.written) <= back); });
   todays.sort(function (a, b) { return a.written < b.written ? 1 : a.written > b.written ? -1 : 0; }); // newest first, so today's entry is never behind a catch-up
-  var notes = [], n = 0, waited = 0, paid = deepgramCountToday_(ss);
+  var notes = [], n = 0, paid = deepgramCountToday_(ss);
   var max = byHand ? Number.MAX_SAFE_INTEGER : toInt_(cfg['deepgram max per day'], 3); // the cap guards the tick; a by-hand run is a choice made
   for (var i = 0; i < todays.length; i++) {
-    if (Date.now() - RE_START > 300000) { waited = todays.length - i; notes.push('time budget reached; ' + waited + ' wait: ' + (byHand ? 'run transcribeNow again' : 'the next tick')); break; }
+    if (Date.now() - RE_START > 300000) { notes.push('time budget reached; ' + (todays.length - i) + ' wait: ' + (byHand ? 'run transcribeNow again' : 'the next tick')); break; }
     var e = todays[i];
     try {
       var r = transcribeEntry_(ss, cfg, e, paid < max);
@@ -953,9 +897,7 @@ function transcribeToday(byHand) {
       notes.push(e.id + ': ' + r.route + ' · ' + r.state + (r.note ? ' · ' + r.note : ''));
     } catch (ex) { notes.push(e.id + ': failed · ' + String(ex && ex.message || ex).slice(0, 160)); }
   }
-  // 10.2.5: a tick that ran out of time leaves the day open, so the next tick takes what waits (a by-hand run always closes the day, as before)
-  if (byHand || !waited) setConfig_(ss, 'transcribe done', Utilities.formatDate(new Date(), RE_TZ, 'yyyy-MM-dd HH:mm') + (byHand ? ' (by hand)' : ''));
-  try { PropertiesService.getScriptProperties().setProperty('tick did', t); } catch (ep) {}
+  setConfig_(ss, 'transcribe done', Utilities.formatDate(new Date(), RE_TZ, 'yyyy-MM-dd HH:mm') + (byHand ? ' (by hand)' : ''));
   log_(ss, 'transcribe', n + ' entries looked at, ' + todays.length + ' waiting at start', notes.join(' | '));
 }
 var RE_START = Date.now();
@@ -971,31 +913,13 @@ function deepgramCountToday_(ss) {
   sh.getRange(2, 1, sh.getLastRow() - 1, TC.build).getValues().forEach(function (r) { if (String(r[TC.route - 1]) === 'deepgram' && dayOf_(r[TC.fetched - 1]) === t) n++; });
   return n;
 }
-/** 10.2.5: a link with what never tells two addresses apart removed: http/https, #fragment, utm_* and other tracking tails, a trailing slash, a .mp3 ending, case. */
-function linkKey_(u) {
-  var s = String(u || '').trim().replace(/^https?:\/\//i, '').replace(/#.*$/, '');
-  var q = s.indexOf('?'), base = q >= 0 ? s.slice(0, q) : s, tail = q >= 0 ? s.slice(q + 1) : '';
-  base = base.replace(/\/+$/, '').replace(/\.mp3$/i, '').replace(/\/+$/, '');
-  var keep = tail.split('&').filter(function (p) { return p && !/^(utm_[^=]*|fbclid|gclid|mc_cid|mc_eid)(=|$)/i.test(p); });
-  return (base + (keep.length ? '?' + keep.join('&') : '')).toLowerCase();
-}
-/** The Inbox row behind an entry, for the transcript and audio addresses the reader kept: by entry id (Inbox L) first, then by link (linkKey_). 10.2.5.
- *  When several rows qualify: the row whose link is the entry's link, else a row that carries a transcript or an audio address, else the first. */
-function inboxRowFor_(ss, link, entryId) {
+/** The Inbox row behind an entry (by link), for the transcript and audio addresses the reader kept. */
+function inboxRowFor_(ss, link) {
   var sh = ss.getSheetByName('Inbox'); if (!sh || sh.getLastRow() < 2) return null;
   var data = sh.getRange(2, 1, sh.getLastRow() - 1, IC.minutes).getValues();
-  var id = String(entryId || '').trim(), want = linkKey_(link), byId = [], byLink = [];
-  for (var i = 0; i < data.length; i++) {
-    var d = data[i];
-    if (id && String(d[IC.entryId - 1] || '').trim() === id) byId.push(d);
-    else if (want && linkKey_(d[IC.link - 1]) === want) byLink.push(d);
-  }
-  var pool = byId.length ? byId : byLink, pick = null;
-  if (!pool.length) return null;
-  pool.forEach(function (d) { if (!pick && want && linkKey_(d[IC.link - 1]) === want) pick = d; });
-  if (!pick) pool.forEach(function (d) { if (!pick && (String(d[IC.transcript - 1] || '').trim() || String(d[IC.audio - 1] || '').trim())) pick = d; });
-  if (!pick) pick = pool[0];
-  return { sourceId: String(pick[IC.sourceId - 1]), title: String(pick[IC.title - 1]), transcript: String(pick[IC.transcript - 1] || ''), audio: String(pick[IC.audio - 1] || ''), minutes: pick[IC.minutes - 1] };
+  var want = String(link || '').trim().replace(/\/$/, '');
+  for (var i = 0; i < data.length; i++) { if (String(data[i][IC.link - 1] || '').trim().replace(/\/$/, '') === want) return { sourceId: String(data[i][IC.sourceId - 1]), title: String(data[i][IC.title - 1]), transcript: String(data[i][IC.transcript - 1] || ''), audio: String(data[i][IC.audio - 1] || ''), minutes: data[i][IC.minutes - 1] }; }
+  return null;
 }
 function feedOfSource_(ss, sourceId) {
   var sh = ss.getSheetByName('Sources'); if (!sh || sh.getLastRow() < 2 || !sourceId) return '';
@@ -1007,14 +931,14 @@ function feedOfSource_(ss, sourceId) {
 function itemFromFeed_(feedUrl, link, title) {
   if (!feedUrl) return null;
   try {
-    var items = fetchFeed_(feedUrl), want = linkKey_(link), wt = norm_(title);
-    for (var i = 0; i < items.length; i++) { var it = items[i]; if ((it.link && linkKey_(it.link) === want) || (wt && norm_(it.title) === wt)) return it; }
+    var items = fetchFeed_(feedUrl), want = String(link || '').replace(/\/$/, ''), wt = norm_(title);
+    for (var i = 0; i < items.length; i++) { var it = items[i]; if ((it.link && it.link.replace(/\/$/, '') === want) || (wt && norm_(it.title) === wt)) return it; }
   } catch (e) {}
   return null;
 }
 function transcribeEntry_(ss, cfg, e, mayPay) {
   var tr = ss.getSheetByName('Transcripts');
-  var ib = inboxRowFor_(ss, e.link, e.id) || {};
+  var ib = inboxRowFor_(ss, e.link) || {};
   var feedUrl = feedOfSource_(ss, ib.sourceId || '');
   var transcript = ib.transcript || '', audio = ib.audio || '', minutes = ib.minutes || '';
   if (!transcript && !audio && !videoId_(e.link)) {
@@ -1195,7 +1119,7 @@ function doGet(e) {
   if (p.file === 'growth.js') return ContentService.createTextOutput(GROWTH_JS).setMimeType(ContentService.MimeType.JAVASCRIPT);
   if (p.file === 'row.js') return ContentService.createTextOutput(rowJs_()).setMimeType(ContentService.MimeType.JAVASCRIPT);
   if (p.file === 'road.js') return ContentService.createTextOutput(ROAD_JS).setMimeType(ContentService.MimeType.JAVASCRIPT);
-  return jsonOut_({ ok: true, service: 'Ancient Path — Research reader', build: RE_BUILD, script: SCRIPT_BUILD, growth: GROWTH_BUILD, road: ROAD_BUILD });
+  return jsonOut_({ ok: true, service: 'Ancient Path — Research reader', build: RE_BUILD, script: ROAD_BUILD, growth: GROWTH_BUILD, road: ROAD_BUILD });
 }
 
 function doPost(e) {
@@ -1209,7 +1133,7 @@ function jsonOut_(o) { return ContentService.createTextOutput(JSON.stringify(o))
 function growthCall_(b) {
   try {
     var action = String(b.action || '');
-    if (action === 'ping') { var pk = claudeKey_(); return { ok: true, build: RE_BUILD, script: SCRIPT_BUILD, growth: GROWTH_BUILD, road: ROAD_BUILD, keySet: !!pk, keyKind: pk ? pk.split('-').slice(0, 3).join('-') : '' }; }
+    if (action === 'ping') { var pk = claudeKey_(); return { ok: true, build: RE_BUILD, script: ROAD_BUILD, growth: GROWTH_BUILD, road: ROAD_BUILD, keySet: !!pk, keyKind: pk ? pk.split('-').slice(0, 3).join('-') : '' }; }
     if (action.indexOf('road') === 0) return roadCall_(b);
     var who = whoIs_(b.key, b.site); // 4.0.3: the key opens only for the person the site shows
     if (action === 'growth') return growthFor_(who);
@@ -2991,16 +2915,6 @@ function roadHelping_(rows, byId, lanes, week) {
   });
   if (!more.length && !fewer && !list.length) return null;
   return { n: A.length, more: more, fewer: fewer ? fewer.name : '', list: list };
-}
-function ensureBuild1025_(ss) {
-  var props = PropertiesService.getScriptProperties();
-  if (props.getProperty('b1025') === '1') return;
-  var sh = ss.getSheetByName('Config'), n = sh.getLastRow(), keys = n > 1 ? sh.getRange(2, 1, n - 1, 3).getValues() : [], has = false;
-  for (var i = 0; i < keys.length; i++) if (String(keys[i][0]).trim() === 'last tick') { has = true; if (!keys[i][2]) sh.getRange(i + 2, 3).setValue('10.2.5: the transcribe tick writes this on every run (every ten minutes): the time, what it did or the gate it stopped at, and the window it read. A time older than ten minutes means the trigger is not running.'); }
-  if (!has) sh.appendRow(['last tick', '', '10.2.5: the transcribe tick writes this on every run (every ten minutes): the time, what it did or the gate it stopped at, and the window it read. A time older than ten minutes means the trigger is not running.']);
-  windowOf_(ss); // repairs the window cell if Sheets made it a date
-  log_(ss, 'build 10.2.5', 'the tick that wrote nothing (the transcribe window was a date, read as hour 2026) · Config "last tick" every run · one Log line a day names the gate · Inbox row by entry id, then by link with http/https, utm and .mp3 ignored · newsletters (S090, S091) are read · a picture enclosure is no longer an audio address · road.js and growth.js unchanged');
-  props.setProperty('b1025', '1');
 }
 function ensureBuild1024_(ss) {
   var props = PropertiesService.getScriptProperties();
