@@ -1,4 +1,4 @@
-<!-- AP-READ build 6 (10 Oct 2026: the box reads "What do you need help with? Ask in your own words.") · build 5 (10 Oct 2026: the block runs edge to edge at the visible width — build 4 clipped it to the column) · build 4 (10 Oct 2026: the ask box is on the page from the first moment — guide.js keeps it and sends an ask pressed before it arrived) · build 3 (10 Oct 2026: the Guide — the ask box "What are you carrying? Ask in your own words." and the row of concern doors in the band, the answer above the cards, the four choices, "What men are asking" below Articles, each section the newest handful ending in All our stories → / All articles →, the "so far" count retired; all drawn by guide.js, served by the Guide script, so the page carries three slots, one new link and one loader line) · build 2 (10 Oct 2026: What Kind of Light Am I, John’s poem, baked in as the fifth founders’ card) · build 1 (10 Oct 2026) — the Read door at /read. Two sections: Our stories (the four founders' pieces baked in, every published community piece added from the Published feed, newest first, then the invitation to write) and Articles (read live from the blog, the three Your Story signposts left out, then the invitation to talk). Self-contained: no engine, no outside file. Backslash-free on purpose. -->
+<!-- AP-READ build 8 (31 Oct 2026: a blog post filed under Our stories shows its author name beside the Story label, where the date sat; a post with no author name keeps the date; counts taken, see the test) · build 7 (28 Oct 2026: Our stories also shows every blog post whose category is "Our stories", mixed with the published pieces newest first, and Articles leaves those posts out so none appears twice; one read of the blog list feeds both sections; counts taken, see the test) · build 6 (10 Oct 2026: the box reads "What do you need help with? Ask in your own words.") · build 5 (10 Oct 2026: the block runs edge to edge at the visible width — build 4 clipped it to the column) · build 4 (10 Oct 2026: the ask box is on the page from the first moment — guide.js keeps it and sends an ask pressed before it arrived) · build 3 (10 Oct 2026: the Guide — the ask box "What are you carrying? Ask in your own words." and the row of concern doors in the band, the answer above the cards, the four choices, "What men are asking" below Articles, each section the newest handful ending in All our stories → / All articles →, the "so far" count retired; all drawn by guide.js, served by the Guide script, so the page carries three slots, one new link and one loader line) · build 2 (10 Oct 2026: What Kind of Light Am I, John’s poem, baked in as the fifth founders’ card) · build 1 (10 Oct 2026) — the Read door at /read. Two sections: Our stories (the four founders' pieces baked in, every published community piece added from the Published feed, newest first, then the invitation to write) and Articles (read live from the blog, the three Your Story signposts left out, then the invitation to talk). Self-contained: no engine, no outside file. Backslash-free on purpose. -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap');
 .apr{--apr-navy:#1F2A44;--apr-cream:#F6F2EA;--apr-bronze:#B8945F;--apr-deep:#8C6A3F;--apr-ink:#1F1D1A;--apr-quiet:#6B6357;--apr-rule:#E4DCCB;--apr-serif:"Source Serif 4","Source Serif Pro",Georgia,"Times New Roman",serif;--apr-sans:"Source Sans 3","Source Sans Pro","Segoe UI",Helvetica,Arial,sans-serif;
@@ -24,6 +24,7 @@
 .apr .apr-l{font-size:16px;line-height:1.45;color:var(--apr-ink)}
 .apr .apr-stories .apr-l::before{content:"“";color:var(--apr-bronze)}
 .apr .apr-stories .apr-l::after{content:"”";color:var(--apr-bronze)}
+.apr .apr-stories a.apr-card[data-k=post] .apr-l::before,.apr .apr-stories a.apr-card[data-k=post] .apr-l::after{content:none}
 .apr .apr-go{margin-top:auto;padding-top:8px;font-family:var(--apr-sans);font-size:14px;font-weight:600;color:var(--apr-deep)}
 .apr .apr-go i{font-style:normal;margin-left:4px}
 .apr a.apr-you{background:var(--apr-navy);border-color:var(--apr-navy);color:#FBF9F5!important}
@@ -56,7 +57,7 @@
 .apr .apa-note{font-family:var(--apr-sans);font-size:14px;color:#D9D2C3;margin:10px 2px 0;text-align:left}
 @media (max-width:640px){.apr .apa-row{flex-direction:column}.apr .apa-q{font-size:15.5px;padding:12px 13px}.apr .apa-go{padding:13px 22px}}
 </style>
-<div class="apr" id="apRead" data-build="6">
+<div class="apr" id="apRead" data-build="8">
   <div class="apr-band"><div class="apr-in">
     <p class="apr-eb">Ancient Path</p>
     <h1 class="apr-h1">Read</h1>
@@ -111,7 +112,7 @@
   </div>
 </div>
 <script>
-/* AP-READ build 6 — Our stories from the Published feed (JSONP, same feed the hub reads); Articles from the blog's own list. Backslash-free on purpose. */
+/* AP-READ build 8 — Our stories from the Published feed (JSONP, same feed the hub reads) plus the blog posts whose category is Our stories, newest first, each post card naming its author (author_name) where the date sat, the date when there is no author name; Articles from the blog's own list without those posts. Backslash-free on purpose. */
 (function () {
   /* the block runs edge to edge. 100vw counts the scroll bar, so on a desktop window it ran a few pixels past the right edge:
      the width is set to the visible width of the site's scroll box instead, and the block starts at its left edge */
@@ -174,20 +175,35 @@
     var name = clean(it.name) || "Shared anonymously", from = clean(it.from) || "Testimony", title = clean(it.title) || "A testimony", text = it.piece;
     var st = stoneOf(it); if (st) { title = st.name || "A stone"; text = st.lines.join(NL); from = "Set a Stone"; }
     var kind = kindOf(from), a = document.createElement("a");
-    a.className = "apr-card"; a.setAttribute("data-k", kind); a.href = "/your-story?p=" + id;
+    a.className = "apr-card"; a.setAttribute("data-k", kind); a.setAttribute("data-dyn", "1"); a.href = "/your-story?p=" + id;
     var first = firstSentence(text);
     a.innerHTML = '<span class="apr-meta"><span class="apr-k">' + esc(from) + '</span><span class="apr-w">' + esc(name) + '</span></span><span class="apr-t">' + esc(noLonely(title)) + '</span>' +
       (first ? '<span class="apr-l">' + esc(noLonely(first)) + '</span>' : '') + '<span class="apr-go">' + (kind === "friends" ? "Read the story" : (kind === "stones" ? "Read his stone" : "Read his story")) + '<i>→</i></span>';
     return a;
   }
+  var feedPieces = [], blogStories = [];
+  function postCard(p) { /* a blog post filed under Our stories: a story card, the author's name beside it (the date when the post has no author name), no quote marks (its line is a summary) */
+    var slug = clean(p.slug); if (!slug || SKIP[slug]) return null;
+    var a = document.createElement("a"); a.className = "apr-card"; a.setAttribute("data-k", "post"); a.setAttribute("data-dyn", "1"); a.href = "/blog/" + slug;
+    var who = clean(p.author_name) || dateOf(p.published), first = firstSentence(p.description || ""), title = clean(p.title) || slug;
+    a.innerHTML = '<span class="apr-meta"><span class="apr-k">Story</span>' + (who ? '<span class="apr-w">' + esc(who) + '</span>' : '') + '</span><span class="apr-t">' + esc(noLonely(title)) + '</span>' +
+      (first ? '<span class="apr-l">' + esc(noLonely(first)) + '</span>' : '') + '<span class="apr-go">Read the story<i>→</i></span>';
+    return a;
+  }
+  function renderStories() { /* every drawn card out, then back in: published pieces and blog stories together, newest first, above the baked cards */
+    if (!grid) return;
+    var old = grid.querySelectorAll("a[data-dyn]"), i, items = [], c;
+    for (i = 0; i < old.length; i++) grid.removeChild(old[i]);
+    for (i = 0; i < feedPieces.length; i++) { c = storyCard(feedPieces[i]); if (c) items.push({ el: c, t: Date.parse(feedPieces[i].at) || 0, n: i }); }
+    for (i = 0; i < blogStories.length; i++) { c = postCard(blogStories[i]); if (c) items.push({ el: c, t: (Number(blogStories[i].published) || 0) * 1000, n: i }); }
+    items.sort(function (a, b) { return (b.t - a.t) || (b.n - a.n); });
+    var first = grid.firstChild;
+    for (i = 0; i < items.length; i++) grid.insertBefore(items[i].el, first);
+  }
   window.apReadStories = function (data) {
     try {
       var list = (data && data.pieces) || []; if (!grid || !list.length) return;
-      var i, n = 0;
-      for (i = 0; i < list.length; i++) { /* feed order is oldest first; each insert at the top leaves the newest on top */
-        var c = storyCard(list[i]); if (!c) continue;
-        grid.insertBefore(c, grid.firstChild); n++;
-      }
+      feedPieces = list; renderStories();
     } catch (e) {}
   };
   if (grid) {
@@ -212,12 +228,20 @@
       (desc ? '<span class="apr-l">' + esc(noLonely(desc)) + '</span>' : '') + '<span class="apr-go">Read it<i>→</i></span>';
     return a;
   }
-  if (arts && window.fetch) {
+  function inOurStories(p) { /* the post's category list holds "Our stories" (any capitals) */
+    var cats = p && p.categories; if (!cats) return false; cats = [].concat(cats);
+    var i; for (i = 0; i < cats.length; i++) if (clean(cats[i]).toLowerCase() === "our stories") return true; return false;
+  }
+  if ((arts || grid) && window.fetch) {
     fetch(BLOG, { credentials: "omit", cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-      var posts = (j && j.blogPosts) || [], cards = [], i;
+      var posts = (j && j.blogPosts) || [], cards = [], stories = [], i, c;
       posts.sort(function (a, b) { return (Number(b.published) || 0) - (Number(a.published) || 0); });
-      for (i = 0; i < posts.length; i++) { var c = articleCard(posts[i]); if (c) cards.push(c); }
-      if (!cards.length) return;                     /* the list did not come back: the baked cards stay */
+      for (i = 0; i < posts.length; i++) {
+        if (inOurStories(posts[i])) { stories.push(posts[i]); continue; }   /* filed under Our stories: it belongs there, not in Articles */
+        c = articleCard(posts[i]); if (c) cards.push(c);
+      }
+      if (stories.length) { blogStories = stories; renderStories(); }
+      if (!arts || !cards.length) return;            /* the list did not come back: the baked cards stay */
       var old = arts.querySelectorAll("a.apr-card");
       for (i = 0; i < old.length; i++) arts.removeChild(old[i]);
       for (i = 0; i < cards.length; i++) arts.insertBefore(cards[i], talk);
