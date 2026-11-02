@@ -1,4 +1,5 @@
-/* AP-HISROAD road.js build 11.1.1 — Your Page below the band as three views, This Week · Your House · Your Path, served by the Research reader script (ResearchReader.gs build 11.1, ?file=road.js).
+/* AP-HISROAD road.js build 11.1.2 — Your Page below the band as three views, This Week · Your House · Your Path, served by the Research reader script (ResearchReader.gs build 11.1, ?file=road.js).
+   11.1.2 (Nov 2, 2026, John's walk of the live 11.1.1 on a computer): one header on all three tabs (the full band; no slim band; the tab name is the greeting on the other two; tabs never wrap and each underline is the width of its label); the site row (Your Desk · Your Growth · Your Page) sits at the very top of the band, never under the tabs; Your Path has no drawing; Your House is now Your Story (Deuteronomy 8:2, What You Did · What You Saw · What You Know Now, Mine / Our Group) and no house, window or room is left anywhere a man reads.
    11.1.1 (Nov 2, 2026, house-rule fixes before the install): every heading in Title Case; the group line only when his mark matches the group's; no counts anywhere he reads; check-in last step preselects nothing and Skip saves nothing; first visit shows only what he has written; text left-aligned; taps 44px or more; on a computer (900px and wider) the check-in and sheets are a centered 640px panel over a dimmed page with Next right under the content; hover and focus-visible on every control; tabs carry aria-controls and arrow keys; the not-done ring is 3:1 or better.
    11.1 (Nov 2, 2026, the Witness): the invite roles read "A trusted friend"; the witness definition is the one the invited witness reads (a mentor, a coach or a trusted friend who walks with a man); Settings shows "What Your Witness Sees Each Week", the page exactly as his witness reads it, from v11.weekly. The invitation is now sent: a man outside a group whose witness said yes sees who walks with him (\"Name, your mentor, walks with you.\"), and an invitation that cannot go answers \"Our team walks with you.\" with no reason. No new screens; the witness page itself is served by the script (?w=).
    11.0 (Nov 1, 2026, Your Page 11.0; built to the prototype John ruled Oct 31, "this is the right direction. let's build from here."; built on the live 10.2.4): 1. The page below the band is three views with a tab each and Settings in the band's corner: This Week (the list, Last Week, This Week's Guidepost, Who Walks With You), Your House (a drawn house whose windows light, Your House / Our House, three rooms, Your Story · Told, Offered, Known, What I've Gathered, Make Something of It) and Your Path (the drawn road, What's Next for You, Your Courses, the Nine Guideposts, Walk With Another Man, three doors). 2. The check-in is one overlay of four steps with Back and Skip on each; every tap is written as it is made (road_mark, road_word, road_why, road_did, road_practice, road_when) and the end says road_checkin. 3. The piece, a letter from his witness, I need a hand, Settings and What This Page Is For open as sheets (a full screen on a phone, a sheet beside the page on a desk); each traps focus, closes on Esc and locks the page behind it. 4. After his group meets the list is Carry It This Week: What did you take from his group's night? (road_saw), his practice, the next piece; it returns to Before Your Group Meets when both are done or after three days. 5. The band is the page's own and is painted once, in one call (window.apBand.set), so it never moves on load. 6. Retired (their data stays, and the server still sends it): the old This Week layers, For Your Road, Your Land and its walk, Your Story panel, Courses and Doors panels, the frames and the welcome panel. The shelf cards stay the page's own and open in place under their rows. 7. Hooks for 11.1: v11.notes (the Notes tab) is read for the letter, v11.weekly (null) is where the weekly page his witness reads attaches, and the settings it needs (shares, notes paused) are saved here.
@@ -7,10 +8,10 @@
   "use strict";
   var host = document.getElementById("apRoad4");
   if (!host || host.getAttribute("data-hisroad")) return;
-  host.setAttribute("data-hisroad", "11.1.1");
-  var BUILD = "11.1.1";
+  host.setAttribute("data-hisroad", "11.1.2");
+  var BUILD = "11.1.2";
   /* the stamped rule count of this script's stylesheet, taken before the file card (AP-SHIP 1); the page counts what the browser accepted against it */
-  var RULES = { hisroad: 168 };
+  var RULES = { hisroad: 170 };
   var DESK_URL = "https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec";
   var ROAD_URL = (function () { var s = document.currentScript; var u = s && s.src ? String(s.src).split("?")[0] : ""; return /script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(u) ? u : ""; })();
   var CACHE = "ap_hisroad_v4";
@@ -44,6 +45,7 @@
       ".ap-home .av .av-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}",
       ".ap-home .av :focus-visible{outline:3px solid var(--bronze);outline-offset:2px;border-radius:4px}",
       ".ap-home .av .av-vlead{font:italic 400 16.5px/1.4 var(--serif) !important;color:var(--quiet) !important;padding:0 2px 12px}",
+      ".ap-home .av .av-vlead .av-ref{font:600 12.5px/1.3 var(--sans) !important;font-style:normal;color:var(--bronze-ink) !important;white-space:nowrap;margin-left:2px}",
       ".ap-home .av .av-last{font-size:15px;color:var(--quiet) !important;padding:2px 2px 12px}",
       ".ap-home .av .av-last b{color:var(--navy) !important;font-weight:600}",
       ".ap-home .av .av-card{background:var(--card);border:1px solid var(--rule);border-radius:var(--r2);padding:16px;margin-top:12px}",
@@ -126,12 +128,6 @@
       ".ap-home .av .av-paper{background:#FFFDF8;color:#2B3040 !important;border:1px solid var(--rule);border-radius:4px;padding:22px;margin-top:12px;font:400 17px/1.6 var(--serif) !important;box-shadow:0 1px 4px rgba(0,0,0,.06)}",
       ".ap-home .av .av-paper p+p{margin-top:12px}",
       ".ap-home .av .av-paper .av-sig{font-style:italic;color:#5E6573 !important}",
-      ".ap-home .av .av-house{display:block;width:100%;height:auto;color:var(--navy) !important}",
-      ".ap-home .av .av-house .av-win{fill:#F6EFE2;stroke:var(--bronze);transition:fill .9s var(--ease)}",
-      ".ap-home .av .av-house .av-win.av-lit{fill:var(--glow)}",
-      ".ap-home .av .av-house .av-win.av-flare{animation:av-flare 1.4s var(--ease)}",
-      "@keyframes av-flare{0%{fill:#F6EFE2}35%{fill:#FFE2A6}100%{fill:var(--glow)}}",
-      ".ap-home .av .av-house.av-mini{max-width:260px;margin:6px auto 0}",
       ".ap-home .av .av-seg2{display:flex;gap:8px;margin-top:4px}",
       ".ap-home .av .av-seg2 button{min-height:var(--tap);padding:6px 16px;border-radius:999px;border:1px solid var(--rule);background:var(--card);font:600 14px/1.3 var(--sans) !important;color:var(--navy) !important}",
       ".ap-home .av .av-seg2 button[aria-pressed=\"true\"]{border:2px solid var(--bronze);background:var(--sand)}",
@@ -154,7 +150,6 @@
       ".ap-home .av .av-cover .av-ck{font:600 8.5px/1.3 var(--sans) !important;letter-spacing:.1em;text-transform:uppercase;color:#D9B97F !important}",
       ".ap-home .av .av-cover .av-ct{margin-top:6px;font:400 15px/1.15 var(--serif) !important}",
       ".ap-home .av .av-cover .av-cv{margin-top:auto;font:italic 400 9px/1.35 var(--serif) !important;color:#E8E0D2 !important}",
-      ".ap-home .av .av-road{display:block;width:100%;height:auto;margin-bottom:4px}",
       ".ap-home .av .av-course{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:52px;border-top:1px solid var(--rule)}",
       ".ap-home .av .av-course:first-of-type{border-top:0}",
       ".ap-home .av .av-course b{font:400 16.5px/1.3 var(--serif) !important;color:var(--navy) !important}",
@@ -200,7 +195,15 @@
       ".ap-home .ap-band button.ap-tab:hover{color:#FFFFFF !important;background:rgba(255,255,255,.09)}",
       ".ap-home .ap-band button.ap-set:hover{color:#FFFFFF !important;text-decoration:underline !important}",
       "@media (max-width:420px){.ap-home .av .av-choices.av-three{grid-template-columns:1fr}.ap-home .av .av-q{font-size:23px}}",
-      "@media (prefers-reduced-motion:reduce){.ap-home .av *,.ap-home .av *:before,.ap-home .av *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}"
+      "@media (prefers-reduced-motion:reduce){.ap-home .av *,.ap-home .av *:before,.ap-home .av *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}",
+      ".ap-home #apBand.ap-slim{position:static !important}",
+      ".ap-home #apBand.ap-slim .ap-eyebrow,.ap-home #apBand.ap-slim .ap-hello,.ap-home #apBand.ap-slim .ap-where,.ap-home #apBand.ap-slim .ap-nextrow{display:block !important}",
+      ".ap-home #apBand.ap-slim .ap-nm{display:none !important}",
+      ".ap-home #apBand .ap-bandw{width:100%}",
+      ".ap-home #apBand .ap-tabs{justify-content:flex-start;gap:28px}",
+      ".ap-home #apBand button.ap-tab{flex:0 0 auto;position:relative;padding:0;white-space:nowrap;min-width:44px}",
+      ".ap-home #apBand button.ap-tab:before{content:\"\";position:absolute;left:-12px;right:-12px;top:0;bottom:0}",
+      ".ap-home #apBand .ap-band-in>.apg-row{margin:0 0 14px;padding-top:0;border-top:0;border-bottom:1px solid rgba(243,237,227,.14)}"
     ].join("");
     host.parentNode.insertBefore(st, host);
   })();
@@ -280,8 +283,10 @@
   /* what each rhythm does, said back to him (it sets how many readings he is handed; reminders themselves are not sent yet) */
   var RHYTHM_SAID = { twice: "Kept. New pieces can come up to twice a day.", daily: "Kept. A new piece can come each day.", few: "Kept. A new piece can come three days a week.", weekly: "Kept. Pieces come three days a week at the fewest; that is the least we hand out." };
   var SHARES = [["path", "The path and the word"], ["piece", "Whether the piece helped"], ["practice", "How your practice went"], ["words", "Your own words"]];
-  var LEADS = { week: "Stand where you are, look, and take the next step.", house: "What you’ve walked becomes a home. Rest in it.", path: "Ask for the good way, and walk in it." };
-  var ROOMS = [["did", "By wisdom a house is built", "What You Did"], ["saw", "by understanding it is established", "What You Saw"], ["know", "by knowledge the rooms are filled", "What You Know Now"]];
+  var LEADS = { week: "Stand where you are, look, and take the next step.", house: "", path: "" };
+  var ROOMS = [["did", "", "What You Did"], ["saw", "", "What You Saw"], ["know", "", "What You Know Now"]]; /* the three parts of Your Story; the keys are the server's */
+  var TABWORD = { week: "This Week", house: "Your Story", path: "Your Path" };
+  var TABWHERE = { house: "The road you’ve walked, in your own words.", path: "Ask for the good way, and walk in it." };
   var DANGER = "Call 911, or call or text 988 to reach the Suicide and Crisis Lifeline.";
   var SAFE = "What you write here goes to our team, and a person reads it within __REVIEW__, before anything else happens with it. It stays with our team, with one exception: if we believe you or someone else is in danger, we will act on that, and we will tell you we are doing it. For men eighteen and older.";
   var WHO_CARRIED_HELP = "Drawn from what the group said together, never from one man’s words.";
@@ -370,10 +375,25 @@
   /* hand the page's band everything in one call, so it is painted once and never moves */
   function paintBand() {
     var n = nextStep(), o = { hello: helloText(), where: whereText(), step: n.t ? { text: "Next: " + lc1(n.t).replace(/^next: /, ""), act: n.act } : null, tab: UI.tab };
+    if (UI.tab !== "week") { o.hello = TABWORD[UI.tab]; o.where = TABWHERE[UI.tab]; } /* one full header on every tab: the tab's name, and the line it stands on */
     if (n.act === null && n.t) o.step = { text: n.t, act: null };
     try { if (window.apBand && window.apBand.set) window.apBand.set(o); } catch (e) {}
     try { document.dispatchEvent(new CustomEvent("ap:roadband", { detail: o })); } catch (e2) {}
-    tabWiring();
+    tabWiring(); bandGuard();
+  }
+  /* one header, always: the page block makes the band slim on the other tabs; this keeps it whole. The site row a facilitator sees (row.js) is moved to the very top of the band. */
+  var guarded = false;
+  function bandGuard() {
+    var b = document.getElementById("apBand"); if (!b) return;
+    b.classList.remove("ap-slim"); b.setAttribute("data-avtab", UI.tab);
+    var row = b.querySelector(".apg-row"), inn = b.querySelector(".ap-band-in");
+    if (row && inn && inn.firstChild !== row) inn.insertBefore(row, inn.firstChild);
+    if (guarded || !window.MutationObserver) return; guarded = true;
+    new MutationObserver(function () {
+      if (b.classList.contains("ap-slim")) b.classList.remove("ap-slim");
+      var r2 = b.querySelector(".apg-row"), i2 = b.querySelector(".ap-band-in");
+      if (r2 && i2 && i2.firstChild !== r2) i2.insertBefore(r2, i2.firstChild);
+    }).observe(b, { attributes: true, attributeFilter: ["class"], childList: true, subtree: true });
   }
   /* the band's tabs belong to the page block; this adds what a tablist also needs: each tab names the panel it opens, the panel names its tab, and only the chosen tab is in the tab order (the arrow keys move between them) */
   function tabWiring() {
@@ -382,6 +402,7 @@
     tabs.forEach(function (t) {
       var k = t.getAttribute("data-tab"), on = t.getAttribute("aria-selected") === "true";
       if (!t.id) t.id = "avTab-" + k;
+      if (TABWORD[k] && t.textContent !== TABWORD[k]) t.textContent = TABWORD[k]; /* the page block still carries the old label; this is the word he reads */
       t.setAttribute("aria-controls", "avMain"); t.setAttribute("tabindex", on ? "0" : "-1");
       if (on && main) main.setAttribute("aria-labelledby", t.id);
     });
@@ -442,9 +463,12 @@
     var line = !v.first && g.line && GROUPWORD[g.line] ? " Most of your group marked " + GROUPWORD[g.line] + " this week." : "";
     return '<div class="av-card"><p class="av-lk">Who Walks With You</p><p class="av-s">' + esc(leaderKnown() ? "Your group’s leader is your witness." : "Our team walks with your group.") + esc(line) + ' You’re not walking this alone.</p>' + carriedBlock() + handLine() + '</div>';
   }
-  function lead(k) { return '<p class="av-vlead">' + esc(LEADS[k]) + '</p>'; }
+  function lead(k) {
+    if (k === "house") return '<p class="av-vlead">“Remember the whole way that the LORD your God has led you.” <span class="av-ref">Deuteronomy 8:2</span></p>';
+    return LEADS[k] ? '<p class="av-vlead">' + esc(LEADS[k]) + '</p>' : ""; /* Your Path says its line in the header */
+  }
   function welcomeCard() {
-    return '<div class="av-card av-first"><p class="av-lk">What This Page Is For</p><p class="av-t">Your home base for the week.</p><p class="av-verse">“Stand by the roads, and look, and ask for the ancient paths, where the good way is; and walk in it, and find rest for your souls.” <span>Jeremiah 6:16</span></p><p class="av-s">This page is built on that invitation. <b>This Week</b> is where you stand and look. <b>Your Path</b> is where you ask for the good way. <b>Your House</b> is where what you’ve walked becomes rest.</p>' +
+    return '<div class="av-card av-first"><p class="av-lk">What This Page Is For</p><p class="av-t">Your home base for the week.</p><p class="av-verse">“Stand by the roads, and look, and ask for the ancient paths, where the good way is; and walk in it, and find rest for your souls.” <span>Jeremiah 6:16</span></p><p class="av-s">This page is built on that invitation. <b>This Week</b> is where you stand and look. <b>Your Path</b> is where you ask for the good way. <b>Your Story</b> is where the road you’ve walked is kept, in your own words.</p>' +
       '<button type="button" class="av-walk" data-act="welcomed"><span class="av-u">Start with this week</span> <span class="av-ar">→</span></button></div>';
   }
   function newsHtml() {
@@ -473,7 +497,7 @@
     if (v.first && !welcomedYet()) return '<main class="av-view">' + lead("week") + welcomeCard() + walksWith() + '</main>';
     h += newsHtml();
     if (v.ended) {
-      h += '<div class="av-ceremony"><p class="av-lk">You Walked It to the End</p><p class="av-t">' + esc(v.course) + ' is complete.</p><p class="av-s">You stood, looked, asked and walked. What you did, what you saw and what you know now are kept in Your House, and your witness has a word for you about what comes next.</p>' +
+      h += '<div class="av-ceremony"><p class="av-lk">You Walked It to the End</p><p class="av-t">' + esc(v.course) + ' is complete.</p><p class="av-s">You stood, looked, asked and walked. What you did, what you saw and what you know now are kept in Your Story, and your witness has a word for you about what comes next.</p>' +
         '<a class="av-walk" href="' + PAGES.stones + '"><span class="av-u">Set a stone with your group</span> <span class="av-ar">→</span></a><br><button type="button" class="av-walk" data-act="go-path"><span class="av-u">What’s next for you</span> <span class="av-ar">→</span></button></div>';
       if (v.carried) h += '<div class="av-card"><p class="av-lk">Carry It Forward</p><p class="av-s">The practice you’re keeping: <b>' + esc(v.carried.replace(/\.$/, "")) + '</b>' + (v.when ? ", " + esc(lc1(rhythmOfWhen(v.when))) : "") + '. Your road goes on; new pieces keep coming at your rhythm.</p></div>';
       return '<main class="av-view">' + lead("week") + h + walksWith() + '</main>';
@@ -484,7 +508,7 @@
       var wd = d.wed, wt = UI.drafts.avWed || "";
       h += '<div class="av-list"><div class="av-hd"><b>Carry It This Week</b><span>' + (day ? "until " + esc(day) : "") + '</span></div>' +
         '<div class="av-row av-still' + (wd ? " av-done" : "") + '" style="grid-template-columns:28px 1fr"><span class="av-ring" aria-hidden="true"></span><span><span class="av-ly">Your Story</span><span class="av-tt">What did you take from ' + esc(day || "your group’s night") + '?</span>' +
-        (wd ? '<small>Kept in your house: “' + esc(v.wedText || UI.drafts.avWedKept || "") + '”</small>' : '<span class="av-answer"><textarea id="avWed" maxlength="2000" aria-label="What did you take from ' + esc(day || "your group’s night") + '?" placeholder="One line is enough.">' + esc(wt) + '</textarea><button type="button" class="av-btn" data-act="keepwed">Keep it</button><span class="av-kept" id="avWedS" aria-live="polite"></span></span>') + '</span></div>' +
+        (wd ? '<small>Kept in Your Story: “' + esc(v.wedText || UI.drafts.avWedKept || "") + '”</small>' : '<span class="av-answer"><textarea id="avWed" maxlength="2000" aria-label="What did you take from ' + esc(day || "your group’s night") + '?" placeholder="One line is enough.">' + esc(wt) + '</textarea><button type="button" class="av-btn" data-act="keepwed">Keep it</button><span class="av-kept" id="avWedS" aria-live="polite"></span></span>') + '</span></div>' +
         rowHtml("choose", "Your Practice", "Choose one for this week", v.unit && v.unit.title ? "From " + (ctxLabel() || "this week") + ", “" + v.unit.title + "”" : "From your course", "Choose", "choose", d.choose) +
         (p ? rowHtml("road", "For Your Road · " + (p.layer || "Wisdom"), p.claim, p.opened ? "Opened " + (p.openedDay || p.opened) : (p.minutes ? uc1(p.minutes) : "A short reading"), "Open", "piece", d.road) :
           '<div class="av-row av-still"><span class="av-ring" aria-hidden="true"></span><span><span class="av-ly">For Your Road</span><span class="av-tt">A new piece</span><small>Comes at your own pace</small></span><span class="av-go"></span></div>') + '</div>';
@@ -494,17 +518,12 @@
     var s = storyRow();
     h += '<div class="av-list">' + head + courseRow(d) + pieceRow(d) +
       rowHtml("check", "Check In With Your Witness", "About a minute", (d.check ? "Kept. " : "") + (group() ? (leaderKnown() ? "Your group’s leader reads it before you meet" : "Our team reads it before you meet") : "Our team reads it"), "Start", "checkin", d.check) +
-      (s ? rowHtml("story", "Your Story", writeName(s.it.title), s.done ? "Kept in your house" : "Your course asks it this week", s.it.begun ? "Continue" : "Begin", "story", s.done, s.it.href || PAGES.story) : "") + '</div>';
+      (s ? rowHtml("story", "Your Story", writeName(s.it.title), s.done ? "Kept in Your Story" : "Your course asks it this week", s.it.begun ? "Continue" : "Begin", "story", s.done, s.it.href || PAGES.story) : "") + '</div>';
     return '<main class="av-view">' + lead("week") + h + gpCard() + walksWith() + '</main>';
   }
   function rhythmOfWhen(k) { var w = WHENS.filter(function (x) { return x[0] === k; })[0]; return w ? w[1] : ""; }
 
-  /* ───────────── Your House ───────────── */
-  function houseSvg(mini, only) {
-    var H = V().house || {}, lit = function (k) { return (only ? only[k] : (H[k] || []).length) ? " av-lit" : ""; }, fl = function (k) { return (only ? only[k] : (UI.flare === k || UI.flare === "all")) ? " av-flare" : ""; };
-    return '<svg class="av-house' + (mini ? " av-mini" : "") + '" viewBox="0 0 320 136" role="img" aria-label="Your house: a window lights when something you did, saw or now know lands in it"><path d="M20 58 L160 10 L300 58" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><rect x="34" y="58" width="252" height="70" fill="none" stroke="currentColor" stroke-width="2.2"/><line x1="118" y1="58" x2="118" y2="128" stroke="currentColor" stroke-width="1.6"/><line x1="202" y1="58" x2="202" y2="128" stroke="currentColor" stroke-width="1.6"/>' +
-      '<rect class="av-win' + lit("did") + fl("did") + '" x="60" y="70" width="32" height="28" rx="2"/><rect class="av-win' + lit("saw") + fl("saw") + '" x="144" y="70" width="32" height="28" rx="2"/><rect class="av-win' + lit("know") + fl("know") + '" x="228" y="70" width="32" height="28" rx="2"/></svg>';
-  }
+  /* ───────────── Your Story ───────────── */
   function lineHtml(l) { return '<p class="av-line' + (l.mine ? " av-mine" : "") + (l.fresh ? " av-new" : "") + '">' + esc(l.t) + (l.w ? '<small>' + esc(l.w) + '</small>' : "") + '</p>'; }
   /* Your Story · Told, Offered, Known, from the story engine's own states: finished and kept = Told; the offered stop = Offered; the published stop = Known; begun = Begun */
   function storyStop(key) {
@@ -556,17 +575,17 @@
   }
   function viewHouse() {
     var v = V(), H = v.house || { did: [], saw: [], know: [] };
-    var h = '<main class="av-view">' + lead("house") + houseSvg(false) + '<p class="av-help" style="margin-top:2px">By wisdom a house is built, and by understanding it is established; by knowledge the rooms are filled with all precious and pleasant riches. Proverbs 24:3–4</p>';
-    h += '<div class="av-seg2" role="group" aria-label="Whose house"><button type="button" data-act="house" data-h="mine" aria-pressed="' + (UI.house === "mine") + '">Your House</button><button type="button" data-act="house" data-h="ours" aria-pressed="' + (UI.house === "ours") + '">Our House</button></div>';
+    var h = '<main class="av-view">' + lead("house");
+    h += '<div class="av-seg2" role="group" aria-label="Whose story"><button type="button" data-act="house" data-h="mine" aria-pressed="' + (UI.house === "mine") + '">Mine</button><button type="button" data-act="house" data-h="ours" aria-pressed="' + (UI.house === "ours") + '">Our Group</button></div>';
     if (UI.house === "ours") {
       var O = UI.ours;
-      h += '<p class="av-help">What the men walking this road have gathered together. One group’s house for now; it grows as groups join. Never one man’s words unless he offered them.</p>';
-      if (!group()) h += '<div class="av-card"><p class="av-s">Our House is your group’s. When you walk with a group, what the men gathered together shows here.</p></div>';
-      else if (!O) h += '<div class="av-card"><p class="av-s">' + (UI.oursBusy ? "Opening Our House." : "Our House did not open. Try again in a moment.") + '</p></div>';
+      h += '<p class="av-help">What the men walking this road have gathered together. It starts with your group and grows as groups join. Never one man’s words unless he offered them.</p>';
+      if (!group()) h += '<div class="av-card"><p class="av-s">Our Group is your group’s. When you walk with a group, what the men gathered together shows here.</p></div>';
+      else if (!O) h += '<div class="av-card"><p class="av-s">' + (UI.oursBusy ? "Opening Our Group." : "Our Group did not open. Try again in a moment.") + '</p></div>';
       else {
         ROOMS.forEach(function (r) {
           var L = O[r[0]] || [];
-          h += '<div class="av-card av-room"><p class="av-t">' + esc(r[1]) + '</p><p class="av-rw">' + esc(r[2].replace("You", "We")) + '</p>' + (L.length ? L.map(function (l) { return '<p class="av-line">' + esc(l.t) + '</p>'; }).join("") : '<p class="av-help">Nothing to show yet. A line shows here only when enough of your group stand behind it that no one man can be picked out.</p>') + '</div>';
+          h += '<div class="av-card av-room"><p class="av-t">' + esc(r[2].replace("You", "We")) + '</p>' + (L.length ? L.map(function (l) { return '<p class="av-line">' + esc(l.t) + '</p>'; }).join("") : '<p class="av-help">Nothing to show yet. A line shows here only when enough of your group stand behind it that no one man can be picked out.</p>') + '</div>';
         });
         if ((O.carried || []).length) h += '<div class="av-card"><p class="av-lk">What Our Group Carried</p>' + O.carried.map(function (c) { return '<p class="av-s"><b>' + esc(smart(c.title)) + '.</b> ' + esc(smart(c.body || "")) + '</p>'; }).join("") + '<p class="av-help">' + esc(WHO_CARRIED_HELP) + '</p></div>';
       }
@@ -574,10 +593,11 @@
     }
     ROOMS.forEach(function (r) {
       var L = H[r[0]] || [];
-      h += '<div class="av-card av-room"><p class="av-t">' + esc(r[1]) + '</p><p class="av-rw">' + esc(r[2]) + '</p>' + (L.length ? L.map(function (l) { return lineHtml({ t: l.t, mine: l.mine, w: l.w, fresh: !!UI.fresh[r[0] + "|" + l.t] }); }).join("") : '<p class="av-help">Empty for now. Your first check-in lights it.</p>') + '</div>';
+      h += '<div class="av-card av-room"><p class="av-t">' + esc(r[2]) + '</p>' + (L.length ? L.map(function (l) { return lineHtml({ t: l.t, mine: l.mine, w: l.w, fresh: !!UI.fresh[r[0] + "|" + l.t] }); }).join("") : '<p class="av-help">Empty for now. Your first check-in begins it.</p>') + '</div>';
     });
+    h += '<p class="av-help">Each week holds what you did, what you saw and what you know now: wisdom, understanding and knowledge (Proverbs 24:3–4).</p>';
     h += shelfHtml();
-    h += '<div class="av-card"><p class="av-lk">What I’ve Gathered</p><div class="av-vol"><div class="av-cover" aria-hidden="true"><span class="av-ck">What I’ve Gathered</span><span class="av-ct">' + esc(v.course || "Your road") + '</span><span class="av-cv">By wisdom a house is built…</span></div><div><p class="av-s" style="margin-top:0">' + (v.first ? "Nothing is gathered yet. What you keep on this road is bound here, in a volume of your own." : "Your first volume comes at the end of November.") + '</p></div></div></div>';
+    h += '<div class="av-card"><p class="av-lk">What I’ve Gathered</p><div class="av-vol"><div class="av-cover" aria-hidden="true"><span class="av-ck">What I’ve Gathered</span><span class="av-ct">' + esc(v.course || "Your road") + '</span><span class="av-cv">Remember the whole way…</span></div><div><p class="av-s" style="margin-top:0">' + (v.first ? "Nothing is gathered yet. What you keep on this road is bound here, in a volume of your own." : "Your first volume comes at the end of November.") + '</p></div></div></div>';
     h += madeCard();
     return h + '</main>';
   }
@@ -598,10 +618,6 @@
     offered.forEach(function (o) { if (!seen[norm(o.name)]) { seen[norm(o.name)] = 1; out.push({ name: o.name, state: /^Finished$/i.test(o.state) ? "Complete" : o.state, href: courseHref(o.name) }); } });
     return out;
   }
-  function roadSvg() {
-    var ended = !!V().ended, c = V().course || "Your course", nd = V().meet && V().meet.date;
-    return '<svg class="av-road" viewBox="0 0 320 100" role="img" aria-label="Your path: where you are now and what comes next"><path d="M14 84 C 80 84, 90 48, 150 48 S 250 20, 306 20" fill="none" stroke="#B8945F" stroke-width="2.4" stroke-linecap="round"/><path d="M14 84 C 80 84, 90 48, 150 48' + (ended ? ' S 250 20, 306 20' : "") + '" fill="none" stroke="#1F2A44" stroke-width="3" stroke-linecap="round"/><circle cx="' + (ended ? 306 : 150) + '" cy="' + (ended ? 20 : 48) + '" r="7" fill="#1F2A44"/>' + (ended ? "" : '<circle cx="306" cy="20" r="6" fill="#FBF9F5" stroke="#B8945F" stroke-width="2"/>') + '<text x="150" y="72" text-anchor="middle" font-size="12" fill="#2B3040" font-family="Source Sans 3, sans-serif">' + esc(c + (ended ? " · complete" : " · now")) + '</text><text x="306" y="62" text-anchor="end" font-size="12" fill="#5E6573" font-family="Source Sans 3, sans-serif">what’s next</text></svg>';
-  }
   function whatsNext() {
     var v = V(), n = newestNote();
     if (v.ended) {
@@ -615,7 +631,7 @@
     return '<div class="av-more' + (UI.open.another ? " av-open" : "") + '"><p class="av-s">A witness is a mentor, a coach or a trusted friend who walks with a man. He listens deeply, speaks truth with compassion, and challenges him to grow. After a course, you can be that for someone: you read what he chooses to share and write to him, and our team walks with you. Later, if you’re asked, you can train to lead a group.</p><a class="av-walk" href="' + PAGES.team + '"><span class="av-u">Tell our team you’d like to</span> <span class="av-ar">→</span></a></div>';
   }
   function viewPath() {
-    var h = '<main class="av-view">' + lead("path") + roadSvg() + whatsNext();
+    var h = '<main class="av-view">' + lead("path") + whatsNext();
     var cs = pathCourses();
     h += '<div class="av-card"><p class="av-lk">Your Courses</p>' + (cs.length ? cs.map(function (c) { return '<a class="av-course" href="' + esc(c.href) + '"><b>' + esc(c.name) + '</b><span>' + esc(c.state) + '</span></a>'; }).join("") : '<p class="av-help">Your courses show here.</p>') + '</div>';
     h += '<div class="av-card"><p class="av-lk">The Nine Guideposts</p><p class="av-help">Nine places a man gets stuck, and what helps him move again. They are not steps; a man can stand at more than one.</p>' +
@@ -704,7 +720,7 @@
   function ckHtml() {
     var c = UI.ck, st = c.step, p = piece(), card = cardD() || {}, v = V();
     var head = '<div class="av-ohead"><span class="av-lk">' + (c.mode === "choose" ? "Choose Your Practice" : "Check In With Your Witness") + '</span><button type="button" class="av-close" data-act="close-ck">Close</button></div>';
-    if (st === 5) return head + '<div class="av-obody">' + ckBar(st) + doneHtml() + '</div><div class="av-ofoot"><button type="button" class="av-btn" style="margin-top:0" data-act="ck-finish">Back to This Week</button><div class="av-links"><button type="button" class="av-walk" data-act="ck-house"><span class="av-u">See Your House</span> <span class="av-ar">→</span></button></div></div>';
+    if (st === 5) return head + '<div class="av-obody">' + ckBar(st) + doneHtml() + '</div><div class="av-ofoot"><button type="button" class="av-btn" style="margin-top:0" data-act="ck-finish">Back to This Week</button><div class="av-links"><button type="button" class="av-walk" data-act="ck-house"><span class="av-u">See it in Your Story</span> <span class="av-ar">→</span></button></div></div>';
     var b = "";
     if (st === 1) {
       var ws = c.moreWords ? WORDS.concat(MORE_WORDS) : WORDS, need = c.word ? needText(c.word) : "";
@@ -754,7 +770,7 @@
     if (hs) h += '<div class="av-give" data-seq="1"><p class="av-lk">What’s Been Helping You</p><p>' + esc(smart(hs)) + '</p></div>';
     if (gs) h += '<div class="av-give" data-seq="2"><p class="av-lk">You’re Not the Only One</p><p>' + esc(gs) + '</p></div>';
     var lit = { did: !!pr, saw: !!c.path, know: c.helped === "yes" };
-    if (lit.did || lit.saw || lit.know) h += '<div class="av-give" data-seq="3"><p class="av-lk">Your House</p><p>Your House just took in something from this week.</p>' + houseSvg(true, lit) + '</div>';
+    if (lit.did || lit.saw || lit.know) h += '<div class="av-give" data-seq="3"><p class="av-lk">Your Story</p><p>It’s kept in Your Story.</p></div>';
     return h;
   }
   function revealGives() { $$(".av-give[data-seq]", ovCk()).forEach(function (g, i) { setTimeout(function () { g.classList.add("av-in"); }, reduce ? 0 : 220 + i * 380); }); }
@@ -816,7 +832,7 @@
     return '<div class="av-card"><p class="av-lk">What Your Witness Sees Each Week</p>' + h + '<p class="av-help">This is the page, exactly as it reaches ' + esc(witnessName()) + '. Nothing else goes with it.</p></div>';
   }
   function welcomeSheet() {
-    return sheetHtml("What This Page Is For", '<p class="av-q">Your home base for the week.</p><p class="av-verse">“Stand by the roads, and look, and ask for the ancient paths, where the good way is; and walk in it, and find rest for your souls.” <span>Jeremiah 6:16</span></p><p class="av-s">Each week this page shows you what your course asks of you, keeps what you write, and connects you with the people walking with you, so what you learn becomes how you live.</p><div class="av-card"><p class="av-s"><b>This Week</b>: stand and look. One short list, a check-in with your witness, the question you carry.</p><p class="av-s"><b>Your House</b>: find rest. What you did, what you saw, what you know now, and your own writing.</p><p class="av-s"><b>Your Path</b>: ask for the good way. Your courses, what’s next, and in time, walking with another man.</p></div>');
+    return sheetHtml("What This Page Is For", '<p class="av-q">Your home base for the week.</p><p class="av-verse">“Stand by the roads, and look, and ask for the ancient paths, where the good way is; and walk in it, and find rest for your souls.” <span>Jeremiah 6:16</span></p><p class="av-s">Each week this page shows you what your course asks of you, keeps what you write, and connects you with the people walking with you, so what you learn becomes how you live.</p><div class="av-card"><p class="av-s"><b>This Week</b>: stand and look. One short list, a check-in with your witness, the question you carry.</p><p class="av-s"><b>Your Story</b>: remember the way. What you did, what you saw, what you know now, and your own writing.</p><p class="av-s"><b>Your Path</b>: ask for the good way. Your courses, what’s next, and in time, walking with another man.</p></div>');
   }
 
   /* ───────────── writing: every tap is written as it is made, then says Kept. (a miss says so once and leaves his choice standing) ───────────── */
@@ -832,19 +848,13 @@
   function refocus(sel) { var n = sel && $(sel); if (n && n.focus) { try { n.focus({ preventScroll: true }); } catch (e) { n.focus(); } } }
   function popRow(key) { var r = $('.av-row[data-key="' + key + '"]'); if (r && !reduce) { r.classList.add("av-pop"); setTimeout(function () { r.classList.remove("av-pop"); }, 700); } }
   function houseKeys(h) { var o = {}; ROOMS.forEach(function (r) { (h && h[r[0]] || []).forEach(function (l) { o[r[0] + "|" + l.t] = 1; }); }); return o; }
-  /* a newer answer from the road: new lines in the house are marked fresh, and the windows of the rooms that took something in light up */
+  /* a newer answer from the road: new lines in Your Story are marked fresh */
   function applyData(r, prevHouse) {
     var before = houseKeys(prevHouse), rooms = [];
     data = r; UI.fresh = {};
     ROOMS.forEach(function (x) { (V().house && V().house[x[0]] || []).forEach(function (l) { if (!before[x[0] + "|" + l.t]) { UI.fresh[x[0] + "|" + l.t] = 1; if (rooms.indexOf(x[0]) < 0) rooms.push(x[0]); } }); });
     cache();
     return rooms;
-  }
-  function flare(rooms) {
-    ROOMS.forEach(function (x, i) {
-      if (rooms.indexOf(x[0]) < 0) return;
-      setTimeout(function () { var w = $$(".av-house .av-win")[i]; if (w) { w.classList.remove("av-flare"); void w.getBoundingClientRect(); w.classList.add("av-lit", "av-flare"); } }, reduce ? 0 : 300 + i * 350);
-    });
   }
   function refresh(then) {
     var prev = V().house;
@@ -859,7 +869,7 @@
   function ckMark() {
     var c = UI.ck; if (!c.path) return;
     post({ action: "road_mark", mark: c.path, word: c.word || "" }).then(function (r) {
-      if (ok(r)) { c.taps++; say("path", "It shows in What You Saw, in Your House."); var cd = cardD(); if (cd) { cd.mark = c.path; cd.word = c.word || ""; } } else say("path", MISS, true);
+      if (ok(r)) { c.taps++; say("path", "It shows in What You Saw, in Your Story."); var cd = cardD(); if (cd) { cd.mark = c.path; cd.word = c.word || ""; } } else say("path", MISS, true);
       ckRedraw();
     });
   }
@@ -923,7 +933,7 @@
     var who = group() ? (leaderKnown() ? "Your group’s leader reads it before you meet." : "Our team reads it before you meet.") : "Our team reads it this week.";
     if (goHouse) { UI.tab = "house"; UI.house = "mine"; renderMain(); toTop(); } else { renderMain(true); if (kept) { popRow("check"); toast("Kept. " + who); } }
     if (pend) pend.then(function (r) {
-      if (ok(r) && !r.bare) { var rooms = applyData(r, prev); renderMain(true); if (UI.tab === "house") flare(rooms); }
+      if (ok(r) && !r.bare) { var rooms = applyData(r, prev); renderMain(true); }
     });
   }
 
@@ -949,7 +959,7 @@
     if (!t) { if (st) st.textContent = "Write a line first; one is enough."; if (ta) ta.focus(); return; }
     var btn = $('[data-act="keepwed"]'); if (btn) btn.setAttribute("disabled", "disabled"); if (st) st.textContent = "Keeping it.";
     post({ action: "road_saw", text: t }).then(function (r) {
-      if (ok(r)) { setDone("wed"); setV("wedText", t); UI.drafts.avWed = ""; UI.drafts.avWedKept = t; toast("Kept in your house, in What You Saw."); renderMain(true); popRow("wed"); refresh(); }
+      if (ok(r)) { setDone("wed"); setV("wedText", t); UI.drafts.avWed = ""; UI.drafts.avWedKept = t; toast("Kept in Your Story, in What You Saw."); renderMain(true); popRow("wed"); refresh(); }
       else { if (btn) btn.removeAttribute("disabled"); if (st) st.textContent = "It did not save. Your words are still here; try again."; }
     });
   }
