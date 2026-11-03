@@ -1,18 +1,23 @@
-/* AP-GROWTH growth.js build 4.0.1 \u2014 Your Growth, the facilitator's room, served by the Research reader script (ResearchReader.gs build 12, ?file=growth.js).
-   4.0 (Nov 2, 2026, Research reader build 12; built to the ruled mockup v8.5, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP; the mockup's words are the copy; built on the live script 11.1.2 read through the Google Drive connector).
-   The room: the dark band (eyebrow, view title, one line of context), the left menu on a computer (Your Rooms, Your Growth and its three views, Ask Our Team, Settings), the top bar and tabs on a phone, two columns on a computer with the side never longer than the main (AP-SHELL 1). Sheets go back with "\u2190 Back to <view>".
-   This Week: Next Step (nothing chosen, this week's piece, or the morning after with "What did the room do with it?"), This Week's Piece, Room Signals, The Release List (our team only), What This Page Is For (first visit only); The Course in AP-CARD 1 at the side.
-   The Shelf: Ask About Your Room (Claude picks one piece and one question; otherwise the best-matching piece by its own words), Everything We've Kept (search and "Week N only"), Who We Read (every voice on the Sources tab, by lane), Coming Up.
-   Your Craft: What You've Brought, What You Set Aside, Name a Voice, Voices and Lanes with "Less of this" on each lane.
-   Every new answer is saved as an Answers row in the record's shape (when, who, entry id, kind, text, answer, room, build): kinds after, less, voice, setaside, team, notice.
-   Moves to our own platform as it is: the whole page (it is served from the repo and loads from one line), and the Answers rows. Rebuilt there: nothing is planned; the sign-in gate (the site's person) and the Front Desk page check are the two parts that name the host site.
-   Counts taken before this card: the script parses; the stylesheet is assembled as the page assembles it; the browser accepted 212 rules (3.9: 177); the shared blocks (AP-PANEL, AP-SHAPES 1.1, AP-CARD 1) are carried byte for byte. */
+/* AP-GROWTH growth.js build 4.1.1 \u2014 Your Growth, the facilitator's room, served by the Research reader script (ResearchReader.gs build 12.3, ?file=growth.js).
+   4.1.1 (Nov 3, 2026, Research reader build 12.3; built to the ruled mockup v8.11, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP, Craft view and This Week; the mockup's words are the copy; built on the live script 12.2 / growth.js 4.1 read through the Google Drive connector).
+   What changed from 4.1: (1) After the Room has four answers, Opened up, Landed quietly, Didn't land and No time, kept as opened, quiet, miss and none, with one optional line and Keep it; any older word that is not one of the four counts as none (No time), never as a no. (2) Craft, What You've Brought: the verse once at the head of the panel beside the house drawn in code, wisdom, understanding and knowledge picked out inside it; Our reading folded under it; then three groups, Wisdom, Understanding, Knowledge, each with the house part, its line, the piece he is bringing, and his brought pieces, a card with an answer leading with his word and his line and a card with none asking nothing; a word with nothing brought says it is waiting and links to The Shelf. (3) Voices and Lanes: one lane for each word in the side column with no word labels, Every lane opens a sheet (Back to Craft) with the lanes grouped under the word alone, More or Less on each lane (the same tap again clears it), and a Kept line that names what he chose; each lane's word is the Lanes tab's word column. (4) The measure line at both Bring it <night>? places, drawn on the server from the after-the-room answers of every room that brought the piece, shown only at four rooms or more and kept with the rest of the page's data.
+   Not in this build: the Friday scorecard paragraph; a facilitator's own lane feed; From a lane you asked more of (4.1.2).
+   One function draws each of these, fed by data: houseG, wordLine, broughtRow, broughtPanel, laneRow, lanesSheet, measureLine. No course, room or lane is named in the code; the verse and the house are drawn in What You've Brought and nowhere else.
+   Moves to our own platform as it is: the whole page (served from the repo, loaded from one line), and the Answers rows (kind after now also holds miss; kind lane is new: the lane's name, and more, less or off). Rebuilt there: nothing is planned; the sign-in gate (the site's person) and the Front Desk page check are the two parts that name the host site.
+   Counts taken before this card: the script parses; the stylesheet is assembled as the page assembles it and parses with no dropped rule; the browser accepted __RULES__ rules (4.1: 218); the shared blocks (AP-PANEL, AP-SHAPES 1.1, AP-CARD 1) are carried byte for byte.
+   4.1 (Nov 3, 2026, Research reader build 12.2; built to the ruled mockup v8.10, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP; the mockup's words are the copy; built on the live script 12.1 / growth.js 4.0.1 read through the Google Drive connector).
+   What changed from 4.0.1: (1) on a computer the page runs about 1320px wide and the extra goes to the main column; (2) the decision sits at the foot of This Week's Piece, "Bring it Wednesday?" Bring it \u00b7 Skip, and Next Step only points to it until he decides, then shows the kept line; (3) every quote names its speaker ("From the episode" until Entries has a speaker column) and carries "Bring this line"; (4) the Scripture section is "Held Against Scripture"; (5) one listen link, at the top of the piece; (6) "Where each man is" walks to Your Desk; (7) the Release List shows only to the releasers named on the Config tab, checked on the server; (8) the frame is drawn first (from the copy this browser kept for ten minutes, else an empty frame) and then filled, and the server keeps each person's record ten minutes; (9) the third view is Craft; (10) no spreadsheet link; (11) a facilitator who leads a room reads "Your room", our team reads "The room".
+   Everything else is 4.0.1 unchanged: the gate and its lines, After the Room, Ask About Your Room (the server call), Everything We've Kept, Who We Read, Coming Up, What You've Brought, What You Set Aside, Name a Voice, Voices and Lanes, Settings, Ask Our Team, panel open/shut kept per person, the page self-check.
+   Moves to our own platform as it is: the whole page (served from the repo, loaded from one line), and the Answers rows (now also kind line). Rebuilt there: nothing is planned; the sign-in gate (the site's person) and the Front Desk page check are the two parts that name the host site.
+   Counts taken before this card: the script parses; the stylesheet is assembled as the page assembles it; the browser accepted 218 rules (4.0.1: 212); the shared blocks (AP-PANEL, AP-SHAPES 1.1, AP-CARD 1) are carried byte for byte. */
 
 (function () {
-var host = document.getElementById('apGrowth'); if (!host || host.getAttribute('data-growth')) return; host.setAttribute('data-growth', '4.0.1'); host.classList.add('ap-home');
-var BUILD = '4.0.1';
+var host = document.getElementById('apGrowth'); if (!host || host.getAttribute('data-growth')) return; host.setAttribute('data-growth', '4.1.1'); host.classList.add('ap-home');
+var BUILD = '4.1.1';
+var T0 = (window.performance && performance.now) ? performance.now() : 0, TIMES = window.growthTimes = {};
+function timeMark(k) { try { TIMES[k] = Math.round(performance.now() - T0); } catch (e) {} }
 /* the stamped rule count of this script's stylesheet, taken before the file card (AP-SHIP 1); the page counts what the browser accepted against it */
-var RULES = { growth: 212 };
+var RULES = { growth: 239 };
 var GROWTH_URL = (function () { var s = document.currentScript; var u = s && s.src ? String(s.src).split('?')[0] : ''; return /script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(u) ? u : ''; })();
 var DESK_URL = 'https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec';
 var DESK_PAGE = 'https://www.ancientpathcoaching.com/front-desk';
@@ -101,6 +106,12 @@ PANEL_CSS + CARD_CSS +
 '#apGrowth .apg .qm{display:inline-flex;align-items:center;min-height:var(--tap);margin:0 0 0 17px;font:600 14px var(--sans);color:var(--bronze-ink);text-decoration:none}' +
 '#apGrowth .apg .qm span{border-bottom:1px solid var(--bronze)}' +
 '#apGrowth .apg .part{margin-top:18px;padding-top:14px;border-top:1px solid var(--rule)}' +
+'#apGrowth .apg .qby{margin:4px 0 0 17px;font-size:14px;color:var(--quiet)}' +
+'#apGrowth .apg .qrow{display:flex;flex-wrap:wrap;gap:0 18px;align-items:center;margin-left:17px}' +
+'#apGrowth .apg .qrow .qm{margin-left:0}' +
+'#apGrowth .apg .qrow .rev[aria-pressed="true"] span{border-bottom-color:var(--bronze-ink);color:var(--navy)}' +
+'#apGrowth .apg .part:focus{outline:none}' +
+'#apGrowth .apg .skel{min-height:88px;border-top:1px solid var(--rule);margin-top:8px}' +
 '#apGrowth .apg .pts{margin:6px 0 0;padding-left:20px;font-size:16px}' +
 '#apGrowth .apg .pts li{margin-top:6px}' +
 '#apGrowth .apg .choices{display:grid;gap:8px;margin-top:12px}' +
@@ -140,12 +151,33 @@ PANEL_CSS + CARD_CSS +
 '#apGrowth .apg .mark:first-of-type{border-top:0;padding-top:4px}' +
 '#apGrowth .apg .mark .lab{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--bronze-ink)}' +
 '#apGrowth .apg .mark p{font:400 18px/1.45 var(--serif);color:var(--ink);max-width:62ch}' +
-'#apGrowth .apg .lane{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--rule)}' +
+'#apGrowth .apg .lane{display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:14px 0;border-top:1px solid var(--rule)}' +
 '#apGrowth .apg .lane:first-child{border-top:0}' +
+'#apGrowth .apg .lanes .lane:first-child{border-top:0;padding-top:4px}' +
 '#apGrowth .apg .lane b{display:block;font:600 14px var(--sans);color:var(--navy)}' +
 '#apGrowth .apg .lane span{display:block;font-size:14px;color:var(--quiet)}' +
-'#apGrowth .apg .lane .rev{min-height:var(--tap);font-size:14px;flex:none}' +
-'#apGrowth .apg .lane .rev[aria-pressed="true"] span{border-bottom-color:var(--bronze-ink);color:var(--navy)}' +
+'#apGrowth .apg .lanec{display:flex;gap:8px}' +
+'#apGrowth .apg .lanec .choice{flex:0 0 auto;min-width:84px;font-size:15px}' +
+'#apGrowth .apg .prow.brow{cursor:default}' +
+'#apGrowth .apg .prow.brow .go .walk{padding:0}' +
+'#apGrowth .apg .prow .fl{grid-column:1;margin-top:6px;font:italic 400 17px/1.45 var(--serif);color:var(--ink);max-width:62ch}' +
+'#apGrowth .apg .lk.grp{margin:34px 0 18px;padding-bottom:8px;border-bottom:1px solid var(--bronze);color:var(--navy);letter-spacing:.1em}' +
+'#apGrowth .apg .lk.grp.first{margin-top:8px}' +
+'#apGrowth .apg .lk.grp.wgrp{display:flex;align-items:flex-end;gap:10px}' +
+'#apGrowth .apg .lk.grp.wgrp svg{margin-bottom:1px}' +
+'#apGrowth .apg #p-brought .lk.grp.first{margin-top:24px}' +
+'#apGrowth .apg #gSheet .lk.grp.first{margin-top:14px}' +
+'#apGrowth .apg .wline{margin-top:0;color:var(--quiet);max-width:62ch}' +
+'#apGrowth .apg .mline{margin-top:6px;max-width:62ch}' +
+'#apGrowth .apg #p-brought .verse{margin-bottom:6px}' +
+'#apGrowth .apg .vhouse{display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:start}' +
+'#apGrowth .apg .vhouse .verse{margin:0;font-size:17px}' +
+'#apGrowth .apg .vhouse .verse em{font-style:normal;color:var(--bronze-ink)}' +
+'#apGrowth .apg svg.house{width:26px;height:26px;flex:none}' +
+'#apGrowth .apg svg.house.big{width:40px;height:40px;margin-top:2px}' +
+'#apGrowth .apg .revs.ours{margin:2px 0 0}' +
+'#apGrowth .apg .oread p{margin-top:8px;font-size:15px;max-width:62ch}' +
+'#apGrowth .apg .oread p b{color:var(--navy);font-weight:600}' +
 '#apGrowth .apg .vl{list-style:none;margin:2px 0 10px;padding:0}' +
 '#apGrowth .apg .vl li{padding:9px 0;border-top:1px solid var(--rule);font-size:16px;line-height:1.4;color:var(--ink)}' +
 '#apGrowth .apg .vl li:first-child{border-top:0}' +
@@ -171,6 +203,7 @@ PANEL_CSS + CARD_CSS +
 '#apGrowth .apg .pfoot{margin:10px 0 36px;padding:0 4px;font-size:13px;line-height:1.5;color:var(--quiet)}' +
 '@media (hover:hover){' +
 '#apGrowth .apg .prow:hover{background:var(--hover);box-shadow:0 0 0 0 transparent,-12px 0 0 var(--hover),12px 0 0 var(--hover)}' +
+'#apGrowth .apg .prow.brow:hover{background:none;box-shadow:none}' +
 '#apGrowth .apg .mi:not(.here):not([aria-current="page"]):hover{background:var(--hover)}' +
 '#apGrowth .apg .walk:hover .u{border-bottom-color:var(--navy)}' +
 '#apGrowth .apg .choice:hover{border-color:var(--bronze)}' +
@@ -178,17 +211,19 @@ PANEL_CSS + CARD_CSS +
 '}' +
 '@media (min-width:900px){' +
 '#apGrowth .apg .topbar,#apGrowth .apg .tabs{display:none}' +
-'#apGrowth .apg .hero{padding:26px max(28px,calc((100% - 1180px)/2 + 28px)) 24px;min-height:136px}' +
+'#apGrowth .apg .hero{padding:26px max(28px,calc((100% - 1320px)/2 + 28px)) 24px;min-height:136px}' +
 '#apGrowth .apg .hero .hk{display:block;margin-bottom:10px}' +
 '#apGrowth .apg .hero h1{font-size:34px}' +
 '#apGrowth .apg .hero .where{font-size:18px;max-width:780px}' +
-'#apGrowth .apg .pcwrap{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;max-width:1180px;margin:0 auto;padding:28px 28px 56px;align-items:start;--g:28px}' +
+'#apGrowth .apg .pcwrap{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;max-width:1320px;margin:0 auto;padding:28px 28px 56px;align-items:start;--g:28px}' +
 '#apGrowth .apg .pcnav{display:block;position:sticky;top:calc(var(--bar) + 20px)}' +
 '#apGrowth .apg .view{padding:0}' +
 '#apGrowth .apg .cols2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}' +
 '#apGrowth .apg .side{margin-top:0}' +
 '#apGrowth .apg .prow{grid-template-columns:minmax(0,1fr) auto;padding:30px 0 32px}' +
 '#apGrowth .apg .prow .go{grid-column:2;grid-row:1/4;margin-top:0}' +
+'#apGrowth .apg .prow.pc4 .go{grid-row:1/5}' +
+'#apGrowth .apg .revs.ours{margin-left:54px}' +
 '#apGrowth .apg .sheet{top:70px;bottom:auto;left:50%;right:auto;width:680px;margin-left:-340px;max-height:calc(100% - 100px);max-height:calc(100vh - 100px);border-radius:8px;box-shadow:0 24px 60px rgba(16,21,31,.35);transform:translateY(16px);opacity:0}' +
 '#apGrowth .apg .sheet.open{transform:none;opacity:1}' +
 '#apGrowth .apg .toast{left:50%;right:auto;width:460px;margin-left:-230px;bottom:28px}' +
@@ -208,8 +243,13 @@ function smart(s) { return String(s == null ? '' : s).replace(/(^|[\s(\[\u2014\u
 /* The last two words of a line of text are tied, so no paragraph or headline ends on a word alone, whatever the browser does with text-wrap. */
 function tie(s) { return esc(smart(s)).replace(/\s+$/, '').replace(/ ([^ ]+)$/, '\u00a0$1'); }
 function cap(s) { return String(s).charAt(0).toUpperCase() + String(s).slice(1); }
+/* AP-SHIP 1 / the 3-second target: the last record this browser saw is kept ten minutes, so the frame can be filled at once while the answer comes */
+var SNAP = 'apGrowthSnap', SNAP_MS = 600000;
+function snapGet(email) { try { var v = JSON.parse(localStorage.getItem(SNAP) || 'null'); if (v && v.email === email && v.d && v.t && Date.now() - v.t < SNAP_MS) return v.d; } catch (e) {} return null; }
+function snapPut(d) { try { var f = d && d.who && d.who.first; if (f) d.who.first = false; var j = JSON.stringify({ email: siteEmail(), t: Date.now(), d: d }); if (f) d.who.first = true; localStorage.setItem(SNAP, j); } catch (e) {} }
+function snapClear() { try { localStorage.removeItem(SNAP); } catch (e) {} }
 function stored() { try { var v = JSON.parse(localStorage.getItem(STORE) || 'null'); return v && v.key ? v : null; } catch (e) { return null; } }
-function keep(v) { try { if (v) localStorage.setItem(STORE, JSON.stringify(v)); else localStorage.removeItem(STORE); } catch (e) {} }
+function keep(v) { try { if (v) localStorage.setItem(STORE, JSON.stringify(v)); else { localStorage.removeItem(STORE); snapClear(); } } catch (e) {} }
 function post(url, body) {
   return fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), credentials: 'omit' })
     .then(function (r) { return r.json(); }, function () { throw { error: 'network' }; })
@@ -306,17 +346,25 @@ function load() {
   if (String(s.email || '').toLowerCase() !== site) { keep(null); return gate(''); }
   if (s.expires && new Date(s.expires) < new Date()) { keep(null); return gate('Your key from yesterday has run out. Send a new code.'); }
   setBar();
-  ROOT.innerHTML = gateBand('Your Growth', '') + '<div class="flash">Opening Your Growth\u2026</div>';
-  call({ action: 'growth' }).then(function (r) { D = r; render(); if (D.who && D.who.first) call({ action: 'growth_ui', panel: 'g-welcomed', state: 'shut' }).catch(function () {}); }, function (e) {
+  /* the frame first: the copy kept for ten minutes if there is one, else the empty frame; the answer then fills it */
+  var snap = snapGet(site);
+  if (snap) { D = snap; render(); } else { D = null; ROOT.innerHTML = frame(s); }
+  timeMark('frame');
+  call({ action: 'growth' }).then(function (r) {
+    var first = r && r.who && r.who.first; D = r; render(!!snap); timeMark('filled'); snapPut(D);
+    if (first) call({ action: 'growth_ui', panel: 'g-welcomed', state: 'shut' }).catch(function () {});
+    if (S.touched) refresh();
+  }, function (e) {
     var code = e && e.error;
-    if (code === 'no_key' || code === 'bad_key' || code === 'key_expired' || code === 'removed' || code === 'not_you' || code === 'no_site') { keep(null); return gate(code === 'removed' ? 'Your name is no longer on the desk list.' : code === 'key_expired' ? 'Your key from yesterday has run out. Send a new code.' : code === 'not_you' ? words(e) : ''); }
+    if (code === 'no_key' || code === 'bad_key' || code === 'key_expired' || code === 'removed' || code === 'not_you' || code === 'no_site') { keep(null); return gate(code === 'removed' ? 'Your name is no longer on the desk list.' : code === 'key_expired' ? 'Your key from yesterday has run out. Send a new code.' : ''); }
+    if (snap) { D = snap; return; }
     ROOT.innerHTML = gateBand('Your Growth', '') + '<div class="flash">' + esc(words(e)) + ' <button class="btn line" id="gRetry">Try again</button></div>';
     $('gRetry').addEventListener('click', load);
   });
 }
 /* a quiet refresh after an answer, so every view reads from the record; the page keeps its place */
 function refresh() {
-  call({ action: 'growth' }).then(function (r) { var first = D && D.who && D.who.first; D = r; if (first && D.who) D.who.first = true; render(true); }, function () {});
+  call({ action: 'growth' }).then(function (r) { var first = D && D.who && D.who.first; D = r; if (first && D.who) D.who.first = true; render(true); snapPut(D); }, function () {});
 }
 
 /* ---------- words and pieces ---------- */
@@ -351,6 +399,75 @@ function pieceById(id) {
 function teamPiece() { return D.team ? pieceById(D.team.id) : null; }
 function shownPiece() { return S.change ? teamPiece() : D.piece; }
 
+/* ---------- 4.1.1: what the room did, the house, the three words and the lanes. One function draws each, fed by data; no course, room or lane is named here. ---------- */
+/* what the room did, one phrase everywhere; a word that is not one of the four is none (No time), never a no */
+var SAID = { opened: ['Opened up', 'It opened something'], quiet: ['Landed quietly', 'It landed quietly'], miss: ['Didn\u2019t land', 'It didn\u2019t land'], none: ['No time', 'We didn\u2019t get to it'] };
+function saidKey(v) { return SAID[v] ? v : 'none'; }
+function saidPhrase(v) { return SAID[saidKey(v)][1]; }
+function share(n, t) { if (!n) return 'none so far'; if (n === t) return 'all'; if (n === 1) return 'one'; var r = n / t; return r > .5 ? 'most' : r === .5 ? 'half' : r >= .25 ? 'some' : 'a few'; }
+/* the value measure, in words, at the decision only: drawn on the server from every room's after-the-room answer, sent only at four rooms or more */
+function measureLine(e) {
+  var r = e && D && D.measure ? D.measure[e.id] : null; if (!r) return '';
+  var t = r.opened + r.quiet + r.miss + r.none; if (t < 4) return '';
+  return '<p class="help mline">From the rooms that brought it: it opened something in ' + share(r.opened, t) + ', landed quietly in ' + share(r.quiet, t) + ', and didn\u2019t land or went unused in ' + share(r.miss + r.none, t) + '.</p>';
+}
+/* the house, drawn in code: walls and roof (built, wisdom), the footing (established, understanding), the rooms (filled, knowledge); every house is whole and only the part named is lit */
+function houseG(part, big) {
+  var on = function (p) { return part === 'all' || part === p; }, sw = function (p) { return on(p) ? 'var(--bronze)' : 'var(--rule)'; };
+  return '<svg class="house' + (big ? ' big' : '') + '" viewBox="0 0 28 28" aria-hidden="true"><path d="M6 22V12.5L14 6l8 6.5V22" fill="none" stroke="' + sw('Wisdom') + '" stroke-width="' + (on('Wisdom') ? 2.2 : 1.4) + '" stroke-linejoin="round"/><path d="M3.5 23.5h21" fill="none" stroke="' + sw('Understanding') + '" stroke-width="' + (on('Understanding') ? 2.6 : 1.4) + '" stroke-linecap="round"/><rect x="9" y="14" width="4" height="4" rx=".6" fill="' + (on('Knowledge') ? 'var(--bronze)' : 'none') + '" stroke="' + sw('Knowledge') + '" stroke-width="1.2"/><rect x="15" y="14" width="4" height="4" rx=".6" fill="' + (on('Knowledge') ? 'var(--bronze)' : 'none') + '" stroke="' + sw('Knowledge') + '" stroke-width="1.2"/></svg>';
+}
+var PROV2434V = '\u201cBy <em>wisdom</em> a house is built, and by <em>understanding</em> it is established; by <em>knowledge</em> the rooms are filled with all precious and pleasant riches.\u201d';
+var WORDS = ['Wisdom', 'Understanding', 'Knowledge'];
+var WVERB = { Wisdom: 'Being built', Understanding: 'Being established', Knowledge: 'Being filled' };
+/* one line in words on how a word has gone (no numbers), drawn from his rooms' answers */
+function wordLine(w, rows, bringing) {
+  var A = rows.filter(function (x) { return x.said; }), t = A.length, vb = WVERB[w], R = D.room || {};
+  if (!rows.length) return '<p class="s wline">' + (bringing ? 'Its first piece goes to the room ' + esc(R.weekday || 'the night') + '.' : 'Waiting for its first piece.') + '</p>';
+  if (!t) return '<p class="s wline">' + vb + '. No word from the room is kept yet.</p>';
+  if (t === 1) return '<p class="s wline">' + vb + '. Too soon to say; the room\u2019s answer is on its card.</p>';
+  if (t < 4) { var ws = A.map(function (x) { return '\u201c' + SAID[saidKey(x.said)][0] + '\u201d'; }); return '<p class="s wline">' + vb + '. Your rooms said ' + ws.slice(0, -1).join(', ') + (ws.length > 2 ? ',' : '') + ' and ' + ws[ws.length - 1].replace(/\u201d$/, '.\u201d') + '</p>'; }
+  var c = { opened: 0, quiet: 0, other: 0 }; A.forEach(function (x) { var v = saidKey(x.said); if (v === 'opened') c.opened++; else if (v === 'quiet') c.quiet++; else c.other++; });
+  return '<p class="s wline">' + vb + '. It has opened something in ' + share(c.opened, t) + ' of your rooms, landed quietly in ' + share(c.quiet, t) + ', and didn\u2019t land or went unused in ' + share(c.other, t) + '.</p>';
+}
+/* a brought piece leads with what the room did (his word and his line); the piece is a quiet walk; no answer, no ask */
+function broughtRow(x) {
+  var rd = walk('openpiece', 'Read it again', ' data-from="craft" data-id="' + esc(x.id) + '"'), lab = '<span class="lab">' + esc(cap(String(x.label || '').replace(/^Brought to the /, '').replace(/^Chosen for the /, ''))) + '</span>';
+  if (x.said) return '<div class="prow brow pc4">' + lab + '<span class="nm">' + esc(SAID[saidKey(x.said)][0]) + '.</span>' + (x.line ? '<span class="fl">' + tie(x.line) + '</span>' : '') + '<span class="st">The piece: \u201c' + tie(x.claim) + '\u201d</span><span class="go">' + rd + '</span></div>';
+  return '<div class="prow brow">' + lab + '<span class="nm">' + tie(x.claim) + '</span><span class="go">' + rd + '</span></div>';
+}
+/* What You've Brought is kept under its three words (Proverbs 24:3-4): the verse once, the house beside it, Our reading folded, then each word with its line, the piece he is bringing and his brought pieces */
+function broughtPanel(rows, bringing) {
+  var R = D.room || {}, d = R.weekday || 'the night', waiting = [];
+  var body = '<div class="vhouse">' + houseG('all', true) + '<p class="verse">' + PROV2434V + '<span>Proverbs 24:3\u20134 (ESV)</span></p></div><div class="revs ours">' + rev('ours', 'Our reading', '<div class="oread"><p><b>Wisdom</b> \u00b7 show up creatively. Your room is built by how you show up.</p><p><b>Understanding</b> \u00b7 read the moment. It is established by how you read the moment.</p><p><b>Knowledge</b> \u00b7 know the trade. It is filled by what you know of the work, the men and the God who gives it.</p><p class="help">Our reading of the verse, not its words. One house seen three ways, not steps.</p></div>') + '</div>' +
+    (rows.length || bringing ? '' : '<p class="s">When you bring a piece to your room, it\u2019s kept here under its word, with what the room did with it.</p>') +
+    WORDS.map(function (w, gi) {
+      var rs = rows.filter(function (x) { return x.word === w; }), b = bringing && bringing.w === w;
+      if (!rs.length && !b) waiting.push(w.toLowerCase());
+      return '<p class="lk grp wgrp' + (gi ? '' : ' first') + '" role="heading" aria-level="3">' + houseG(w) + '<span>' + w + '</span></p>' + wordLine(w, rs, b) +
+        '<div class="rows">' + (b ? '<div class="prow brow"><span class="lab">Bringing it ' + esc(d) + '</span><span class="nm">' + tie(bringing.claim) + '</span><span class="go">' + walk('tab', 'See This Week', ' data-tab="week"') + '</span></div>' : '') + rs.map(broughtRow).join('') + '</div>' +
+        (!rs.length && !b ? '<div class="walks" style="margin-top:0">' + walk('tab', 'Find one on The Shelf', ' data-tab="shelf"') + '</div>' : '');
+    }).join('');
+  var nt = [R.course ? esc(R.course) : '', bringing ? 'Bringing ' + bringing.w.toLowerCase() + ' ' + esc(d) : 'Wisdom, understanding, knowledge'].filter(Boolean).join(' \u00b7 ') + (waiting.length && waiting.length < 3 ? ' \u00b7 ' + cap(waiting.join(' and ')) + ' waiting' : '');
+  return secHtml('brought', 'What You\u2019ve Brought', nt, body);
+}
+/* Voices and Lanes: one lane for each word in the side column; Every lane opens a sheet; More or Less on each, the same tap again clears it */
+function laneRow(l, i) {
+  var d = (D.laneSay || {})[l.lane] || '';
+  return '<div class="lane"><div><b>' + esc(l.lane) + '</b><span>' + esc(l.line) + '. ' + esc(l.voices) + '.</span></div><div class="lanec">' + choice('lane', 'more:' + i, 'More', d === 'more') + choice('lane', 'less:' + i, 'Less', d === 'less') + '</div></div>';
+}
+function laneKept() {
+  var m = 0, l = 0, S2 = D.laneSay || {}; Object.keys(S2).forEach(function (k) { if (S2[k] === 'more') m++; if (S2[k] === 'less') l++; });
+  if (!m && !l) return '';
+  return '<p class="kept lkept"><b>Kept.</b> Our team sees what you want ' + (m && l ? 'more and less' : m ? 'more' : 'less') + ' of when choosing your pieces.</p>';
+}
+function firstLane(w) { var L = D.lanes || []; for (var i = 0; i < L.length; i++) if (L[i].word === w) return i; return -1; }
+function lanesSheet() {
+  var L = D.lanes || [];
+  return '<div><p class="t" style="margin-top:0">Every lane we read for you</p><p class="s">Want more or less of a lane? Tell us here.</p>' + WORDS.map(function (w, gi) {
+    return '<p class="lk grp' + (gi ? '' : ' first') + '" role="heading" aria-level="3">' + w + '</p><div class="lanes">' + L.map(function (l, i) { return l.word === w ? laneRow(l, i) : ''; }).join('') + '</div>';
+  }).join('') + laneKept() + '</div>';
+}
+
 /* ---------- AP-PANEL 1: one function draws every section ---------- */
 function note(n) { return '<span class="np">' + String(n).split(' \u00b7 ').map(function (x) { return '<span class="nn">' + x + '</span>'; }).join('') + '</span>'; }
 function panelOpen(key, shutDefault) {
@@ -378,45 +495,74 @@ function choice(act, v, label, on, cls) { return '<button class="choice' + (cls 
 function rev(k, label, body) { var o = !!S.open[k]; return '<button class="rev" data-act="toggle" data-k="' + k + '" aria-expanded="' + o + '"><span>' + label + '</span> ' + (o ? '\u25b4' : '\u25be') + '</button><div class="more' + (o ? ' open' : '') + '">' + body + '</div>'; }
 function walk(act, label, extra) { return '<button class="walk" data-act="' + act + '"' + (extra || '') + '><span class="u">' + label + '</span>&nbsp;<span class="ar">\u2192</span></button>'; }
 function linkWalk(href, label) { return '<a class="walk" href="' + esc(href) + '" target="_blank" rel="noopener"><span class="u">' + label + '</span>&nbsp;<span class="ar">\u2192</span></a>'; }
-function qline(q) { return '<blockquote class="q">\u201c' + tie(q.words) + '\u201d</blockquote>' + (q.link ? '<a class="qm" href="' + esc(q.link) + '" target="_blank" rel="noopener"><span>Hear it at minute ' + esc(q.minute) + '</span>&nbsp;\u2192</a>' : ''); }
+function qline(q, kind, room) {
+  var on = !!(D && D.mine && D.mine.lines && D.mine.lines[q.words]);
+  var word = String(kind || '').toLowerCase() === 'article' ? 'post' : 'episode';
+  return '<blockquote class="q">\u201c' + tie(q.words) + '\u201d</blockquote><p class="qby">From the ' + word + ', at ' + esc(q.minute) + '</p><div class="qrow">' +
+    (q.link ? '<a class="qm" href="' + esc(q.link) + '" target="_blank" rel="noopener"><span>Hear it at minute ' + esc(q.minute) + '</span>&nbsp;\u2192</a>' : '') +
+    (room ? '<button class="rev bringl" data-act="bline" data-v="' + esc(q.words) + '" aria-pressed="' + on + '"><span>' + (on ? 'On the room\u2019s card \u2713' : 'Bring this line') + '</span></button>' : '') + '</div>';
+}
 
 /* ---------- a piece, as a facilitator reads it: the note carries the voice and length; the body says each thing once ---------- */
 function pieceF(e, ctx) {
-  var opened = D.mine && D.mine.opened;
+  var M = D.mine || {}, opened = M.opened, room = ctx === 'room' && !D.after;
   var full = ctx !== 'room' || opened || !!(D.after);
-  var w = lineOf(e.question);
+  var w = lineOf(e.question), act = actOf(e), st = startAt(e);
   var h = '<p class="lk">' + w + ' \u00b7 <span style="text-transform:none;letter-spacing:0;font:italic 400 14px var(--serif);color:var(--quiet)">' + GLOSS[w] + '</span></p>';
   h += '<p class="t claim" style="margin-top:6px">' + tie(e.claim) + '</p>';
-  if (ctx !== 'room') h += '<p class="who">' + esc(e.source || e.voice) + ' \u00b7 ' + actOf(e) + (total(e) ? ' \u00b7 ' + total(e) + ' minutes' : '') + '</p>';
-  if (ctx === 'room' && !D.after) {
+  if (ctx !== 'room') h += '<p class="who">' + esc(e.source || e.voice) + ' \u00b7 ' + act + (total(e) ? ' \u00b7 ' + total(e) + ' minutes' : '') + '</p>';
+  /* change 5: one listen link, at the top of the piece */
+  var lv = act === 'Read' ? 'Read the post' : (act === 'Watch' ? 'Watch' : (room && opened ? 'Listen again' : 'Listen')) + (st ? ' from minute ' + st : '');
+  h += '<div class="walks">' + (room ? walk('listen', lv) : linkWalk(e.link, lv)) + '</div>';
+  if (room) {
     var R = D.room || {}, title = R.title || '';
-    var swap = D.mine && D.mine.swap;
+    var swap = M.swap;
     var why = swap ? 'You chose it from The Shelf for \u201c' + esc(title) + ',\u201d in place of the piece our team chose.' : (title ? 'Chosen for \u201c' + esc(title) + '\u201d' + (e.why ? ': ' + esc(smart(e.why)) + '.' : '.') : '');
     if (why) h += '<div class="ruled"><p class="lk">Why It\u2019s Here This Week</p><p>' + why + '</p></div>';
   }
   var qs = (e.quotes || []).slice(0, full ? 2 : 1);
-  if (qs.length) h += '<div class="part"><p class="lk">In Their Words</p>' + qs.map(qline).join('') + '</div>';
+  if (qs.length) h += '<div class="part"><p class="lk">In Their Words</p>' + qs.map(function (q) { return qline(q, e.kind, room); }).join('') + '</div>';
   var bring = '<ul class="pts">' + bringPoints(e.move).map(function (x) { return '<li>' + tie(x) + '</li>'; }).join('') + '</ul>';
-  var st = startAt(e), act = actOf(e);
   var detail = '<p class="s" style="margin-top:0">' + tie(e.cut) + '</p>';
   var against = '<p class="s" style="margin-top:0">' + tie(e.beside) + '</p>' + (e.ours ? '<p class="s"><b>Already ours:</b> ' + tie(e.ours) + '</p>' : '');
   if (full) {
     h += '<div class="part"><p class="lk">Bring It \u00b7 About Five Minutes</p>' + bring + '</div>';
-    h += '<div class="part"><div class="revs">' + (e.cut ? rev('cut' + e.id + ctx, 'What to listen for', detail) : '') + rev('txt' + e.id + ctx, 'How we read it against the text', against) + '</div>';
-    var verb = act === 'Read' ? 'Read the post' : (ctx === 'room' && opened && !D.after ? (act === 'Listen' ? 'Listen again' : act) : act) + (st ? ' from minute ' + st : '');
-    h += '<div class="walks">' + linkWalk(e.link, verb) + '</div></div>';
+    h += '<div class="part"><div class="revs">' + (e.cut ? rev('cut' + e.id + ctx, 'What to listen for', detail) : '') + rev('txt' + e.id + ctx, 'Held Against Scripture', against) + '</div></div>';
   } else {
-    h += '<div class="part"><div class="revs">' + rev('bring' + e.id, 'What you\u2019d bring, about five minutes', bring) + rev('txt' + e.id + ctx, 'How we read it against the text', against) + '</div></div>';
+    h += '<div class="part"><div class="revs">' + rev('bring' + e.id, 'What you\u2019d bring, about five minutes', bring) + rev('txt' + e.id + ctx, 'Held Against Scripture', against) + '</div></div>';
   }
+  /* change 2: the decision sits at the foot of this week's piece */
+  if (room) h += decisionHtml(e);
   return h;
+}
+function decisionHtml(e) {
+  var M = D.mine || {}, R = D.room || {}, d = R.weekday || 'the night', c = M.choice;
+  var h = '<div class="part" id="pdec" tabindex="-1"><p class="t" style="font-size:19px">Bring it ' + esc(d) + '?</p>' + measureLine(e) + '<div class="choices two">' + choice('bring', 'bring', 'Bring it', c === 'bring') + choice('bring', 'no', 'Skip', c === 'no') + '</div>';
+  if (c === 'bring') h += '<p class="kept"><b>Kept.</b> You\u2019re bringing it ' + esc(d) + '. Its points are on Your Desk for the night.</p>';
+  else if (c === 'no') h += '<p class="kept"><b>Kept.</b> A skip helps us choose as much as a bring.</p><div class="walks">' + walk('shelfweek', 'Find another for ' + (R.week ? 'Week ' + R.week : 'your room')) + '</div>';
+  return h + '</div>';
+}
+
+/* ---------- the frame, drawn first (AP-SHIP 1: the page is never blank while the answer comes) ---------- */
+function frame(s) {
+  var nm = firstName(s && s.name) || firstName(s && s.email), v = S.view;
+  var h1 = v === 'week' ? greet() + (nm ? ', ' + nm : '') + '.' : v === 'shelf' ? 'The Shelf' : 'Craft';
+  var titles = v === 'week' ? [['next', 'Next Step'], ['piece', 'This Week\u2019s Piece']] : v === 'shelf' ? [['stuck', 'Ask About Your Room'], ['shelf', 'Everything We\u2019ve Kept']] : [['brought', 'What You\u2019ve Brought']];
+  var side = v === 'week' ? [['course', 'The Course']] : v === 'shelf' ? [['who', 'Who We Read']] : [['voices', 'Voices and Lanes']];
+  function sk(p) { return secHtml(p[0], p[1], 'Opening\u2026', '<div class="skel" aria-hidden="true"></div>'); }
+  var top = '<header class="band topbar"><div class="kr"><span class="k">Your Growth</span><span class="kr-r"><button class="tb" data-act="askteam">Ask our team</button><button class="tb" data-act="rooms">Rooms</button><button class="tb" data-act="settings">Settings</button></span></div></header>';
+  var tabs = '<div class="tabs" role="tablist" aria-label="Views">' + VIEWS.map(function (x) { return '<button class="tab" role="tab" data-act="tab" data-tab="' + x[0] + '" aria-selected="' + (v === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>';
+  return top + '<section class="band hero"><span class="k hk">Your Growth</span><h1 id="gH1" tabindex="-1">' + esc(h1) + '</h1><p class="where">&nbsp;</p></section>' + tabs +
+    '<div class="pcwrap">' + menu() + '<div class="pcmain"><main class="view cols2"><div class="mainc">' + titles.map(sk).join('') + '</div><aside class="side">' + side.map(sk).join('') + '</aside></main></div></div>';
 }
 
 /* ---------- the shell (AP-SHELL 1): the band, the menu, the views ---------- */
-var VIEWS = [['week', 'This Week', 'Get ready for the room'], ['shelf', 'The Shelf', 'Find what fits'], ['craft', 'Your Craft', 'See what you\u2019ve brought']];
+var VIEWS = [['week', 'This Week', 'Get ready for the room'], ['shelf', 'The Shelf', 'Find what fits'], ['craft', 'Craft', 'See what you\u2019ve brought']];
+function ownRoom() { return D && D.who && D.who.own != null ? !!D.who.own : !(D && D.who && D.who.role === 'admin'); }
 function person() { return firstName(D.who.name) || firstName(D.who.email); }
 function ctxLine() {
   var R = D.room; if (!R) return '';
-  var who = D.who.role === 'admin' ? 'The room' : 'Your room';
+  var who = ownRoom() ? 'Your room' : 'The room';
   return esc(R.course) + ' \u00b7 <span class="nw">Week ' + R.week + ' \u00b7</span> <span class="nw">' + who + ' meets</span> <span class="nw">' + esc(R.night) + (R.hour ? ',</span> <span class="nw">at ' + esc(R.hour) : '') + '</span>';
 }
 function viewName() { return VIEWS.filter(function (x) { return x[0] === S.view; })[0][1]; }
@@ -430,7 +576,7 @@ function menu() {
   return h;
 }
 function band() {
-  var h1 = S.view === 'week' ? (D.who.first ? 'Welcome, ' : greet() + ', ') + person() + '.' : S.view === 'shelf' ? 'The Shelf' : 'Your Craft';
+  var h1 = S.view === 'week' ? (D.who.first ? 'Welcome, ' : greet() + ', ') + person() + '.' : S.view === 'shelf' ? 'The Shelf' : 'Craft';
   var top = '<header class="band topbar"><div class="kr"><span class="k">Your Growth</span><span class="kr-r"><button class="tb" data-act="askteam">Ask our team</button><button class="tb" data-act="rooms">Rooms</button><button class="tb" data-act="settings">Settings</button></span></div></header>';
   var tabs = '<div class="tabs" role="tablist" aria-label="Views">' + VIEWS.map(function (x) { return '<button class="tab" role="tab" data-act="tab" data-tab="' + x[0] + '" aria-selected="' + (S.view === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>';
   return top + '<section class="band hero"><span class="k hk">Your Growth</span><h1 id="gH1" tabindex="-1">' + esc(h1) + '</h1><p class="where">' + ctxLine() + '</p></section>' + tabs;
@@ -441,32 +587,31 @@ function nextPanel() {
   var R = D.room || {}, wk = R.week, d = R.weekday || 'the night', P = shownPiece(), A = D.after, M = D.mine || {}, nt, body;
   if (A && A.kept) {
     nt = 'Kept \u00b7 Week ' + wk + ' is next';
-    var wd = A.word === 'opened' ? 'It opened something' : A.word === 'quiet' ? 'It landed quietly' : 'We didn\u2019t get to it';
-    body = '<p class="kept" style="margin-top:0"><b>Kept.</b> \u201c' + wd + '.\u201d' + (A.line ? ' ' + esc(A.line) : '') + ' It\u2019s in Your Craft beside the piece, and it feeds Room Signals, never as one man\u2019s words.</p>' +
+    var wd = saidPhrase(A.word);
+    body = '<p class="kept" style="margin-top:0"><b>Kept.</b> \u201c' + wd + '.\u201d' + (A.line ? ' ' + esc(A.line) : '') + ' It leads this piece\u2019s card in Craft, and it feeds Room Signals, never as one man\u2019s words.</p>' +
       '<p class="t" style="margin-top:14px">Next: Week ' + wk + ', \u201c' + esc(R.title) + '.\u201d</p><p class="s">Its piece comes here as soon as one is chosen for it.</p><div class="walks">' + linkWalk(courseHref(R.course), 'Read Week ' + wk + ' ahead') + '</div>';
   } else if (A) {
     nt = A.yesterday ? 'Last night' : esc(A.weekday) + ' night';
     var m0 = bringPoints(A.piece.move)[0] || A.piece.claim;
     m0 = String(m0).replace(/^Say it first:\s*/, '').replace(/^[\u201c"\u2018'\s]+|[\u201d"\u2019'\s]+$/g, '').replace(/[.,]$/, '');
     body = '<p class="t">You brought \u201c' + esc(smart(m0)) + '.\u201d What did the room do with it?</p><div class="choices">' +
-      choice('after', 'opened', 'It opened something', S.afterWord === 'opened', 'left') + choice('after', 'quiet', 'It landed quietly', S.afterWord === 'quiet', 'left') + choice('after', 'none', 'We didn\u2019t get to it', S.afterWord === 'none', 'left') +
+      ['opened', 'quiet', 'miss', 'none'].map(function (v) { return choice('after', v, SAID[v][0], S.afterWord === v, 'left'); }).join('') +
       '</div><label class="sr" for="aline">One line, if you want</label><textarea id="aline" placeholder="One line, if you want. No names.">' + esc(S.afterLine) + '</textarea><button class="btn" data-act="afterkeep">Keep it</button>';
   } else if (!P) {
     nt = 'Nothing chosen yet';
     body = '<p class="t">Nothing is chosen for ' + (wk ? 'Week ' + wk : 'your room') + ' yet.</p><p class="s">When a piece fits your room\u2019s week, it lands here and on Your Desk. Until then, The Shelf has pieces that fit any week.</p><div class="walks">' + walk('shelfweek', 'Find one on The Shelf') + '</div>';
-  } else if (!M.opened && !S.change) {
+  } else if (!M.choice) {
     nt = 'Before ' + d;
     var wl = R.weekLine ? '<div class="ruled" style="margin:0 0 14px"><p class="lk">Where Your Men Are This Week</p><p class="serif">\u201c' + esc(smart(R.weekLine)) + '\u201d</p></div>' : '';
-    body = wl + '<p class="t">Listen to this week\u2019s piece' + (spanOf(P) ? ', ' + spanOf(P) : '') + '.</p><button class="btn" data-act="listen">' + (actOf(P) === 'Read' ? 'Read it' : (actOf(P) === 'Watch' ? 'Watch' : 'Listen') + (startAt(P) ? ' from minute ' + startAt(P) : '')) + '</button>';
-  } else if (!M.choice || S.change) {
-    nt = 'Before ' + d;
-    body = '<p class="t">Will you bring it to the room ' + d + '?</p><div class="choices two">' + choice('bring', 'bring', 'Bring it to the room', false) + choice('bring', 'no', 'Not needed this week', false) + '</div><p class="help">Either answer tells our team what serves your room.</p>';
+    var act = actOf(P), sp = spanOf(P), st0 = startAt(P), len = [];
+    if (sp) len.push(cap(sp)); if (st0) len.push((sp ? 'from minute ' : 'From minute ') + st0);
+    body = wl + '<p class="t">' + (act === 'Read' ? 'Read' : act === 'Watch' ? 'Watch' : 'Listen to') + ' this week\u2019s piece, then decide at its foot.</p>' + (len.length ? '<p class="s">' + len.join(', ') + '.</p>' : '') + '<div class="walks">' + walk('gopiece', 'Go to the piece') + '</div>';
   } else if (M.choice === 'no') {
     nt = 'Before ' + d;
-    body = '<p class="kept" style="margin-top:0"><b>Kept.</b> Thank you; a no helps us choose as much as a yes.</p><p class="s">If you want something else for Week ' + wk + ', The Shelf has pieces that fit it.</p><div class="walks">' + walk('shelfweek', 'Find one for Week ' + wk) + walk('bringchange', 'Change your answer') + '</div>';
+    body = '<p class="kept" style="margin-top:0"><b>Kept.</b> You\u2019re skipping this week\u2019s piece. A skip helps us choose as much as a bring.</p><div class="walks">' + walk('shelfweek', 'Find one for Week ' + wk) + '</div>';
   } else {
     nt = 'Ready for ' + d;
-    body = '<p class="t">You\u2019re ready for ' + d + '.</p><p class="s">' + (M.swap ? 'You\u2019re bringing \u201c' + tie(String(P.claim).replace(/\.$/, '')) + ',\u201d from The Shelf, in place of the piece our team chose. Its points are below, and on Your Desk for the night.' : 'You\u2019re bringing this week\u2019s piece. Its three points are below, and on Your Desk for the night.') + '</p><div class="walks">' + walk('bringchange', 'Change your answer') + '</div>';
+    body = '<p class="kept" style="margin-top:0"><b>Kept.</b> ' + (M.swap ? 'You\u2019re bringing \u201c' + tie(String(P.claim).replace(/\.$/, '')) + ',\u201d from The Shelf, in place of the piece our team chose.' : 'You\u2019re bringing this week\u2019s piece.') + ' Its points are on Your Desk for the night.</p><p class="t" style="margin-top:14px">You\u2019re ready for ' + d + '.</p><div class="walks">' + walk('gopiece', 'See the piece') + '</div>';
   }
   return secHtml('next', 'Next Step', nt, body);
 }
@@ -483,7 +628,7 @@ function carriedPanel() {
 }
 function releasePanel() {
   if (!D.release) return '';
-  return secHtml('release', 'Release List', 'Our team only', '<p class="s" style="margin-top:0">A piece our team keeps reaches the men at 6:00 PM that day, unless you hold it.</p><div class="walks"><a class="walk" href="' + DESK_PAGE + '" target="_blank" rel="noopener"><span class="u">Read or hold on Your Desk</span>&nbsp;<span class="ar">\u2192</span></a></div>');
+  return secHtml('release', 'Release List', 'Only the releaser sees this', '<p class="s" style="margin-top:0">A reading our team keeps goes to the men at ' + esc(D.release.hour || '6:00 PM') + ' that day. Release it now, or keep it back, on Your Desk.</p><div class="walks"><a class="walk" href="' + DESK_PAGE + '" target="_blank" rel="noopener"><span class="u">Release or keep back</span>&nbsp;<span class="ar">\u2192</span></a></div>');
 }
 function welcomePanel() {
   if (!D.who.first) return '';
@@ -500,13 +645,13 @@ function courseHref(name) {
 }
 function courseCard(R) {
   var after = !!(D.after && D.after.kept) || !!D.after;
-  return '<div class="ap-home"><div class="ap-courses"><a class="ap-ccard" href="' + esc(courseHref(R.course)) + '">' + (R.pic ? '<img class="ap-ccard-img" src="' + esc(R.pic) + '" alt="">' : '<span class="ap-ccard-img"></span>') + '<div class="ap-ccard-body"><p class="ap-ccard-name">' + esc(R.course) + '</p><p class="ap-ccard-line">Week ' + R.week + ' reading: <span class="ap-nw">' + esc(R.title) + '</span></p><p class="ap-ccard-sub">' + (D.who.role === 'admin' ? 'The room' : 'Your room') + ' meets ' + esc(R.night) + (R.hour ? ', <span class="ap-nw">at ' + esc(R.hour) + '</span>' : '') + '</p><p class="ap-ccard-way"><span>Continue</span></p></div></a></div></div>';
+  return '<div class="ap-home"><div class="ap-courses"><a class="ap-ccard" href="' + esc(courseHref(R.course)) + '">' + (R.pic ? '<img class="ap-ccard-img" src="' + esc(R.pic) + '" alt="">' : '<span class="ap-ccard-img"></span>') + '<div class="ap-ccard-body"><p class="ap-ccard-name">' + esc(R.course) + '</p><p class="ap-ccard-line">Week ' + R.week + ' reading: <span class="ap-nw">' + esc(R.title) + '</span></p><p class="ap-ccard-sub">' + (ownRoom() ? 'Your room' : 'The room') + ' meets ' + esc(R.night) + (R.hour ? ', <span class="ap-nw">at ' + esc(R.hour) + '</span>' : '') + '</p><p class="ap-ccard-way"><span>Continue</span></p></div></a></div></div>';
 }
 function coursePanel() {
   var R = D.room; if (!R) return '';
   var after = !!D.after;
-  return secHtml('course', 'The Course', after ? 'Week ' + R.week + ' is next' : (D.who.role === 'admin' ? 'What the room is walking' : 'What your room is walking'),
-    courseCard(R) + (D.menUrl ? '<div class="walks">' + linkWalk(D.menUrl, 'See your men\u2019s weeks') + '</div>' : ''));
+  return secHtml('course', 'The Course', after ? 'Week ' + R.week + ' is next' : (ownRoom() ? 'What your room is walking' : 'What the room is walking'),
+    courseCard(R) + '<div class="walks">' + linkWalk(DESK_PAGE, 'Where each man is') + '</div>');
 }
 function viewWeek() {
   return '<main class="view cols2"><div class="mainc">' + nextPanel() + piecePanel() + carriedPanel() + releasePanel() + welcomePanel() + '</div><aside class="side">' + coursePanel() + '</aside></main>';
@@ -562,25 +707,20 @@ function viewShelf() {
   return '<main class="view cols2"><div class="mainc">' + main + '</div><aside class="side">' + side + '</aside></main>';
 }
 
-/* ---------- Your Growth \u00b7 Your Craft ---------- */
+/* ---------- Your Growth \u00b7 Craft ---------- */
 function recPanel() {
   return secHtml('rec', 'Name a Voice', 'Our team answers you', S.recSent ? '<p class="kept" style="margin-top:0"><b>Sent.</b> Our team reads it and tells you which lane it joins, or why it waits.</p>' : '<label class="t" for="rect" style="display:block">Whose voice should we read?</label><textarea id="rect" placeholder="A name, a show or a link, and why it helps your room.">' + esc(S.rec) + '</textarea><button class="btn line" data-act="rec">Send to our team</button>');
 }
 function viewCraft() {
   var C = D.craft || { brought: [], aside: [] }, main;
-  if (!C.brought.length) main = secHtml('brought', 'What You\u2019ve Brought', 'Kept under the word each one serves', '<p class="t">Nothing brought yet.</p><p class="s">When you bring a piece to your room, it\u2019s kept here under wisdom, understanding or knowledge, with what the room did with it. Over a course it becomes a record of how you led.</p><div class="walks">' + walk('tab', 'Start with this week', ' data-tab="week"') + '</div>');
-  else main = secHtml('brought', 'What You\u2019ve Brought', 'Under its word \u00b7 with what the room did', '<div class="rows">' + C.brought.map(function (x) {
-    var said = x.said ? (x.said === 'opened' ? 'It opened something.' : x.said === 'quiet' ? 'It landed quietly.' : 'We didn\u2019t get to it.') + (x.line ? ' ' + x.line : '') : '';
-    return '<button class="prow" data-act="openpiece" data-from="craft" data-id="' + esc(x.id) + '"><span class="lab">' + x.word + '</span><span class="nm">' + tie(x.claim) + '</span><span class="st">' + esc(x.label) + (said ? ' \u00b7 The room: ' + esc(said) : '') + '</span><span class="go"><span>Open</span> \u2192</span></button>';
-  }).join('') + '</div>');
+  var bringing = (!D.after && D.piece && D.mine && D.mine.choice === 'bring') ? { id: D.piece.id, claim: D.piece.claim, w: lineOf(D.piece.question) } : null;
+  var rows = (C.brought || []).filter(function (x) { return !(bringing && x.id === bringing.id); });
+  main = broughtPanel(rows, bringing);
   if (C.aside.length) main += secHtml('aside', 'What You Set Aside', 'A no is kept too', '<div class="rows">' + C.aside.map(function (x) {
     return '<button class="prow" data-act="openpiece" data-from="craft" data-id="' + esc(x.id) + '"><span class="lab">' + x.word + '</span><span class="nm">' + tie(x.claim) + '</span><span class="st">' + esc(x.label) + ' \u00b7 it tells us what earns its place in a room</span><span class="go"><span>Open</span> \u2192</span></button>';
   }).join('') + '</div>');
   main += recPanel();
-  var less = {}; (D.less || []).forEach(function (k) { less[k] = true; });
-  var anyLess = Object.keys(less).length > 0;
-  var side = secHtml('voices', 'Voices and Lanes', 'Where your pieces come from', '<p class="s" style="margin-top:0">Pastors, counselors, scholars and coaches, men\u2019s and women\u2019s voices, in lanes like narrative trauma care, shame and being known, and group facilitation.</p><div class="revs">' +
-    rev('lanes', 'Every lane', '<div>' + (D.lanes || []).map(function (l, i) { var on = !!less[l.lane]; return '<div class="lane"><div><b>' + esc(l.lane) + '</b><span>' + esc(l.line) + '. ' + esc(l.voices) + '.</span></div><button class="rev" data-act="less" data-v="' + i + '" aria-pressed="' + on + '"><span>' + (on ? 'Less of this \u2713' : 'Less of this') + '</span></button></div>'; }).join('') + '</div>' + (anyLess ? '<p class="kept"><b>Kept.</b> Our team sees it when choosing your pieces.</p>' : '')) + '</div>');
+  var side = secHtml('voices', 'Voices and Lanes', 'Where your pieces come from', '<p class="s" style="margin-top:0">Pastors, counselors, scholars and coaches, men\u2019s and women\u2019s voices. Want more or less of a lane? Tell us here.</p><div class="lanes" style="margin-top:6px">' + WORDS.map(function (w) { var i = firstLane(w); return i < 0 ? '' : laneRow(D.lanes[i], i); }).join('') + '</div>' + laneKept() + '<div class="walks">' + walk('lanes', 'Every lane') + '</div>');
   return '<main class="view cols2"><div class="mainc">' + main + '</div><aside class="side">' + side + '</aside></main>';
 }
 
@@ -650,10 +790,10 @@ function shelfSheet() {
   var isRoom = D.piece && D.piece.id === e.id && M.choice === 'bring';
   var h = pieceF(e, 'shelf');
   if (S.sheetFrom === 'craft' || D.after) return h;
-  h += '<div class="part"><p class="lk">For Your Room ' + esc(d) + '?</p>';
+  h += '<div class="part"><p class="t" style="font-size:19px">Bring it ' + esc(d) + '?</p>' + (isRoom ? '' : measureLine(e));
   var isTeam = D.team && D.team.id === e.id;
   if (isRoom) h += '<p class="kept" id="sbk" tabindex="-1"><b>Kept.</b> ' + (M.swap ? 'It\u2019s your piece for ' + esc(d) + ' now, in place of the one our team chose. This Week shows it, ready.' : 'It\u2019s the piece you\u2019re bringing ' + esc(d) + '.') + '</p><div class="walks">' + walk('seeweek', 'See This Week') + '</div>' + (M.swap && D.team ? '<div class="walks">' + walk('sbring', 'Go back to the piece our team chose', ' data-v="back"') + '</div>' : '');
-  else h += '<div class="choices two">' + choice('sbring', '1', isTeam ? 'Bring it' : 'Bring this one instead', false) + choice('sbring', '0', 'Not now', S.sbk === '0') + '</div>' + (S.sbk === '0' ? '<p class="kept" id="sbk" tabindex="-1"><b>Kept.</b> It stays on The Shelf. ' + (M.choice === 'bring' && D.piece ? 'You\u2019re still bringing \u201c' + tie(String(D.piece.claim).replace(/\.$/, '')) + '.\u201d' : '') + '</p>' : '');
+  else h += '<div class="choices two">' + choice('sbring', '1', 'Bring it', false) + choice('sbring', '0', 'Skip', S.sbk === '0') + '</div>' + (S.sbk === '0' ? '<p class="kept" id="sbk" tabindex="-1"><b>Kept.</b> It stays on The Shelf. ' + (M.choice === 'bring' && D.piece ? 'You\u2019re still bringing \u201c' + tie(String(D.piece.claim).replace(/\.$/, '')) + '.\u201d' : '') + '</p>' : '');
   return h + '</div>';
 }
 function settingsHtml() {
@@ -697,13 +837,25 @@ host.addEventListener('click', function (ev) {
     case 'listen':
       var P = shownPiece(); if (!P) break;
       try { window.open(P.link, '_blank', 'noopener'); } catch (x) {}
-      D.mine.opened = true; call({ action: 'mark', what: 'open', id: P.id }).catch(function () {}); render(true); break;
+      S.touched = true; D.mine = D.mine || {}; D.mine.opened = true; call({ action: 'mark', what: 'open', id: P.id }).catch(function () {}); render(true); break;
     case 'bring':
-      var BP = teamPiece() || D.piece; if (!BP) break;
+      var BP = shownPiece(); if (!BP) break;
+      S.touched = true;
       if (v === 'bring') { bringPiece(BP.id); }
-      else { call({ action: 'growth_answer', kind: 'setaside', id: BP.id, text: 'Week ' + (D.room ? D.room.week : ''), answer: 'not needed' }).then(function () { refresh(); }, fail); D.mine.choice = 'no'; S.change = false; D.piece = BP; }
+      else { call({ action: 'growth_answer', kind: 'setaside', id: BP.id, text: 'Week ' + (D.room ? D.room.week : ''), answer: 'not needed' }).then(function () { refresh(); }, fail); D.mine = D.mine || {}; D.mine.choice = 'no'; S.change = false; D.piece = BP; }
       render(true); if (v === 'bring') toast('Kept. It\u2019s on Your Desk for the night.'); break;
-    case 'bringchange': S.change = true; render(true); break;
+    case 'gopiece':
+      var gp = $('p-piece'); if (!gp) break;
+      if (gp.classList.contains('shut')) { panelSet('piece', true); balance(); gp = $('p-piece'); }
+      window.scrollTo(0, gp.getBoundingClientRect().top + window.pageYOffset - barH() - 12);
+      var gd = $('pdec') || gp.querySelector('.ap-panel-head'); if (gd) gd.focus({ preventScroll: true }); break;
+    case 'bline':
+      var BL = shownPiece(); if (!BL || !v) break;
+      D.mine = D.mine || {}; D.mine.lines = D.mine.lines || {};
+      var onl = !D.mine.lines[v]; if (onl) D.mine.lines[v] = true; else delete D.mine.lines[v];
+      S.touched = true;
+      call({ action: 'growth_answer', kind: 'line', id: BL.id, text: v, answer: onl ? 'on' : 'off' }).catch(function (e2) { if (onl) delete D.mine.lines[v]; else D.mine.lines[v] = true; render(true); fail(e2); });
+      render(true); if (onl) toast('On the room\u2019s card for ' + ((D.room && D.room.weekday) || 'the night') + '.'); break;
     case 'shelfweek': S.view = 'shelf'; S.filt = !!(D.room && D.room.week); closeSheet(); render(); window.scrollTo(0, 0); break;
     case 'after':
       var al = $('aline'); if (al) S.afterLine = al.value; S.afterWord = v; render(true); break;
@@ -731,11 +883,20 @@ host.addEventListener('click', function (ev) {
     case 'gowho':
       var pw = $('p-who'); if (pw) { if (pw.classList.contains('shut')) panelSet('who', true); balance(); pw = $('p-who'); var hb = pw.querySelector('.ap-panel-head'); window.scrollTo(0, pw.getBoundingClientRect().top + window.pageYOffset - barH() - 12); if (hb) hb.focus({ preventScroll: true }); } break;
     case 'filt': S.filt = !!v; S.shelfMore = false; render(true); var fc = ROOT.querySelector('.fchip'); if (fc) fc.focus(); break;
-    case 'less':
-      var lane = (D.lanes || [])[Number(v)]; if (!lane) break;
-      var on = (D.less || []).indexOf(lane.lane) < 0;
-      D.less = (D.less || []).filter(function (x) { return x !== lane.lane; }); if (on) D.less.push(lane.lane); S.open.lanes = true;
-      call({ action: 'growth_answer', kind: 'less', text: lane.lane, answer: on ? 'on' : 'off' }).catch(fail); render(true); break;
+    case 'lanes': openSheet('Every Lane', lanesSheet()); break;
+    case 'lane':
+      var lp = String(v).split(':'), ln = (D.lanes || [])[Number(lp[1])]; if (!ln) break;
+      D.laneSay = D.laneSay || {};
+      var was = D.laneSay[ln.lane] || '', now = was === lp[0] ? '' : lp[0];
+      if (now) D.laneSay[ln.lane] = now; else delete D.laneSay[ln.lane];
+      S.touched = true;
+      call({ action: 'growth_answer', kind: 'lane', text: ln.lane, answer: now || 'off' }).catch(function (e2) { if (was) D.laneSay[ln.lane] = was; else delete D.laneSay[ln.lane]; if (S.sheet === 'Every Lane') sheetBody(lanesSheet()); render(true); fail(e2); });
+      var inSheet = S.sheet === 'Every Lane', ob = inSheet ? ROOT.querySelector('#gSheet .obody') : null, sc = ob ? ob.scrollTop : 0;
+      if (inSheet) sheetBody(lanesSheet());
+      render(true);
+      if (inSheet) { var ob2 = ROOT.querySelector('#gSheet .obody'); if (ob2) ob2.scrollTop = sc; }
+      var nb = ROOT.querySelector((inSheet ? '#gSheet ' : '.side ') + '[data-act="lane"][data-v="' + v + '"]'); if (nb) nb.focus({ preventScroll: true });
+      break;
     case 'rec':
       var r = $('rect'); S.rec = r.value.trim(); if (!S.rec) { toast('Add a name, a show or a link first.'); break; }
       b.disabled = true; call({ action: 'growth_answer', kind: 'voice', text: S.rec }).then(function () { S.recSent = true; render(true); }, function (e) { b.disabled = false; fail(e); }); break;
