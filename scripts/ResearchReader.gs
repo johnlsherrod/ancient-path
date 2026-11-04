@@ -1,5 +1,6 @@
 /**
- * Ancient Path — Research reader · build 12.5 (Your Page 11.3, install 2 of 3: the Readings view; install 1 of 3 was the shell, This Week with Coming Weeks, Path with The Path Ahead, the guideposts as action; Your Growth 4.1.1 and the Witness unchanged) · road.js 11.3 · growth.js 4.1.1
+ * Ancient Path — Research reader · build 12.6 (week lines for the Front Desk's weekly email; no "something new" email for a man in a room; build 12.5: Your Page 11.3, install 2 of 3: the Readings view; install 1 of 3 was the shell, This Week with Coming Weeks, Path with The Path Ahead, the guideposts as action; Your Growth 4.1.1 and the Witness unchanged) · road.js 11.3 · growth.js 4.1.1
+ * Build 12.6 (Nov 4, 2026; server only, road.js stays 11.3; goes with Front Desk 29.4): the weekly email from Your Page. 1. week_lines (weekLines_) is a read-only, keyed action: it asks roadFor_ in quiet mode (new fifth argument), so the Front Desk gets the SAME answer Your Page's This Week reads and nothing is written for the man (no visit stamp, no piece handed, no "how this works" row). Config "week lines key" is the key. 2. A man seated in a room no longer gets the one-line "There is something new on your page." email (roadNotice_): his new cards wait for the room's weekly email; a man not in a room keeps it. Moves to the platform as it is. Rebuilt: nothing. Paste, Save, Deploy → Manage deployments → edit → New version → Deploy.
  * Build 12.5 (Nov 3, 2026; built to the mockup v8.10 John ruled, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP, install 2 of 3; built on the live 12.4.2 read through the Google Drive connector, so Your Growth 4.1.1 and the Witness stay exactly as they are): road.js 11.3 and these server changes. 1. The pace is time: About 20 minutes · About 40 minutes · An hour (PACES min20, min40, min60). The three older paces carry over by weight (Three a week → About 20 minutes, Daily → About 40 minutes, Up to twice a day → An hour), read from the same Learners cell; the morning run hands readings until the week's minutes are filled (each piece's length from the Entries cut), never more than three a week. 2. Skip has three reasons, too_long, not_needed and later; later waits and counts for nothing against a lane. 3. New actions: road_keepline (the line he keeps), road_touch and road_where (what it touched, where it showed up; each tap one Road row, on or off), road_keepit (Keep doing: the practice the check-in carries), road_more (Ask for more: the next reading, at most three a week, only when he asks), road_voices (Who We Read). 4. The `read` shape on the road answer: this week's readings with his taps, the answers he gave before, the readings that helped with their lines, what they touched and where, where it points (Lean into, Keep doing), and whether another reading is ready. Moves to our platform as it is: all of it (rows in the record's shape: person, piece, question, answer, signal).
  * Build 12.4 (Nov 3, 2026; built to the mockup v8.10 John ruled, install 1 of 3; built on the live 12.3 read through the Google Drive connector, so Your Growth 4.1.1 stays exactly as it is): road.js 11.2 and these server changes. Learners columns Y, Z, AA (guideposts here, not now, practice); the share switch guidepost, off to start; v11.gp, v11.ahead, v11.event; road_gp, road_gpuse, road_write, road_between; the Guideposts tab's reading column; the open night read from the January Forecast sheet's Events tab; the Week 7 witness invitation asked of a man in a room too. See the block build 12.4 above the road.js string. Moves to our platform as it is: all of it.
  * Build 12.3 (Nov 3, 2026; built to the mockup v8.11 John ruled, Craft and This Week; built on the live 12.2 read through the Google Drive connector): growth.js 4.1.1 and these server changes. 1. The answer after the room has four words, opened, quiet, miss and none (Opened up, Landed quietly, Didn't land, No time); afterWord_ counts any older word that is not one of the four as none, never as a no. 2. A facilitator's lane choice is one Answers row, kind lane (the lane's name; more, less or off); the older kind less is still read (on = less). Lanes are read from the Lanes tab by header, and its new word column (Wisdom, Understanding or Knowledge) says where each lane sits; a lane with no word is not drawn in the three groups. No new tab. 3. measureOut_ draws the measure line from the latest after-the-room answer of every room that brought a piece and sends a piece's counts only when four rooms or more have answered; it rides in the record growthCached_ keeps ten minutes (the cache key moves to g2 so no copy from before this build is served). 4. growthFor_ returns laneSay and measure. Nothing else changes from 12.2. Moves to our platform as it is: all of it (the Answers rows and the Lanes tab's word column are the record; the measure is computed from them).
@@ -1149,6 +1150,7 @@ function growthCall_(b) {
   try {
     var action = String(b.action || '');
     if (action === 'ping') { try { ensureBuild12_(SpreadsheetApp.openById(RE_SHEET_ID)); } catch (xb) {} var pk = claudeKey_(); return { ok: true, build: RE_BUILD, script: SCRIPT_BUILD, growth: GROWTH_BUILD, road: ROAD_BUILD, keySet: !!pk, keyKind: pk ? pk.split('-').slice(0, 3).join('-') : '' }; }
+    if (action === 'week_lines') return weekLines_(b); // build 12.6: read only, keyed
     if (action.indexOf('road') === 0) return roadCall_(b);
     var base = whoIs_(b.key, b.site), who = teamRoom_(base); who.own = !!base.room; // 4.0.3: the key opens only for the person the site shows; 12.2: own = a room of his own on People
     if (action === 'growth') return growthCached_(who);
@@ -1986,7 +1988,7 @@ function roadSlot_(ss, C, rows, had, map, lanes) {
   return null;
 }
 /** The section's data for one learner; gives this week's piece if none is given yet (byMorning: the daily run, so the Log says so). */
-function roadFor_(ss, cfg, L, byMorning) {
+function roadFor_(ss, cfg, L, byMorning, quiet) { // build 12.6: quiet = read only (week_lines); it hands no piece and writes no row
   var today = today_(), door = roadDoor_(cfg, L);
   if (door && today < door) return { ok: false, error: 'not_open' };
   var map = courseMap_(ss);
@@ -2009,7 +2011,7 @@ function roadFor_(ss, cfg, L, byMorning) {
   var cur = given.filter(function (r) { return r.week === week.start; })[0] || null;
   var e = null;
   if (cur) e = byId[cur.id] || null;
-  if (!e && C.lead && (byMorning || kept)) {
+  if (!e && C.lead && (byMorning || kept) && !quiet) {
     var first = roadSlot_(ss, C, rows, had, map, lanes);
     if (first) { hand(first, byMorning ? 'the morning run' : 'on his page'); e = first.e; cur = given.filter(function (r) { return r.week === week.start; })[0]; }
   }
@@ -2079,7 +2081,7 @@ function roadFor_(ss, cfg, L, byMorning) {
   var returns = Object.keys(byQ).filter(function (k) { return byQ[k].length > 1; }).map(function (k) { return { question: k, answers: byQ[k].sort(function (a, b) { return a.at.localeCompare(b.at); }).map(function (a) { return { when: a.when, text: a.text }; }) }; });
   // how this works: in full the first time he opens the section, afterward one line he can open (the Road tab remembers; never written by the morning run)
   var how = rows.some(function (q) { return q.what === 'how'; }) ? 'line' : 'full';
-  if (how === 'full' && !byMorning && e && !landOn) { try { roadRow_(ss, L.email, e.id, 'how', 'shown', week.start); } catch (xh) {} }
+  if (how === 'full' && !byMorning && !quiet && e && !landOn) { try { roadRow_(ss, L.email, e.id, 'how', 'shown', week.start); } catch (xh) {} }
   var free = isoDay_(L.freeUntil || cfg['road free until']), price = cfg['road price'] || '';
   var fine = cfg['road foot'] || ('You are among the first men to use this, and what you answer and press is shaping it.' + (free ? ' Free through ' + fmtDay_(free, 'MMMM d') + (price ? ', then ' + price.replace(/\s+from\s+.*$/, '') : '') + '.' : '') + ' Nothing reaches your page that our team has not read first' + (landOn ? '. A person reads your road once a month and writes to you.' : ', and nothing is mailed to you.'));
   var land = null;
@@ -2891,8 +2893,37 @@ function roadWord_(cfg, key, L, e, answer, strand, map, week) {
     return w;
   } catch (x) { log_(ss, 'road', 'word failed for ' + L.email + ' / ' + e.id, String(x && (x.code || x.message) || x).slice(0, 160)); return null; }
 }
+/**
+ * build 12.6: what a man's own This Week carries, for the Front Desk's weekly email (action week_lines, read only, keyed).
+ * It asks roadFor_ in quiet mode, so it is the SAME answer Your Page's This Week reads (v11 and the readings), and nothing is written for him:
+ * no visit stamp, no piece handed, no "how this works" row. The key is Config "week lines key" on this sheet; the Front Desk script reads the same row.
+ * Answers { ok, build, by: { email: null | { check, readings, minutes, week } } }. check = his check-in is still on his page (the course is open, it is not after the
+ * group's night, and no check-in is written for his week); readings = a reading is on his page that he has not opened; minutes = his pace.
+ * Moves to the platform as it is: a read of the record's tables. Rebuilt: nothing.
+ */
+function weekLines_(b) {
+  var ss = SpreadsheetApp.openById(RE_SHEET_ID), cfg = readConfig_(ss);
+  var key = String(cfg['week lines key'] || '').trim();
+  if (key.length < 24 || String(b.key || '') !== key) return { ok: false, error: 'no_key' };
+  var emails = (Array.isArray(b.emails) ? b.emails : []).map(function (e) { return String(e || '').toLowerCase().trim(); }).filter(Boolean).slice(0, 12);
+  var all = learners_(ss), by = {};
+  emails.forEach(function (em) {
+    by[em] = null;
+    try {
+      var L = all.filter(function (x) { return x.email === em; })[0];
+      if (!L || L.status !== 'open') return;
+      var rd = roadFor_(ss, cfg, L, false, true);
+      if (!rd || rd.ok === false || !rd.v11 || rd.v11.bare) return;
+      var v = rd.v11, d = v.done || {}, pc = PACES[L.pace] || PACES.min20;
+      var items = [rd.piece].concat(rd.more || []).filter(Boolean);
+      by[em] = { check: !!(v.course && !v.ended && !v.after && !d.check), readings: items.some(function (p) { return !p.opened; }), minutes: pc.minutes, week: (v.unit && v.unit.n) || 0 };
+    } catch (e) { log_(ss, 'week lines', 'could not be read for ' + em, String(e && e.stack || e).slice(0, 200)); }
+  });
+  return { ok: true, build: SCRIPT_BUILD, by: by };
+}
 /** One line with no words, by the channel Config names ("email"); only when something landed; never on a schedule. */
 function roadNotice_(ss, cfg, L) {
+  if (L && L.room) return false; // build 12.6: a man seated in a room hears from the room's weekly email; his new cards wait for it
   var ch = String(cfg['road notice'] || 'off').toLowerCase().trim();
   if (ch !== 'email' || !L || !L.email) return false;
   if (L.notice === 'page') return false; // build 10: his own choice in the setup, "Only on this page"
@@ -4165,7 +4196,7 @@ var ROAD_JS = "/* AP-HISROAD road.js build 11.3 — Your Page, install 2 of 3: t
  * what the room carried, The Shelf, Who We Read, his Craft and his lanes. New Answers kinds: after, less, voice, setaside, team, notice (Answers columns: when, who, entry id, kind, text, answer, room, build).
  * A Lanes tab (the twelve lanes of the mockup) and the Config lines are made once by ensureBuild12_. The 6:00 PM release (releaseTick) is switched by Config "auto release" (off until the hold is proven on the Front Desk).
  * Hold cards: research:hold:<entry id> on the Front Desk's Actions tab (rule RE15); a card marked done by hand is a hold. */
-var SCRIPT_BUILD = '12.5';
+var SCRIPT_BUILD = '12.6';
 var LANES_HEAD_12 = ['lane', 'what it covers', 'voices', 'Sources disciplines folded in', 'added'];
 var LANES_12 = [
   ['Narrative trauma care', 'How a man’s story holds his wounds', 'Dan Allender, Diane Langberg, Aundi Kolber', 'Narrative trauma care; Story work and attachment'],
