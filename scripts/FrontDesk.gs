@@ -1,5 +1,15 @@
 /**
- * Ancient Path — Front Desk · build 29.3
+ * Ancient Path — Front Desk · build 29.4
+ *   build 29.4 (Nov 4, 2026; script only, desk.js stays 29; Research reader build 12.6 goes with it): the Tuesday "Room reminder" becomes each man's This Week from Your Page, fully automated (John, Nov 4: no release step, no approval).
+ *     1. One email per man in the room (To: him, from john@, signed John), at 7:00 PM Central the evening before each night. The week-level version goes once to each address on Config "reminder cc" (Jason), not once per man.
+ *     2. Subject: "Week N · <title after the dash on the Weeks tab's what opens> · tomorrow, 7:00 PM". Body in the ruled order and words (weeklyBody_): the greeting, the night, "This week" (Read Week N, <title>, before you come.; his
+ *        check-in line only when his page still carries one; his readings line only when readings wait; the Weeks tab's story piece with its address; no Story chapter line until the Story view ships), "Coming up" (the next Weeks row that introduces a story piece; left out when none is ahead), the two addresses and the reply line.
+ *     3. His lines come from the SAME answer Your Page's This Week reads: the Research reader's road answer (v11 and the readings), asked through its new read-only action "week_lines" (personalLines_) so nothing is written for him. Key: Research Engine Config row "week lines key".
+ *        A man whose answer cannot be read gets the week-level version; never a blank, a bracket, a count of zero or "you haven't". The facilitator's name is the People tab's person for the room.
+ *     4. Generic: every room on the Rooms tab with a first night and weeks gets it, from its own Weeks rows (a row with no room cell belongs to the first room). No course is named in code. Per-man send stamps (reminderSent:<room>:<night>:<email>) keep a second run from mailing a man twice.
+ *     5. Sends: one row per night with the count of men and how many got lines of their own. A failed send, or a read that fell back to the week-level version, alerts john@ once that day (alert_). sendRoomReminderTest sends the next night's email to john@ only, built for one real seated man, subject marked [TEST].
+ *     6. No longer in this email (not in the ruled copy): the facilitator's one ask, the answers ask and the pieces line. Config "answers ask in reminder" and "pieces line in reminder" are unused by it.
+ *     Moves to the platform as it is: plain reads of the Weeks, Rooms, Room and People tabs and one read of the road answer. Rebuilt: nothing. Paste, Save. The Tuesday timer runs the saved code, so no deploy is needed for this script.
  *   build 29.3 (Nov 4, 2026, with desk.js 29; the Research reader is not changed): the band and the status lines, from John's two findings on the live Front Desk. Page half only; build 29.2 was pasted but never deployed, and 29.3 carries it whole. The lines under The Room draw in their own serif face, underlined, at 17px in the side column. No server change. Paste, Save, Deploy → Manage deployments → edit → New version → Deploy. Moves to the platform as it is: a stylesheet. Rebuilt: nothing.
  *   build 29.2 (Nov 4, 2026, with desk.js 28; the Research reader is not changed): the band. Page half only — John's finding on the live Front Desk ("we have header problems"): the two lines under the greeting sat left of the page and were cut off. The desk now sets its own left alignment (AP-SHELL 1 rule 1), lets the band reach the box's edges, and sets the band's side padding from the menu's measured edge. No server change: the script serves desk.js 28 and answers build 29.2. Paste, Save, Deploy → Manage deployments → edit → New version → Deploy. Moves to the platform as it is: a stylesheet and a measure. Rebuilt: nothing.
  *   build 29.1 (Nov 4, 2026, with desk.js 27; the Research reader is not changed): the voice cards. John never reviews the Research Engine sheet for a voice: every voice choice reaches him as a card on the lane.
@@ -384,7 +394,7 @@
  */
 
 const FD = {
-  BUILD: '29.3',
+  BUILD: '29.4',
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SIGNALS_SHEET_ID: '1s79xljKjt-sYCZin0-oRFp5swxcETS0a4gzr126_Dns',
   SEARCH_SHEET_ID: '1V84E1Wg33DaI89wAP0GvDR5iHQX3ZFsM3kRzu1LatCE',
@@ -2829,7 +2839,7 @@ function whenText_(d) {
 
 // ───────────────────────────── build 9: the room reminder (build 25: the Rooms tab names the night and the hour) ─────────────────────────────
 
-/** The timer's hour (Central). The email says "Tomorrow", so it goes the evening before each of the room's nights. */
+/** The timer's hour (Central). The email says "tomorrow", so it goes the evening before each of the room's nights. */
 const REMINDER_HOUR_ = 19;
 function fmtHour_(h) { const n = h % 12 === 0 ? 12 : h % 12; return n + ':00 ' + (h < 12 ? 'AM' : 'PM'); }
 /** The words the email uses for a night, all read from the Rooms tab and the date: { day: the day name of the date, time: '7:00 PM', short: '7:00' }. */
@@ -2837,33 +2847,95 @@ function reminderInfo_(rm, night) {
   const hr = hourOf_(rm && rm.meets);
   return { day: night ? fmtDay_(night, 'EEEE') : '', time: hr ? hr.text : '', short: hr ? hr.short : '' };
 }
-function reminderSubject_(info) { return 'Tomorrow night' + (info && info.short ? ', ' + info.short : ''); }
-/** build 19.1: the answers ask, for a man whose answers are not in yet. The address sits alone on its own line.
- *  A function, not a constant: ANSWERS_URL is declared further down the file. */
-function answersAsk_(info) { return [
-  'One more thing before ' + ((info && info.day) || 'the room meets') + ': answer the questions about why you came and what you want to learn about yourself. A few sentences each is enough. Our team reads them. No one else does, and nothing there is ever published.',
-  '',
-  ANSWERS_URL + '?door=bf',
-  ''
-]; }
-function reminderText_(cfg, week, askAnswers, info) {
-  info = info || {};
-  return [
-    'Hello,',
-    '',
-    'Tomorrow' + (info.day ? ', ' + info.day : '') + (info.time ? ', ' + info.time + ' Central' : '') + '.',
-    '',
-    "Come with this week's reading done and your notes in hand. The group time builds on what each man brings to it.",
-    '',
-  ].concat(askLines_(week), pieceLines_(week), piecesLine_(cfg, week), askAnswers ? answersAsk_(info) : [], [
-    "Sign in, open Breaking Free, and press Join on this week's session card. Give yourself five minutes before " + (info.time || 'it starts') + " in case the site asks you to sign in again.",
-    '',
-    'https://www.ancientpathcoaching.com/path-player?courseid=' + cfg.courseId,
-    '',
-    "If you can't be there, reply to this email and tell me before " + (info.day || 'the room meets') + ". The room is built on the men in it showing up for each other, so every night matters.",
-    '',
-    'John'
-  ]).join('\n');
+
+// build 29.4 — the weekly email from Your Page. Each man gets his own This Week, one email each, from john@, signed John.
+/** The Research reader's web app address (the one Your Page's road.js and the witness links use). Its "week_lines" action answers with what a man's own This Week carries. */
+const RR_EXEC_ = 'https://script.google.com/macros/s/AKfycbyz6_kXnoG3XdIcNySRPDrqfF7J3k9Cd4M1Qh_RyTeSIi_k3W-YR88swDwk-42lo32d/exec';
+const MONTHS_ = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const ORDINALS_ = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth'];
+function ordinalWord_(n) { return ORDINALS_[n - 1] || (n + 'th'); }
+function firstOf_(name) { return String(name || '').trim().split(/\s+/)[0]; }
+/** A first name for a person the sheets hold no name for: the letters of the address before its first dot, plus sign or digit, capitalized. */
+function firstFromEmail_(email) { const w = String(email || '').split('@')[0].split(/[^A-Za-z]/)[0]; return w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : ''; }
+/** The words after the dash in a Weeks "what opens" cell: "Week 6 — Stand Firm Then" → "Stand Firm Then". A cell with no dash is used whole. */
+function weekTitle_(week) {
+  const t = String(week && week['what opens'] || '').trim(), parts = t.split(/\s+[—–]\s+/);
+  return (parts.length > 1 ? parts[parts.length - 1] : t).trim();
+}
+/** The Weeks rows of one room, in week order. A row with no room cell belongs to the first room on the Rooms tab. */
+function roomWeeks_(ss, rm) {
+  const sh = ss.getSheetByName('Weeks');
+  if (!sh) return [];
+  const rs = rooms_(ss);
+  return rows_(sh).filter(r => nightOf_(r) && Number(r['week']) > 0 && (String(r['room'] || '').trim() ? sameRoom_(r['room'], rm.room) : (rs.length && sameRoom_(rs[0].room, rm.room))))
+    .sort((a, b) => Number(a['week']) - Number(b['week']));
+}
+/** "Coming up": the next Weeks row after this one that introduces a story piece, in the ruled words. [] when none is ahead. */
+function comingUp_(ss, rm, week) {
+  if (!week) return [];
+  const n0 = Number(week['week']);
+  let ord = 0, hit = null, k = 0;
+  roomWeeks_(ss, rm).forEach(r => {
+    if (!String(r['piece introduced'] || '').trim()) return;
+    ord++;
+    if (!hit && Number(r['week']) > n0) { hit = r; k = ord; }
+  });
+  if (!hit) return [];
+  const piece = String(hit['piece introduced']).trim().split(/\s*,\s*then\s+|\s+then\s+/)[0].trim();
+  const p = dayOf_(nightOf_(hit)).split('-').map(Number);
+  return ['Coming up', '', 'Week ' + hit['week'] + ', ' + MONTHS_[p[1] - 1] + ' ' + p[2] + ': ' + piece + ', the ' + ordinalWord_(k) + ' story piece. It will be on your page that week.', ''];
+}
+/** The room's facilitator by first name, from the People tab (a facilitator with that room, else an admin with it). '' when no one is named. */
+function facilitatorName_(ss, rm) {
+  const sh = ss.getSheetByName('People');
+  if (!sh) return '';
+  const ps = rows_(sh).filter(p => p['room'] && sameRoom_(p['room'], rm.room));
+  const role = (p) => String(p['role'] || '').toLowerCase();
+  const p = ps.find(x => role(x) === 'facilitator') || ps.find(x => role(x) === 'admin');
+  return p ? firstOf_(p['name']) : '';
+}
+/**
+ * The email, in the ruled order and words. c = { first, n, total, course, courseId, title, day, time, facil, week, coming }.
+ * mine = what his own This Week on Your Page carries ({ check, readings, minutes }), or null for the week-level version.
+ */
+function weeklyBody_(c, mine) {
+  const L = [c.first + ',', '',
+    'Tomorrow night is Week ' + c.n + ' of ' + c.total + ' in ' + c.course + ', ' + c.day + (c.time ? ' at ' + c.time + ' Central' : '') + '.', '',
+    'This week', '',
+    'Read Week ' + c.n + ', ' + c.title + ', before you come.', ''];
+  if (mine && mine.check && c.facil) L.push('Your check-in takes a minute. ' + c.facil + ' reads it before the room.', '');
+  if (mine && mine.readings && mine.minutes) L.push('Your readings are waiting, about ' + mine.minutes + ' minutes.', '');
+  pieceLines_(c.week).forEach(x => L.push(x));
+  c.coming.forEach(x => L.push(x));
+  L.push('Everything for this week is on your page:', '', SITE_ + '/start', '',
+    'To join tomorrow, open ' + c.course + " and press Join on this week's session card:", '', SITE_ + '/path-player?courseid=' + c.courseId, '',
+    "If you can't be there, reply and tell me before " + c.day + '.', '', 'John');
+  return L.join('\n').replace(/\n{3,}/g, '\n\n');
+}
+/**
+ * What each man's own This Week carries, from the SAME answer Your Page reads: the Research reader's road answer (v11 and the readings), asked
+ * through its read-only "week_lines" action so nothing is written for him (the page's own call stamps his visit and hands him pieces).
+ * Returns { by: { email: { check, readings, minutes } }, error }. A man the answer cannot be read for is simply absent: he gets the week-level version.
+ * The key is the Research Engine Config row "week lines key"; the Research reader checks it.
+ */
+function personalLines_(emails) {
+  const out = { by: {}, error: '' };
+  let key = '';
+  try {
+    const data = SpreadsheetApp.openById(RESEARCH_SHEET_ID_).getSheetByName('Config').getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) if (String(data[i][0]).trim() === 'week lines key') key = String(data[i][1] || '').trim();
+  } catch (e) { out.error = 'the Research Engine Config could not be read: ' + e; return out; }
+  if (key.length < 24) { out.error = 'the Research Engine Config has no "week lines key" row'; return out; }
+  emails.forEach(em => {
+    try {
+      const res = UrlFetchApp.fetch(RR_EXEC_, { method: 'post', contentType: 'application/json', payload: JSON.stringify({ action: 'week_lines', key: key, emails: [em] }), muteHttpExceptions: true, followRedirects: true });
+      const j = JSON.parse(res.getContentText());
+      const m = j && j.ok && j.by ? j.by[em] : null;
+      if (m && typeof m === 'object') out.by[em] = { check: m.check === true, readings: m.readings === true, minutes: Math.round(Number(m.minutes)) || 0 };
+      else if (!(j && j.ok) && !out.error) out.error = 'the Research reader answered ' + ((j && j.error) || res.getResponseCode());
+    } catch (e) { if (!out.error) out.error = 'the Research reader could not be reached: ' + e; }
+  });
+  return out;
 }
 /** The room's nights as yyyy-MM-dd (Central): the Rooms tab's first night, then every seven days for its weeks. Config's "first night" and
  *  "cohort weeks" are the fallback only when the Rooms tab has no row for the room. */
@@ -2872,47 +2944,102 @@ function cohortNights_(cfg, rm) {
   if (!cfg.firstNight) return [];
   return roomNights_({ firstNight: Utilities.formatDate(cfg.firstNight, FD.TZ, 'yyyy-MM-dd'), weeks: cfg.cohortWeeks });
 }
-/** The timer's job (daily). Sends only when tomorrow is one of the room's nights, and only once per night. */
+/** The timer's job (daily). For every room with a night tomorrow, one email to each man in it, once per man per night. */
 function sendRoomReminder() { sendReminder_(false); }
-/** The email the men will get for the next night, to the founders only (to john@, cc Jason), subject marked [TEST]; nothing goes to the men and nothing is marked sent. */
+/** The email the men will get for the next night, built for one real seated man and sent to john@ only, subject marked [TEST]; nothing goes to a man and no night is marked sent. */
 function sendRoomReminderTest() { sendReminder_(true); }
 function sendReminder_(test) {
   const cfg = readConfig_();
   if (!cfg.reminderOn && !test) { Logger.log('The reminder is off on Config.'); return; }
   const ss = SpreadsheetApp.openById(FD.SHEET_ID);
-  const rm = reminderRoom_(ss, cfg), nights = cohortNights_(cfg, rm);
-  let tomorrow = Utilities.formatDate(new Date(Date.now() + 864e5), FD.TZ, 'yyyy-MM-dd');
-  // build 19: a test shows the email for the next night, so its piece line can be read before the day.
-  if (test && !nights.includes(tomorrow)) tomorrow = nights.find(d => d >= tomorrow) || tomorrow;
-  if (!test && !nights.includes(tomorrow)) { Logger.log('No session tomorrow (' + tomorrow + '); nothing sent.'); return; }
-  const info = reminderInfo_(rm, tomorrow);
-  let week = null;
-  try { ensureBuild19_(ss); week = weekRow_(ss, tomorrow); } catch (e) { alert_('The room reminder could not read the Weeks tab (sent without a piece line): ' + e); }
-  const props = PropertiesService.getScriptProperties();
-  const stamp = 'reminderSent:' + tomorrow;
-  if (!test && props.getProperty(stamp)) { Logger.log('Already sent for ' + tomorrow + '.'); return; }
-  const men = Array.from(new Set(rows_(ss.getSheetByName('Room')).map(r => String(r['email'] || '').toLowerCase().trim()).filter(e => e && !isOurs_(cfg, e, ''))));
-  if (!test && !men.length) { alert_('Room reminder NOT sent for ' + tomorrow + ': the Room tab has no men on it.'); return; }
-  const me = Session.getEffectiveUser().getEmail();
-  const subject = (test ? '[TEST] ' : '') + reminderSubject_(info);
-  const opts = { name: 'John Sherrod' };
-  if (cfg.reminderCc) opts.cc = cfg.reminderCc;
-  // build 19.1: men whose answers are not in get the version with the ask; the rest get the reminder as before.
-  const answered = answersFirstIn_(ss);
-  const ask = cfg.answersAskOn ? men.filter(e => !answered.has(e)) : [];
-  const plain = men.filter(e => ask.indexOf(e) < 0);
+  try { ensureBuild19_(ss); } catch (e) { alert_('The room reminder could not read the Weeks tab: ' + e); return; }
+  const tomorrow = Utilities.formatDate(new Date(Date.now() + 864e5), FD.TZ, 'yyyy-MM-dd');
   if (test) {
-    GmailApp.sendEmail(me, subject, reminderText_(cfg, week, cfg.answersAskOn, info), opts);
-  } else {
-    if (ask.length) GmailApp.sendEmail(me, subject, reminderText_(cfg, week, true, info), Object.assign({}, opts, { bcc: ask.join(',') }));
-    const opts2 = Object.assign({}, opts, { bcc: plain.join(',') });
-    if (ask.length) delete opts2.cc; // the cc gets one copy, not two
-    if (plain.length) GmailApp.sendEmail(me, subject, reminderText_(cfg, week, false, info), opts2);
-    props.setProperty(stamp, new Date().toISOString());
+    const rm = reminderRoom_(ss, cfg);
+    const nights = cohortNights_(cfg, rm);
+    sendRoomWeek_(ss, cfg, rm, nights.find(d => d >= tomorrow) || tomorrow, true);
+    return;
   }
+  const rooms = rooms_(ss).filter(r => r.firstNight && r.weeks);
+  if (!rooms.length) { const rm = reminderRoom_(ss, cfg); if (rm) rooms.push(rm); }
+  rooms.forEach(rm => {
+    if (!cohortNights_(cfg, rm).includes(tomorrow)) { Logger.log('No session tomorrow (' + tomorrow + ') for ' + rm.room + '; nothing sent.'); return; }
+    try { sendRoomWeek_(ss, cfg, rm, tomorrow, false); } catch (e) { alert_('Room reminder failed for ' + rm.room + ' (' + tomorrow + '): ' + e + '\n' + (e.stack || '')); }
+  });
+}
+/** One room, one night: one email per man (To: him, from john@), the week-level copy once to each address in Config "reminder cc", and one row on Sends. */
+function sendRoomWeek_(ss, cfg, rm, night, test) {
+  const week = weekRowFor_(ss, rm, night);
+  if (!week) { alert_('Room reminder NOT sent for ' + rm.room + ' ' + night + ': the Weeks tab has no row for that night.'); return; }
+  const info = reminderInfo_(rm, night);
+  const copies = String(cfg.reminderCc || '').split(/[\s,;]+/).map(s => s.toLowerCase().trim()).filter(s => /@/.test(s));
+  const seen = new Set(copies);
+  const men = [];
+  roomMen_(ss, cfg, rm.room).forEach(r => {
+    const email = String(r['email'] || '').toLowerCase().trim();
+    if (!email || seen.has(email) || isOurs_(cfg, email, '')) return;
+    seen.add(email);
+    men.push({ email: email, first: firstOf_(r['name']) || firstFromEmail_(email) });
+  });
+  if (!men.length) { alert_('Room reminder NOT sent for ' + rm.room + ' ' + night + ': the Room tab has no men on it.'); return; }
+  const base = {
+    n: Number(week['week']), total: rm.weeks || Number(week['week']), course: rm.room.split(/\s+[—–-]\s+/)[0].trim(), courseId: rm.course || cfg.courseId,
+    title: weekTitle_(week), day: info.day, time: info.time, facil: facilitatorName_(ss, rm), week: week, coming: comingUp_(ss, rm, week)
+  };
+  const subject = (test ? '[TEST] ' : '') + 'Week ' + base.n + ' · ' + base.title + ' · tomorrow' + (info.time ? ', ' + info.time : '');
+  const me = Session.getEffectiveUser().getEmail();
+  const opts = { name: 'John Sherrod' };
   const sends = ss.getSheetByName('Sends');
-  if (sends) append_(sends, [[new Date(), test ? 'Room reminder (test)' : 'Room reminder', subject, me + (cfg.reminderCc ? ' · cc ' + cfg.reminderCc : ''), test ? 0 : men.length, (test ? 'founders only · as for ' : 'for the session on ') + tomorrow + (pieceLines_(week).length ? ' · piece: ' + week['piece introduced'] : '') + (test ? (cfg.answersAskOn ? ' · with the answers ask (' + ask.length + ' of ' + men.length + ' men would get it)' : '') : ' · ' + ask.length + ' with the answers ask, ' + plain.length + ' without')]]);
-  Logger.log((test ? 'Test sent to ' + me : 'Reminder sent to ' + men.length + ' men') + '.');
+  if (test) {
+    // the man: the first one whose own This Week carries something, else the first man in the room
+    let pick = men[0], mine = null, err = '';
+    for (let i = 0; i < men.length; i++) {
+      const pl = personalLines_([men[i].email]);
+      if (pl.error && !err) err = pl.error;
+      const m = pl.by[men[i].email];
+      if (m && (m.check || m.readings)) { pick = men[i]; mine = m; break; }
+      if (m && i === 0) mine = m;
+    }
+    GmailApp.sendEmail(me, subject, weeklyBody_(Object.assign({ first: pick.first }, base), mine), opts);
+    if (sends) append_(sends, [[new Date(), 'Room reminder (test)', subject, me + ' only', 0, 'as for ' + night + ' · built for ' + pick.first + ' · ' + (mine ? (mine.check ? 'check-in line' : 'no check-in line') + ', ' + (mine.readings ? 'readings line' : 'no readings line') : 'week-level version' + (err ? ' (' + err + ')' : ''))]]);
+    Logger.log('Test sent to ' + me + ' for ' + pick.first + '.');
+    return;
+  }
+  const props = PropertiesService.getScriptProperties();
+  const roomKey = rm.room.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
+  const skey = (email) => 'reminderSent:' + roomKey + ':' + night + ':' + email;
+  const todo = men.filter(m => !props.getProperty(skey(m.email)));
+  const pl = personalLines_(todo.map(m => m.email));
+  if (pl.error) alert_('The weekly email for ' + rm.room + ' (' + night + ') could not read some or all of the men\'s own This Week, so they got the week-level version: ' + pl.error);
+  let sent = 0, personal = 0;
+  const failed = [];
+  todo.forEach(m => {
+    const mine = pl.by[m.email] || null;
+    try {
+      GmailApp.sendEmail(m.email, subject, weeklyBody_(Object.assign({ first: m.first }, base), mine), opts);
+      props.setProperty(skey(m.email), new Date().toISOString());
+      sent++;
+      if (mine && (mine.check || mine.readings)) personal++;
+    } catch (e) { failed.push(m.email + ' (' + e + ')'); }
+  });
+  const people = ss.getSheetByName('People') ? rows_(ss.getSheetByName('People')) : [];
+  copies.forEach(addr => {
+    if (props.getProperty(skey(addr))) return;
+    const p = people.find(x => String(x['email'] || '').toLowerCase().trim() === addr);
+    try {
+      GmailApp.sendEmail(addr, subject, weeklyBody_(Object.assign({ first: (p && firstOf_(p['name'])) || firstFromEmail_(addr) }, base), null), opts);
+      props.setProperty(skey(addr), new Date().toISOString());
+    } catch (e) { failed.push(addr + ' (' + e + ')'); }
+  });
+  if (failed.length) alert_('Room reminder: ' + failed.length + ' email(s) for ' + rm.room + ' on ' + night + ' did not send: ' + failed.join('; ') + '. Run sendRoomReminder again today to send only the ones left.');
+  else props.setProperty('reminderSent:' + night, new Date().toISOString());
+  if (sends && (sent || failed.length)) append_(sends, [[new Date(), 'Room reminder', subject, 'one each from ' + me + (copies.length ? ' · week-level copy to ' + copies.join(', ') : ''), sent,
+    'for the session on ' + night + ' · ' + personal + ' of ' + sent + ' with his own lines' + (failed.length ? ' · ' + failed.length + ' not sent' : '')]]);
+  Logger.log('Reminder sent to ' + sent + ' men, ' + personal + ' with their own lines' + (failed.length ? ', ' + failed.length + ' failed' : '') + '.');
+}
+/** The Weeks row for a night (yyyy-MM-dd) in one room's own weeks, or null. */
+function weekRowFor_(ss, rm, night) {
+  return roomWeeks_(ss, rm).find(r => dayOf_(nightOf_(r)) === night) || null;
 }
 
 // ───────────────────────────── build 12 · Before We Meet answers ─────────────────────────────
