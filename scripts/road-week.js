@@ -1,4 +1,5 @@
 /* AP-HISROAD road.js build 11.3 — Your Page, install 2 of 3: the Readings view (design 8.10). Served by the Research reader script (ResearchReader.gs build 12.5, ?file=road.js).
+   11.4 (Nov 4, 2026, Research reader build 12.7; the ruled list from Nov 4 and the fixes drawn on the live pages, https://claude.ai/artifact/9UJsUiy8u8vxZo2g2jFLN2; built on the live 11.3 read through the Google Drive connector). 1. Speed: the page draws the last copy this browser kept the moment the site shows who is signed in (before the answer), and the answer, kept by the script per person, replaces it; a copy from 11.3 is drawn too. 2. One frame: the band, the since line, the menu and the content share one width on a computer (the window up to 1320px); the side column is 340px from 1112px wide and sits under the main column below that, so the main column is never narrower than 440px; the band's words start level with the menu's first row. 3. Every link is navy with one thin underline: regular weight in a list, bold when it stands alone. 4. The menu heading and the rooms sheet read Rooms; the room rows are menu rows. 5. A capital Your only on the rooms and For Your Road (Your Witness is Witness, Your Profile is Profile, Your Story is Story, Your Stones is Stones, Your first reading is This week’s reading, your For Your Road piece helped is last week’s reading helped). 6. A dot stays with the words before it; a phrase between dots is never broken across two lines. 7. Begin on a course not started; This week’s reading · Arrives tomorrow morning; Last week’s reading helped. 8. This Week: The Week Ahead first, What your room carried last week at its foot; Walking With You is off This Week (the witness invitation is asked in Week 7, in Path and Next Step). 9. Story, Our Group: Never one man’s words. Moves to our platform as it is: all of it. Rebuilt there: nothing. Counts taken before this card: the script parses; the stylesheets are assembled as the page assembles them and parse with no dropped rule; Chromium accepted 170 (hisroad) + 335 (apg) rules, the same as the CSS parser (11.3: 170 + 316).
    11.3 (Nov 3, 2026; built to the mockup v8.10 John ruled, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP; the mockup's words are the copy; built on the live 11.2.2 and Research reader 12.4.2 read through the Google Drive connector). 1. Readings joins the menu and the tabs (This Week, Readings, Story, Path; #readings). The reading moves here from the piece sheet: every "Read it" opens Readings. 2. Each reading carries its story, where to listen from, how we read it, One Thing to Do, Carry This Question, and one tap (Helped or Skip); after Helped, one optional question at a time (Keep a line, What did it touch?, Where did it show up?), and after Skip, three reasons (Too long, Not for me, Not now). 3. What Has Helped is drawn from his real taps only: Where It Points (Lean into, Keep doing with Keep it), Lines You've Kept, Practices That Held. 4. Reading Rhythm is time, not pieces: About 20 minutes, About 40 minutes, An hour (the older paces carry over); Set Your Rhythm shows first until he has chosen; Which course leads? when he walks two. 5. "We have additional articles we think you would appreciate if time allows" with Ask for more, shown only when another reading is ready. 6. Who We Read opens from How it's chosen. 7. The check-in no longer asks whether the reading helped; it shows what he answered on Readings, or one tap to Readings (one act, one place). 8. Settings no longer carries a second rhythm: the amount he reads is set on Readings only. Not built, and listed in the handoff: Watch for, the pattern sentence, Bring it Wednesday, Reading From Here, Rhythm's second Ask for more.
    Stays on the live layer until install 3: Story and its pieces, stones and offers (story.js). Moves to our own platform as it is: the whole script and every row it writes (served from the repo).
    Counts taken before this card: the script parses; the stylesheets are assembled as the page assembles them; Chromium accepted 170 (hisroad) + 316 (apg) rules, the same as the CSS parser (11.2.2: 170 + 297; none removed, 19 added); the machine checks (check810 adapted to this build) ran 96 views (12 reading situations × This Week, Readings, Story and Path × 390 and 1440 wide, every panel and reveal open) and 3,669 checks with none failing (no sideways scroll, the right column never longer than the left, every tap 44 pixels or more, no panel title over one line and a half, no banned word, no panel empty, no script error); jobs.js adapted ran 21 press-count jobs at both widths, all within their counts. The live page has no dark theme, so light and dark were not both run.
@@ -10,10 +11,10 @@
   "use strict";
   var host = document.getElementById("apRoad4");
   if (!host || host.getAttribute("data-hisroad")) return;
-  host.setAttribute("data-hisroad", "11.3");
-  var BUILD = "11.3";
+  host.setAttribute("data-hisroad", "11.4");
+  var BUILD = "11.4";
   /* the stamped rule count of this script's stylesheet, taken before the file card (AP-SHIP 1); the page counts what the browser accepted against it */
-  var RULES = { hisroad: 170, apg: 316 };
+  var RULES = { hisroad: 170, apg: 335 };
   var DESK_URL = "https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec";
   var ROAD_URL = (function () { var s = document.currentScript; var u = s && s.src ? String(s.src).split("?")[0] : ""; return /script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(u) ? u : ""; })();
   var CACHE = "ap_hisroad_v4";
@@ -176,14 +177,14 @@
   '}' +
   '@media (min-width:900px){' +
   '#apRoad4 .apg .topbar,#apRoad4 .apg .tabs{display:none}' +
-  '#apRoad4 .apg .hero{padding:26px max(28px,calc((100% - 1180px)/2 + 28px)) 24px;min-height:136px}' +
+  '#apRoad4 .apg .hero{padding:26px var(--hero-pad,28px) 24px;min-height:136px}' +
   '#apRoad4 .apg .hero .hk{display:block;margin-bottom:10px}' +
   '#apRoad4 .apg .hero h1{font-size:34px}' +
   '#apRoad4 .apg .hero .where{font-size:18px;max-width:780px}' +
-  '#apRoad4 .apg .pcwrap{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;max-width:1180px;margin:0 auto;padding:28px 28px 56px;align-items:start;--g:28px}' +
+  '#apRoad4 .apg .pcwrap{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;max-width:1320px;margin:0 auto;padding:28px 28px 56px;align-items:start;--g:28px}' +
   '#apRoad4 .apg .pcnav{display:block;position:sticky;top:calc(var(--bar) + 20px)}' +
   '#apRoad4 .apg .view{padding:0}' +
-  '#apRoad4 .apg .cols2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}' +
+  '#apRoad4 .apg .cols2{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}' +
   '#apRoad4 .apg .side{margin-top:0}' +
   '#apRoad4 .apg .prow{grid-template-columns:minmax(0,1fr) auto;padding:30px 0 32px}' +
   '#apRoad4 .apg .prow .go{grid-column:2;grid-row:1/4;margin-top:0}' +
@@ -300,7 +301,26 @@
   '#apRoad4 .apg p.sig{color:#5E6573 !important;font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif !important}' +
   '@media (hover:hover){#apRoad4 .apg .gprow:hover{background:var(--hover)}#apRoad4 .apg .pas:hover .pan{color:var(--bronze-ink)}}' +
   '@media (max-width:420px){#apRoad4 .apg.ap-home .ap-panel-title{font-size:20px !important}}' +
-  '@media (min-width:900px){#apRoad4 .apg .since{padding:4px max(28px,calc((100% - 1180px)/2 + 28px))}#apRoad4 .apg .vlead{padding:22px max(28px,calc((100% - 1180px)/2 + 28px)) 0}#apRoad4 .apg .bwit p{font-size:16px}#apRoad4 .apg .pa{grid-template-columns:repeat(var(--n),minmax(0,1fr));margin-top:12px}#apRoad4 .apg .pas{grid-template-columns:1fr;justify-items:start;row-gap:4px;padding:0 10px 6px 0}#apRoad4 .apg .pad{grid-row:auto;margin:0 0 6px}#apRoad4 .apg .pa li:not(:last-child):before{left:24px;right:0;top:12px;bottom:auto;border-left:0;border-top:2px solid var(--rule)}#apRoad4 .apg .pan{font-size:17px}#apRoad4 .apg .hero{padding-left:var(--hero-pad,28px);padding-right:var(--hero-pad,28px)}}' +
+  '@media (min-width:900px){#apRoad4 .apg .since{padding:4px var(--hero-pad,28px)}#apRoad4 .apg .vlead{padding:22px var(--hero-pad,28px) 0}#apRoad4 .apg .bwit p{font-size:16px}#apRoad4 .apg .pa{grid-template-columns:repeat(var(--n),minmax(0,1fr));margin-top:12px}#apRoad4 .apg .pas{grid-template-columns:1fr;justify-items:start;row-gap:4px;padding:0 10px 6px 0}#apRoad4 .apg .pad{grid-row:auto;margin:0 0 6px}#apRoad4 .apg .pa li:not(:last-child):before{left:24px;right:0;top:12px;bottom:auto;border-left:0;border-top:2px solid var(--rule)}#apRoad4 .apg .pan{font-size:17px}#apRoad4 .apg .hero{padding-left:var(--hero-pad,28px);padding-right:var(--hero-pad,28px)}}' +
+  /* 11.4: one frame; every link navy with one thin underline, regular in a list and bold alone (weighLinks sets reg and lone); dots stay with the words before them */
+  '@media (min-width:900px){#apRoad4 .apg .pcwrap{width:min(var(--bleed-w,100vw),1320px);max-width:none;margin-left:calc(var(--bleed-l,0px) + (var(--bleed-w,100vw) - min(var(--bleed-w,100vw),1320px))/2);margin-right:0;background:var(--paper);box-shadow:0 0 0 100vmax var(--paper);clip-path:inset(0 -100vmax)}}' +
+  '@media (min-width:1112px){#apRoad4 .apg .cols2{grid-template-columns:minmax(0,1fr) 340px}}' +
+  '@media (min-width:900px) and (max-width:1111px){#apRoad4 .apg .ap-courses{max-width:420px}}' +
+  '#apRoad4 .apg a.mi,#apRoad4 .apg a.mi:hover,#apRoad4 .apg a.mi *{text-decoration:none !important;border-bottom:0 !important}' +
+  '#apRoad4 .apg .walk,#apRoad4 .apg .qm,#apRoad4 .apg .prow .go,#apRoad4 .apg .rev{color:var(--navy)}' +
+  '#apRoad4 .apg .walk .u,#apRoad4 .apg .qm span,#apRoad4 .apg .prow .go span,#apRoad4 .apg .rev span{border-bottom:1px solid var(--navy);padding-bottom:1px}' +
+  '#apRoad4 .apg .walk .ar,#apRoad4 .apg .qm{color:var(--navy)}' +
+  '#apRoad4 .apg .walk.reg,#apRoad4 .apg .qm.reg,#apRoad4 .apg .prow .go.reg,#apRoad4 .apg .rev.reg{font-weight:400}' +
+  '#apRoad4 .apg .walk.lone,#apRoad4 .apg .qm.lone,#apRoad4 .apg .prow .go.lone,#apRoad4 .apg .rev.lone{font-weight:600}' +
+  '#apRoad4 .apg .bwit .walk .u{border-bottom-color:var(--band-k)}#apRoad4 .apg .bwit .walk,#apRoad4 .apg .bwit .walk .ar{color:var(--band-fg)}' +
+  '#apRoad4 .apg a.prow{text-decoration:none}' +
+  '#apRoad4 .apg .nn{display:inline-block;max-width:100%;white-space:normal}' +
+  '#apRoad4 .apg .ap-panel-note .np{display:block;margin-left:0}' +
+  '#apRoad4 .apg .ap-panel-note .nn{padding-left:0}' +
+  '#apRoad4 .apg .ap-panel-note .nn+.nn:before{content:none}' +
+  '#apRoad4 .apg .ap-panel-note .nn:not(:last-child):after{content:"\\00a0\\00b7";white-space:pre}' +
+  '#apRoad4 .apg .ap-panel-note .nn:not(:last-child){margin-right:.3em}' +
+  '#apRoad4 .apg .nw{display:inline-block;max-width:100%;white-space:normal}' +
   '@media (prefers-reduced-motion:reduce){.apg.ap-home *,.apg.ap-home *:before,.apg.ap-home *:after{transition:none !important;animation:none !important;scroll-behavior:auto !important}}';
   
   var data = null, me = null;
@@ -343,8 +363,8 @@
       ".ap-home .av .av-s{margin-top:6px;font-size:15px}",
       ".ap-home .av .av-help{margin-top:6px;font-size:13.5px;color:var(--quiet) !important}",
       ".ap-home .av .av-walk{display:inline-flex;align-items:center;gap:4px;min-height:var(--tap);padding:0;font:600 15px/1.3 var(--sans) !important;color:var(--navy) !important;text-decoration:none !important}",
-      ".ap-home .av .av-walk .av-u{border-bottom:1px solid var(--bronze);padding-bottom:1px}",
-      ".ap-home .av .av-walk .av-ar{color:var(--bronze-ink) !important}",
+      ".ap-home .av .av-walk .av-u{border-bottom:1px solid var(--navy);padding-bottom:1px}",
+      ".ap-home .av .av-walk .av-ar{color:var(--navy) !important}",
       ".ap-home .av .av-carry{margin-top:10px;border-left:3px solid var(--bronze);background:var(--sand);padding:10px 12px;border-radius:0 var(--r1) var(--r1) 0}",
       ".ap-home .av .av-carry .av-lk{font-size:11px}",
       ".ap-home .av .av-carry p+p{margin-top:2px;font:400 16.5px/1.4 var(--serif) !important;color:var(--navy) !important}",
@@ -366,7 +386,7 @@
       ".ap-home .av .av-tt{display:block;font-size:15.5px;color:var(--ink) !important;margin-top:1px}",
       ".ap-home .av .av-row small{display:block;font-size:13px;color:var(--quiet) !important;margin-top:1px}",
       ".ap-home .av .av-row.av-done .av-tt{color:var(--quiet) !important}",
-      ".ap-home .av .av-go{font:600 14px/1.3 var(--sans) !important;color:var(--navy) !important;border-bottom:1px solid var(--bronze);white-space:nowrap}",
+      ".ap-home .av .av-go{font:600 14px/1.3 var(--sans) !important;color:var(--navy) !important;border-bottom:1px solid var(--navy);white-space:nowrap}",
       ".ap-home .av .av-row.av-done .av-go{border-bottom:0;color:var(--quiet) !important;font-weight:400}",
       ".ap-home .av .av-row.av-pop .av-ring{animation:av-pop .5s var(--ease)}",
       "@keyframes av-pop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}",
@@ -472,7 +492,7 @@
       "@media (min-width:900px){.ap-home .av .av-ov{inset:auto;top:50%;left:50%;width:640px;max-width:calc(100vw - 48px);height:auto;max-height:calc(100vh - 64px);border-radius:14px;border:1px solid var(--rule);box-shadow:0 24px 64px rgba(16,21,31,.28);transform:translate(-50%,-46%);opacity:0;transition:transform .3s var(--ease),opacity .25s var(--ease),visibility 0s linear .3s}.ap-home .av .av-ov.av-open{transform:translate(-50%,-50%);opacity:1;transition:transform .3s var(--ease),opacity .25s var(--ease),visibility 0s}.ap-home .av .av-obody{flex:0 1 auto;min-height:0}.ap-home .av .av-ofoot{border-radius:0 0 14px 14px}}",
       ".ap-home .av .av-row:not(.av-still):hover{background:var(--sand)}",
       ".ap-home .av .av-btn:hover{filter:brightness(1.12)}",
-      ".ap-home .av .av-walk:hover .av-u{border-bottom-color:var(--bronze-ink);border-bottom-width:2px}",
+      ".ap-home .av .av-walk:hover .av-u{border-bottom-color:var(--navy)}",
       ".ap-home .av .av-shelf .av-itb:hover,.ap-home .av .av-gp>button:hover,.ap-home .av .av-course:hover{background:var(--sand)}",
       ".ap-home .av .av-choice:hover{border-color:var(--bronze);background:var(--sand)}",
       ".ap-home .av .av-word:hover{border-color:var(--bronze);background:var(--sand)}",
@@ -568,7 +588,7 @@
   var HOW = { most: "Kept. That’s a pathway forming.", some: "Kept. Some days counts. Pathways take time to form; keep going.", notyet: "Kept. We understand shifting priorities. We’re here to encourage the next right choice toward the healthy pathway you’ve identified. Choose it next." };
   var WHENS = [["morning", "Each morning"], ["pull", "When the pull comes"], ["bed", "Before bed"]];
   /* what each rhythm does, said back to him (it sets how many readings he is handed; reminders themselves are not sent yet) */
-  var SHARES = [["path", "The path and the word"], ["piece", "Whether the piece helped"], ["practice", "How your practice went"], ["words", "Your own words"], ["guidepost", "The guidepost"]];
+  var SHARES = [["path", "The path and the word"], ["piece", "Whether the piece helped"], ["practice", "How your practice went"], ["words", "Own words"], ["guidepost", "The guidepost"]];
   var LEADS = { week: "Stand where you are, look, and take the next step.", house: "", path: "" };
   var ROOMS = [["did", "", "What You Did"], ["saw", "", "What You Saw"], ["know", "", "What You Know Now"]]; /* the three parts of Your Story; the keys are the server's */
   var TABWORD = { week: "This Week", house: "Your Story", path: "Your Path" };
@@ -683,11 +703,11 @@
       var s = storyStop(k); if (!s[0]) return;
       rows.push({ key: k, title: titleOf(c), stop: s[0], line: s[1] });
     });
-    if ((window.apStones || []).length) rows.push({ key: "stones", title: "Your Stones", stop: "Told", line: "kept for you" });
+    if ((window.apStones || []).length) rows.push({ key: "stones", title: "Stones", stop: "Told", line: "kept for you" });
     return rows;
   }
   function shelfHtml() {
-    var rows = shelfRows(), h = '<div class="av-card"><p class="av-lk">Your Story · Told, Offered, Known</p>';
+    var rows = shelfRows(), h = '<div class="av-card"><p class="av-lk">Told · Offered · Known</p>';
     if (!rows.length) h += '<p class="av-help">Nothing here yet. Whatever you write on this road is kept here, and stays yours until you choose to offer it.</p>';
     else h += '<div class="av-shelf">' + rows.map(function (r) {
       var open = UI.slot === r.key;
@@ -721,7 +741,7 @@
     h += '<div class="av-seg2" role="group" aria-label="Whose story"><button type="button" data-act="house" data-h="mine" aria-pressed="' + (UI.house === "mine") + '">Mine</button><button type="button" data-act="house" data-h="ours" aria-pressed="' + (UI.house === "ours") + '">Our Group</button></div>';
     if (UI.house === "ours") {
       var O = UI.ours;
-      h += '<p class="av-help">What the men walking this road have gathered together. It starts with your group and grows as groups join. Never one man’s words unless he offered them.</p>';
+      h += '<p class="av-help">What the men walking this road have gathered together. It starts with your group and grows as groups join. Never one man’s words.</p>';
       if (!group()) h += '<div class="av-card"><p class="av-s">Our Group is your group’s. When you walk with a group, what the men gathered together shows here.</p></div>';
       else if (!O) h += '<div class="av-card"><p class="av-s">' + (UI.oursBusy ? "Opening Our Group." : "Our Group did not open. Try again in a moment.") + '</p></div>';
       else {
@@ -739,7 +759,7 @@
     });
     h += '<p class="av-help">Each week holds what you did, what you saw and what you know now: wisdom, understanding and knowledge (Proverbs 24:3–4).</p>';
     h += shelfHtml();
-    h += '<div class="av-card"><p class="av-lk">What I’ve Gathered</p><div class="av-vol"><div class="av-cover" aria-hidden="true"><span class="av-ck">What I’ve Gathered</span><span class="av-ct">' + esc(v.course || "Your road") + '</span><span class="av-cv">Remember the whole way…</span></div><div><p class="av-s" style="margin-top:0">' + (v.first ? "Nothing is gathered yet. What you keep on this road is bound here, in a volume of your own." : "Your first volume comes at the end of November.") + '</p></div></div></div>';
+    h += '<div class="av-card"><p class="av-lk">What I’ve Gathered</p><div class="av-vol"><div class="av-cover" aria-hidden="true"><span class="av-ck">What I’ve Gathered</span><span class="av-ct">' + esc(v.course || "The road") + '</span><span class="av-cv">Remember the whole way…</span></div><div><p class="av-s" style="margin-top:0">' + (v.first ? "Nothing is gathered yet. What you keep on this road is bound here, in a volume of your own." : "Your first volume comes at the end of November.") + '</p></div></div></div>';
     h += madeCard();
     return h + '</main>';
   }
@@ -839,8 +859,8 @@
   function isPicked(t) { var p = UI.ck.practice || ""; return !!p && (t === p || (p.length >= 200 && t.indexOf(p) === 0)); }
   function ckHtml() {
     var c = UI.ck, st = c.step, p = piece(), card = cardD() || {}, v = V();
-    var head = '<div class="av-ohead"><span class="av-lk">' + (c.mode === "choose" ? "Choose Your Practice" : "Check In With Your Witness") + '</span><button type="button" class="av-close" data-act="close-ck">Close</button></div>';
-    if (st === 5) return head + '<div class="av-obody">' + ckBar(st) + doneHtml() + '</div><div class="av-ofoot"><button type="button" class="av-btn" style="margin-top:0" data-act="ck-finish">Back to This Week</button><div class="av-links"><button type="button" class="av-walk" data-act="ck-house"><span class="av-u">See it in Your Story</span> <span class="av-ar">→</span></button></div></div>';
+    var head = '<div class="av-ohead"><span class="av-lk">' + (c.mode === "choose" ? "Choose a Practice" : "Check In With the Witness") + '</span><button type="button" class="av-close" data-act="close-ck">Close</button></div>';
+    if (st === 5) return head + '<div class="av-obody">' + ckBar(st) + doneHtml() + '</div><div class="av-ofoot"><button type="button" class="av-btn" style="margin-top:0" data-act="ck-finish">Back to This Week</button><div class="av-links"><button type="button" class="av-walk" data-act="ck-house"><span class="av-u">See it in Story</span> <span class="av-ar">→</span></button></div></div>';
     var b = "";
     if (st === 1) {
       var ws = c.moreWords ? WORDS.concat(MORE_WORDS) : WORDS, need = c.word ? needText(c.word) : "";
@@ -860,7 +880,7 @@
       else b = '<p class="av-sub">Last Week’s Practice</p><p class="av-q">“' + esc(last) + '” How did it go?</p><div class="av-choices av-three"><button type="button" class="av-choice" data-act="ck-how" data-v="most" aria-pressed="' + (c.how === "most") + '">Most days</button><button type="button" class="av-choice" data-act="ck-how" data-v="some" aria-pressed="' + (c.how === "some") + '">Some days</button><button type="button" class="av-choice" data-act="ck-how" data-v="notyet" aria-pressed="' + (c.how === "notyet") + '">Not this week</button></div><p class="av-kept" aria-live="polite">' + (c.how ? "<b>Kept.</b> " + esc(HOW[c.how].replace(/^Kept\. /, "")) : "") + '</p><p class="av-help">We want to support your growth here, establishing the right habits that lead to the personal development you desire.</p>';
     } else if (st === 4) {
       var list = ckPractices(), lab = ctxLabel();
-      b = '<p class="av-sub">This Week’s Practice</p><p class="av-q">' + (list.length ? "Choose one from " + esc(lab || "this week") : "Your Practice for This Week") + '</p>' +
+      b = '<p class="av-sub">This Week’s Practice</p><p class="av-q">' + (list.length ? "Choose one from " + esc(lab || "this week") : "Practice for This Week") + '</p>' +
         (list.length ? '<div class="av-choices">' + list.map(function (t, i) { return '<button type="button" class="av-choice av-left" data-act="ck-prac" data-v="' + i + '" aria-pressed="' + isPicked(t) + '">' + esc(t) + '</button>'; }).join("") + '</div><p class="av-kept" aria-live="polite">' + (c.say.practice ? kLine("practice") : "") + '</p>' : '<p class="av-s">Your course hasn’t named practices for this week yet. They’ll be here when it does.</p>') +
         '<p class="av-sub">When Will You Do It?</p><div class="av-choices av-three">' + WHENS.map(function (w) { return '<button type="button" class="av-choice" data-act="ck-when" data-v="' + w[0] + '" aria-pressed="' + (c.when === w[0]) + '">' + esc(w[1]) + '</button>'; }).join("") + '</div><p class="av-kept" aria-live="polite">' + (c.say.when ? kLine("when") : "") + '</p>' +
         '';
@@ -891,7 +911,7 @@
     if (hs) h += '<div class="av-give" data-seq="1"><p class="av-lk">What’s Been Helping You</p><p>' + esc(smart(hs)) + '</p></div>';
     if (gs) h += '<div class="av-give" data-seq="2"><p class="av-lk">You’re Not the Only One</p><p>' + esc(gs) + '</p></div>';
     var p0 = piece(), lit = { did: !!pr, saw: !!c.path, know: !!(p0 && p0.word === "met") };
-    if (lit.did || lit.saw || lit.know) h += '<div class="av-give" data-seq="3"><p class="av-lk">Your Story</p><p>It’s kept in Your Story.</p></div>';
+    if (lit.did || lit.saw || lit.know) h += '<div class="av-give" data-seq="3"><p class="av-lk">Story</p><p>It’s kept in Story.</p></div>';
     return h;
   }
   function revealGives() { $$(".av-give[data-seq]", ovCk()).forEach(function (g, i) { setTimeout(function () { g.classList.add("av-in"); }, reduce ? 0 : 220 + i * 380); }); }
@@ -931,7 +951,7 @@
   function ckMark() {
     var c = UI.ck; if (!c.path) return;
     post({ action: "road_mark", mark: c.path, word: c.word || "" }).then(function (r) {
-      if (ok(r)) { c.taps++; say("path", "It shows in What You Saw, in Your Story."); var cd = cardD(); if (cd) { cd.mark = c.path; cd.word = c.word || ""; } } else say("path", MISS, true);
+      if (ok(r)) { c.taps++; say("path", "It shows in What You Saw, in Story."); var cd = cardD(); if (cd) { cd.mark = c.path; cd.word = c.word || ""; } } else say("path", MISS, true);
       ckRedraw();
     });
   }
@@ -997,7 +1017,7 @@
     if (!t) { if (st) st.textContent = "Write a line first; one is enough."; if (ta) ta.focus(); return; }
     var btn = $('[data-act="keepwed"]'); if (btn) btn.setAttribute("disabled", "disabled"); if (st) st.textContent = "Keeping it.";
     post({ action: "road_saw", text: t }).then(function (r) {
-      if (ok(r)) { setDone("wed"); setV("wedText", t); UI.drafts.avWed = ""; UI.drafts.avWedKept = t; toast("Kept in Your Story, in What You Saw."); renderMain(true); popRow("wed"); refresh(); }
+      if (ok(r)) { setDone("wed"); setV("wedText", t); UI.drafts.avWed = ""; UI.drafts.avWedKept = t; toast("Kept in Story, in What You Saw."); renderMain(true); popRow("wed"); refresh(); }
       else { if (btn) btn.removeAttribute("disabled"); if (st) st.textContent = "It did not save. Your words are still here; try again."; }
     });
   }
@@ -1069,6 +1089,7 @@
   /* the last two words of a line are tied, so no paragraph ends on a word alone */
   function tie(s) { return esc(smart8(s)).replace(/\s+$/, "").replace(/ ([^ ]+)$/, " $1"); }
   function wide() { return !!(window.matchMedia && window.matchMedia("(min-width:900px)").matches); }
+  function cols() { return !!(window.matchMedia && window.matchMedia("(min-width:1112px)").matches); } /* 11.4: the side column sits beside the main one from here */
   function longDay(iso) { var p = dparts(iso); return p ? DAYS[new Date(Date.UTC(p.y, p.m - 1, p.d)).getUTCDay()] + ", " + MONTHS[p.m - 1] + " " + p.d : ""; }
   function shortDay(iso) { var p = dparts(iso); return p ? MONTHS[p.m - 1] + " " + p.d : ""; }
   function dayAfter(iso) { var p = dparts(iso); if (!p) return ""; var d = new Date(Date.UTC(p.y, p.m - 1, p.d + 1)); return d.getUTCFullYear() + "-" + ("0" + (d.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + d.getUTCDate()).slice(-2); }
@@ -1160,7 +1181,7 @@
     var t = UI.tab, views = function (cls) { return VIEWS8.map(function (x) { return '<button type="button" class="' + cls + '" data-act="tab" data-tab="' + x[0] + '" aria-current="' + (t === x[0] ? "page" : "false") + '"><b>' + x[1] + "</b><span>" + x[2] + "</span></button>"; }).join(""); };
     var h = "";
     if (multi()) {
-      h += '<p class="mlab">Your Rooms</p><div class="mgroup"><div class="mi room here"><b>Your Page</b><span>Walk your own road</span></div>' + views("mi mv") + "</div>";
+      h += '<p class="mlab">Rooms</p><div class="mgroup"><div class="mi room here"><b>Your Page</b><span>Walk your own road</span></div>' + views("mi mv") + "</div>";
       h += '<a class="mi room" href="' + ROOMPAGE.growth + '"><b>Your Growth</b><span>Get filled for the work</span></a><a class="mi room" href="' + ROOMPAGE.desk + '"><b>Your Desk</b><span>Care for your men</span></a>';
     } else h += '<p class="mlab">Your Page</p><div class="mgroup">' + views("mi") + "</div>";
     var hi = helpItem8();
@@ -1182,15 +1203,15 @@
     var cw = document.documentElement.clientWidth, r = host.getBoundingClientRect();
     root.style.setProperty("--bar", barH() + "px"); root.style.setProperty("--bleed-w", cw + "px"); root.style.setProperty("--bleed-l", (-Math.round(r.left)) + "px");
     var pc = root.querySelector(".pcwrap"); /* the band's words start where the menu's do: the column's left edge, plus its own 28px */
-    if (pc) root.style.setProperty("--hero-pad", Math.max(28, Math.round(pc.getBoundingClientRect().left - (r.left - Math.round(r.left)) + 28)) + "px");
+    if (pc) root.style.setProperty("--hero-pad", Math.max(28, Math.round(pc.getBoundingClientRect().left - (r.left - Math.round(r.left)) + 28 + 15)) + "px");
   }
   /* AP-SHELL 1, rule 8: on a computer the right column is never longer than the left; what would make it longer moves into the left column, in its order */
   function balance() {
     var m = $(".mainc"), s = $(".side"); if (!m || !s) return;
     var fa = document.activeElement;
-    moved.filter(function (p) { return host.contains(p); }).reverse().forEach(function (p) { s.insertBefore(p, s.firstChild); }); moved = [];
+    moved.filter(function (p) { return host.contains(p); }).forEach(function (p) { s.appendChild(p); }); moved = []; /* 11.4: put back in their own order, at the end of the side column (they were taken from its end) */
     s.hidden = false; m.parentNode.classList.remove("one");
-    if (wide()) {
+    if (cols()) {
       var first = null;
       while (s.children.length && s.offsetHeight > m.offsetHeight) { var p = s.lastElementChild; m.insertBefore(p, first); first = p; moved.unshift(p); }
       if (!s.children.length) { s.hidden = true; m.parentNode.classList.add("one"); }
@@ -1242,7 +1263,7 @@
     var L = V().lastWeek; if (!L) return "";
     var c = [];
     if (L.mark && PATHWORD[L.mark]) c.push("you marked " + PATHWORD[L.mark] + (L.word ? " and named it " + L.word : ""));
-    if (L.helped === "met") c.push("your For Your Road piece helped");
+    if (L.helped === "met") c.push("last week’s reading helped");
     if (L.practice) c.push("you named your practice, “" + L.practice + "”");
     if (!c.length) return "";
     var when = L.recent === false ? "The last week you were here" : "Last week", s = when + " " + c[0] + ".";
@@ -1276,7 +1297,7 @@
     } else if (nk === "after") {
       nt = esc(v.course || "") + " · " + esc(ctxLabel() || "this week") + " starts now";
       var wd = d.wed, wt = UI.drafts.avWed || "", q = "What did you take from " + esc(day || "your group’s night") + "?";
-      body = wd ? '<p class="kept" style="margin-top:0"><b>Kept.</b> In Your Story: “' + esc(v.wedText || UI.drafts.avWedKept || "") + "”</p>" : '<label class="t" for="avWed" style="display:block">' + q + '</label><textarea id="avWed" maxlength="2000" placeholder="One line is enough.">' + esc(wt) + '</textarea><button type="button" class="btn" data-act="keepwed">Keep it</button><p class="kept" id="avWedS" aria-live="polite"></p>';
+      body = wd ? '<p class="kept" style="margin-top:0"><b>Kept.</b> In Story: “' + esc(v.wedText || UI.drafts.avWedKept || "") + "”</p>" : '<label class="t" for="avWed" style="display:block">' + q + '</label><textarea id="avWed" maxlength="2000" placeholder="One line is enough.">' + esc(wt) + '</textarea><button type="button" class="btn" data-act="keepwed">Keep it</button><p class="kept" id="avWedS" aria-live="polite"></p>';
       if (wd) body += (!d.choose ? '<p class="t" style="margin-top:14px">Choose your practice for this week.</p><button type="button" class="btn" data-act="choose">Choose a practice</button>' : '<p class="t" style="margin-top:14px">You’re carrying it well.</p><p class="s">A new piece comes at your own pace.</p>');
     } else if (nk === "choose") {
       nt = "No course yet · free to start";
@@ -1313,15 +1334,21 @@
     }
     rows.push(aheadRow(d.check, cl + "Check in", "Check in for " + (group() && lab ? esc(lab) : "this week"), nw("1 minute") + " · " + nw(d.check ? "kept in your story" : "today"), d.check ? walk8("tab", "Read your story", ' data-tab="house"') : (nk === "checkin" ? "" : walk8("checkin", "Check in"))));
     if (p) rows.push(aheadRow(!!p.opened, cl + "Readings", esc(smart(p.claim)), nw(p.minutes ? esc(uc1(p.minutes)) : esc(actOf(p) + " it when you’re ready")) + (p.opened ? " · " + nw("opened " + esc(p.openedDay || p.opened)) : ""), walk8("piece", p.opened ? "Read it again" : "Read it")));
-    else rows.push(aheadRow(false, "Readings", "Your first reading", "It lands here with your next morning’s reading", ""));
+    else rows.push(aheadRow(false, "Readings", "This week’s reading", nw("Arrives tomorrow morning"), ""));
     var pr = v.practice;
     rows.push(aheadRow(false, "Practice", pr ? esc(pracShort(pr)) : "Choose your practice", pr ? nw("all week") + (v.when ? " · " + nw(esc(rhythmOfWhen(v.when))) : "") : nw("from this week’s list"), walk8("choose", pr ? "Change it" : "Choose")));
-    if (s) rows.push(aheadRow(s.done, cl + "Story", esc(writeName(s.it.title)), nw(s.done ? "kept in Story" : s.it.begun ? "begun" : "your course asks it this week"), sameWalk(s.it.href || PAGES.story, s.done ? "Your words" : s.it.begun ? "Continue" : "Begin")));
+    if (s) rows.push(aheadRow(s.done, cl + "Story", esc(writeName(s.it.title)), nw(s.done ? "kept in Story" : s.it.begun ? "begun" : "your course asks it this week"), sameWalk(s.it.href || PAGES.story, s.done ? "Read your words" : s.it.begun ? "Continue" : "Begin")));
     return secHtml("before", "The Week Ahead", ctxNote(), '<p class="s" style="margin-top:0">One new thing a day, at most.</p><div class="ahead">' + rows.join("") + "</div>");
+  }
+  /* 11.4: What your room carried last week, at the foot of This Week (it was inside Walking With You, which is no longer on This Week) */
+  function carriedFoot() {
+    var v = V(), car = (data && data.group && data.group.carried) || [];
+    if (!(group() && !v.ended && !v.first && car.length)) return "";
+    return '<div class="revs">' + rev8("carried", "What your room carried last week", car.map(function (c) { return '<p class="s" style="margin-top:0"><b>' + esc(smart(c.title)) + ".</b> " + esc(smart(c.body || "")) + "</p>"; }).join("") + '<p class="help">Drawn from what the room said together, never from one man’s words.</p>') + "</div>";
   }
   function witPanel() {
     var v = V(), tw = teamOnly8(), n = unreadNote() || newestNote(), W = witnessName(), y = walkYes(), ended = !!v.ended;
-    var role = tw ? "Walks with you until you invite your own" : ended ? "Your " + esc(y ? y.role : "witness") + ", and your witness now" : "Your witness through " + esc(v.course || "your course");
+    var role = tw ? "Walks with you until you invite your own" : ended ? "Your " + esc(y ? y.role : "witness") + ", and your witness now" : "Witness through " + esc(v.course || "your course");
     var h = '<div class="person"><span class="pav" aria-hidden="true">' + (tw ? "A" : "W") + '</span><div><p class="t" style="font-size:18px">' + (tw ? "Our team" : esc(uc1(W))) + '</p><p class="help" style="margin-top:0">' + role + "</p></div></div>";
     h += '<p class="s">' + (tw ? "Our team sees what God is doing in your story, so it is remembered and spoken back to you, until you invite your own witness." : (ended ? "Your witness walks with you now. He sees" : "He sees") + " what God is doing in your story, so it is remembered and spoken back to you.") + "</p>";
     h += '<p class="help">' + (tw ? "Our team reads your check-in, and what you choose to share, and writes at least once a month." : ended ? esc(witFirst()) + " reads your check-in, and what you choose to share, and writes as often as he wants." : "He reads your check-in, and what you choose to share, before your group meets.") + "</p>";
@@ -1330,10 +1357,10 @@
       h += '<div class="ruled lt"><p class="lk">' + (unreadNote() ? "A new letter" : "His latest letter") + (dt ? " · " + esc(dt) : "") + '</p><p class="serif">“' + esc(smart(body)) + '…”</p></div><div class="walks" style="margin-top:2px">' + walk8("letter", "Read it") + "</div>";
     }
     h += '<div class="walks">' + walk8("wwrite", "Write to " + him()) + walk8("wisees", "What your witness sees") + "</div>";
-    if (tw && !v.ended) h += '<div class="part"><p class="lk">Someone From Your Own Life</p>' + (inviteSent() ? inviteStatus() : '<p class="s" style="margin-top:4px">Invite one person from your own life to walk your road with you, week by week. They read what you choose to share and write to you.</p>' + inviteForm(false)) + "</div>";
+    if (tw && !v.ended) h += '<div class="part"><p class="lk">Someone from your own life</p>' + (inviteSent() ? inviteStatus() : '<p class="s" style="margin-top:4px">Invite one person from your own life to walk your road with you, week by week. They read what you choose to share and write to you.</p>' + inviteForm(false)) + "</div>";
     else if (ended && !inviteSent() && !y) h += '<p class="help">Choose who walks with you now in Next Step.</p>';
-    else if (!ended && inviteSent() && nextKind() !== "invite") h += '<div class="part"><p class="lk">After ' + esc(v.course || "Your Course") + "</p>" + inviteStatus() + "</div>";
-    else if (!ended && group() && !secondHalf() && halfN()) h += '<div class="part"><p class="lk">After ' + esc(v.course || "Your Course") + '</p><p class="s" style="margin-top:4px">' + esc(uc1(W)) + " walks with you until the course ends. Week " + halfN() + " asks who walks with you after.</p></div>";
+    else if (!ended && inviteSent() && nextKind() !== "invite") h += '<div class="part"><p class="lk">After ' + esc(v.course || "the Course") + "</p>" + inviteStatus() + "</div>";
+    else if (!ended && group() && !secondHalf() && halfN()) h += '<div class="part"><p class="lk">After ' + esc(v.course || "the Course") + '</p><p class="s" style="margin-top:4px">' + esc(uc1(W)) + " walks with you until the course ends. Week " + halfN() + " asks who walks with you after.</p></div>";
     var car = (data && data.group && data.group.carried) || [];
     if (group() && !ended && !v.first && car.length) h += '<div class="revs">' + rev8("carried", "What your room carried last week", car.map(function (c) { return '<p class="s" style="margin-top:0"><b>' + esc(smart(c.title)) + ".</b> " + esc(smart(c.body || "")) + "</p>"; }).join("") + '<p class="help">Drawn from what the room said together, never from one man’s words.</p>') + "</div>";
     return secHtml("wit", "Walking With You", tw ? "Our team · until you invite your own" : esc(uc1(W)) + " · " + (ended ? "your witness now" : "your witness through " + esc(v.course || "your course")), h);
@@ -1375,8 +1402,8 @@
   function viewWeek8() {
     var v = V();
     if (S8.unread) return unreadView();
-    var welcome = (v.first && !v.bare && !welcomedYet()) ? secHtml("welcome", "What This Page Is For", "Your home base for the week · Jeremiah 6:16", welcomeBody() + '<div class="walks">' + walk8("welcomed", "Start with this week") + "</div>") : "";
-    var main = welcome + nextPanel() + witPanel() + weekAhead();
+    var welcome = (v.first && !v.bare && !welcomedYet()) ? secHtml("welcome", "What This Page Is For", "A home base for the week · Jeremiah 6:16", welcomeBody() + '<div class="walks">' + walk8("welcomed", "Start with this week") + "</div>") : "";
+    var main = welcome + weekAhead() + nextPanel() + carriedFoot();
     var side = comingPanel() + (v.ended ? "" : gpBrief(false));
     return '<main class="view cols2"><div class="mainc">' + main + '</div><aside class="side">' + side + "</aside></main>";
   }
@@ -1395,7 +1422,7 @@
     if (v.ended) {
       var tot = v.total && NUMW[v.total] ? NUMW[v.total] + " weeks, every chapter in your own words, kept in Story." : "Every week in your own words, kept in Story.";
       L.push({ k: "bf", lab: "Finished", nm: course, when: "Finished", t: tot, way: walk8("tab", "Read your story", ' data-tab="house"'), done: 1 });
-      L.push(y ? { k: "now", lab: "Now", nm: "Your Witness", when: "Now", t: esc(y.name) + ", your " + esc(y.role) + ", walks your road with you now.", way: walk8("tab", "See this week", ' data-tab="week"'), now: 1 } : { k: "now", lab: "Now", nm: "Your Witness", when: "Now", t: "Choose one person from your own life to walk your road from here.", way: walk8("tab", "See this week", ' data-tab="week"'), now: 1 });
+      L.push(y ? { k: "now", lab: "Now", nm: "Witness", when: "Now", t: esc(y.name) + ", your " + esc(y.role) + ", walks your road with you now.", way: walk8("tab", "See this week", ' data-tab="week"'), now: 1 } : { k: "now", lab: "Now", nm: "Witness", when: "Now", t: "Choose one person from your own life to walk your road from here.", way: walk8("tab", "See this week", ' data-tab="week"'), now: 1 });
       L.push(jan); return L;
     }
     if (!group()) {
@@ -1407,7 +1434,7 @@
     L.push({ k: "now", lab: "Now", nm: "Week " + wk, dt: v.unit && v.unit.title ? v.unit.title : "Week " + wk, when: whenNow, t: "Your room meets at " + esc(central(m.time || "")) + "." + (v.unit && v.unit.title ? "" : ""), way: walk8("tab", "See this week", ' data-tab="week"'), now: 1 });
     W.forEach(function (w) {
       var a = weekAsk(w);
-      if (w.half) L.push({ k: "w" + w.n, lab: "Week " + w.n, nm: "Your Witness", when: "Week " + w.n + " · " + esc(w.day), t: WKASK.half.line + " A mentor, a coach, a close friend, a pastor or a relative.", way: a.way });
+      if (w.half) L.push({ k: "w" + w.n, lab: "Week " + w.n, nm: "Witness", when: "Week " + w.n + " · " + esc(w.day), t: WKASK.half.line + " A mentor, a coach, a close friend, a pastor or a relative.", way: a.way });
       else if (w.last) L.push({ k: "w" + w.n, lab: "Week " + w.n, nm: w.piece || "The Last Night", when: "Week " + w.n + " · " + esc(w.day), t: (w.piece ? esc(w.piece) + " opens " + esc(w.opens) + ". " : "") + "Your room’s last night." + (y ? " " + esc(y.name) + " walks with you from " + shortDay(dayAfter(w.date)) + "." : ""), way: a.way });
       else if (w.piece) L.push({ k: "w" + w.n, lab: "Week " + w.n, nm: esc(w.piece), when: "Week " + w.n + " · " + esc(w.day), t: isWif(w.piece) ? WKASK.wif.t : esc(w.piece) + ", in the week your course asks for it.", way: a.way });
     });
@@ -1433,7 +1460,7 @@
     else if (ended) {
       var stone = nx("Set a Stone for " + esc(v.course), "Any time; three months on, it comes back to you", "Free", sameWalk(PAGES.stones, "Set a stone"));
       var offer = nx("Offer Your Story", "Any time; our team reads it with care, and nothing goes up without your yes", "Free", sameWalk(PAGES.story, "Story to Testimony"));
-      if (!inviteYes() && !inviteWaiting()) { one = nx("Invite Your Witness", "One person from your own life, to walk your road from here", "Free", walk8("tab", "Invite your witness", ' data-tab="week"')); rest = [offer, stone]; }
+      if (!inviteYes() && !inviteWaiting()) { one = nx("Invite a Witness", "One person from your own life, to walk your road from here", "Free", walk8("tab", "Invite your witness", ' data-tab="week"')); rest = [offer, stone]; }
       else { one = offer; rest = [stone]; }
       rest = rest.concat([kbj("It leads now, at your pace", "Continue Part Two"), rooms, coach, talk]);
     } else if (!group()) { one = kbj("Self-paced, Part Two is next", "Continue Part Two"); rest = [rooms, coach, talk]; }
@@ -1465,7 +1492,7 @@
     }
     var rest = list.filter(function (c) { return !cur || norm(c.name) !== norm(cur.name); });
     h += '<div class="crows">' + rest.map(function (c) {
-      var st = /^Complete$/i.test(c.state) ? "Finished" : c.state, way = /^Complete$/i.test(c.state) ? "Look back" : /^Free/i.test(c.state) ? "Start" : "Continue";
+      var st = /^Complete$/i.test(c.state) ? "Finished" : c.state, way = /^Complete$/i.test(c.state) ? "Look back" : /^Free/i.test(c.state) ? "Begin" : "Continue";
       return '<div class="crow"><p class="nxn">' + esc(c.name) + '</p><p class="help" style="margin-top:2px">' + esc(st) + '</p><div class="walks" style="margin-top:0">' + sameWalk(c.href, way) + "</div></div>";
     }).join("") + "</div>";
     if (!cur && !rest.length) h = '<p class="s" style="margin-top:0">Your courses show here.</p>';
@@ -1476,11 +1503,11 @@
   }
   function witBrief() {
     var tw = teamOnly8(), n = unreadNote(), W = witnessName();
-    var h = '<div class="person"><span class="pav" aria-hidden="true">' + (tw ? "A" : "W") + '</span><div><p class="t" style="font-size:18px">' + (tw ? "Our team" : esc(uc1(W))) + '</p><p class="help" style="margin-top:0">' + (tw ? "Walks with you until you invite your own" : V().ended ? "Your witness now" : "Your witness through " + esc(V().course || "your course")) + '</p></div></div><div class="walks">' + (n ? walk8("letter", "Read his letter") : "") + walk8("wwrite", "Write to " + him()) + "</div>";
+    var h = '<div class="person"><span class="pav" aria-hidden="true">' + (tw ? "A" : "W") + '</span><div><p class="t" style="font-size:18px">' + (tw ? "Our team" : esc(uc1(W))) + '</p><p class="help" style="margin-top:0">' + (tw ? "Walks with you until you invite your own" : V().ended ? "Witness now" : "Witness through " + esc(V().course || "your course")) + '</p></div></div><div class="walks">' + (n ? walk8("letter", "Read his letter") : "") + walk8("wwrite", "Write to " + him()) + "</div>";
     return secHtml("witb", "Walking With You", tw ? "Our team" : "Your witness", h);
   }
   function pathDoors() {
-    return secHtml("doors", "Doors", "Talk with us · the writing", '<div class="walks" style="flex-direction:column;margin-top:0">' + sameWalk(PAGES.team, "Talk With Our Team") + linkWalk(CAL, "Book a free 30-minute conversation") + sameWalk("/your-story?from=start&view=path", "Every piece you can write") + sameWalk(PAGES.profile, "Your Profile") + walk8("welcome", "What This Page Is For") + "</div>");
+    return secHtml("doors", "Doors", "Talk with us · the writing", '<div class="walks" style="flex-direction:column;margin-top:0">' + sameWalk(PAGES.team, "Talk With Our Team") + linkWalk(CAL, "Book a free 30-minute conversation") + sameWalk("/your-story?from=start&view=path", "Every piece you can write") + sameWalk(PAGES.profile, "Profile") + walk8("welcome", "What This Page Is For") + "</div>");
   }
   function viewPath8() {
     var v = V();
@@ -1529,10 +1556,10 @@
     if (w.last) h += row("Last Week’s Practice:", w.last);
     if (w.now) h += row("This Week’s:", w.now);
     if (w.guidepost) h += row("The Guidepost:", String(w.guidepost).replace(/^he said he’s at /, "you said you’re at "));
-    if (w.words && w.words.length) h += w.words.map(function (x, i) { return '<p class="s">' + (i ? "" : "<b>In Your Words:</b> ") + "“" + esc(x) + "”</p>"; }).join("");
+    if (w.words && w.words.length) h += w.words.map(function (x, i) { return '<p class="s">' + (i ? "" : "<b>In your words:</b> ") + "“" + esc(x) + "”</p>"; }).join("");
     if (!h) h = '<p class="s">Nothing yet. Your witness sees only what you choose, and your own words stay yours.</p>';
     else if (!(w.words && w.words.length)) h += '<p class="help">Your own words stay yours.</p>';
-    return '<div class="ruled"><p class="lk">What Your Witness Sees Each Week</p>' + h + '<p class="help">This is the page, exactly as it reaches ' + esc(witnessName()) + ". Nothing else goes with it.</p></div>";
+    return '<div class="ruled"><p class="lk">What the Witness Sees Each Week</p>' + h + '<p class="help">This is the page, exactly as it reaches ' + esc(witnessName()) + ". Nothing else goes with it.</p></div>";
   }
   function settingsHtml8() {
     var S = V().settings || {}, sh = S.shares || {}, w = witnessName();
@@ -2018,7 +2045,7 @@
         case "hand": UI.handSent = false; UI.say.hand = ""; openSheet8("I Need a Hand", handHtml8()); break;
         case "hand-send": handSend(); break;
         case "settings": UI.say = { shares: "", pause: "", hand: UI.say.hand, write: "" }; openSheet8("Settings", settingsHtml8()); break;
-        case "rooms": openSheet8("Your Rooms", roomsHtml()); break;
+        case "rooms": openSheet8("Rooms", roomsHtml()); break;
         case "rd-mark": rdMark(t.getAttribute("data-id"), t.getAttribute("data-v")); break;
         case "rd-why": rdWhy(t.getAttribute("data-id"), t.getAttribute("data-v")); break;
         case "rd-fu": var fid = t.getAttribute("data-id"), fv = +t.getAttribute("data-v"); R8.fu[fid] = fv; renderMain(true); refocus("#fq" + fv + fid.replace(/[^A-Za-z0-9]/g, "")); break;
@@ -2090,6 +2117,40 @@
   }
   var LOCAL = { ok: true, bare: true, ui: {}, band: null, v11: null };
 
+  /* 11.4: the post-draw passes. A dot stays with the words before it and a phrase between dots is never broken across two lines; links take their weight from where they stand. */
+  function keepDots() {
+    var tw = document.createTreeWalker(host, NodeFilter.SHOW_TEXT, null), nodes = [], n, k;
+    while ((n = tw.nextNode())) { if (n.nodeValue.indexOf(" \u00b7 ") < 0) continue; var pe = n.parentNode; if (pe && pe.closest && pe.closest("textarea,script,style,input")) continue; nodes.push(n); }
+    for (k = 0; k < nodes.length; k++) {
+      var parts = nodes[k].nodeValue.split(" \u00b7 "), frag = document.createDocumentFragment(), j;
+      for (j = 0; j < parts.length; j++) {
+        var last = j === parts.length - 1, t = parts[j];
+        if (!t) { if (!last) { var pv = nodes[k].previousSibling; if (j === 0 && pv && pv.nodeType === 1) pv.appendChild(document.createTextNode("\u00a0\u00b7")); else frag.appendChild(document.createTextNode("\u00a0\u00b7")); } }
+        else if (t.length <= 60) { var sp = document.createElement("span"); sp.className = "nw"; sp.textContent = t + (last ? "" : "\u00a0\u00b7"); frag.appendChild(sp); }
+        else frag.appendChild(document.createTextNode(t + (last ? "" : "\u00a0\u00b7")));
+        if (!last) frag.appendChild(document.createTextNode(" "));
+      }
+      nodes[k].parentNode.replaceChild(frag, nodes[k]);
+    }
+  }
+  var LINK_SEL = ".walk,.qm,.prow .go,.rev,.av-walk,.av-go";
+  function weighLinks() {
+    var links = host.querySelectorAll(LINK_SEL), i;
+    for (i = 0; i < links.length; i++) {
+      var a = links[i];
+      if (a.classList.contains("rev") && a.closest(".ap-panel-head")) continue;
+      var g = a.closest(".ahead,.crows,.rows,.pas,.pa,.vl,.lanes,.av-links") || a.closest(".walks,.revs,.qrow,ul,.ap-panel-body,.obody") || a.parentNode, cnt = g.querySelectorAll(LINK_SEL).length;
+      a.classList.toggle("reg", cnt > 1); a.classList.toggle("lone", cnt <= 1);
+    }
+  }
+  var settling = false, obs = null, settleQ = 0;
+  function settle() {
+    if (settling) return; settling = true;
+    try { if (obs) obs.disconnect(); setBar(); keepDots(); weighLinks(); } catch (e) {}
+    settling = false;
+    if (obs) obs.observe(host, { childList: true, subtree: true });
+  }
+  if (window.MutationObserver) { obs = new MutationObserver(function () { if (settleQ) return; settleQ = requestAnimationFrame(function () { settleQ = 0; settle(); }); }); obs.observe(host, { childList: true, subtree: true }); }
   /* AP-SHIP 1, line 12: the page counts the rules the browser accepted against the stamped count; short, it tells the Front Desk once per build (kept in this browser so it never repeats) and the desk shows one line with the link. */
   function selfCheck() {
     if (location.pathname.indexOf("/author") >= 0 || window.top !== window) return;
@@ -2123,17 +2184,29 @@
   }
 
   window.APHisRoad.render = render;
-  whoAmI().then(function (a) {
-    if (!a || !a.email) { render(LOCAL); return; }
-    me = a;
-    var cached = null; try { var c = JSON.parse(localStorage.getItem(CACHE) || "null"); if (c && c.email === a.email && c.data && Date.now() - c.at < 7 * 864e5) cached = c.data; } catch (e) {}
-    if (cached && cached.build !== BUILD) cached = null; /* a draw kept by an earlier build has none of this build's parts */
+  /* 11.4: the last copy this browser kept is drawn first, before the site's account call comes back (window.me is the site's own signed-in account); 11.3's copy has the same parts, so it is drawn too */
+  function keptCopy(email) {
+    var cached = null; try { var c = JSON.parse(localStorage.getItem(CACHE) || "null"); if (c && c.email === email && c.data && Date.now() - c.at < 7 * 864e5) cached = c.data; } catch (e) {}
+    if (cached && cached.build !== BUILD && cached.build !== "11.3") cached = null;
     if (cached && cached.week && cached.week.start && Date.now() - Date.parse(cached.week.start + "T12:00:00") >= 14 * 864e5) cached = null;
     if (cached && !cached.v11) cached = null;
+    return cached;
+  }
+  var early = null, earlyCopy = null;
+  (function () {
+    var m = window.me; if (!m || typeof m !== "object" || !m.email) return;
+    early = { id: m.id || m._id || m.user_id || "", email: String(m.email).toLowerCase(), name: ((m.first_name || "") + " " + (m.last_name || "")).trim() || m.username || "", first: m.first_name || "" };
+    earlyCopy = keptCopy(early.email);
+    if (earlyCopy) { me = early; render(earlyCopy); }
+  })();
+  whoAmI().then(function (a) {
+    if (!a || !a.email) { if (!earlyCopy) render(LOCAL); return; }
+    me = a;
+    var cached = earlyCopy && early && early.email === a.email ? null : keptCopy(a.email);
     if (cached) render(cached);
     post({ action: "road" }).then(function (r) {
       if (r && r.ok) { S8.unread = false; render(r); cache(); setTimeout(selfCheck, 0); }
-      else if (!cached) { S8.unread = true; render(LOCAL); }
+      else if (!cached && !earlyCopy) { S8.unread = true; render(LOCAL); }
     });
   });
 })();

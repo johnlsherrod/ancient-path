@@ -1,4 +1,7 @@
-/* AP-GROWTH growth.js build 4.1.1 \u2014 Your Growth, the facilitator's room, served by the Research reader script (ResearchReader.gs build 12.3, ?file=growth.js).
+/* AP-GROWTH growth.js build 4.2 \u2014 Your Growth, the facilitator's room, served by the Research reader script (ResearchReader.gs build 12.7, ?file=growth.js).
+   4.2 (Nov 4, 2026, Research reader build 12.7; the ruled list from Nov 4 and the fixes drawn on the live pages, https://claude.ai/artifact/9UJsUiy8u8vxZo2g2jFLN2; built on the live 4.1.1 read through the Google Drive connector). What changed: (1) the page opens at once: the last copy this browser kept is drawn first, however old, and the answer (kept six hours by the script, per person) replaces it; the page starts the moment the site shows who is signed in; (2) one frame: the band, the menu and the content share one width on a computer; the frame runs the width of the window up to 1320px, the side column is 340px from 1112px wide, and below 1112px the side sits under the main column, so the main column is never narrower than 440px; the band's words start level with the menu's first row; (3) every link is navy with one thin underline, regular weight in a list, bold when it stands alone; (4) the menu heading reads Rooms; (5) a capital Your only on the rooms (Ask About Your Room is Ask About the Room; Where Your Men Are This Week is Where the Men Are This Week); (6) a dot stays with the words before it and a phrase between dots is never broken across two lines; (7) Craft: One piece brought so far., the room's line runs the full width with Read it again beneath it, and Name a Voice sits under Voices and Lanes; (8) Who We Read and each lane's voices come from the Sources rows whose status is read, shelf or no feed yet (the server draws them). Moves to our own platform as it is: all of it. Rebuilt there: nothing. Counts taken before this card: the script parses; the stylesheet is assembled as the page assembles it and parses with no dropped rule; the browser accepted 259 rules (4.1.1: 239), the same as the CSS parser.
+   4.1.1 note follows.
+   (4.1.1 header) Your Growth, the facilitator's room, served by the Research reader script (ResearchReader.gs build 12.3, ?file=growth.js).
    4.1.1 (Nov 3, 2026, Research reader build 12.3; built to the ruled mockup v8.11, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP, Craft view and This Week; the mockup's words are the copy; built on the live script 12.2 / growth.js 4.1 read through the Google Drive connector).
    What changed from 4.1: (1) After the Room has four answers, Opened up, Landed quietly, Didn't land and No time, kept as opened, quiet, miss and none, with one optional line and Keep it; any older word that is not one of the four counts as none (No time), never as a no. (2) Craft, What You've Brought: the verse once at the head of the panel beside the house drawn in code, wisdom, understanding and knowledge picked out inside it; Our reading folded under it; then three groups, Wisdom, Understanding, Knowledge, each with the house part, its line, the piece he is bringing, and his brought pieces, a card with an answer leading with his word and his line and a card with none asking nothing; a word with nothing brought says it is waiting and links to The Shelf. (3) Voices and Lanes: one lane for each word in the side column with no word labels, Every lane opens a sheet (Back to Craft) with the lanes grouped under the word alone, More or Less on each lane (the same tap again clears it), and a Kept line that names what he chose; each lane's word is the Lanes tab's word column. (4) The measure line at both Bring it <night>? places, drawn on the server from the after-the-room answers of every room that brought the piece, shown only at four rooms or more and kept with the rest of the page's data.
    Not in this build: the Friday scorecard paragraph; a facilitator's own lane feed; From a lane you asked more of (4.1.2).
@@ -12,12 +15,12 @@
    Counts taken before this card: the script parses; the stylesheet is assembled as the page assembles it; the browser accepted 218 rules (4.0.1: 212); the shared blocks (AP-PANEL, AP-SHAPES 1.1, AP-CARD 1) are carried byte for byte. */
 
 (function () {
-var host = document.getElementById('apGrowth'); if (!host || host.getAttribute('data-growth')) return; host.setAttribute('data-growth', '4.1.1'); host.classList.add('ap-home');
-var BUILD = '4.1.1';
+var host = document.getElementById('apGrowth'); if (!host || host.getAttribute('data-growth')) return; host.setAttribute('data-growth', '4.2'); host.classList.add('ap-home');
+var BUILD = '4.2';
 var T0 = (window.performance && performance.now) ? performance.now() : 0, TIMES = window.growthTimes = {};
 function timeMark(k) { try { TIMES[k] = Math.round(performance.now() - T0); } catch (e) {} }
 /* the stamped rule count of this script's stylesheet, taken before the file card (AP-SHIP 1); the page counts what the browser accepted against it */
-var RULES = { growth: 239 };
+var RULES = { growth: 259 };
 var GROWTH_URL = (function () { var s = document.currentScript; var u = s && s.src ? String(s.src).split('?')[0] : ''; return /script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(u) ? u : ''; })();
 var DESK_URL = 'https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec';
 var DESK_PAGE = 'https://www.ancientpathcoaching.com/front-desk';
@@ -211,14 +214,14 @@ PANEL_CSS + CARD_CSS +
 '}' +
 '@media (min-width:900px){' +
 '#apGrowth .apg .topbar,#apGrowth .apg .tabs{display:none}' +
-'#apGrowth .apg .hero{padding:26px max(28px,calc((100% - 1320px)/2 + 28px)) 24px;min-height:136px}' +
+'#apGrowth .apg .hero{padding:26px 28px 24px var(--hero-pad,28px);min-height:136px}' +
 '#apGrowth .apg .hero .hk{display:block;margin-bottom:10px}' +
 '#apGrowth .apg .hero h1{font-size:34px}' +
 '#apGrowth .apg .hero .where{font-size:18px;max-width:780px}' +
 '#apGrowth .apg .pcwrap{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;max-width:1320px;margin:0 auto;padding:28px 28px 56px;align-items:start;--g:28px}' +
 '#apGrowth .apg .pcnav{display:block;position:sticky;top:calc(var(--bar) + 20px)}' +
 '#apGrowth .apg .view{padding:0}' +
-'#apGrowth .apg .cols2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}' +
+'#apGrowth .apg .cols2{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}' +
 '#apGrowth .apg .side{margin-top:0}' +
 '#apGrowth .apg .prow{grid-template-columns:minmax(0,1fr) auto;padding:30px 0 32px}' +
 '#apGrowth .apg .prow .go{grid-column:2;grid-row:1/4;margin-top:0}' +
@@ -229,10 +232,31 @@ PANEL_CSS + CARD_CSS +
 '#apGrowth .apg .toast{left:50%;right:auto;width:460px;margin-left:-230px;bottom:28px}' +
 '#apGrowth .apg .dimmer.on{display:block;position:fixed;left:0;right:0;top:0;bottom:0;z-index:99999;background:rgba(16,21,31,.42)}' +
 '}' +
+'@media (min-width:1112px){#apGrowth .apg .cols2{grid-template-columns:minmax(0,1fr) 340px}}' +
 '@media (max-width:599px){' +
 '#apGrowth .apg .choices.three{grid-template-columns:1fr}' +
 '}' +
 '@media (min-width:900px){.apg.ap-home .ap-panel-title{font-size:26px !important}}' +
+/* 4.2: every link navy with one thin underline; regular weight in a list, bold when it stands alone (weighLinks sets reg and lone) */
+'#apGrowth .apg .walk,#apGrowth .apg .qm,#apGrowth .apg .prow .go,#apGrowth .apg .rev{color:var(--navy)}' +
+'#apGrowth .apg .walk .u,#apGrowth .apg .qm span,#apGrowth .apg .prow .go span,#apGrowth .apg .rev span{border-bottom:1px solid var(--navy);padding-bottom:1px}' +
+'#apGrowth .apg .walk .ar,#apGrowth .apg .qm{color:var(--navy)}' +
+'#apGrowth .apg .walk.reg,#apGrowth .apg .qm.reg,#apGrowth .apg .prow .go.reg,#apGrowth .apg .rev.reg{font-weight:400}' +
+'#apGrowth .apg .walk.lone,#apGrowth .apg .qm.lone,#apGrowth .apg .prow .go.lone,#apGrowth .apg .rev.lone{font-weight:600}' +
+'#apGrowth .apg .prow .go.reg span,#apGrowth .apg .prow .go.lone span{font-weight:inherit}' +
+'#apGrowth .apg a.prow{text-decoration:none}' +
+'#apGrowth .apg .nn{display:inline-block;max-width:100%;white-space:normal}' +
+'#apGrowth .apg .ap-panel-note .np{display:block;margin-left:0}' +
+'#apGrowth .apg .ap-panel-note .nn{padding-left:0}' +
+'#apGrowth .apg .ap-panel-note .nn+.nn:before{content:none}' +
+'#apGrowth .apg .ap-panel-note .nn:not(:last-child):after{content:"\\00a0\\00b7";white-space:pre}' +
+'#apGrowth .apg .ap-panel-note .nn:not(:last-child){margin-right:.3em}' +
+'#apGrowth .apg .nw{display:inline-block;max-width:100%;white-space:normal}' +
+'@media (min-width:900px){#apGrowth .apg .pcwrap{width:min(var(--bleed-w,100vw),1320px);max-width:none;margin-left:calc(var(--bleed-l,0px) + (var(--bleed-w,100vw) - min(var(--bleed-w,100vw),1320px))/2);margin-right:0;background:var(--paper);box-shadow:0 0 0 100vmax var(--paper);clip-path:inset(0 -100vmax)}}' +
+'@media (min-width:900px) and (max-width:1111px){#apGrowth .apg .ap-courses{max-width:420px}}' +
+'#apGrowth .apg .prow.brow.pc4{grid-template-columns:minmax(0,1fr)}' +
+'#apGrowth .apg .prow.brow.pc4 .fl{max-width:none}' +
+'#apGrowth .apg .prow.brow.pc4 .go{grid-column:1;grid-row:auto;margin-top:6px}' +
 '@media (prefers-reduced-motion:reduce){.apg.ap-home *,.apg.ap-home *:before,.apg.ap-home *:after{transition:none !important;animation:none !important;scroll-behavior:auto !important}}' +
 '</style><div class="apg ap-home" id="gRoot"></div>';
 var ROOT = host.querySelector('#gRoot');
@@ -244,8 +268,8 @@ function smart(s) { return String(s == null ? '' : s).replace(/(^|[\s(\[\u2014\u
 function tie(s) { return esc(smart(s)).replace(/\s+$/, '').replace(/ ([^ ]+)$/, '\u00a0$1'); }
 function cap(s) { return String(s).charAt(0).toUpperCase() + String(s).slice(1); }
 /* AP-SHIP 1 / the 3-second target: the last record this browser saw is kept ten minutes, so the frame can be filled at once while the answer comes */
-var SNAP = 'apGrowthSnap', SNAP_MS = 600000;
-function snapGet(email) { try { var v = JSON.parse(localStorage.getItem(SNAP) || 'null'); if (v && v.email === email && v.d && v.t && Date.now() - v.t < SNAP_MS) return v.d; } catch (e) {} return null; }
+var SNAP = 'apGrowthSnap', SNAP_MS = 7 * 864e5; /* 4.2: the last copy is drawn first, however old; the answer replaces it */
+function snapGet(email) { try { var v = JSON.parse(localStorage.getItem(SNAP) || 'null'); if (v && v.email === email && v.d && v.t && v.d.growth === BUILD && Date.now() - v.t < SNAP_MS) return v.d; } catch (e) {} return null; }
 function snapPut(d) { try { var f = d && d.who && d.who.first; if (f) d.who.first = false; var j = JSON.stringify({ email: siteEmail(), t: Date.now(), d: d }); if (f) d.who.first = true; localStorage.setItem(SNAP, j); } catch (e) {} }
 function snapClear() { try { localStorage.removeItem(SNAP); } catch (e) {} }
 function stored() { try { var v = JSON.parse(localStorage.getItem(STORE) || 'null'); return v && v.key ? v : null; } catch (e) { return null; } }
@@ -290,6 +314,7 @@ function setBar() {
   ROOT.style.setProperty('--bleed-l', (-Math.round(r.left)) + 'px');
 }
 function wide() { return window.matchMedia('(min-width:900px)').matches; }
+function cols() { return window.matchMedia('(min-width:1112px)').matches; } /* 4.2: the side column sits beside the main one from here */
 function phone() { return !wide(); }
 
 /* ---------- the gate: the site's sign-in is the door; the desk's code and key open the page for the person the site shows ---------- */
@@ -346,7 +371,7 @@ function load() {
   if (String(s.email || '').toLowerCase() !== site) { keep(null); return gate(''); }
   if (s.expires && new Date(s.expires) < new Date()) { keep(null); return gate('Your key from yesterday has run out. Send a new code.'); }
   setBar();
-  /* the frame first: the copy kept for ten minutes if there is one, else the empty frame; the answer then fills it */
+  /* the frame first: the last copy this browser kept if there is one, else the empty frame; the answer then fills it */
   var snap = snapGet(site);
   if (snap) { D = snap; render(); } else { D = null; ROOT.innerHTML = frame(s); }
   timeMark('frame');
@@ -418,6 +443,7 @@ function houseG(part, big) {
 }
 var PROV2434V = '\u201cBy <em>wisdom</em> a house is built, and by <em>understanding</em> it is established; by <em>knowledge</em> the rooms are filled with all precious and pleasant riches.\u201d';
 var WORDS = ['Wisdom', 'Understanding', 'Knowledge'];
+var NUMWORD = { 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten' };
 var WVERB = { Wisdom: 'Being built', Understanding: 'Being established', Knowledge: 'Being filled' };
 /* one line in words on how a word has gone (no numbers), drawn from his rooms' answers */
 function wordLine(w, rows, bringing) {
@@ -439,7 +465,7 @@ function broughtRow(x) {
 function broughtPanel(rows, bringing) {
   var R = D.room || {}, d = R.weekday || 'the night', waiting = [];
   var body = '<div class="vhouse">' + houseG('all', true) + '<p class="verse">' + PROV2434V + '<span>Proverbs 24:3\u20134 (ESV)</span></p></div><div class="revs ours">' + rev('ours', 'Our reading', '<div class="oread"><p><b>Wisdom</b> \u00b7 show up creatively. Your room is built by how you show up.</p><p><b>Understanding</b> \u00b7 read the moment. It is established by how you read the moment.</p><p><b>Knowledge</b> \u00b7 know the trade. It is filled by what you know of the work, the men and the God who gives it.</p><p class="help">Our reading of the verse, not its words. One house seen three ways, not steps.</p></div>') + '</div>' +
-    (rows.length || bringing ? '' : '<p class="s">When you bring a piece to your room, it\u2019s kept here under its word, with what the room did with it.</p>') +
+    (rows.length || bringing ? (rows.length ? '<p class="s" style="margin-top:14px">' + (rows.length === 1 ? 'One piece brought so far.' : (NUMWORD[rows.length] || rows.length) + ' pieces brought so far.') + '</p>' : '') : '<p class="s">When you bring a piece to your room, it\u2019s kept here under its word, with what the room did with it.</p>') +
     WORDS.map(function (w, gi) {
       var rs = rows.filter(function (x) { return x.word === w; }), b = bringing && bringing.w === w;
       if (!rs.length && !b) waiting.push(w.toLowerCase());
@@ -453,7 +479,7 @@ function broughtPanel(rows, bringing) {
 /* Voices and Lanes: one lane for each word in the side column; Every lane opens a sheet; More or Less on each, the same tap again clears it */
 function laneRow(l, i) {
   var d = (D.laneSay || {})[l.lane] || '';
-  return '<div class="lane"><div><b>' + esc(l.lane) + '</b><span>' + esc(l.line) + '. ' + esc(l.voices) + '.</span></div><div class="lanec">' + choice('lane', 'more:' + i, 'More', d === 'more') + choice('lane', 'less:' + i, 'Less', d === 'less') + '</div></div>';
+  return '<div class="lane"><div><b>' + esc(l.lane) + '</b><span>' + esc(l.line) + '.' + (l.voices ? ' ' + esc(l.voices) + '.' : '') + '</span></div><div class="lanec">' + choice('lane', 'more:' + i, 'More', d === 'more') + choice('lane', 'less:' + i, 'Less', d === 'less') + '</div></div>';
 }
 function laneKept() {
   var m = 0, l = 0, S2 = D.laneSay || {}; Object.keys(S2).forEach(function (k) { if (S2[k] === 'more') m++; if (S2[k] === 'less') l++; });
@@ -547,7 +573,7 @@ function decisionHtml(e) {
 function frame(s) {
   var nm = firstName(s && s.name) || firstName(s && s.email), v = S.view;
   var h1 = v === 'week' ? greet() + (nm ? ', ' + nm : '') + '.' : v === 'shelf' ? 'The Shelf' : 'Craft';
-  var titles = v === 'week' ? [['next', 'Next Step'], ['piece', 'This Week\u2019s Piece']] : v === 'shelf' ? [['stuck', 'Ask About Your Room'], ['shelf', 'Everything We\u2019ve Kept']] : [['brought', 'What You\u2019ve Brought']];
+  var titles = v === 'week' ? [['next', 'Next Step'], ['piece', 'This Week\u2019s Piece']] : v === 'shelf' ? [['stuck', 'Ask About the Room'], ['shelf', 'Everything We\u2019ve Kept']] : [['brought', 'What You\u2019ve Brought']];
   var side = v === 'week' ? [['course', 'The Course']] : v === 'shelf' ? [['who', 'Who We Read']] : [['voices', 'Voices and Lanes']];
   function sk(p) { return secHtml(p[0], p[1], 'Opening\u2026', '<div class="skel" aria-hidden="true"></div>'); }
   var top = '<header class="band topbar"><div class="kr"><span class="k">Your Growth</span><span class="kr-r"><button class="tb" data-act="askteam">Ask our team</button><button class="tb" data-act="rooms">Rooms</button><button class="tb" data-act="settings">Settings</button></span></div></header>';
@@ -567,7 +593,7 @@ function ctxLine() {
 }
 function viewName() { return VIEWS.filter(function (x) { return x[0] === S.view; })[0][1]; }
 function menu() {
-  var h = '<nav class="pcnav" aria-label="Rooms and views"><p class="mlab">Your Rooms</p>';
+  var h = '<nav class="pcnav" aria-label="Rooms and views"><p class="mlab">Rooms</p>';
   h += '<a class="mi room" href="' + PATHS.page + '"><b>Your Page</b><span>Walk your own road</span></a>';
   h += '<div class="mgroup"><div class="mi room here"><b>Your Growth</b><span>Get filled for the work</span></div>' +
     VIEWS.map(function (x) { return '<button class="mi mv" data-act="tab" data-tab="' + x[0] + '" aria-current="' + (S.view === x[0] ? 'page' : 'false') + '"><b>' + x[1] + '</b><span>' + x[2] + '</span></button>'; }).join('') + '</div>';
@@ -602,7 +628,7 @@ function nextPanel() {
     body = '<p class="t">Nothing is chosen for ' + (wk ? 'Week ' + wk : 'your room') + ' yet.</p><p class="s">When a piece fits your room\u2019s week, it lands here and on Your Desk. Until then, The Shelf has pieces that fit any week.</p><div class="walks">' + walk('shelfweek', 'Find one on The Shelf') + '</div>';
   } else if (!M.choice) {
     nt = 'Before ' + d;
-    var wl = R.weekLine ? '<div class="ruled" style="margin:0 0 14px"><p class="lk">Where Your Men Are This Week</p><p class="serif">\u201c' + esc(smart(R.weekLine)) + '\u201d</p></div>' : '';
+    var wl = R.weekLine ? '<div class="ruled" style="margin:0 0 14px"><p class="lk">Where the Men Are This Week</p><p class="serif">\u201c' + esc(smart(R.weekLine)) + '\u201d</p></div>' : '';
     var act = actOf(P), sp = spanOf(P), st0 = startAt(P), len = [];
     if (sp) len.push(cap(sp)); if (st0) len.push((sp ? 'from minute ' : 'From minute ') + st0);
     body = wl + '<p class="t">' + (act === 'Read' ? 'Read' : act === 'Watch' ? 'Watch' : 'Listen to') + ' this week\u2019s piece, then decide at its foot.</p>' + (len.length ? '<p class="s">' + len.join(', ') + '.</p>' : '') + '<div class="walks">' + walk('gopiece', 'Go to the piece') + '</div>';
@@ -668,7 +694,7 @@ function askAnswer() {
     '<div class="walks">' + walk('openpiece', 'Open the whole piece', ' data-id="' + esc(e.id) + '"') + (ids.length > 1 ? walk('asknext', 'Another piece') : '') + '</div></div>';
 }
 function askPanel() {
-  return secHtml('stuck', 'Ask About Your Room', 'What is it stuck on? \u00b7 one piece and one question come back',
+  return secHtml('stuck', 'Ask About the Room', 'What is it stuck on? \u00b7 one piece and one question come back',
     '<label class="t" for="askt" style="display:block;font-size:17px">What is your room stuck on?</label><textarea id="askt" placeholder="for example, silence after a heavy story">' + esc(S.ask) + '</textarea><button class="btn line" data-act="ask">Ask</button>' + (S.asked ? askAnswer() : ''), { shut: !S.asked && phone() });
 }
 function shelfList() {
@@ -680,7 +706,7 @@ function shelfList() {
 }
 function shelfRows() {
   var L = shelfList(), show = S.shelfMore ? L : L.slice(0, 8), R = D.room || {};
-  if (!L.length) return '<p class="s">' + (S.filt ? 'Nothing for Week ' + R.week + ' matches that.' : 'Nothing on The Shelf matches that yet. Try fewer words.') + ' You can also ask above, in Ask About Your Room.</p>' + (S.filt ? '<div class="walks">' + walk('filt', 'Show every week', ' data-v=""') + '</div>' : '');
+  if (!L.length) return '<p class="s">' + (S.filt ? 'Nothing for Week ' + R.week + ' matches that.' : 'Nothing on The Shelf matches that yet. Try fewer words.') + ' You can also ask above, in Ask About the Room.</p>' + (S.filt ? '<div class="walks">' + walk('filt', 'Show every week', ' data-v=""') + '</div>' : '');
   var h = '<div class="rows">' + show.map(function (e) {
     var parts = [shortVoice(e), actOf(e) + (total(e) ? ' \u00b7 ' + total(e) + ' minutes' : ''), 'Kept ' + fmtShort(e.written)].concat(e.state ? [e.state] : []);
     return '<button class="prow" data-act="openpiece" data-id="' + esc(e.id) + '"><span class="lab">' + lineOf(e.question) + '</span><span class="nm">' + tie(e.claim) + '</span><span class="st">' + parts.map(function (p, i) { return '<span class="' + (i ? 'nw' : 'nv') + '">' + esc(p) + '</span>'; }).join(' \u00b7 ') + '</span><span class="go"><span>Open</span> \u2192</span></button>';
@@ -719,8 +745,8 @@ function viewCraft() {
   if (C.aside.length) main += secHtml('aside', 'What You Set Aside', 'A no is kept too', '<div class="rows">' + C.aside.map(function (x) {
     return '<button class="prow" data-act="openpiece" data-from="craft" data-id="' + esc(x.id) + '"><span class="lab">' + x.word + '</span><span class="nm">' + tie(x.claim) + '</span><span class="st">' + esc(x.label) + ' \u00b7 it tells us what earns its place in a room</span><span class="go"><span>Open</span> \u2192</span></button>';
   }).join('') + '</div>');
-  main += recPanel();
-  var side = secHtml('voices', 'Voices and Lanes', 'Where your pieces come from', '<p class="s" style="margin-top:0">Pastors, counselors, scholars and coaches, men\u2019s and women\u2019s voices. Want more or less of a lane? Tell us here.</p><div class="lanes" style="margin-top:6px">' + WORDS.map(function (w) { var i = firstLane(w); return i < 0 ? '' : laneRow(D.lanes[i], i); }).join('') + '</div>' + laneKept() + '<div class="walks">' + walk('lanes', 'Every lane') + '</div>');
+  var side0 = secHtml('voices', 'Voices and Lanes', 'Where your pieces come from', '<p class="s" style="margin-top:0">Pastors, counselors, scholars and coaches, men\u2019s and women\u2019s voices. Want more or less of a lane? Tell us here.</p><div class="lanes" style="margin-top:6px">' + WORDS.map(function (w) { var i = firstLane(w); return i < 0 ? '' : laneRow(D.lanes[i], i); }).join('') + '</div>' + laneKept() + '<div class="walks">' + walk('lanes', 'Every lane') + '</div>');
+  var side = side0 + recPanel(); /* 4.2: Name a Voice sits under Voices and Lanes */
   return '<main class="view cols2"><div class="mainc">' + main + '</div><aside class="side">' + side + '</aside></main>';
 }
 
@@ -743,15 +769,57 @@ var moved = [];
 function balance() {
   var m = ROOT.querySelector('.mainc'), s = ROOT.querySelector('.side'); if (!m || !s) return;
   var fa = document.activeElement;
-  moved.filter(function (p) { return ROOT.contains(p); }).reverse().forEach(function (p) { s.insertBefore(p, s.firstChild); }); moved = [];
+  moved.filter(function (p) { return ROOT.contains(p); }).forEach(function (p) { s.appendChild(p); }); moved = []; /* 4.2: put back in their own order, at the end of the side column (they were taken from its end) */
   s.hidden = false; m.parentNode.classList.remove('one');
-  if (wide()) {
+  if (cols()) {
     var first = null;
     while (s.children.length && s.offsetHeight > m.offsetHeight) { var p = s.lastElementChild; m.insertBefore(p, first); first = p; moved.unshift(p); }
     if (!s.children.length) { s.hidden = true; m.parentNode.classList.add('one'); }
   }
   if (fa && fa !== document.activeElement && document.body.contains(fa)) fa.focus({ preventScroll: true });
 }
+/* 4.2: the post-draw passes. The band's words start level with the menu's first row; a dot stays with the words before it and a phrase between dots is never broken across two lines; links take their weight from where they stand. */
+function heroPad() {
+  var pc = ROOT.querySelector('.pcwrap'); if (!pc || !wide()) { ROOT.style.removeProperty('--hero-pad'); return; }
+  var r = pc.getBoundingClientRect(); ROOT.style.setProperty('--hero-pad', Math.round(r.left + 28 + 15) + 'px');
+}
+var DOT_SEL = '.ap-panel-note .nn,.where,.st,.who,.lk,.mi span,.ap-ccard-sub,.pfoot,.s,.help,.qby,.vl li,.prow .nm';
+function keepDots() {
+  var els = ROOT.querySelectorAll(DOT_SEL), i, k;
+  for (i = 0; i < els.length; i++) {
+    var tw = document.createTreeWalker(els[i], NodeFilter.SHOW_TEXT, null), nodes = [], n;
+    while ((n = tw.nextNode())) if (n.nodeValue.indexOf(' \u00b7 ') >= 0 && !(n.parentNode.closest && n.parentNode.closest('textarea,script,style'))) nodes.push(n);
+    for (k = 0; k < nodes.length; k++) {
+      var parts = nodes[k].nodeValue.split(' \u00b7 '), frag = document.createDocumentFragment(), j;
+      for (j = 0; j < parts.length; j++) {
+        var last = j === parts.length - 1, t = parts[j];
+        if (!t) { if (!last) { var pv = nodes[k].previousSibling; if (j === 0 && pv && pv.nodeType === 1) pv.appendChild(document.createTextNode('\u00a0\u00b7')); else frag.appendChild(document.createTextNode('\u00a0\u00b7')); } }
+        else if (t.length <= 60) { var sp = document.createElement('span'); sp.className = 'nw'; sp.textContent = t + (last ? '' : '\u00a0\u00b7'); frag.appendChild(sp); }
+        else frag.appendChild(document.createTextNode(t + (last ? '' : '\u00a0\u00b7')));
+        if (!last) frag.appendChild(document.createTextNode(' '));
+      }
+      nodes[k].parentNode.replaceChild(frag, nodes[k]);
+    }
+  }
+}
+var LINK_SEL = '.walk,.qm,.prow .go,.rev';
+function weighLinks() {
+  var links = ROOT.querySelectorAll(LINK_SEL), i;
+  for (i = 0; i < links.length; i++) {
+    var a = links[i];
+    if (a.classList.contains('rev') && a.closest('.ap-panel-head')) continue;
+    var g = a.closest('.rows,.lanes,.vl') || a.closest('.walks,.revs,.qrow,ul,.ap-panel-body,.obody') || a.parentNode, cnt = g.querySelectorAll(LINK_SEL).length;
+    a.classList.toggle('reg', cnt > 1); a.classList.toggle('lone', cnt <= 1);
+  }
+}
+var settling = false, obs = null;
+function settle() {
+  if (settling || !ROOT) return; settling = true;
+  try { if (obs) obs.disconnect(); heroPad(); keepDots(); weighLinks(); } catch (e) {}
+  settling = false;
+  if (obs) obs.observe(ROOT, { childList: true, subtree: true });
+}
+if (window.MutationObserver) { var settleQ = 0; obs = new MutationObserver(function () { if (settleQ) return; settleQ = requestAnimationFrame(function () { settleQ = 0; settle(); }); }); obs.observe(ROOT, { childList: true, subtree: true }); }
 /* AP-SHIP 1, line 3: the build stands in the page foot */
 function foot() { return '<p class="pfoot">Your Growth \u00b7 build ' + BUILD + ' \u00b7 Filled for the Work, Exodus 31:3 and Proverbs 24:3\u20134. Signed in as ' + esc(siteEmail()) + ', the same person the site shows.</p>'; }
 function render(keepIt) {
@@ -763,7 +831,7 @@ function render(keepIt) {
   ROOT.innerHTML = band() + '<div class="pcwrap">' + menu() + '<div class="pcmain">' + body + foot() + '</div></div><div class="dimmer" id="gDim"></div><section class="sheet" id="gSheet" role="dialog" aria-modal="true" aria-labelledby="gSheetT" tabindex="-1"></section><div class="toast" id="gToast" role="status" aria-live="polite"></div>';
   if (S.toastM) { var tt = $('gToast'); tt.textContent = S.toastM; tt.classList.add('in'); }
   if (S.sheet) { var sh = $('gSheet'); sh.innerHTML = S.sheetHtml; sh.classList.add('open'); $('gDim').classList.add('on'); }
-  balance();
+  settle(); balance(); settle();
   if (keepIt) window.scrollTo(0, y);
   restoreFocus(fs, keepIt);
   var f = $('findt'); if (f) f.addEventListener('input', function () { S.find = f.value; $('shelfRows').innerHTML = shelfRows(); balance(); });
@@ -911,7 +979,7 @@ host.addEventListener('click', function (ev) {
     case 'askagain': S.teamSent = false; sheetBody(askHtml()); break;
   }
 });
-window.addEventListener('resize', function () { setBar(); if (D) balance(); });
+window.addEventListener('resize', function () { setBar(); if (D) { balance(); settle(); } });
 
 /* AP-SHIP 1, line 7: the page counts the rules the browser accepted against the stamped count; short, it tells the Front Desk once per build (kept in this browser so it never repeats) and the desk shows one line with the link. */
 function selfCheck() {
@@ -930,5 +998,5 @@ function selfCheck() {
 }
 if (document.readyState === 'complete') setTimeout(selfCheck, 0); else window.addEventListener('load', selfCheck);
 window.growthBuild = BUILD;
-(function start(tries) { if (!lwMe() && tries < 12) return setTimeout(function () { start(tries + 1); }, 300); load(); })(0);
+(function start(tries) { if (!lwMe() && tries < 120) return setTimeout(function () { start(tries + 1); }, 50); load(); })(0); /* 4.2: starts the moment the site shows who is signed in */
 })();
