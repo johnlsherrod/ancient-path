@@ -1,4 +1,8 @@
-/* AP-HISROAD road.js build 11.2.2 — Your Page, install 1 of 3: the shell (the band with the witness line, the menu, Settings with "The guidepost" share row), This Week with Coming Weeks, Path with The Path Ahead, and the guideposts as action. Served by the Research reader script (ResearchReader.gs build 12.4, ?file=road.js).
+/* AP-HISROAD road.js build 11.3 — Your Page, install 2 of 3: the Readings view (design 8.10). Served by the Research reader script (ResearchReader.gs build 12.5, ?file=road.js).
+   11.3 (Nov 3, 2026; built to the mockup v8.10 John ruled, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP; the mockup's words are the copy; built on the live 11.2.2 and Research reader 12.4.2 read through the Google Drive connector). 1. Readings joins the menu and the tabs (This Week, Readings, Story, Path; #readings). The reading moves here from the piece sheet: every "Read it" opens Readings. 2. Each reading carries its story, where to listen from, how we read it, One Thing to Do, Carry This Question, and one tap (Helped or Skip); after Helped, one optional question at a time (Keep a line, What did it touch?, Where did it show up?), and after Skip, three reasons (Too long, Not for me, Not now). 3. What Has Helped is drawn from his real taps only: Where It Points (Lean into, Keep doing with Keep it), Lines You've Kept, Practices That Held. 4. Reading Rhythm is time, not pieces: About 20 minutes, About 40 minutes, An hour (the older paces carry over); Set Your Rhythm shows first until he has chosen; Which course leads? when he walks two. 5. "We have additional articles we think you would appreciate if time allows" with Ask for more, shown only when another reading is ready. 6. Who We Read opens from How it's chosen. 7. The check-in no longer asks whether the reading helped; it shows what he answered on Readings, or one tap to Readings (one act, one place). 8. Settings no longer carries a second rhythm: the amount he reads is set on Readings only. Not built, and listed in the handoff: Watch for, the pattern sentence, Bring it Wednesday, Reading From Here, Rhythm's second Ask for more.
+   Stays on the live layer until install 3: Story and its pieces, stones and offers (story.js). Moves to our own platform as it is: the whole script and every row it writes (served from the repo).
+   Counts taken before this card: the script parses; the stylesheets are assembled as the page assembles them; Chromium accepted 170 (hisroad) + 316 (apg) rules, the same as the CSS parser (11.2.2: 170 + 297; none removed, 19 added); the machine checks (check810 adapted to this build) ran 96 views (12 reading situations × This Week, Readings, Story and Path × 390 and 1440 wide, every panel and reveal open) and 3,669 checks with none failing (no sideways scroll, the right column never longer than the left, every tap 44 pixels or more, no panel title over one line and a half, no banned word, no panel empty, no script error); jobs.js adapted ran 21 press-count jobs at both widths, all within their counts. The live page has no dark theme, so light and dark were not both run.
+   Prior build, kept for the record: 11.2.2 — Your Page, install 1 of 3: the shell (the band with the witness line, the menu, Settings with "The guidepost" share row), This Week with Coming Weeks, Path with The Path Ahead, and the guideposts as action. Served by the Research reader script (ResearchReader.gs build 12.4, ?file=road.js).
    11.2.2 (Nov 3, 2026, the band measures where the page set the room again once the page and fonts settle, so it reaches both screen edges; no rule changes). 11.2.1 (Nov 3, 2026, the band's words start where the menu's do, measured from the column's own left edge, not the container's width; still 297 rules). 11.2 (Nov 3, 2026; built to the mockup v8.10 John ruled, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP; the mockup's words are the copy; built on the live 11.1.2 read through the Google Drive connector). 1. The page owns its frame: the dark band (the view's name, one line of context, who walks with him with Write to him), the menu on a computer (Your Rooms only when there is more than one), the tabs on a phone, panels (AP-PANEL 1), the course in its card (AP-CARD 1), sheets that say "← Back to <view>". 2. This Week: Next Step, Walking With You, The Week Ahead, and at the side Coming Weeks (the next three weeks from the Weeks tab, the open night from the January Forecast sheet, "Add your Wednesday nights" builds a calendar file) and the Guidepost. 3. Path: The Path Ahead (labeled stops he can tap; it opens on the next stop ahead), What's Next, Courses, Walk With Another Man; the side holds the guideposts, his witness and the doors. 4. The guidepost as an act: Signs You're Here, Is this where you are? (That's me · Not now), One Practice (Use it: the check-in carries it), A Reading on It (from the Guideposts tab; hidden when blank), Talk With a Coach, Why this helps; sharing it with his witness is his, in Settings, off to start. 5. The Week 7 witness invitation is asked of a man in a room too. Every answer is saved in the record's shape (a Road row or a Learners column).
    Stays on the live layer until installs 2 and 3: the reading (every "Read it" opens it where 11.1.2 has it), the check-in, Story and its pieces, stones and offers (story.js). Moves to our own platform as it is: the whole script and every row it writes (served from the repo). Rebuilt there: the sign-in (the site's person) and the Front Desk page check.
    Counts taken before this card: the script parses; the stylesheets are assembled as the page assembles them; Chromium accepted 170 (hisroad) + 297 (apg) rules, the same as the CSS parser (11.1.2: 170; none removed, 297 added); check810 adapted to this build ran 144 views (18 moments × This Week and Path × 390 and 1440px × light and dark, every panel open) with 0 fails; jobs.js adapted ran 6 jobs at both widths, every one within its limit (the Reading-helped job belongs to install 2 and is skipped); the page's own check was shown to fire when short. Said plainly. (a) Letters read from the Notes tab, which is empty, so every letter line draws its empty state; no sample ships. (b) The open night is read from the January Forecast sheet, Events tab (Dec 3, 2026), and shows only while it is ahead; its "Hear about it" link is left out (no page exists). (c) Text notice stays hidden. (d) "Use it" writes the practice row the check-in reads (ckPractices now carries the guidepost practice), so it does something; the guidepost share to his witness is off to start. (e) Witness wording: the witness reads "he said he's at", the man's preview reads "you said you're at"; the leader's name is not in the record, so a room man sees "your group's leader". (f) The check-in sentence is adapted to the live four-step check-in; the check-in, piece sheet and Story still close with Close (the live layer, until install 3). (g) road_between is on the server only; the client does not call it yet. (h) The calendar file uses a 2-hour length. (i) The leader's own page has no live data shape and is not drawn. (j) The Readings row is dropped from the welcome copy (Readings joins in install 2); no total-minutes figure and no "Chapter N" wording. (k) The server (Research reader 12.4, built on the live 12.3 so Your Growth 4.1.1 is untouched) adds road_gp, road_gpuse, road_write, road_between, the v11 gp/ahead/event shapes and a Guideposts tab; the Week 7 witness invitation is allowed for a man in a room in the second half. Earlier builds' notes are in build 11.1.2's road.js. The page block on /start holds <div id="apRoad4"></div> and this script's tag. */
@@ -6,10 +10,10 @@
   "use strict";
   var host = document.getElementById("apRoad4");
   if (!host || host.getAttribute("data-hisroad")) return;
-  host.setAttribute("data-hisroad", "11.2.2");
-  var BUILD = "11.2.2";
+  host.setAttribute("data-hisroad", "11.3");
+  var BUILD = "11.3";
   /* the stamped rule count of this script's stylesheet, taken before the file card (AP-SHIP 1); the page counts what the browser accepted against it */
-  var RULES = { hisroad: 170, apg: 297 };
+  var RULES = { hisroad: 170, apg: 316 };
   var DESK_URL = "https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec";
   var ROAD_URL = (function () { var s = document.currentScript; var u = s && s.src ? String(s.src).split("?")[0] : ""; return /script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(u) ? u : ""; })();
   var CACHE = "ap_hisroad_v4";
@@ -264,6 +268,25 @@
   '#apRoad4 .apg .cms .cmr:first-child{border-top:0;padding-top:4px}' +
   '#apRoad4 .apg .cmr .lab{display:block;font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--bronze-ink)}' +
   '#apRoad4 .apg .cmr .nxn{margin-top:2px}' +
+  '#apRoad4 .apg .cqq{margin-top:6px;font:400 18px/1.45 var(--serif);color:var(--navy);max-width:62ch}' +
+  '#apRoad4 .apg .klines{display:grid;gap:8px;margin-top:10px}' +
+  '#apRoad4 .apg .kline{display:block;width:100%;min-height:var(--tap);padding:10px 14px;border:1px dashed var(--edge);border-radius:6px;background:var(--card);text-align:left;font:400 17px/1.45 var(--serif);color:var(--ink);cursor:pointer}' +
+  '#apRoad4 .apg .kline:hover{border-color:var(--bronze);border-style:solid}' +
+  '#apRoad4 .apg .pts3{display:grid;margin-top:8px}' +
+  '#apRoad4 .apg .pt{padding:12px 0;border-top:1px solid var(--rule)}' +
+  '#apRoad4 .apg .pt:first-child{border-top:0;padding-top:4px}' +
+  '#apRoad4 .apg .pt .lab{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--bronze-ink)}' +
+  '#apRoad4 .apg .ptv{margin-top:2px;font:400 20px/1.35 var(--serif);color:var(--navy)}' +
+  '#apRoad4 .apg .lkq{text-transform:none;letter-spacing:0;font:italic 400 14px var(--serif);color:var(--quiet)}' +
+  '#apRoad4 .apg .mark .cq{font:italic 400 17px/1.45 var(--serif);color:var(--navy)}' +
+  '#apRoad4 .apg .mark .klm{display:flex;flex-wrap:wrap;gap:2px 16px;margin-top:4px;font:400 14px/1.45 var(--sans);color:var(--quiet)}' +
+  '#apRoad4 .apg .klm b{color:var(--ink);font-weight:600}' +
+  '#apRoad4 .apg .mark .lab i{font:italic 400 14px var(--serif);text-transform:none;letter-spacing:0;color:var(--quiet);margin-left:6px}' +
+  '#apRoad4 .apg .mark small{font-size:14px;color:var(--quiet)}' +
+  '#apRoad4 .apg p.cqq,#apRoad4 .apg p.ptv{color:#1F2A44 !important;font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif !important}' +
+  '#apRoad4 .apg p.klm{color:#5E6573 !important;font-family:\'Source Sans 3\', \'Segoe UI\', Arial, sans-serif !important}' +
+  '@media (min-width:600px){#apRoad4 .apg .choices.three{grid-template-columns:1fr 1fr 1fr}}' +
+  '@media (min-width:900px){#apRoad4 .apg .pt{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:0 18px;align-items:baseline}#apRoad4 .apg .pt .walks{justify-content:flex-end}}' +
   '#apRoad4 .apg .pav{box-shadow:0 0 0 1px var(--edge);width:44px;height:44px;border-radius:50%;background:var(--band);color:#F3EDE3;display:grid;place-items:center;font:400 20px var(--serif)}' +
   '#apRoad4 .apg #apgTop{display:contents}' +
   '#apRoad4 .apg.ap-home{max-width:none;margin:0;padding:0}' +
@@ -544,9 +567,7 @@
   var GROUPWORD = { view: "the view good", footing: "good footing", steep: "the path steep", lost: "the trail lost" };
   var HOW = { most: "Kept. That’s a pathway forming.", some: "Kept. Some days counts. Pathways take time to form; keep going.", notyet: "Kept. We understand shifting priorities. We’re here to encourage the next right choice toward the healthy pathway you’ve identified. Choose it next." };
   var WHENS = [["morning", "Each morning"], ["pull", "When the pull comes"], ["bed", "Before bed"]];
-  var RHYTHMS = [["twice", "Twice a day"], ["daily", "Each day"], ["few", "A few days a week"], ["weekly", "Once a week"]];
   /* what each rhythm does, said back to him (it sets how many readings he is handed; reminders themselves are not sent yet) */
-  var RHYTHM_SAID = { twice: "Kept. New pieces can come up to twice a day.", daily: "Kept. A new piece can come each day.", few: "Kept. A new piece can come three days a week.", weekly: "Kept. Pieces come three days a week at the fewest; that is the least we hand out." };
   var SHARES = [["path", "The path and the word"], ["piece", "Whether the piece helped"], ["practice", "How your practice went"], ["words", "Your own words"], ["guidepost", "The guidepost"]];
   var LEADS = { week: "Stand where you are, look, and take the next step.", house: "", path: "" };
   var ROOMS = [["did", "", "What You Did"], ["saw", "", "What You Saw"], ["know", "", "What You Know Now"]]; /* the three parts of Your Story; the keys are the server's */
@@ -588,7 +609,6 @@
   function unreadNote() { var n = V().notes || []; return n.filter(function (x) { return !x.read; })[0] || null; }
   function newestNote() { return (V().notes || [])[0] || null; }
   function welcomedYet() { return UI.welcomed !== null ? UI.welcomed : !!(data && data.ui && data.ui.welcomed11); }
-  function rhythmWord(k) { var r = RHYTHMS.filter(function (x) { return x[0] === k; })[0]; return r ? r[1] : ""; }
   function needText(w) { var n = V().needs || {}; return n[w] || NEED_FB[w] || ""; }
   function pathLabel(k) { var p = PATHS.filter(function (x) { return x[0] === k; })[0]; return p ? p[1] : ""; }
   function ctxLabel() { var v = V(); return v.unit && v.unit.label ? v.unit.label : ""; }
@@ -829,22 +849,23 @@
         '<p class="av-kept" aria-live="polite">' + (c.say.path ? kLine("path") : (c.word && !c.path ? "Choose how the path is first, and the word is kept with it." : "")) + '</p>' +
         '<div class="av-give' + (need ? " av-in" : "") + '" id="avNeed"><p class="av-lk">The Word for It</p><p>' + esc(need) + '</p></div>';
     } else if (st === 2) {
-      if (!p) b = '<p class="av-sub">This Week’s Piece</p><p class="av-q">Your piece has not come yet.</p><p class="av-s">It lands with your next morning’s reading. You can skip this one.</p>';
-      else b = '<p class="av-sub">This Week’s Piece</p><p class="av-q">Did this piece help your week?</p><p class="av-s">“' + esc(p.claim) + '”</p><div class="av-choices av-two"><button type="button" class="av-choice" data-act="ck-helped" data-v="yes" aria-pressed="' + (c.helped === "yes") + '">It helped</button><button type="button" class="av-choice" data-act="ck-helped" data-v="no" aria-pressed="' + (c.helped === "no") + '">Not this one</button></div>' +
-        '<p class="av-kept" aria-live="polite">' + (c.helped === "yes" ? kLine("helped") || "<b>Kept.</b> Next week’s piece builds on what helped." : c.helped === "no" ? kLine("helped") || "<b>Kept.</b> Thank you. A no helps us choose as much as a yes." : "") + '</p>' +
-        (c.helped === "no" ? '<p class="av-sub">What Made It a No? If You Want</p><div class="av-choices av-two"><button type="button" class="av-choice" data-act="ck-why" data-v="long" aria-pressed="' + (c.why === "long") + '">Too long right now</button><button type="button" class="av-choice" data-act="ck-why" data-v="need" aria-pressed="' + (c.why === "need") + '">Not what I need</button></div><p class="av-kept" aria-live="polite">' + (c.why === "long" ? "<b>Kept.</b> We’ll offer the same idea again another week, in a shorter form." : c.why === "need" ? "<b>Kept.</b> We’ll steer toward what has helped you. If this idea still fits, we may offer it once more another way." : "") + '</p>' : "");
+      if (!p) b = '<p class="av-sub">This Week’s Reading</p><p class="av-q">Your reading has not come yet.</p><p class="av-s">It lands with your next morning’s reading. You can skip this one.</p>';
+      else {
+        var mk = p.word === "met" ? "helped" : p.word === "not" ? "not" : "";
+        b = '<p class="av-sub">This Week’s Reading</p><p class="av-q">Did this reading help your week?</p><p class="av-s">“' + esc(p.claim) + '”</p>' + (mk ? '<p class="av-kept"><b>' + (mk === "helped" ? "You said it helped." : "You said skip.") + '</b> Kept from Readings, where you answered it.</p>' : '<p class="av-s">Whether it helped is one tap on Readings, once you’ve read it. Skip this one if you haven’t yet.</p><div class="av-links" style="margin-top:6px"><button type="button" class="av-walk" data-act="ck-readings"><span class="av-u">Open Readings</span> <span class="av-ar">→</span></button></div>');
+      }
     } else if (st === 3) {
       var last = card.lastChose || (v.lastWeek && v.lastWeek.practice) || "";
       if (!last) b = '<p class="av-sub">Last Week’s Practice</p><p class="av-q">You didn’t name a practice last week.</p><p class="av-s">There is nothing to look back on here. This week you’ll choose one.</p>';
       else b = '<p class="av-sub">Last Week’s Practice</p><p class="av-q">“' + esc(last) + '” How did it go?</p><div class="av-choices av-three"><button type="button" class="av-choice" data-act="ck-how" data-v="most" aria-pressed="' + (c.how === "most") + '">Most days</button><button type="button" class="av-choice" data-act="ck-how" data-v="some" aria-pressed="' + (c.how === "some") + '">Some days</button><button type="button" class="av-choice" data-act="ck-how" data-v="notyet" aria-pressed="' + (c.how === "notyet") + '">Not this week</button></div><p class="av-kept" aria-live="polite">' + (c.how ? "<b>Kept.</b> " + esc(HOW[c.how].replace(/^Kept\. /, "")) : "") + '</p><p class="av-help">We want to support your growth here, establishing the right habits that lead to the personal development you desire.</p>';
     } else if (st === 4) {
-      var list = ckPractices(), lab = ctxLabel(), rh = V().settings && V().settings.remind ? rhythmWord(V().settings.remind) : "";
+      var list = ckPractices(), lab = ctxLabel();
       b = '<p class="av-sub">This Week’s Practice</p><p class="av-q">' + (list.length ? "Choose one from " + esc(lab || "this week") : "Your Practice for This Week") + '</p>' +
         (list.length ? '<div class="av-choices">' + list.map(function (t, i) { return '<button type="button" class="av-choice av-left" data-act="ck-prac" data-v="' + i + '" aria-pressed="' + isPicked(t) + '">' + esc(t) + '</button>'; }).join("") + '</div><p class="av-kept" aria-live="polite">' + (c.say.practice ? kLine("practice") : "") + '</p>' : '<p class="av-s">Your course hasn’t named practices for this week yet. They’ll be here when it does.</p>') +
         '<p class="av-sub">When Will You Do It?</p><div class="av-choices av-three">' + WHENS.map(function (w) { return '<button type="button" class="av-choice" data-act="ck-when" data-v="' + w[0] + '" aria-pressed="' + (c.when === w[0]) + '">' + esc(w[1]) + '</button>'; }).join("") + '</div><p class="av-kept" aria-live="polite">' + (c.say.when ? kLine("when") : "") + '</p>' +
-        '<p class="av-help">' + (rh ? "We’ll bring it back to you at your rhythm: " + esc(rh.toLowerCase()) + ". Change it in Settings." : "Choose how often we bring it back to you in Settings.") + '</p>';
+        '';
     }
-    var label = c.mode === "choose" ? "Done" : st < 4 ? ["Next: this week’s piece", "Next: last week’s practice", "Next: this week’s practice"][st - 1] : "Done";
+    var label = c.mode === "choose" ? "Done" : st < 4 ? ["Next: this week’s reading", "Next: last week’s practice", "Next: this week’s practice"][st - 1] : "Done";
     var links = c.mode === "choose" ? "" : (st > 1 ? '<button type="button" class="av-walk" data-act="ck-back"><span class="av-u">Back</span></button>' : "") + '<button type="button" class="av-walk" data-act="ck-skip"><span class="av-u">Skip this one</span></button>';
     return head + '<div class="av-obody">' + (c.mode === "choose" ? "" : ckBar(st)) + b + '</div><div class="av-ofoot"><button type="button" class="av-btn" style="margin-top:0" data-act="ck-next">' + label + '</button><div class="av-links">' + links + '</div></div>';
   }
@@ -869,39 +890,13 @@
     var hs = helpingSaid(), gs = groupSaidLine();
     if (hs) h += '<div class="av-give" data-seq="1"><p class="av-lk">What’s Been Helping You</p><p>' + esc(smart(hs)) + '</p></div>';
     if (gs) h += '<div class="av-give" data-seq="2"><p class="av-lk">You’re Not the Only One</p><p>' + esc(gs) + '</p></div>';
-    var lit = { did: !!pr, saw: !!c.path, know: c.helped === "yes" };
+    var p0 = piece(), lit = { did: !!pr, saw: !!c.path, know: !!(p0 && p0.word === "met") };
     if (lit.did || lit.saw || lit.know) h += '<div class="av-give" data-seq="3"><p class="av-lk">Your Story</p><p>It’s kept in Your Story.</p></div>';
     return h;
   }
   function revealGives() { $$(".av-give[data-seq]", ovCk()).forEach(function (g, i) { setTimeout(function () { g.classList.add("av-in"); }, reduce ? 0 : 220 + i * 380); }); }
 
   /* ───────────── sheets: the piece, the letter, a hand, settings, what this page is for ───────────── */
-  function pieceSheet() {
-    var p = piece(); if (!p) return "";
-    var layer = p.layer || "Wisdom", act = actOf(p), mins = act === "Read" ? "Read it where it lives" : act + " at the minute that matters";
-    var h = '<p class="av-q">' + esc(smart(p.claim)) + '</p>';
-    if (!p.short && p.road) h += '<p class="av-quote" style="font-size:17px">' + esc(smart(p.road)) + '</p>';
-    h += '<p class="av-src">Read by our team' + (p.verse ? " beside " + esc(p.verse) : "") + ', for ' + esc(layer.toLowerCase()) + ' in the work you’re doing this week.</p>';
-    h += '<a class="av-walk" href="' + esc(p.minuteLink || p.link) + '" target="_blank" rel="noopener" data-act="listen"><span class="av-u">' + esc(mins) + '</span> <span class="av-ar">↗</span></a>';
-    if (!p.short && p.quotes && p.quotes.length) h += p.quotes.map(function (q) {
-      var min = q.minute || q.m || "", who = String(p.voice || "").split(",")[0].replace(/\s*\(.*$/, "").trim();
-      return '<p class="av-quo">“' + esc(q.words) + '”<small>' + esc(who) + (who && min ? ", at " : "") + (min ? (q.link ? '<a href="' + esc(q.link) + '" target="_blank" rel="noopener" data-act="listen">' + esc(min) + " ↗</a>" : esc(min)) : "") + '</small></p>';
-    }).join("");
-    if (!p.short && p.todo) h += '<div class="av-card"><p class="av-lk">One Thing to Do</p><p class="av-s">' + esc(smart(p.todo)) + '</p></div>';
-    if (p.question) {
-      var review = (data && data.review) || "two days";
-      h += '<div class="av-card av-answer"><p class="av-lk">The Question Back</p><p class="av-s">' + esc(smart(p.question)) + '</p>';
-      if (p.answer && p.answer.text) {
-        var w = p.answer.word;
-        h += '<div class="av-said"><p class="av-lk">Your Answer · Sent ' + esc(p.answer.sent) + '</p><p class="av-s">' + esc(p.answer.text) + '</p>' + (w && (w.verse || w.question || w.step) ? '<p class="av-lk" style="margin-top:10px">' + esc(tc((data && data.wordLabel) || "A Word for the Road")) + '</p>' + (w.verse ? '<p class="av-verse">' + esc(nb(w.verse)) + '</p>' : "") + (w.question ? '<p class="av-s">' + esc(w.question) + '</p>' : "") + (w.step ? '<p class="av-s">' + esc(w.step) + '</p>' : "") : "") +
-          '<p class="av-help">' + (w ? "A person on our team has read it." : "A person on our team reads it within " + esc(review) + ", before anything else happens with it.") + '</p></div>';
-      } else {
-        h += '<textarea id="avAns" maxlength="2000" aria-label="Your answer" placeholder="Write it here.">' + esc(UI.drafts.avAns || "") + '</textarea><button type="button" class="av-btn" data-act="send-ans">Send</button><p class="av-kept" id="avAnsS" aria-live="polite"></p><p class="av-help">' + esc(nb(SAFE.replace("__REVIEW__", review))) + '</p>';
-      }
-      h += '</div>';
-    }
-    return sheetHtml("For Your Road · " + layer, h);
-  }
   /* ───────────── writing: every tap is written as it is made, then says Kept. (a miss says so once and leaves his choice standing) ───────────── */
   function post(o) {
     if (!ROAD_URL || !me) return Promise.resolve(null);
@@ -939,22 +934,6 @@
       if (ok(r)) { c.taps++; say("path", "It shows in What You Saw, in Your Story."); var cd = cardD(); if (cd) { cd.mark = c.path; cd.word = c.word || ""; } } else say("path", MISS, true);
       ckRedraw();
     });
-  }
-  function ckHelped(val) {
-    var c = UI.ck, p = piece(); if (!p) return;
-    c.helped = val; if (val === "yes") c.why = null;
-    c.wordP = post({ action: "road_word", id: p.id, word: val === "yes" ? "met" : "not" }).then(function (r) {
-      if (ok(r)) { c.taps++; p.word = val === "yes" ? "met" : "not"; if (val === "yes") p.why = ""; delete c.say.helped; } else say("helped", MISS, true);
-      ckRedraw(); return r;
-    });
-    ckRedraw();
-  }
-  function ckWhy(val) {
-    var c = UI.ck, p = piece(); if (!p) return; c.why = val;
-    (c.wordP || Promise.resolve(null)).then(function () {
-      return post({ action: "road_why", id: p.id, reason: val === "long" ? "too_long" : "not_needed" });
-    }).then(function (r) { if (ok(r)) { c.taps++; p.why = val === "long" ? "too_long" : "not_needed"; } else say("helped", MISS, true); ckRedraw(); });
-    ckRedraw();
   }
   function ckHow(val) {
     var c = UI.ck; c.how = val;
@@ -1011,9 +990,7 @@
     post({ action: "road_ours" }).then(function (r) { UI.oursBusy = false; if (ok(r) && r.ours) UI.ours = r.ours; if (UI.tab === "house") renderMain(true); });
   }
   function openPiece() {
-    var p = piece(); if (!p) return;
-    openSheet(pieceSheet());
-    if (!p.opened) { post({ action: "road_open", id: p.id }); p.opened = (data && data.today) || "today"; p.openedDay = DAYS[new Date().getDay()]; setDone("road"); }
+    setTab("readings"); /* the reading lives on Readings (11.3); the piece is marked opened when he opens it where it lives */
   }
   function keepWed() {
     var ta = $("#avWed"), st = $("#avWedS"), t = ta ? ta.value.trim() : "";
@@ -1033,16 +1010,6 @@
       else { if (btn) btn.removeAttribute("disabled"); if (st) st.textContent = "It did not save. Your words are still here; try again."; }
     });
   }
-  function sendAns() {
-    var p = piece(), ta = $("#avAns", ovSheet()), st = $("#avAnsS", ovSheet()), t = ta ? ta.value.trim() : "";
-    if (!p) return;
-    if (!t) { if (st) st.textContent = "Write your answer first."; return; }
-    var btn = $('[data-act="send-ans"]', ovSheet()); if (btn) btn.setAttribute("disabled", "disabled"); if (st) st.textContent = "Sending.";
-    post({ action: "road_answer", id: p.id, text: t }).then(function (r) {
-      if (ok(r)) { p.answer = { text: t, sent: r.sent || (data && data.today) || "today", word: null }; UI.drafts.avAns = ""; cache(); ovSheet().innerHTML = pieceSheet(); refresh(); }
-      else { if (btn) btn.removeAttribute("disabled"); if (st) st.textContent = "It did not send. Your words are still here; nothing has been lost. Try again."; }
-    });
-  }
   function handSend() {
     if (UI.handBusy) return; UI.handBusy = true; UI.say.hand = "Sending."; sheetBody8(handHtml8());
     post({ action: "road_hand" }).then(function (r) {
@@ -1052,13 +1019,6 @@
     });
   }
   function setting(kind, fn) { return fn; }
-  function rhythm(k) {
-    var S = V().settings = V().settings || {}, was = S.remind; S.remind = k; UI.say.rhythm = "Saving."; redrawSettings();
-    post({ action: "road_remind", remind: k }).then(function (r) {
-      if (ok(r)) { UI.say.rhythm = RHYTHM_SAID[k]; if (data) { data.pace = r.pace || data.pace; } cache(); } else { S.remind = was; UI.say.rhythm = MISS; }
-      redrawSettings(); refocus('[data-act="rhythm"][data-v="' + k + '"]');
-    });
-  }
   function share(k) {
     var S = V().settings = V().settings || {}; S.shares = S.shares || { path: true, piece: true, practice: true, words: false, guidepost: false };
     S.shares[k] = !S.shares[k]; UI.say.shares = "Saving."; redrawSettings();
@@ -1101,7 +1061,7 @@
   var CAL = "https://calendly.com/john-ancientpathcoaching/introductions";
   var LETSTALK = "/begin";
   var COUNSEL = "Some practices come from clinical work, so use them slowly and only with someone safe. This is care and coaching, not a replacement for counseling.";
-  var VIEWS8 = [["week", "This Week", "Stand and look"], ["house", "Story", "Remember the way"], ["path", "Path", "Ask for the good way"]];
+  var VIEWS8 = [["week", "This Week", "Stand and look"], ["readings", "Readings", "Read for your week"], ["house", "Story", "Remember the way"], ["path", "Path", "Ask for the good way"]];
   var S8 = { sheet: "", html: "", sheetFrom: "", stop: "", gpn: 0, wsent: false, wbusy: false, toastM: "", unread: false, gpSay: "" };
   var lastFocus8 = null, toastT8 = null, moved = [];
 
@@ -1327,7 +1287,7 @@
       body = '<p class="t">Who will walk with you after ' + esc(v.course) + '?</p><p class="s">Now, in the second half, choose one person from your own life to walk your road with you when the course ends: a mentor, a coach, a close friend, a pastor or a relative. ' + esc(teamOnly8() ? "Our team" : walkYes() ? walkYes().name : "Your group’s leader") + " walks with you" + (ln ? " until " + shortDay(ln) : " until the course ends") + ".</p>" + inviteForm(true);
     } else if (nk === "checkin") {
       nt = courseCtx() + " · " + bef;
-      body = '<p class="t">Check in for ' + (group() ? esc(ctxLabel() || "this week") : "this week") + '.</p><p class="s">About a minute: the path you marked, a word for it, whether this week’s piece helped, and your practice. ' + (group() ? esc(W) + " reads your check-in, and what you choose to share, before your group meets." : "Our team reads it this week.") + '</p><button type="button" class="btn" data-act="checkin">Check in</button>';
+      body = '<p class="t">Check in for ' + (group() ? esc(ctxLabel() || "this week") : "this week") + '.</p><p class="s">About a minute: the path you marked, a word for it, how your practice went, and your practice for this week. ' + (group() ? esc(W) + " reads your check-in, and what you choose to share, before your group meets." : "Our team reads it this week.") + '</p><button type="button" class="btn" data-act="checkin">Check in</button>';
     } else if (nk === "piece") {
       var s = storyRow();
       nt = courseCtx() + " · " + bef;
@@ -1576,8 +1536,8 @@
   }
   function settingsHtml8() {
     var S = V().settings || {}, sh = S.shares || {}, w = witnessName();
-    var h = '<p class="t">Your rhythm</p><p class="s">How often should we be in touch? New pieces and your practice come back to you at this pace.</p><div class="choices">' + RHYTHMS.map(function (r) { return choice8("rhythm", r[0], esc(r[1]), S.remind === r[0], "left"); }).join("") + '</div><p class="kept" id="skr" aria-live="polite">' + esc(UI.say.rhythm || "") + "</p>";
-    h += '<p class="t" style="margin-top:22px">Your witness’s notes</p><div class="choices two">' + choice8("pause8", "0", "Keep", !S.paused) + choice8("pause8", "1", "Pause", !!S.paused) + '</div><p class="help">No reason is shown. Tell our team any time if something feels off.</p><p class="kept" id="skp" aria-live="polite">' + esc(UI.say.pause || "") + "</p>";
+    var h = '';
+    h += '<p class="t">Your witness’s notes</p><div class="choices two">' + choice8("pause8", "0", "Keep", !S.paused) + choice8("pause8", "1", "Pause", !!S.paused) + '</div><p class="help">No reason is shown. Tell our team any time if something feels off.</p><p class="kept" id="skp" aria-live="polite">' + esc(UI.say.pause || "") + "</p>";
     h += '<p class="t" style="margin-top:22px">What ' + esc(w) + ' sees each week</p><p class="s">The path, the reading and the practice are shared to start; your own words and the guidepost you mark are not. Choose any to keep to yourself.</p><div class="choices">' + SHARES.map(function (x) { return choice8("share8", x[0], esc(x[1]), !!sh[x[0]], "left"); }).join("") + '</div><p class="kept" id="sks" aria-live="polite">' + esc(UI.say.shares || "") + "</p>" + weeklyHtml8();
     return h;
   }
@@ -1687,6 +1647,280 @@
   }
 
   /* ───────────── the shell, drawn once; the band, the menu and the view are redrawn into it ───────────── */
+  /* ═════════════ 11.3 · Readings (design 8.10): each reading with its practice, its question and one tap; what has helped; the rhythm ═════════════
+     The reading moves here from the piece sheet. Every tap is written as it is made (road_word, road_why, road_keepline, road_touch, road_where, road_answer, road_keepit, road_pace, road_more), then says Kept.
+     What the mockup draws and the engine cannot yet keep is left out and listed in the handoff: Watch for, the pattern sentence, Bring it Wednesday, Reading From Here. */
+  var R8 = { fu: {}, miss: {}, markP: {}, reline: {}, voices: null, voicesBusy: false, askBusy: false, askSay: "", paceDraft: "", rhKept: "", carryBusy: {}, carrySay: {}, leanSay: "" };
+  var LAYERQ = { Wisdom: "what you do with it", Understanding: "what you see", Knowledge: "what you know now" };
+  var TOUCH8 = [["body", "Body"], ["shame", "Shame"], ["belong", "Belonging"], ["prayer", "Prayer"], ["anger", "Anger"], ["family", "Family"]];
+  var WHERE8 = [["tempted", "When tempted"], ["home", "At home"], ["work", "At work"], ["family", "With family"], ["room", "In my room"]];
+  var SKIP8 = [["long", "Too long"], ["need", "Not for me"], ["later", "Not now"]];
+  var SKIPK8 = { long: "<b>Kept.</b> The same idea comes back once, shorter, another week.", need: "<b>Kept.</b> Your next readings lean away from this one.", later: "<b>Kept.</b> It waits. It may come back another week." };
+  var SKIPR8 = { long: "too_long", need: "not_needed", later: "later" };
+  var TOUCHW8 = { body: "the body", shame: "shame", belong: "belonging", prayer: "prayer", anger: "anger", family: "family" };
+  function rd() { return data && data.read ? data.read : null; }
+  function rdItems() { var r = rd(); return r && r.items ? r.items : []; }
+  function rdById(id) { return rdItems().filter(function (x) { return x.id === id; })[0] || null; }
+  function sentences8(t) {
+    var s = String(t || "").trim(), out = [], last = 0, m, re = /([.!?]["”’)]?)\s+(?=[A-Z“"‘'])/g;
+    while ((m = re.exec(s))) { out.push(s.slice(last, m.index + m[1].length)); last = m.index + m[0].length; }
+    out.push(s.slice(last));
+    return out.filter(function (x) { return x.trim(); });
+  }
+  function skipKey8(why) { return why === "too_long" ? "long" : why === "not_needed" ? "need" : why === "later" ? "later" : ""; }
+  function markOf8(it) { return it.word === "met" ? "helped" : it.word === "not" ? "not" : ""; }
+  function paceSet8() { var r = rd(); return !!(r && r.pace && r.pace.set); }
+  function paceKey8() { var r = rd(); return (r && r.pace && r.pace.key) || "min20"; }
+  function paceWord8() { var r = rd(), k = paceKey8(), p = r && r.paces ? r.paces.filter(function (x) { return x.key === k; })[0] : null; return p ? p.label : "About 20 minutes"; }
+  function paceShort8(label) { return String(label).replace(/^About /, ""); }
+  function inT(arr, k) { return arr && arr.indexOf(k) >= 0; }
+  function labelsOf8(list, picked) { return list.filter(function (z) { return inT(picked, z[0]); }).map(function (z) { return z[1].toLowerCase(); }).join(", "); }
+  function mWeekTo8() { var n = wkN(); return group() && n > 1 ? "between Chapters " + (n - 1) + " and " + n : "as the line between chapters"; }
+  function readNote8(it) {
+    var c = it.course || "", ctx = c ? c + (group() && it.unit > 0 ? " · Week " + it.unit : "") : "", mins = it.mins ? it.mins + " minutes" : (it.minutes ? uc1(it.minutes) : "");
+    return [ctx, mins].filter(Boolean).join(" · ") || "A reading for your week";
+  }
+  function rdTitle8(i) { return i ? "Another Reading" : "This Week’s Reading"; }
+  function rdListen8(it) {
+    var a = it.act || "Read", href = it.minuteLink || it.link, opened = !!it.opened, label;
+    if (a === "Read") label = "Read it where it lives";
+    else if (it.start) label = (opened ? "Listen again from minute " : "Listen from minute ") + esc(it.start);
+    else label = a + " at the minute that matters";
+    var what = a === "Read" ? "the page" : a === "Watch" ? "the video" : "the episode";
+    return '<div class="walks"><a class="walk" href="' + esc(href) + '" target="_blank" rel="noopener" data-act="rlisten" data-id="' + esc(it.id) + '"><span class="u">' + label + '</span>&nbsp;<span class="ar">→</span></a></div><p class="help">' + (it.title ? esc(it.title) + ". " : "") + (it.mins ? it.mins + " minutes. " : "") + "Opens " + what + " in a new tab.</p>";
+  }
+  function rdHow8(it) {
+    var beside = it.verse ? " beside " + esc(it.verse) : "", fit = it.unit > 0 && it.course ? ", for the week you’re walking." : (it.course ? ". It fits any week of " + esc(it.course) + "." : ".");
+    return '<p class="s" style="margin-top:0">Our team read it' + beside + fit + "</p>";
+  }
+  function rdCarry8(it) {
+    var id = it.id, a = it.answer, to = mWeekTo8(), key = "avQ" + id.replace(/[^A-Za-z0-9]/g, ""), review = (data && data.review) || "two days";
+    var h = '<div class="part"><p class="lk">Carry This Question</p><p class="cqq">' + tie(it.question) + "</p>";
+    if (a && a.text) {
+      h += '<p class="kept" id="ck' + esc(key) + '" tabindex="-1"><b>Kept in Story.</b> “' + esc(a.text) + "”" + (a.between ? " It sits " + to + "." : "") + "</p>";
+      var w = a.word;
+      if (w && (w.verse || w.question || w.step)) h += '<div class="ruled"><p class="lk">' + esc(tc((data && data.wordLabel) || "A Word for the Road")) + "</p>" + (w.verse ? '<p class="verse" style="margin:4px 0 6px">' + esc(nb(w.verse)) + "</p>" : "") + (w.question ? '<p class="s">' + esc(w.question) + "</p>" : "") + (w.step ? '<p class="s">' + esc(w.step) + "</p>" : "") + "</div>";
+      h += '<p class="help">' + (w ? "A person on our team has read it." : "A person on our team reads it within " + esc(review) + ", before anything else happens with it.") + "</p>";
+    } else {
+      h += '<label class="t sm" for="' + key + '" style="display:block;margin-top:14px">Answer it if you want.</label><p class="help" style="margin-top:2px">It goes into Story, ' + esc(to) + '.</p><textarea id="' + key + '" maxlength="2000" placeholder="One line is enough.">' + esc(UI.drafts[key] || "") + '</textarea><button type="button" class="btn line" data-act="rd-carry" data-id="' + esc(id) + '"' + (R8.carryBusy[id] ? " disabled" : "") + '>Keep it</button><p class="kept" id="' + key + 'S" aria-live="polite">' + esc(R8.carrySay[id] || "") + '</p><p class="help">' + esc(nb(SAFE.replace("__REVIEW__", review))) + "</p>";
+    }
+    return h + "</div>";
+  }
+  function rdPast8(r) {
+    var past = (r && r.past) || []; if (!past.length) return "";
+    var body = past.map(function (p) {
+      var w = p.word;
+      return '<div class="mark"><span class="lab">' + (p.unit > 0 ? "Week " + p.unit : "Earlier") + "<i>sent " + esc(p.sent) + '</i></span><p class="cq">“' + esc(smart(p.q)) + "”</p><p>“" + esc(p.text) + "”</p>" +
+        (w && (w.verse || w.question || w.step) ? '<div class="ruled"><p class="lk">' + esc(tc((data && data.wordLabel) || "A Word for the Road")) + "</p>" + (w.verse ? '<p class="verse" style="margin:4px 0 6px">' + esc(nb(w.verse)) + "</p>" : "") + (w.question ? '<p class="s">' + esc(w.question) + "</p>" : "") + (w.step ? '<p class="s">' + esc(w.step) + "</p>" : "") + "</div>" : "<small>A person on our team has read it.</small>") + "</div>";
+    }).join("");
+    return '<div class="revs">' + rev8("pastq", "What you answered before", body) + "</div>";
+  }
+  function rdResp8(it) {
+    var id = it.id, x = ' data-id="' + esc(id) + '"', m = markOf8(it), why = skipKey8(it.why), h = '<div class="part"><p class="t" style="font-size:19px">Did it help your week?</p><div class="choices two">' + choice8("rd-mark", "helped", "Helped", m === "helped", "", x) + choice8("rd-mark", "not", "Skip", m === "not", "", x) + "</div>";
+    if (R8.miss[id]) h += '<p class="kept">' + esc(R8.miss[id]) + "</p>";
+    if (m === "helped") {
+      var lines = !it.short && it.road ? sentences8(it.road) : [], kl = it.kept || "", tcs = it.touch || [], whs = it.where || [];
+      var fu = R8.fu[id] || 1; if (kl) fu = Math.max(fu, 2); if (tcs.length) fu = Math.max(fu, 3); if (!lines.length) fu = Math.max(fu, 2);
+      var nextQ = function (v) { return '<div class="revs"><button type="button" class="rev" data-act="rd-fu" data-id="' + esc(id) + '" data-v="' + v + '"><span>Next question</span> →</button></div>'; };
+      h += '<p class="kept"><b>Kept.</b> Your next readings lean toward what helped.</p>';
+      if (lines.length) {
+        h += '<p class="t sm" style="margin-top:18px">Keep a line</p>';
+        if (kl && !R8.reline[id]) h += '<p class="kept" id="kl' + esc(id) + '" tabindex="-1"><b>Kept in Story.</b> “' + esc(kl) + '” It is What You Know Now, in this week’s chapter.</p><div class="walks" style="margin-top:0">' + walk8("rd-reline", "Choose another", x) + "</div>";
+        else h += '<div class="klines">' + lines.map(function (s, j) { return '<button type="button" class="kline" data-act="rd-keepline" data-id="' + esc(id) + '" data-v="' + j + '">' + tie(uc1(s)) + "</button>"; }).join("") + "</div>";
+        if (fu < 2) return h + nextQ(2) + "</div>";
+      }
+      h += '<p class="t sm" style="margin-top:18px" id="fq2' + esc(id).replace(/[^A-Za-z0-9]/g, "") + '" tabindex="-1">What did it touch?</p><div class="choices three">' + TOUCH8.map(function (z) { return choice8("rd-touch", z[0], z[1], inT(tcs, z[0]), "", x); }).join("") + "</div>" + (tcs.length ? '<p class="kept"><b>Kept.</b> It shapes Where It Points, in What Has Helped.</p>' : "");
+      if (fu < 3) return h + nextQ(3) + "</div>";
+      h += '<p class="t sm" style="margin-top:18px" id="fq3' + esc(id).replace(/[^A-Za-z0-9]/g, "") + '" tabindex="-1">Where did it show up?</p><div class="choices three">' + WHERE8.map(function (z) { return choice8("rd-where", z[0], z[1], inT(whs, z[0]), "", x); }).join("") + "</div>" + (whs.length ? '<p class="kept"><b>Kept.</b> It shows ' + (kl ? "beside your line" : "with this reading") + " in What Has Helped.</p>" : "");
+    }
+    if (m === "not") h += '<p class="t sm" style="margin-top:14px">What made it a skip?</p><div class="choices three">' + SKIP8.map(function (z) { return choice8("rd-why", z[0], z[1], why === z[0], "", x); }).join("") + '</div><p class="kept">' + (SKIPK8[why] || "<b>Kept.</b> A skip helps us choose as much as a yes.") + "</p>";
+    return h + "</div>";
+  }
+  function pieceR8(it, i, r) {
+    var layer = LAYERQ[it.layer] ? it.layer : "Wisdom", id = it.id;
+    var h = '<p class="lk">' + esc(layer) + ' · <span class="lkq">' + LAYERQ[layer] + '</span></p><p class="t claim" style="margin-top:4px">' + tie(smart(it.claim)) + "</p>";
+    if (!it.short && it.road) h += '<p class="story">' + tie(uc1(it.road)) + "</p>";
+    h += rdListen8(it) + '<div class="revs">' + rev8("how" + id.replace(/[^A-Za-z0-9]/g, ""), "How we read it", rdHow8(it)) + "</div>";
+    if (!it.short && it.todo) h += '<div class="part"><p class="lk">One Thing to Do</p><p class="s" style="margin-top:4px">Hearing gives you words. Doing gives you a new way to walk.</p><p class="habit">' + tie(it.todo) + '</p><p class="help">At your check-in you’ll say how it went, and it’s kept in your story.</p></div>';
+    if (it.question) { var past8 = !i ? rdPast8(r) : ""; h += rdCarry8(it).replace(/<\/div>$/, function () { return past8 + "</div>"; }); }
+    h += rdResp8(it);
+    return h;
+  }
+  /* What Has Helped: where it points, each line he kept, the practices that held (all from his real taps) */
+  function gpPointRow8() {
+    var h = gpState().here, M = WAYMARKS.filter(function (w) { return h.indexOf(w.n) >= 0; }); if (!M.length) return "";
+    return '<div class="pt"><span class="lab">You’re at</span><p class="ptv">' + M.map(function (g) { return esc(g.name); }).join(" · ") + '</p><div class="walks" style="margin-top:0">' + walk8("gp", "Open it", ' data-n="' + M[0].n + '"') + "</div></div>";
+  }
+  function andList8(a) { return a.length < 2 ? (a[0] || "") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
+  function holdLine8(hd) { return "since " + (hd.unit > 0 ? "Week " + hd.unit : hd.sinceLabel); }
+  function leanText8(r) { return andList8((r.lean || []).map(function (k) { return TOUCHW8[k] || k; })); }
+  function keptNow8(hd) { var p = String(V().practice || ""); return !!(p && hd && (p === hd.text || (p.length >= 200 && hd.text.indexOf(p) === 0))); }
+  function pointsHtml8(r) {
+    var rows = gpPointRow8(), hd = r.hold;
+    if ((r.lean || []).length) rows += '<div class="pt"><span class="lab">Lean into</span><p class="ptv">' + esc(leanText8(r)) + '</p><div class="walks" style="margin-top:0">' + walk8("rd-lean", "How it’s used") + "</div></div>";
+    if (hd) rows += '<div class="pt"><span class="lab">Keep doing</span><p class="ptv">' + esc(pracShort(hd.text)) + ", " + esc(holdLine8(hd)) + "</p>" + (keptNow8(hd) ? '<p class="kept" style="margin-top:2px" id="ptk" tabindex="-1"><b>Kept.</b> It carries into next week.</p>' : '<div class="walks" style="margin-top:0">' + walk8("rd-keepit", "Keep it") + "</div>") + "</div>";
+    return rows ? '<p class="lk">Where It Points</p><div class="pts3">' + rows + "</div>" : "";
+  }
+  function keptRows8(r) {
+    return (r.helped || []).map(function (h) {
+      var wk = h.unit > 0 ? "Week " + h.unit : "A reading", came = h.came ? "“" + esc(h.came) + "”" : (h.current ? "It shows here after your check-in." : "not said");
+      return '<div class="mark"><span class="lab">' + wk + (h.from ? "<i>from " + esc(h.from) + "</i>" : "") + "</span><p>" + (h.line ? "“" + esc(h.line) + "”" : "A reading that helped, with no line kept") + '</p><p class="klm"><span><b>Touched</b> ' + (labelsOf8(TOUCH8, h.touch) || "not said") + "</span><span><b>Showed up</b> " + (labelsOf8(WHERE8, h.where) || "not said") + "</span><span><b>Came of it</b> " + came + "</span></p></div>";
+    }).join("");
+  }
+  function helpedPanel8(r) {
+    var body, nt, hasAny = !!((r.helped || []).length || r.hold || (r.lean || []).length);
+    if (!hasAny) {
+      nt = "Gathered as readings help you";
+      body = '<p class="s" style="margin-top:0">When a reading helps your week, it is gathered here: the line you keep, what it touched and where it showed up. Then it points the way: what to lean into and what to keep doing.</p>';
+    } else {
+      nt = "Where it points · what keeps helping";
+      body = pointsHtml8(r);
+      if ((r.helped || []).length) body += '<p class="lk" style="margin-top:22px">Lines You’ve Kept</p>' + keptRows8(r);
+      if (r.hold) body += '<div class="part"><p class="lk">Practices That Held</p><p class="s" style="margin-top:4px">“' + esc(pracShort(r.hold.text)) + "” has stayed with you " + esc(holdLine8(r.hold)) + '.</p><p class="verse" style="margin-top:14px">“…those who have their powers of discernment trained by constant practice”<span>Hebrews 5:14 (ESV)</span></p><p class="s" style="margin-top:0">A practice done week after week trains you to see and choose well. It’s how what you read becomes who you are.</p></div>';
+      body += '<p class="help">Nothing here is counted.</p><div class="walks">' + walk8("tab", "See it all in Story", ' data-tab="house"') + "</div>";
+    }
+    return secHtml("sofar", "What Has Helped", nt, body);
+  }
+  /* the rhythm: how much time a week, and which course leads */
+  function paceChoices8(cur, act) { var r = rd(); return ((r && r.paces) || []).map(function (p) { return choice8(act, p.key, esc(paceShort8(p.label)), cur === p.key); }).join(""); }
+  function coursesLine8(r) { return r.lead ? (r.second ? r.lead + ", then " + r.second : r.lead) : "what fits any week"; }
+  function chosenRev8() {
+    return rev8("chosen", "How it’s chosen", '<p class="s" style="margin-top:0">Our team follows voices we trust, men’s and women’s: pastors, counselors, scholars and coaches. Each morning we read what they said, keep only a few, and read each against Scripture before it reaches you. Then we choose for the week you’re walking, and for the guidepost you’re at.</p><div class="walks">' + walk8("rd-voices", "See everyone we read") + "</div>");
+  }
+  function rhythmBody8(r, setup) {
+    if (setup) return '<p class="t">About how much time a week?</p><div class="choices three">' + paceChoices8(R8.paceDraft || paceKey8(), "rd-pace") + '</div><button type="button" class="btn" data-act="rd-pacekeep">Keep</button><div class="revs" style="margin-top:8px">' + chosenRev8() + "</div>";
+    var lead = r.lead && r.second ? '<p class="t sm" style="margin-top:16px">Which course leads?</p><div class="choices two">' + [r.lead, r.second].map(function (n) { return choice8("rd-lead", n, esc(n), n === r.lead); }).join("") + "</div>" : "";
+    return '<p class="s" style="margin-top:0">' + esc(paceWord8()) + " a week, for " + esc(coursesLine8(r)) + '.</p><div class="revs">' + rev8("rh", "Change", '<p class="t sm">About how much time a week?</p><div class="choices three">' + paceChoices8(paceKey8(), "rd-pace") + "</div>" + lead + (R8.rhKept ? '<p class="kept"><b>' + (R8.rhKept === MISS ? "" : "Kept.") + "</b> " + esc(R8.rhKept === MISS ? MISS : R8.rhKept) + "</p>" : "")) + chosenRev8() + "</div>";
+  }
+  function moreBlock8() {
+    var r = rd(); if (!(r && r.more) && !R8.askSay) return "";
+    return '<div class="part">' + (r && r.more ? '<p class="s" style="margin-top:0">We have additional articles we think you would appreciate if time allows.</p><div class="walks" style="margin-top:0">' + walk8("rd-more", "Ask for more", R8.askBusy ? " disabled" : "") + "</div>" : "") + (R8.askSay ? '<p class="kept" id="rdmk" tabindex="-1" aria-live="polite">' + esc(R8.askSay) + "</p>" : "") + "</div>";
+  }
+  function firstR8(r) {
+    var h = '<p class="t">Your first reading comes with your next morning’s reading.</p><p class="s">Our team reads what the voices we trust have said, keeps only a few, and reads each against Scripture.' + (r && r.lead ? "" : " When you choose a course, what you read follows the week you’re walking.") + "</p>";
+    return h + (r && r.lead ? "" : '<div class="walks">' + walk8("tab", "See the courses", ' data-tab="path"') + "</div>");
+  }
+  function viewReadings8() {
+    var v = V(), r = rd(), main = "", items = rdItems(), side = witBrief() + (v.ended ? "" : gpBrief(false));
+    if (S8.unread) return unreadView();
+    if (v.bare || !r) {
+      main = secHtml("readfirst", "First Reading", "Comes with your next morning’s reading", firstR8(null));
+      return '<main class="view cols2"><div class="mainc">' + main + "</div></main>";
+    }
+    var set = paceSet8();
+    if (!set) main += secHtml("setup", "Set Your Rhythm", (r.lead ? esc(r.lead) + " leads" + (r.second ? " · " + esc(r.second) + " second" : "") : "Readings that fit any week") + " · change it any time", rhythmBody8(r, true));
+    if (v.ended) main += secHtml("end", "Walked to the End", esc(v.course || "") + " · finished", '<p class="verse">“The LORD bless you and keep you; the LORD make his face to shine upon you and be gracious to you; the LORD lift up his countenance upon you and give you peace.”<span>Numbers 6:24–26 (ESV)</span></p><p class="s">Every reading that helped you in ' + esc(v.course || "your course") + ' is kept in Story, with the lines you kept. The reading goes on from here, at your rhythm.</p><div class="walks">' + walk8("tab", "See it all in Story", ' data-tab="house"') + "</div>");
+    if (set && !items.length) main += secHtml("readfirst", (r.helped || []).length ? "Readings" : "First Reading", (r.helped || []).length ? "Nothing new today · next at your rhythm" : "Comes with your next morning’s reading", firstR8(r));
+    if (set) items.forEach(function (it, i) { main += secHtml(i ? "reading" + i : "reading", rdTitle8(i), esc(readNote8(it)), pieceR8(it, i, r) + (i === items.length - 1 ? moreBlock8() : "")); });
+    main += helpedPanel8(r);
+    if (set) main += secHtml("rhythm", "Reading Rhythm", esc(paceWord8()) + " a week · " + esc(coursesLine8(r)), rhythmBody8(r, false));
+    return '<main class="view cols2"><div class="mainc">' + main + '</div><aside class="side">' + side + "</aside></main>";
+  }
+  /* ─── the taps ─── */
+  function rdSync(it) { var p = piece(); if (p && p.id === it.id) { p.word = it.word; p.why = it.why; if (it.answer) p.answer = it.answer; } (data && data.more || []).forEach(function (m) { if (m.id === it.id) { m.word = it.word; m.why = it.why; } }); }
+  function rdAfter(sel) { renderMain(true); if (sel) refocus(sel); }
+  function rdMark(id, val) {
+    var it = rdById(id); if (!it) return; var was = it.word, wasWhy = it.why;
+    it.word = val === "helped" ? "met" : "not"; if (val === "helped") it.why = ""; delete R8.miss[id]; rdSync(it); rdAfter('[data-act="rd-mark"][data-id="' + id + '"][data-v="' + val + '"]');
+    var pr = post({ action: "road_word", id: id, word: it.word }); R8.markP[id] = pr;
+    pr.then(function (r) {
+      if (ok(r)) { cache(); refresh(); }
+      else { it.word = was; it.why = wasWhy; R8.miss[id] = MISS; rdSync(it); rdAfter(); }
+    });
+  }
+  function rdWhy(id, val) {
+    var it = rdById(id); if (!it || markOf8(it) !== "not") return; var was = it.why;
+    it.why = SKIPR8[val]; rdSync(it); rdAfter('[data-act="rd-why"][data-id="' + id + '"][data-v="' + val + '"]');
+    (R8.markP[id] || Promise.resolve(null)).then(function () { return post({ action: "road_why", id: id, reason: SKIPR8[val] }); }).then(function (r) {
+      if (ok(r)) { cache(); refresh(); } else { it.why = was; R8.miss[id] = MISS; rdSync(it); rdAfter(); }
+    });
+  }
+  function rdToggle(id, kind, word) {
+    var it = rdById(id); if (!it) return; var arr = it[kind] = it[kind] || [], on = arr.indexOf(word) < 0;
+    if (on) arr.push(word); else arr.splice(arr.indexOf(word), 1);
+    rdAfter('[data-act="rd-' + kind + '"][data-id="' + id + '"][data-v="' + word + '"]');
+    post({ action: "road_" + kind, id: id, word: word, on: on }).then(function (r) {
+      if (ok(r)) { cache(); refresh(); } else { if (on) arr.splice(arr.indexOf(word), 1); else arr.push(word); R8.miss[id] = MISS; rdAfter(); }
+    });
+  }
+  function rdKeepLine(id, j) {
+    var it = rdById(id); if (!it) return; var lines = sentences8(it.road), line = lines[j]; if (!line) return; var was = it.kept;
+    it.kept = line; delete R8.reline[id]; delete R8.miss[id]; rdAfter("#kl" + id);
+    post({ action: "road_keepline", id: id, line: line }).then(function (r) {
+      if (ok(r)) { cache(); refresh(); setTimeout(function () { refocus("#kl" + id); }, 0); } else { it.kept = was; R8.miss[id] = MISS; rdAfter(); }
+    });
+  }
+  function rdCarry(id) {
+    var it = rdById(id); if (!it || R8.carryBusy[id]) return; var key = "avQ" + id.replace(/[^A-Za-z0-9]/g, ""), ta = $("#" + key), t = ta ? ta.value.trim() : "";
+    if (!t) { R8.carrySay[id] = "Write a line first, or leave it. Nothing here is required."; rdAfter("#" + key); return; }
+    R8.carryBusy[id] = true; R8.carrySay[id] = "Keeping it."; UI.drafts[key] = t; rdAfter();
+    post({ action: "road_answer", id: id, text: t, between: true }).then(function (r) {
+      R8.carryBusy[id] = false;
+      if (ok(r)) { it.answer = { text: t, sent: r.sent || (data && data.today) || "today", word: null, between: true }; delete R8.carrySay[id]; UI.drafts[key] = ""; rdSync(it); cache(); rdAfter("#ck" + key); refresh(); }
+      else { R8.carrySay[id] = "It did not send. Your words are still here; nothing has been lost. Try again."; rdAfter("#" + key); }
+    });
+  }
+  function rdPace(k, setup) {
+    var r = rd(); if (!r) return;
+    if (setup) { R8.paceDraft = k; rdAfter('[data-act="rd-pace"][data-v="' + k + '"]'); return; }
+    var was = r.pace; r.pace = { key: k, label: (r.paces.filter(function (x) { return x.key === k; })[0] || {}).label || was.label, set: true }; R8.rhKept = "…"; UI.open.rh = true; rdAfter('[data-act="rd-pace"][data-v="' + k + '"]');
+    post({ action: "road_pace", pace: k }).then(function (x) {
+      if (ok(x)) { R8.rhKept = r.pace.label + " a week, starting with next week’s reading."; cache(); refresh(); } else { r.pace = was; R8.rhKept = MISS; }
+      rdAfter('[data-act="rd-pace"][data-v="' + k + '"]');
+    });
+  }
+  function rdPaceKeep() {
+    var r = rd(), k = R8.paceDraft || paceKey8(); if (!r) return; var btn = $('[data-act="rd-pacekeep"]'); if (btn) btn.setAttribute("disabled", "disabled");
+    post({ action: "road_pace", pace: k }).then(function (x) {
+      if (ok(x)) { r.pace = x.pace; R8.paceDraft = ""; toast8("Kept. " + paceWord8() + " a week, starting with this one."); cache(); refresh(function () { setTimeout(function () { refocus("#apgH1"); }, 0); }); rdAfter(); }
+      else { if (btn) btn.removeAttribute("disabled"); toast8(MISS); }
+    });
+  }
+  function rdLead(name) {
+    var r = rd(); if (!r || !r.second || name === r.lead) return; var other = name === r.lead ? r.second : r.lead, was = [r.lead, r.second];
+    r.lead = name; r.second = was[0]; R8.rhKept = "…"; UI.open.rh = true; rdAfter('[data-act="rd-lead"][data-v="' + name.replace(/"/g, '\\"') + '"]');
+    post({ action: "road_setup", courses: [name, was[0]], pace: paceKey8() }).then(function (x) {
+      if (ok(x)) { R8.rhKept = name + " leads, starting with next week’s reading."; cache(); refresh(); } else { r.lead = was[0]; r.second = was[1]; R8.rhKept = MISS; }
+      rdAfter();
+    });
+  }
+  function rdMore() {
+    if (R8.askBusy) return; R8.askBusy = true; R8.askSay = "";
+    post({ action: "road_more" }).then(function (x) {
+      R8.askBusy = false;
+      if (ok(x) && !x.none) { R8.askSay = "Kept. Another reading is added to your week."; refresh(function () { setTimeout(function () { refocus("#rdmk"); }, 0); }); }
+      else if (ok(x)) { R8.askSay = "Nothing more is ready this week."; rdAfter("#rdmk"); }
+      else { R8.askSay = MISS; rdAfter("#rdmk"); }
+    });
+    rdAfter();
+  }
+  function rdKeepIt() {
+    var r = rd(); if (!r || !r.hold) return; var t = r.hold.text;
+    post({ action: "road_keepit", text: t }).then(function (x) {
+      if (ok(x)) { setV("practice", t); cache(); rdAfter("#ptk"); refresh(); } else toast8(MISS);
+    });
+  }
+  function leanHtml8() {
+    var r = rd() || {}, g = aheadWeeks()[0];
+    return '<p class="lk">Lean Into: ' + esc(uc1(leanText8(r))) + '</p><p class="t" style="margin-top:2px">The words you touched most</p><p class="s">These are the words you touched most on the readings that helped. Your next readings already lean toward the kinds of reading that helped you.</p><p class="help">Nothing to do now. It will be waiting on Readings.</p>';
+  }
+  function whoHtml8() {
+    var v = R8.voices;
+    if (!v) return '<p class="s" style="margin-top:0">' + (R8.voicesBusy ? "Loading." : "It did not load. Close this and open it again.") + "</p>";
+    return '<p class="s" style="margin-top:0">Pastors, counselors, scholars and coaches, men’s and women’s voices. Each morning we read what they said, keep only a few, and read each against Scripture before it reaches you.</p><div class="revs vlanes">' +
+      (v.lanes || []).map(function (l, i) { return rev8("lane" + i, esc(l[0]), '<ul class="vl">' + l[1].map(function (x) { return "<li>" + esc(x[0]) + "<span>" + esc(x[1]) + "</span></li>"; }).join("") + "</ul>"); }).join("") +
+      ((v.music || []).length ? rev8("lanemusic", "Music for the men’s road", '<ul class="vl">' + v.music.map(function (m) { return "<li>" + esc(m) + "</li>"; }).join("") + "</ul>") : "") + "</div>";
+  }
+  function openVoices8() {
+    openSheet8("Who We Read", whoHtml8());
+    if (R8.voices || R8.voicesBusy) return;
+    R8.voicesBusy = true;
+    post({ action: "road_voices" }).then(function (x) {
+      R8.voicesBusy = false; if (ok(x) && x.voices) R8.voices = x.voices;
+      if (sheetOpen8() && S8.sheet === "Who We Read") sheetBody8(whoHtml8());
+    });
+  }
+
   function foot8() {
     var em = me && me.email ? " Signed in as " + esc(me.email) + ", the same person the site shows." : "";
     return "Your Page · build " + BUILD + " · Stand by the roads, and look, Jeremiah 6:16, and Remember the whole way, Deuteronomy 8:2." + em;
@@ -1715,7 +1949,7 @@
     $("#apgTop").innerHTML = bandHtml();
     $("#apgNav").innerHTML = menuHtml();
     if (t === "house") { vw.innerHTML = ""; am.innerHTML = viewHouse(); fillSlots(); }
-    else { am.innerHTML = ""; vw.innerHTML = t === "week" ? viewWeek8() : viewPath8(); }
+    else { am.innerHTML = ""; vw.innerHTML = t === "week" ? viewWeek8() : t === "readings" ? viewReadings8() : viewPath8(); }
     $("#apgFoot").innerHTML = foot8();
     balance();
     host.style.minHeight = "";
@@ -1727,8 +1961,8 @@
     var top = b.getBoundingClientRect().top + window.pageYOffset - barH();
     try { window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" }); } catch (e) { window.scrollTo(0, Math.max(0, top)); }
   }
-  var HASH = { week: "week", house: "story", path: "path" };
-  function tabOfHash() { var h = String(location.hash || "").replace("#", ""); return h === "story" ? "house" : h === "path" ? "path" : h === "week" ? "week" : ""; }
+  var HASH = { week: "week", readings: "readings", house: "story", path: "path" };
+  function tabOfHash() { var h = String(location.hash || "").replace("#", ""); return h === "story" ? "house" : h === "path" ? "path" : h === "week" ? "week" : h === "readings" ? "readings" : ""; }
   function setTab(t, nopush) {
     if (!VIEWS8.some(function (x) { return x[0] === t; })) t = "week";
     UI.tab = t; UI.slot = t === "house" ? UI.slot : "";
@@ -1745,7 +1979,7 @@
     host.addEventListener("click", function (ev) {
       var t = ev.target.closest ? ev.target.closest("[data-act]") : null; if (!t || !data) return;
       var act = t.getAttribute("data-act"), c = UI.ck;
-      if (act === "listen") { var p = piece(); if (p && !p.opened) { post({ action: "road_open", id: p.id }); p.opened = (data && data.today) || "today"; p.openedDay = DAYS[new Date().getDay()]; setDone("road"); } return; }
+      if (act === "listen" || act === "rlisten") { var lid = t.getAttribute("data-id"), p = lid ? rdById(lid) : piece(); if (p && !p.opened) { post({ action: "road_open", id: p.id }); p.opened = (data && data.today) || "today"; p.openedDay = DAYS[new Date().getDay()]; setDone("road"); var pp = piece(); if (pp && pp.id === p.id) { pp.opened = p.opened; pp.openedDay = p.openedDay; } cache(); } return; }
       if (act === "course") { courseTap(); return; }
       if (act === "story" || act === "begin" || act === "gpread") return;
       if (act === "stones") { ev.preventDefault(); window.APHisRoad.show("stones", true); return; }
@@ -1768,8 +2002,7 @@
         case "ck-path": c.path = t.getAttribute("data-v"); ckMark(); ckRedraw(); break;
         case "ck-word": c.word = c.word === t.getAttribute("data-v") ? null : t.getAttribute("data-v"); if (c.path) ckMark(); ckRedraw(); break;
         case "ck-more": c.moreWords = true; ckRedraw(); break;
-        case "ck-helped": ckHelped(t.getAttribute("data-v")); break;
-        case "ck-why": ckWhy(t.getAttribute("data-v")); break;
+        case "ck-readings": closeOverlay(ovCk()); setTab("readings"); break;
         case "ck-how": ckHow(t.getAttribute("data-v")); break;
         case "ck-prac": ckPrac(Number(t.getAttribute("data-v"))); break;
         case "ck-when": ckWhen(t.getAttribute("data-v")); break;
@@ -1784,13 +2017,26 @@
         case "letter": openLetter8(); break;
         case "hand": UI.handSent = false; UI.say.hand = ""; openSheet8("I Need a Hand", handHtml8()); break;
         case "hand-send": handSend(); break;
-        case "settings": UI.say = { rhythm: "", shares: "", pause: "", hand: UI.say.hand, write: "" }; openSheet8("Settings", settingsHtml8()); break;
+        case "settings": UI.say = { shares: "", pause: "", hand: UI.say.hand, write: "" }; openSheet8("Settings", settingsHtml8()); break;
         case "rooms": openSheet8("Your Rooms", roomsHtml()); break;
-        case "rhythm": rhythm(t.getAttribute("data-v")); break;
+        case "rd-mark": rdMark(t.getAttribute("data-id"), t.getAttribute("data-v")); break;
+        case "rd-why": rdWhy(t.getAttribute("data-id"), t.getAttribute("data-v")); break;
+        case "rd-fu": var fid = t.getAttribute("data-id"), fv = +t.getAttribute("data-v"); R8.fu[fid] = fv; renderMain(true); refocus("#fq" + fv + fid.replace(/[^A-Za-z0-9]/g, "")); break;
+        case "rd-touch": rdToggle(t.getAttribute("data-id"), "touch", t.getAttribute("data-v")); break;
+        case "rd-where": rdToggle(t.getAttribute("data-id"), "where", t.getAttribute("data-v")); break;
+        case "rd-keepline": rdKeepLine(t.getAttribute("data-id"), +t.getAttribute("data-v")); break;
+        case "rd-reline": var rid = t.getAttribute("data-id"); R8.reline[rid] = true; renderMain(true); refocus('[data-act="rd-keepline"][data-id="' + rid + '"]'); break;
+        case "rd-carry": rdCarry(t.getAttribute("data-id")); break;
+        case "rd-pace": rdPace(t.getAttribute("data-v"), !paceSet8()); break;
+        case "rd-pacekeep": rdPaceKeep(); break;
+        case "rd-lead": rdLead(t.getAttribute("data-v")); break;
+        case "rd-more": rdMore(); break;
+        case "rd-keepit": rdKeepIt(); break;
+        case "rd-lean": openSheet8("Where It Points", leanHtml8()); break;
+        case "rd-voices": openVoices8(); break;
         case "share8": share(t.getAttribute("data-v")); break;
         case "pause8": if ((t.getAttribute("data-v") === "1") !== !!(V().settings && V().settings.paused)) pause(); break;
         case "welcome": openSheet8("What This Page Is For", welcomeBody()); break;
-        case "send-ans": sendAns(); break;
         case "wrole": UI.wf.role = t.getAttribute("data-v"); UI.wf.picked = true; renderMain(true); break;
         case "invite": invite(); break;
         case "wchange": UI.wf.sent = false; UI.wf.picked = false; renderMain(true); break;
