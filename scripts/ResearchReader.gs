@@ -1,5 +1,5 @@
 /**
- * Ancient Path — Research reader · build 12.8 (John's three findings on the live Path view and the scroll: the line under the title level with the panels; a view opens at its top; the picture on a course card from Config "course picture <initials>"; built on 12.7; counts taken as in 12.7) · build 12.7 (the fixes John drew on the live pages Nov 4, 2026: Who We Read from Sources by status, the Lanes voices pulled from Sources, a ready copy per person so Your Page and Your Growth open at once, one frame, links, rows, words and dots; build 12.6: week lines for the Front Desk's weekly email) · road.js 11.4 · growth.js 4.2
+ * Ancient Path — Research reader · build 12.9 (the readings content pass, ruled "go" Nov 5, 2026: the nine writing rules in the morning writer and its read-back; the writer on the Opus model the Console key accepts, proved with one call before Config "road model" changes; the release moves into the morning, after the lines are written and before readings are given, with 6:00 PM kept as the catch; a candidate reaches no one until its lines pass; a research:link card on the Front Desk puts a found link on a held entry and releases it; built on the live 12.8 read through the Google Drive connector; growth.js 4.3 and road.js 11.5 unchanged, byte for byte, so their stylesheet counts stand as stamped) · build 12.8 (John's three findings on the live Path view and the scroll: the line under the title level with the panels; a view opens at its top; the picture on a course card from Config "course picture <initials>"; built on 12.7; counts taken as in 12.7) · build 12.7 (the fixes John drew on the live pages Nov 4, 2026: Who We Read from Sources by status, the Lanes voices pulled from Sources, a ready copy per person so Your Page and Your Growth open at once, one frame, links, rows, words and dots; build 12.6: week lines for the Front Desk's weekly email) · road.js 11.4 · growth.js 4.2
  * Build 12.7 (Nov 4, 2026; the ruled list from Nov 4, 2026 and the drawn fixes, https://claude.ai/artifact/9UJsUiy8u8vxZo2g2jFLN2; built on the live 12.6 read through the Google Drive connector; numbered 12.7 because the live script already reads 12.6, so 12.5.1 would have gone backwards; counts taken: both scripts parse, every stylesheet parses with a real CSS parser, the rule counts are stamped in the scripts and the browser's accepted count equals them). SERVER: 1. sourcesOut_ (Who We Read) shows only the Sources rows whose status is read, shelf or no feed yet; paused, proposed and not recommended rows are never drawn. 2. The Lanes tab's typed voices column is no longer read: each lane's voices line is pulled from the Sources rows of the disciplines the lane folds in (Lanes column D), with the same status rule, so the two can never disagree. 3. A ready copy per person: the record Your Growth reads and the record Your Page reads are each kept six hours in the script cache (in pieces under its 100 KB limit), per person and per day; dropped the moment that person saves anything; rebuilt for everyone by the morning task (readFeeds, roadDaily) and by the 6:00 PM release (a generation number moves, so no copy from before is served); a cache hit on Your Page also keeps his last-seen stamp (one cell, at most every thirty minutes). Both pages draw their last copy first from the browser (growth.js 4.2, road.js 11.4). A change made by hand in the sheet (Sources, Lanes, Course map) reaches a page at the next morning run, the 6:00 PM release, or the person's own next save. One Log line, once. Moves to our platform as it is: all of it (the cache is an optimization, not a record). Rebuilt: nothing. Paste, Save, Deploy → Manage deployments → edit → New version → Deploy; no setup run.
  * Build 12.6 (Nov 4, 2026; server only, road.js stays 11.3; goes with Front Desk 29.4): the weekly email from Your Page. 1. week_lines (weekLines_) is a read-only, keyed action: it asks roadFor_ in quiet mode (new fifth argument), so the Front Desk gets the SAME answer Your Page's This Week reads and nothing is written for the man (no visit stamp, no piece handed, no "how this works" row). Config "week lines key" is the key. 2. A man seated in a room no longer gets the one-line "There is something new on your page." email (roadNotice_): his new cards wait for the room's weekly email; a man not in a room keeps it. Moves to the platform as it is. Rebuilt: nothing. Paste, Save, Deploy → Manage deployments → edit → New version → Deploy.
  * Build 12.5 (Nov 3, 2026; built to the mockup v8.10 John ruled, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP, install 2 of 3; built on the live 12.4.2 read through the Google Drive connector, so Your Growth 4.1.1 and the Witness stay exactly as they are): road.js 11.3 and these server changes. 1. The pace is time: About 20 minutes · About 40 minutes · An hour (PACES min20, min40, min60). The three older paces carry over by weight (Three a week → About 20 minutes, Daily → About 40 minutes, Up to twice a day → An hour), read from the same Learners cell; the morning run hands readings until the week's minutes are filled (each piece's length from the Entries cut), never more than three a week. 2. Skip has three reasons, too_long, not_needed and later; later waits and counts for nothing against a lane. 3. New actions: road_keepline (the line he keeps), road_touch and road_where (what it touched, where it showed up; each tap one Road row, on or off), road_keepit (Keep doing: the practice the check-in carries), road_more (Ask for more: the next reading, at most three a week, only when he asks), road_voices (Who We Read). 4. The `read` shape on the road answer: this week's readings with his taps, the answers he gave before, the readings that helped with their lines, what they touched and where, where it points (Lean into, Keep doing), and whether another reading is ready. Moves to our platform as it is: all of it (rows in the record's shape: person, piece, question, answer, signal).
@@ -1137,7 +1137,8 @@ function doGet(e) {
   if (p.y) return witnessYesPage_(p.y); // build 11.1: Before You Say Yes
   if (p.d) return witnessDonePage_(p.d); // build 11.1: the one-tap "I did it today"
   try { ensureBuild12_(SpreadsheetApp.openById(RE_SHEET_ID)); } catch (xb) {}
-  return jsonOut_({ ok: true, service: 'Ancient Path — Research reader', build: RE_BUILD, script: SCRIPT_BUILD, growth: GROWTH_BUILD, road: ROAD_BUILD });
+  var rm = ''; try { rm = readConfig_(SpreadsheetApp.openById(RE_SHEET_ID))['road model'] || ''; } catch (xr) {}
+  return jsonOut_({ ok: true, service: 'Ancient Path — Research reader', build: RE_BUILD, script: SCRIPT_BUILD, growth: GROWTH_BUILD, road: ROAD_BUILD, roadModel: rm });
 }
 
 function doPost(e) {
@@ -1678,6 +1679,7 @@ function roadDaily() {
   ensureBuild4_(ss); ensureBuild10_(ss);
   var acts = 0; try { acts = roadActs_(ss); } catch (ea) { log_(ss, 'road', 'acts', String(ea).slice(0, 160)); }
   var wrote = roadWriteLines_(ss, cfg, toInt_(cfg['road lines per day'], 10));
+  var morning = null; try { morning = releaseMorning_(ss, cfg); } catch (er) { log_(ss, 'auto release', 'the morning release stopped, nothing released', String(er && er.code || er && er.stack || er).slice(0, 200)); } // build 12.9: released after the lines, before the readings are given
   var added = roadSyncRoom_(ss, cfg);
   var given = 0, notify = {}, map = courseMap_(ss);
   learners_(ss).forEach(function (L) {
@@ -1688,7 +1690,7 @@ function roadDaily() {
   var words = 0; try { ensureBuild5_(ss); words = roadWords_(ss, cfg, 10, notify); } catch (ew) { log_(ss, 'road', 'words', String(ew && ew.stack || ew).slice(0, 200)); }
   var sent = 0; Object.keys(notify).forEach(function (em) { if (roadNotice_(ss, cfg, notify[em])) sent++; });
   try { readyWarm_(150000, 'roadDaily'); } catch (xw) {} // build 12.7: a ready copy for every man, after the morning's hand-offs
-  log_(ss, 'road', 'daily', wrote + ' entries given their lines · ' + acts + ' acts set · ' + added + ' learners added from the Room tab · ' + given + ' pieces given today · ' + words + ' words written · ' + sent + ' notices sent');
+  log_(ss, 'road', 'daily', wrote + ' entries given their lines · ' + acts + ' acts set · ' + added + ' learners added from the Room tab · ' + (morning ? morning.released + ' released this morning · ' : '') + given + ' pieces given today · ' + words + ' words written · ' + sent + ' notices sent');
 }
 /** The Room tab's men become Learners rows on their own (how = room); a row already there is left as it is. Build 10: the row carries the room's first night as lead started and the room's reader. */
 function roadSyncRoom_(ss, cfg) {
@@ -2521,10 +2523,11 @@ function roadLinesFail_(L, map) {
   for (var j = 0; j < pieces.length; j++) {
     var p = pieces[j]; if (!p || p.length < 4) continue;
     var re = new RegExp('\\b' + p.replace(/[^\w\s']/g, ' ').trim().replace(/\s+/g, '\\s+') + '\\b', 'i');
-    if (re.test(L.todo) && !/^write\b/i.test(p) && !new RegExp('\\bwrite\\b[^.]{0,40}' + p.replace(/[^\w\s']/g, ' ').trim().replace(/\s+/g, '\\s+'), 'i').test(L.todo)) { why.push('the one thing assumes ' + p + ' is already written; say the step first ("' + (/^write\b/i.test(p) ? p : 'Write ' + p) + ', about ten minutes, then…")'); break; }
+    if (re.test(L.todo)) { why.push('rule 1: the one thing to do names a story piece (' + p + '); it is a practice he lives, never a writing piece'); break; }
   }
   if (/\bWhere I'm From\b/i.test(all)) why.push('the piece is named "Where I Am From" on the chronicle');
   if (/\bwrite\s+write\b/i.test(all)) why.push('a doubled word ("Write Write")');
+  var nine = readingRulesFail_(L.road, L.todo, L.question); if (nine) why.push(nine); // build 12.9
   return why.join('; ');
 }
 /** Every entry's lines read back against the standard as it stands now; the ones that fail are cleared and written again (run by hand after a rule changes). */
@@ -2539,12 +2542,9 @@ function roadRewriteFlagged() {
   return bad.length ? roadWriteLines_(ss, readConfig_(ss), 50) : 0;
 }
 function roadLines_(cfg, key, e, map) {
-  var system = 'You write the version of a research entry that a man on the road reads on his own page at Ancient Path Biblical Coaching, a Christian men\'s coaching practice. He is in a group course (twelve weeks; his group meets once a week) or did one-on-one work. He is not a facilitator and never leads the group. ' +
-    'Voice: plain and clear, not formal, not folksy; American spelling; never the word "brother"; never a person\'s name; say "our team", never two founders\' names; never "the next man" or "a stranger"; Scripture in ESV wording with its reference. Keep the enemy to the minimum. Never write an out for not doing the work. ' +
-    'Rules that fail the read if broken: (1) Write to him about his own road only. Never about leading, reading, correcting or helping the men in his group as their leader; never "a man in your group needs", "a man from your group needs", "whose story you have heard". When you speak of his group, say "your group" or "a man from your group", never "your room" or "the room" for the group (a literal use, such as "get out of the room", is fine). His own practice of calling another man, or asking one man for help, is his road and may be named. (2) Never name a course week by number or by title in the three lines (not "Week 9", not "Roots Run Deep"): name the theme in the course\'s own words. The week an entry serves goes in the "weeks" field only, one unit per course it serves; a course it does not serve is left out. (3) When the course map gives the week\'s own question, practice or sentence, lift those words verbatim; do not paraphrase them. (4) The one thing to do needs nothing but the piece he just read and his own week. If it names a Your Story piece (Where I Am From, Write a Lament, Asked of Me, What Kind of Light, Set a Stone, Where Are You), it says the step first and in order: "Write Where I Am From, about ten minutes, then …", using the piece\'s name exactly as given. ' +
-    'Reply as JSON only: {"keywords": "<the course key words, terms and teaching concepts this entry touches, comma-separated, as the courses name them>", "weeks": {"<a course name exactly as the map names it>": <the one unit of that course this entry serves best, a number>}, "road": "<What it means for your road: two to four sentences to him, the theme in the course\'s own words, what the claim means for his week, and the verse with its reference. No quotes from the source here. No week number or title.>", "todo": "<One thing to do this week: one or two sentences, imperative, something he can do before his group meets.>", "question": "<One question back: one sentence he can answer in a few lines about his own week; answerable without naming another person.>"}';
+  var system = READING_RULES_PROMPT_; // build 12.9: the nine rules (Nov 5, 2026), one standard for the writer and every rewrite
   var mens = String(e.audience || '').match(/men:\s*([^·]+)/i);
-  var user = 'The entry:\nClaim: ' + e.claim + '\nSource: ' + e.source + '\nPlace on the road: ' + e.place + (mens ? '\nThe line written for men: ' + mens[1].trim() : '') + '\nRead against the text: ' + e.beside + '\nAlready ours: ' + e.ours + '\nIn their words: ' + (e.quotes || '(none yet)') + '\n\nThe course map, in each course\'s own words (a man may be in one or two of these; give the unit this entry serves in every course it serves):\n' + ((map && map.text) || '(not available)');
+  var user = 'The entry:\nClaim (say it to him in the first sentence of the paragraph): ' + e.claim + '\nSource: ' + e.source + '\nPlace on the road: ' + e.place + (mens ? '\nThe line written for men: ' + mens[1].trim() : '') + '\nRead against the text: ' + e.beside + '\nAlready ours: ' + e.ours + '\nIn their words: ' + (e.quotes || '(none yet)') + '\n\nThe course map, for the "weeks" field only (a man may be in one or two of these; give the unit this entry serves in every course it serves). Never carry its titles, questions, practices or sentences into the three lines:\n' + ((map && map.text) || '(not available)');
   var ss = SpreadsheetApp.openById(RE_SHEET_ID);
   var unlabel = function (t) { return String(t || '').trim().replace(/^(what it means for your road|one thing to do( this week)?|(one |a )?question back)\s*[:—\-]\s*/i, '').trim(); };
   var attempt = function (extra) {
@@ -4224,7 +4224,7 @@ var ROAD_JS = "/* AP-HISROAD road.js build 11.3 — Your Page, install 2 of 3: t
  * what the room carried, The Shelf, Who We Read, his Craft and his lanes. New Answers kinds: after, less, voice, setaside, team, notice (Answers columns: when, who, entry id, kind, text, answer, room, build).
  * A Lanes tab (the twelve lanes of the mockup) and the Config lines are made once by ensureBuild12_. The 6:00 PM release (releaseTick) is switched by Config "auto release" (off until the hold is proven on the Front Desk).
  * Hold cards: research:hold:<entry id> on the Front Desk's Actions tab (rule RE15); a card marked done by hand is a hold. */
-var SCRIPT_BUILD = '12.8';
+var SCRIPT_BUILD = '12.9';
 var LANES_HEAD_12 = ['lane', 'what it covers', 'voices', 'Sources disciplines folded in', 'added'];
 var LANES_12 = [
   ['Narrative trauma care', 'How a man’s story holds his wounds', 'Dan Allender, Diane Langberg, Aundi Kolber', 'Narrative trauma care; Story work and attachment'],
@@ -4248,6 +4248,7 @@ var CONFIG_12 = [
 ];
 function ensureBuild12_(ss) {
   var props = PropertiesService.getScriptProperties(), did = [];
+  try { ensureBuild129_(ss); } catch (x129) { try { log_(ss, 'build 12.9', 'setup stopped', String(x129 && x129.stack || x129).slice(0, 200)); } catch (xl) {} }
   if (props.getProperty('b122') !== '1') { // 12.2: who may see the Release List
     var shc = ss.getSheetByName('Config');
     if (shc) {
@@ -4285,6 +4286,143 @@ function releaseInstallTrigger_() {
 }
 /** Run once from the editor only if the page could not install the trigger itself (the Log says so). */
 function setupRelease() { PropertiesService.getScriptProperties().deleteProperty('b12t'); ensureBuild12_(SpreadsheetApp.openById(RE_SHEET_ID)); return 'done'; }
+
+/* ═══════════ build 12.9 · the readings content pass (ruled "go" Nov 5, 2026) ═══════════
+ * One standard for the man's three lines (Entries Y, Z, AA): the nine rules below are the writer's prompt, the read-back (readingRulesFail_)
+ * and the Standard tab's rows, so a rewrite by hand and a rewrite by the morning writer meet the same line.
+ * The release moves into the morning (releaseMorning_, inside roadDaily: after the lines are written, before readings are given); 6:00 PM stays as the catch.
+ * A research:link:<entry id> card on the Front Desk, marked done, puts its link on a held entry and releases it (linkSync_).
+ * What moves to our own platform as it is: the nine rules (READING_RULES_PROMPT_ and readingRulesFail_), the release order and the link card's meaning; the trigger is rebuilt there. */
+var READING_RULES_PROMPT_ = 'You write the version of a research entry that a man reads on his own page (Your Page, Readings) at Ancient Path Biblical Coaching, a Christian coaching practice. He may be walking a group course or a self-study course on his own. He is not a facilitator and never leads others. ' +
+  'Voice: plain and clear, not formal, not folksy; American spelling; never the word "brother"; never a person\'s name; say "our team", never two founders\' names; never "the next man" or "a stranger"; keep the enemy to the minimum; never write an out for not doing the work. ' +
+  'The nine rules (Nov 5, 2026). A line that breaks one fails the read and is written again: ' +
+  '(1) One thing to do is a practice he lives this week: a prayer, a call, a conversation, a habit of attention, Scripture read aloud, rest, a kept promise. Never a writing piece: no "write", no journal, no list, no Your Story piece (Where I Am From, Write a Lament, Asked of Me, What Kind of Light, Set a Stone, Where Are You). A story piece comes only from the course week or when he chooses one. ' +
+  '(2) No sentence tied to one course week, its title or its theme ("This week is about…", "as you write…", "your week asks…"); every line must read true in any week it is served. Never a week number or a week title. ' +
+  '(3) The paragraph carries exactly one Scripture verse, in the ESV, quoted word for word inside curly quotation marks with its reference in parentheses straight after it, for example “Blessed are those who mourn, for they shall be comforted” (Matthew 5:4). Quote a part of a verse rather than paraphrase it. Read it in its setting and add no clause the text does not say. If you name a tradition, call it a tradition. ' +
+  '(4) The paragraph is 70 words at most, written to him as "you", about his own life; never about leading others or a facilitator\'s chair. No meta voice: never "the claim is", "the process model", "the text adds", "the episode", "the post", "the article", "the sermon". ' +
+  '(5) Say "temptation" plainly, never "the pull" and never "pull". ' +
+  '(6) No shame window and no presumption: never assume he slipped, failed or refused ("this week\'s slip", "or refuse to take?"). Encouraging; point him to the next right thing. ' +
+  '(7) The practice never needs a group: say "one man you trust", never "your group", "the men" or a check-in, because a man in a self-study course has no group. ' +
+  '(8) Every line begins with a capital letter; American spelling. ' +
+  '(9) The headline is written to him: the first sentence of the paragraph says the entry\'s claim to him, in plain words. ' +
+  'The question back is one sentence about his own life, answerable in a few lines without naming another person, and it never assumes a failure. ' +
+  'Reply as JSON only: {"keywords": "<the course key words, terms and teaching concepts this entry touches, comma-separated, as the courses name them>", "weeks": {"<a course name exactly as the map names it>": <the one unit of that course this entry serves best, a number>}, "road": "<the paragraph, by rules 2, 3, 4 and 9>", "todo": "<One thing to do: one or two sentences, imperative, a practice by rules 1 and 7>", "question": "<One question back: one sentence>"}';
+var READING_RULES_STANDARD_ = {
+  'for his road': 'the paragraph a man reads, by the nine rules of Nov 5, 2026: its first sentence says the entry\'s claim to him (rule 9); 70 words at most, written to him as "you", about his own life, never about leading others or a facilitator\'s chair, no meta voice (rule 4); no sentence tied to one course week, its title or theme, so it reads true in any week (rule 2); exactly one ESV verse, quoted word for word with its reference, read in its setting, no clause the text does not say, tradition labeled as tradition (rule 3); "temptation" said plainly, never "the pull" (rule 5); no shame window, no presumption (rule 6); a capital first letter, American spelling (rule 8)',
+  'one thing to do': 'a practice he lives this week, one or two sentences, imperative: a prayer, a call, a conversation, a habit of attention, Scripture read aloud, rest, a kept promise; never a writing piece, never a Your Story piece (a story piece comes only from the course week or when he chooses one) (rule 1); it never needs a group, "one man you trust" (rule 7); rules 2, 5, 6 and 8 hold here too (Nov 5, 2026)',
+  'question back': 'one question back, one sentence about his own life, answerable in a few lines without naming another person; it never assumes a slip, a failure or a refusal; rules 2, 5, 6 and 8 hold here too (Nov 5, 2026)'
+};
+var READING_BOOKS_ = '(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|[12] Samuel|[12] Kings|[12] Chronicles|Ezra|Nehemiah|Esther|Job|Psalms?|Proverbs|Ecclesiastes|Song of Solomon|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi|Matthew|Mark|Luke|John|Acts|Romans|[12] Corinthians|Galatians|Ephesians|Philippians|Colossians|[12] Thessalonians|[12] Timothy|Titus|Philemon|Hebrews|James|[12] Peter|[123] John|Jude|Revelation)';
+/** The nine rules read back (rules 1 to 8 by pattern; rule 3's word-for-word ESV check is done against the text before a hand rewrite ships). '' when the lines pass. */
+function readingRulesFail_(road, todo, question) {
+  road = String(road || ''); todo = String(todo || ''); question = String(question || '');
+  var all = [road, todo, question].join(' '), why = [];
+  if (/\b(write|writing|written|journal|jot|note down|make a list|list of)\b/i.test(todo)) why.push('rule 1: the one thing to do is a writing task; make it a practice he lives');
+  if (/\b(Where I Am From|Write a Lament|Lament|Asked of Me|What Kind of Light|Set a Stone|Where Are You|The Road I Walked|Ending Well)\b/.test(todo)) why.push('rule 1: the one thing to do names a story piece');
+  if (/this week (is about|asks|you('re| are) (counting|learning|naming|cultivating))|your week asks|as you (write|answer|cultivate|check in|count)|this week's|\bweek \d+|\bat check-?in\b|before (your|the) group meets|the week (asks|is about)/i.test(all)) why.push('rule 2: a sentence tied to one course week');
+  var refs = road.match(new RegExp('\\b' + READING_BOOKS_ + ' \\d+:\\d+', 'g')) || [];
+  if (refs.length !== 1) why.push('rule 3: the paragraph carries ' + refs.length + ' verse references; it carries exactly one');
+  if (!/“[^”]+”\s*\(/.test(road)) why.push('rule 3: the verse is not quoted with its reference after it');
+  var words = road.split(/\s+/).filter(Boolean).length;
+  if (words > 70) why.push('rule 4: the paragraph is ' + words + ' words; 70 at most');
+  if (!/\byou(r|rself)?\b/i.test(road)) why.push('rule 4: the paragraph is not written to him');
+  if (/\bfacilitat|\b(lead|leads|leading) (the|your|a) (room|group|men)\b|\bthe men (you|in)\b|\bcall(ing)? (another man|a man) out\b|\b(your|his|our|the) room\b|\ba man in your group\b|\bhis group\b/i.test(all)) why.push('rule 4: the facilitator\'s chair or leading others');
+  if (/\bthe (claim|process model|text adds|text agrees|episode|post|article|sermon|guest|host)s?\b|\bthis claim\b/i.test(all)) why.push('rule 4: meta voice');
+  if (/\bpull(s|ed|ing)?\b/i.test(all)) why.push('rule 5: say temptation, never pull');
+  if (/\b(slip|slipped|your failure|or refuse|refuse to take|did you fail|when you fell|you blew it|blowing it)\b/i.test(all)) why.push('rule 6: presumption or a shame window');
+  if (/\b(your|the|a) group\b|\bfrom your group\b|\bcheck-?in\b/i.test(todo)) why.push('rule 7: the practice needs a group; say one man you trust');
+  [['paragraph', road], ['one thing to do', todo], ['question back', question]].forEach(function (p) { if (p[1] && !/^[A-Z“"]/.test(p[1])) why.push('rule 8: the ' + p[0] + ' begins with a small letter'); });
+  var brit = all.match(/\b(colour|honour|favour|behaviour|neighbour|centre|recognis|realis|organis|apologis|practise|labour|saviour|judgement|towards|whilst|amongst)\w*/i);
+  if (brit) why.push('rule 8: British spelling (' + brit[0] + ')');
+  return why.join('; ');
+}
+function releaseHourText_(h) { var hh = h % 12 || 12; return hh + ':00 ' + (h < 12 ? 'AM' : 'PM'); }
+/** The hour the next release will reach the men: the morning run's hour (Config "road daily") before it, 6:00 PM (the catch) after it. */
+function releaseNextLabel_(cfg) { var h = toInt_(cfg['road daily'], 8); return centralHour_() < h ? releaseHourText_(h) : '6:00 PM'; }
+/** The morning release (12.9), called by roadDaily after the lines are written and before readings are given. */
+function releaseMorning_(ss, cfg) {
+  if (String(cfg['auto release'] || 'off').toLowerCase() !== 'on') return null;
+  var lock = LockService.getScriptLock(); if (!lock.tryLock(20000)) { log_(ss, 'auto release', 'the morning release waited on another run; 6:00 PM catches it'); return null; }
+  try {
+    try { linkSync_(ss); } catch (xl) { log_(ss, 'link card', 'failed', String(xl && xl.code || xl).slice(0, 160)); }
+    return releaseAuto_(ss, cfg, 'morning');
+  } finally { lock.releaseLock(); }
+}
+/** A research:link:<entry id> card on the Front Desk's Actions tab, marked done, puts the card's link on that held entry, the act named in its "for" line (Read · Listen · Watch)
+ *  and the source line after "source:" in its "because" line, and releases it. A card left open keeps the entry held. */
+function linkSync_(ss) {
+  var sh = deskSheet_().getSheetByName('Actions'); if (!sh || sh.getLastRow() < 2) return 0;
+  var H = headerIndex_(sh), en = ss.getSheetByName('Entries'), byId = {}, n = 0;
+  entries_(ss).forEach(function (e) { byId[e.id] = e; });
+  sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getValues().forEach(function (r) {
+    var k = String(r[H['key']] || ''); if (k.indexOf('research:link:') !== 0) return;
+    var byHand = r[H['mark done by hand']] === true || String(r[H['mark done by hand']]).toLowerCase() === 'true';
+    if (String(r[H['status']]).toLowerCase() === 'open' && !byHand) return;
+    var e = byId[k.slice('research:link:'.length)], link = String(r[H['link']] || '').trim();
+    if (!e || e.status !== 'held' || !/^https?:\/\//.test(link)) return;
+    var act = (String(r[H['for']] || '').match(/\b(Read|Listen|Watch)\b/) || [])[1], src = (String(r[H['because']] || '').split(/\bsource:\s*/)[1] || '').trim();
+    en.getRange(e.row, EC.link).setValue(link);
+    if (act) en.getRange(e.row, EC.act).setValue(act);
+    if (src) en.getRange(e.row, EC.source).setValue(src);
+    en.getRange(e.row, EC.status, 1, 3).setValues([['released', 'John · link card', stamp_(new Date())]]);
+    log_(ss, 'link card', e.id, 'the found link is on the entry and it is released: ' + link); n++;
+  });
+  return n;
+}
+function configNote_(ss, key, note) {
+  var sh = ss.getSheetByName('Config'), n = sh.getLastRow(), keys = n > 1 ? sh.getRange(2, 1, n - 1, 1).getValues() : [];
+  for (var i = 0; i < keys.length; i++) if (String(keys[i][0]).trim() === key) { sh.getRange(i + 2, 3).setValue(note); return; }
+}
+var OPUS_FALLBACK_ = ['claude-opus-4-5', 'claude-opus-4-1'];
+/** One call proves the model: the newest Opus the Console key lists (else the fallbacks) must answer before Config "road model" changes. */
+function roadModelProve_() {
+  var key = claudeKey_(); if (!key) return { ok: false, why: 'no CLAUDE_KEY script property' };
+  var hd = { 'x-api-key': key, 'anthropic-version': '2023-06-01' }, ids = [], tried = [];
+  try {
+    var r = UrlFetchApp.fetch('https://api.anthropic.com/v1/models?limit=100', { muteHttpExceptions: true, headers: hd });
+    if (r.getResponseCode() === 200) {
+      var d = (JSON.parse(r.getContentText()).data || []).filter(function (m) { return /^claude-opus/.test(String(m.id || '')); });
+      d.sort(function (a, b) { return String(b.created_at || '').localeCompare(String(a.created_at || '')); });
+      ids = d.map(function (m) { return String(m.id); });
+    } else tried.push('models list ' + r.getResponseCode());
+  } catch (x) { tried.push('models list ' + String(x).slice(0, 60)); }
+  OPUS_FALLBACK_.forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); });
+  for (var i = 0; i < ids.length && i < 4; i++) {
+    var res = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', { method: 'post', contentType: 'application/json', muteHttpExceptions: true, headers: hd,
+      payload: JSON.stringify({ model: ids[i], max_tokens: 5, messages: [{ role: 'user', content: 'Reply with the one word: ready' }] }) });
+    if (res.getResponseCode() === 200) return { ok: true, model: ids[i] };
+    tried.push(ids[i] + ' ' + res.getResponseCode());
+  }
+  return { ok: false, why: tried.join('; ') };
+}
+function ensureBuild129_(ss) {
+  var props = PropertiesService.getScriptProperties();
+  if (props.getProperty('b129') !== '1') {
+    var st = ss.getSheetByName('Standard');
+    if (st) {
+      var n = st.getLastRow(), names = n > 1 ? st.getRange(2, 1, n - 1, 1).getValues() : [];
+      Object.keys(READING_RULES_STANDARD_).forEach(function (k) {
+        var col = { 'for his road': 'Y', 'one thing to do': 'Z', 'question back': 'AA' }[k], row = 0;
+        for (var i = 0; i < names.length; i++) if (String(names[i][0]).trim().toLowerCase() === k) row = i + 2;
+        if (row) st.getRange(row, 2, 1, 2).setValues([[READING_RULES_STANDARD_[k], 'build 12.9 (' + col + ')']]); else st.appendRow([k, READING_RULES_STANDARD_[k], 'build 12.9 (' + col + ')']);
+      });
+    }
+    configNote_(ss, 'auto release', 'build 12.9: on = every candidate not held is released in the morning run (Config "road daily"), after its lines pass the read and before readings are given; 6:00 PM Central is the catch for a piece the morning did not release (releasedBy "automatic"); a hold is a research:hold card marked done on the Front Desk; a piece whose lines have not passed stays a candidate.');
+    log_(ss, 'build 12.9', 'the readings content pass: the nine rules in the writer, its read-back and the Standard tab; the release in the morning run, 6:00 PM kept as the catch; research:link cards on the Front Desk', 'growth.js 4.3 and road.js 11.5 unchanged');
+    props.setProperty('b129', '1');
+  }
+  var today = today_();
+  if (props.getProperty('b129m') !== '1' && props.getProperty('b129mDay') !== today) {
+    props.setProperty('b129mDay', today);
+    var p = roadModelProve_();
+    if (p.ok) {
+      setConfig_(ss, 'road model', p.model);
+      configNote_(ss, 'road model', 'build 12.9: the model that writes the man\'s lines (Entries X–AB) each morning by the nine rules (Standard tab); the script set it only after one call with the Console key answered, ' + stamp_(new Date()));
+      props.setProperty('b129m', '1');
+      log_(ss, 'build 12.9', 'road model proved and set', p.model + ' answered one call with the Console key; Config "road model" now reads it');
+    } else log_(ss, 'build 12.9', 'road model not changed: no Opus model answered (tried again tomorrow)', p.why);
+  }
+}
 
 /** Our team (an admin with no room of his own on People) reads the room as the room: the first room on the Rooms tab that has a night. A facilitator with no room stays without one. */
 function teamRoom_(who) {
@@ -4603,7 +4741,7 @@ function growthFor_(who) {
     who: { name: who.name, email: who.email, role: who.role, room: who.room, own: !!who.own, first: !ui['g-welcomed'], notice: notice },
     room: room, team: team ? { id: team.id } : null, piece: shown, mine: { choice: choice, opened: opened, swap: !!(bringId && bringId !== teamId), lines: linesChosen_(mine, shownId, winFrom) },
     after: after, carried: carriedOut_(who, cfg), menUrl: menUrl,
-    release: releaser_(cfg, email) && String(cfg['auto release'] || 'off').toLowerCase() === 'on' ? { on: true, hour: '6:00 PM' } : null,
+    release: releaser_(cfg, email) && String(cfg['auto release'] || 'off').toLowerCase() === 'on' ? { on: true, hour: releaseNextLabel_(cfg) } : null,
     shelf: shelf, shelfCount: released.length, sources: sourcesOut_(ss), coming: coming,
     craft: { brought: brought, aside: aside }, lanes: lanesOut_(ss), laneSay: laneSay, measure: measureOut_(ss),
     notices: { email: true, text: false }
@@ -4732,7 +4870,7 @@ function holdSync_(ss, cfg) {
   var have = holdStatus_(), made = 0, owner = teamName_();
   entries_(ss).filter(function (e) { return e.status === 'candidate'; }).forEach(function (e) {
     var key = 'research:hold:' + e.id; if (have[key] !== undefined) return;
-    if (deskCard_(key, owner, 'Read this piece, or hold it. If you do not hold it, it reaches the men at 6:00 PM today.', 'Release List · Your Growth', voiceOf_(e.source) + ' · ' + e.claim, e.link, 'RE15')) made++;
+    if (deskCard_(key, owner, 'Read this piece, or hold it. If you do not hold it, it reaches the men at ' + releaseNextLabel_(cfg) + ' today.', 'Release List · Your Growth', voiceOf_(e.source) + ' · ' + e.claim, e.link, 'RE15')) made++;
   });
   if (made) log_(ss, 'release list', made + ' hold card' + (made === 1 ? '' : 's') + ' written');
   return made;
@@ -4742,30 +4880,29 @@ function releaseTick() {
   try {
     var ss = SpreadsheetApp.openById(RE_SHEET_ID), cfg = readConfig_(ss);
     if (String(cfg['auto release'] || 'off').toLowerCase() !== 'on') return;
-    if (logHas_(ss, 'auto release', today_())) return;
-    releaseAuto_(ss, cfg);
-    try { readyWarm_(150000, 'releaseTick'); } catch (xw) {} // build 12.7: the shelf changed for everyone
+    try { linkSync_(ss); } catch (xl) { log_(ss, 'link card', 'failed', String(xl && xl.code || xl).slice(0, 160)); }
+    var r = releaseAuto_(ss, cfg, 'catch'); // build 12.9: 6:00 PM is the catch for a piece the morning did not release
+    if (r && r.released) { try { readyWarm_(150000, 'releaseTick'); } catch (xw) {} } // build 12.7: the shelf changed for everyone
   } catch (err) {
     try { log_(SpreadsheetApp.openById(RE_SHEET_ID), 'auto release', 'stopped, nothing released', String(err && err.code || err && err.stack || err).slice(0, 300)); } catch (e2) {}
   } finally { lock.releaseLock(); }
 }
-function releaseAuto_(ss, cfg) {
+function releaseAuto_(ss, cfg, when) {
   var cards = holdStatus_(); // throws when the desk cannot be read: then nothing is released
-  var en = ss.getSheetByName('Entries'), rel = [], held = [];
+  // build 12.9: the lines first, so a piece reaches no one until its lines pass the read
+  try { roadWriteLines_(ss, cfg, 50); } catch (x) { log_(ss, 'road', 'lines at release failed', String(x).slice(0, 160)); }
+  var en = ss.getSheetByName('Entries'), rel = [], held = [], waiting = [];
   entries_(ss).forEach(function (e) {
     if (e.status !== 'candidate') return;
     if (cards['research:hold:' + e.id] === 'done') { en.getRange(e.row, EC.status).setValue('held'); held.push(e.id); return; }
+    if (!(e.road && e.todo && e.question2)) { waiting.push(e.id); return; }
     en.getRange(e.row, EC.status, 1, 3).setValues([['released', 'automatic', stamp_(new Date())]]); rel.push(e);
   });
   try { closeHoldCards_(rel.map(function (e) { return e.id; })); } catch (xc) {}
-  try {
-    roadWriteLines_(ss, cfg, 50);
-    var left = entries_(ss).filter(function (e) { return e.status === 'released' && !(e.road && e.todo && e.question2); }).map(function (e) { return e.id; });
-    if (left.length) log_(ss, 'road', 'released without the man\'s lines (the morning run retries)', left.join(', '));
-  } catch (x) { log_(ss, 'road', 'lines at release failed', String(x).slice(0, 160)); }
+  if (waiting.length) log_(ss, 'road', 'kept as candidates until their lines pass the read (the next run retries)', waiting.join(', '));
   var sent = 0; try { sent = sendNotices_(ss, cfg, rel); } catch (xn) { log_(ss, 'growth notice', 'failed', String(xn).slice(0, 160)); }
-  log_(ss, 'auto release', today_(), rel.length + ' released, ' + held.length + ' held, ' + sent + ' notice' + (sent === 1 ? '' : 's') + ' sent');
-  return { released: rel.length, held: held.length, sent: sent };
+  if (rel.length || held.length || waiting.length || when !== 'catch') log_(ss, 'auto release', today_() + ' · ' + (when || 'by hand'), rel.length + ' released, ' + held.length + ' held, ' + waiting.length + ' waiting on their lines, ' + sent + ' notice' + (sent === 1 ? '' : 's') + ' sent');
+  return { released: rel.length, held: held.length, waiting: waiting.length, sent: sent };
 }
 /** The one plain line: only to a facilitator whose room's week the released pieces fit, and not to one who chose No notice. */
 function sendNotices_(ss, cfg, rel) {
