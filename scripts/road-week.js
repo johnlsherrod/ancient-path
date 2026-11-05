@@ -1,4 +1,5 @@
 /* AP-HISROAD road.js build 11.3 — Your Page, install 2 of 3: the Readings view (design 8.10). Served by the Research reader script (ResearchReader.gs build 12.5, ?file=road.js).
+   11.5 (Nov 4, 2026, Research reader build 12.8; John's three findings on the live Path view). 1. The line under the title on Path starts level with the panels (it was pushed in by the band's padding). 2. Opening a view brings you to the top of it: the site scrolls inside its own page area, so the scroll now moves that area, not the window. 3. The picture on a course's card comes from the script when the site has no card for the course (the Config line "course picture <initials>"), the same picture Your Growth shows.
    11.4 (Nov 4, 2026, Research reader build 12.7; the ruled list from Nov 4 and the fixes drawn on the live pages, https://claude.ai/artifact/9UJsUiy8u8vxZo2g2jFLN2; built on the live 11.3 read through the Google Drive connector). 1. Speed: the page draws the last copy this browser kept the moment the site shows who is signed in (before the answer), and the answer, kept by the script per person, replaces it; a copy from 11.3 is drawn too. 2. One frame: the band, the since line, the menu and the content share one width on a computer (the window up to 1320px); the side column is 340px from 1112px wide and sits under the main column below that, so the main column is never narrower than 440px; the band's words start level with the menu's first row. 3. Every link is navy with one thin underline: regular weight in a list, bold when it stands alone. 4. The menu heading and the rooms sheet read Rooms; the room rows are menu rows. 5. A capital Your only on the rooms and For Your Road (Your Witness is Witness, Your Profile is Profile, Your Story is Story, Your Stones is Stones, Your first reading is This week’s reading, your For Your Road piece helped is last week’s reading helped). 6. A dot stays with the words before it; a phrase between dots is never broken across two lines. 7. Begin on a course not started; This week’s reading · Arrives tomorrow morning; Last week’s reading helped. 8. This Week: The Week Ahead first, What your room carried last week at its foot; Walking With You is off This Week (the witness invitation is asked in Week 7, in Path and Next Step). 9. Story, Our Group: Never one man’s words. Moves to our platform as it is: all of it. Rebuilt there: nothing. Counts taken before this card: the script parses; the stylesheets are assembled as the page assembles them and parse with no dropped rule; Chromium accepted 170 (hisroad) + 335 (apg) rules, the same as the CSS parser (11.3: 170 + 316).
    11.3 (Nov 3, 2026; built to the mockup v8.10 John ruled, https://claude.ai/artifact/DRFs8n4ZCVisfvEhhiLSYP; the mockup's words are the copy; built on the live 11.2.2 and Research reader 12.4.2 read through the Google Drive connector). 1. Readings joins the menu and the tabs (This Week, Readings, Story, Path; #readings). The reading moves here from the piece sheet: every "Read it" opens Readings. 2. Each reading carries its story, where to listen from, how we read it, One Thing to Do, Carry This Question, and one tap (Helped or Skip); after Helped, one optional question at a time (Keep a line, What did it touch?, Where did it show up?), and after Skip, three reasons (Too long, Not for me, Not now). 3. What Has Helped is drawn from his real taps only: Where It Points (Lean into, Keep doing with Keep it), Lines You've Kept, Practices That Held. 4. Reading Rhythm is time, not pieces: About 20 minutes, About 40 minutes, An hour (the older paces carry over); Set Your Rhythm shows first until he has chosen; Which course leads? when he walks two. 5. "We have additional articles we think you would appreciate if time allows" with Ask for more, shown only when another reading is ready. 6. Who We Read opens from How it's chosen. 7. The check-in no longer asks whether the reading helped; it shows what he answered on Readings, or one tap to Readings (one act, one place). 8. Settings no longer carries a second rhythm: the amount he reads is set on Readings only. Not built, and listed in the handoff: Watch for, the pattern sentence, Bring it Wednesday, Reading From Here, Rhythm's second Ask for more.
    Stays on the live layer until install 3: Story and its pieces, stones and offers (story.js). Moves to our own platform as it is: the whole script and every row it writes (served from the repo).
@@ -11,8 +12,8 @@
   "use strict";
   var host = document.getElementById("apRoad4");
   if (!host || host.getAttribute("data-hisroad")) return;
-  host.setAttribute("data-hisroad", "11.4");
-  var BUILD = "11.4";
+  host.setAttribute("data-hisroad", "11.5");
+  var BUILD = "11.5";
   /* the stamped rule count of this script's stylesheet, taken before the file card (AP-SHIP 1); the page counts what the browser accepted against it */
   var RULES = { hisroad: 170, apg: 335 };
   var DESK_URL = "https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec";
@@ -225,7 +226,7 @@
   '#apRoad4 .apg .paper p+p{margin-top:12px}' +
   '#apRoad4 .apg .paper .sig{font-style:italic;color:#5E6573}' +
   '#apRoad4 .apg .stone .story{margin-top:4px}' +
-  '#apRoad4 .apg .vlead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 24px;padding:14px 16px 2px}' +
+  '#apRoad4 .apg .vlead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 24px;padding:14px 12px 12px}' +
   '#apRoad4 .apg .vlead p{flex:1 1 380px;max-width:66ch;font:italic 400 18px/1.5 var(--serif);color:var(--navy)}' +
   '#apRoad4 .apg .seg{display:flex;gap:8px}' +
   '#apRoad4 .apg .seg .choice{min-width:100px}' +
@@ -301,7 +302,7 @@
   '#apRoad4 .apg p.sig{color:#5E6573 !important;font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif !important}' +
   '@media (hover:hover){#apRoad4 .apg .gprow:hover{background:var(--hover)}#apRoad4 .apg .pas:hover .pan{color:var(--bronze-ink)}}' +
   '@media (max-width:420px){#apRoad4 .apg.ap-home .ap-panel-title{font-size:20px !important}}' +
-  '@media (min-width:900px){#apRoad4 .apg .since{padding:4px var(--hero-pad,28px)}#apRoad4 .apg .vlead{padding:22px var(--hero-pad,28px) 0}#apRoad4 .apg .bwit p{font-size:16px}#apRoad4 .apg .pa{grid-template-columns:repeat(var(--n),minmax(0,1fr));margin-top:12px}#apRoad4 .apg .pas{grid-template-columns:1fr;justify-items:start;row-gap:4px;padding:0 10px 6px 0}#apRoad4 .apg .pad{grid-row:auto;margin:0 0 6px}#apRoad4 .apg .pa li:not(:last-child):before{left:24px;right:0;top:12px;bottom:auto;border-left:0;border-top:2px solid var(--rule)}#apRoad4 .apg .pan{font-size:17px}#apRoad4 .apg .hero{padding-left:var(--hero-pad,28px);padding-right:var(--hero-pad,28px)}}' +
+  '@media (min-width:900px){#apRoad4 .apg .since{padding:4px var(--hero-pad,28px)}#apRoad4 .apg .vlead{padding:22px 0 14px}#apRoad4 .apg .bwit p{font-size:16px}#apRoad4 .apg .pa{grid-template-columns:repeat(var(--n),minmax(0,1fr));margin-top:12px}#apRoad4 .apg .pas{grid-template-columns:1fr;justify-items:start;row-gap:4px;padding:0 10px 6px 0}#apRoad4 .apg .pad{grid-row:auto;margin:0 0 6px}#apRoad4 .apg .pa li:not(:last-child):before{left:24px;right:0;top:12px;bottom:auto;border-left:0;border-top:2px solid var(--rule)}#apRoad4 .apg .pan{font-size:17px}#apRoad4 .apg .hero{padding-left:var(--hero-pad,28px);padding-right:var(--hero-pad,28px)}}' +
   /* 11.4: one frame; every link navy with one thin underline, regular in a list and bold alone (weighLinks sets reg and lone); dots stay with the words before them */
   '@media (min-width:900px){#apRoad4 .apg .pcwrap{width:min(var(--bleed-w,100vw),1320px);max-width:none;margin-left:calc(var(--bleed-l,0px) + (var(--bleed-w,100vw) - min(var(--bleed-w,100vw),1320px))/2);margin-right:0;background:var(--paper);box-shadow:0 0 0 100vmax var(--paper);clip-path:inset(0 -100vmax)}}' +
   '@media (min-width:1112px){#apRoad4 .apg .cols2{grid-template-columns:minmax(0,1fr) 340px}}' +
@@ -1474,7 +1475,13 @@
   function courseImg(name) {
     var n = norm(name), cards = document.querySelectorAll(".ap-card.ap-course, a.ap-ccard"), i, t, im;
     for (i = 0; i < cards.length; i++) { t = cards[i].querySelector(".ap-card-title, .ap-ccard-name"); im = cards[i].querySelector("img"); if (t && im && norm(t.textContent) === n) return im.getAttribute("src") || ""; }
-    return "";
+    return picOf(name);
+  }
+  /* 11.5: the script's picture for a course (Config "course picture <initials>"), used when the site has no card for it */
+  function picOf(name) {
+    var p = data && data.pics; if (!p) return "";
+    var k = String(name || "").replace(/[^\w\s]/g, " ").split(/\s+/).filter(Boolean).map(function (w) { return w.charAt(0).toLowerCase(); }).join("");
+    return k && p[k] ? String(p[k]) : "";
   }
   function courseCardP(c, line, sub, way) {
     var img = courseImg(c.name);
@@ -1985,6 +1992,12 @@
   }
   function toTop() {
     var b = $("#apgRoot"); if (!b) return;
+    var sc = scroller();
+    if (sc) { /* 11.5: the site scrolls inside its own page area */
+      var st = sc.scrollTop + b.getBoundingClientRect().top - Math.max(barH(), sc.getBoundingClientRect().top);
+      try { sc.scrollTo({ top: Math.max(0, st), behavior: reduce ? "auto" : "smooth" }); } catch (e) { sc.scrollTop = Math.max(0, st); }
+      return;
+    }
     var top = b.getBoundingClientRect().top + window.pageYOffset - barH();
     try { window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" }); } catch (e) { window.scrollTo(0, Math.max(0, top)); }
   }
@@ -2187,7 +2200,7 @@
   /* 11.4: the last copy this browser kept is drawn first, before the site's account call comes back (window.me is the site's own signed-in account); 11.3's copy has the same parts, so it is drawn too */
   function keptCopy(email) {
     var cached = null; try { var c = JSON.parse(localStorage.getItem(CACHE) || "null"); if (c && c.email === email && c.data && Date.now() - c.at < 7 * 864e5) cached = c.data; } catch (e) {}
-    if (cached && cached.build !== BUILD && cached.build !== "11.3") cached = null;
+    if (cached && cached.build !== BUILD && cached.build !== "11.3" && cached.build !== "11.4") cached = null;
     if (cached && cached.week && cached.week.start && Date.now() - Date.parse(cached.week.start + "T12:00:00") >= 14 * 864e5) cached = null;
     if (cached && !cached.v11) cached = null;
     return cached;

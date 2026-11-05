@@ -1,4 +1,5 @@
-/* AP-GROWTH growth.js build 4.2 \u2014 Your Growth, the facilitator's room, served by the Research reader script (ResearchReader.gs build 12.7, ?file=growth.js).
+/* AP-GROWTH growth.js build 4.3 \u2014 Your Growth, the facilitator's room, served by the Research reader script (ResearchReader.gs build 12.8, ?file=growth.js).
+   4.3 (Nov 4, 2026, Research reader build 12.8; John's findings on the live pages). Opening a view, going to a panel and keeping a place after a change now move the site's own scrolling area (the site scrolls inside its page area, not the window), so a tap on a view no longer lands you at the foot of the page.
    4.2 (Nov 4, 2026, Research reader build 12.7; the ruled list from Nov 4 and the fixes drawn on the live pages, https://claude.ai/artifact/9UJsUiy8u8vxZo2g2jFLN2; built on the live 4.1.1 read through the Google Drive connector). What changed: (1) the page opens at once: the last copy this browser kept is drawn first, however old, and the answer (kept six hours by the script, per person) replaces it; the page starts the moment the site shows who is signed in; (2) one frame: the band, the menu and the content share one width on a computer; the frame runs the width of the window up to 1320px, the side column is 340px from 1112px wide, and below 1112px the side sits under the main column, so the main column is never narrower than 440px; the band's words start level with the menu's first row; (3) every link is navy with one thin underline, regular weight in a list, bold when it stands alone; (4) the menu heading reads Rooms; (5) a capital Your only on the rooms (Ask About Your Room is Ask About the Room; Where Your Men Are This Week is Where the Men Are This Week); (6) a dot stays with the words before it and a phrase between dots is never broken across two lines; (7) Craft: One piece brought so far., the room's line runs the full width with Read it again beneath it, and Name a Voice sits under Voices and Lanes; (8) Who We Read and each lane's voices come from the Sources rows whose status is read, shelf or no feed yet (the server draws them). Moves to our own platform as it is: all of it. Rebuilt there: nothing. Counts taken before this card: the script parses; the stylesheet is assembled as the page assembles it and parses with no dropped rule; the browser accepted 259 rules (4.1.1: 239), the same as the CSS parser.
    4.1.1 note follows.
    (4.1.1 header) Your Growth, the facilitator's room, served by the Research reader script (ResearchReader.gs build 12.3, ?file=growth.js).
@@ -15,8 +16,8 @@
    Counts taken before this card: the script parses; the stylesheet is assembled as the page assembles it; the browser accepted 218 rules (4.0.1: 212); the shared blocks (AP-PANEL, AP-SHAPES 1.1, AP-CARD 1) are carried byte for byte. */
 
 (function () {
-var host = document.getElementById('apGrowth'); if (!host || host.getAttribute('data-growth')) return; host.setAttribute('data-growth', '4.2'); host.classList.add('ap-home');
-var BUILD = '4.2';
+var host = document.getElementById('apGrowth'); if (!host || host.getAttribute('data-growth')) return; host.setAttribute('data-growth', '4.3'); host.classList.add('ap-home');
+var BUILD = '4.3';
 var T0 = (window.performance && performance.now) ? performance.now() : 0, TIMES = window.growthTimes = {};
 function timeMark(k) { try { TIMES[k] = Math.round(performance.now() - T0); } catch (e) {} }
 /* the stamped rule count of this script's stylesheet, taken before the file card (AP-SHIP 1); the page counts what the browser accepted against it */
@@ -269,7 +270,7 @@ function tie(s) { return esc(smart(s)).replace(/\s+$/, '').replace(/ ([^ ]+)$/, 
 function cap(s) { return String(s).charAt(0).toUpperCase() + String(s).slice(1); }
 /* AP-SHIP 1 / the 3-second target: the last record this browser saw is kept ten minutes, so the frame can be filled at once while the answer comes */
 var SNAP = 'apGrowthSnap', SNAP_MS = 7 * 864e5; /* 4.2: the last copy is drawn first, however old; the answer replaces it */
-function snapGet(email) { try { var v = JSON.parse(localStorage.getItem(SNAP) || 'null'); if (v && v.email === email && v.d && v.t && v.d.growth === BUILD && Date.now() - v.t < SNAP_MS) return v.d; } catch (e) {} return null; }
+function snapGet(email) { try { var v = JSON.parse(localStorage.getItem(SNAP) || 'null'); if (v && v.email === email && v.d && v.t && (v.d.growth === BUILD || v.d.growth === '4.2') && Date.now() - v.t < SNAP_MS) return v.d; } catch (e) {} return null; }
 function snapPut(d) { try { var f = d && d.who && d.who.first; if (f) d.who.first = false; var j = JSON.stringify({ email: siteEmail(), t: Date.now(), d: d }); if (f) d.who.first = true; localStorage.setItem(SNAP, j); } catch (e) {} }
 function snapClear() { try { localStorage.removeItem(SNAP); } catch (e) {} }
 function stored() { try { var v = JSON.parse(localStorage.getItem(STORE) || 'null'); return v && v.key ? v : null; } catch (e) { return null; } }
@@ -300,6 +301,11 @@ function words(e) {
   }
 }
 /* The site's top bar sticks to the top of the window; whatever we scroll to must land below it. Measured on the page, never assumed. */
+/* 4.3: the site scrolls inside its own page area, not the window */
+function pageScroller() { var e = ROOT.parentElement; while (e && e !== document.body && e !== document.documentElement) { var o = getComputedStyle(e).overflowY; if ((o === 'auto' || o === 'scroll') && e.scrollHeight > e.clientHeight + 2) return e; e = e.parentElement; } return null; }
+function pageY() { var s = pageScroller(); return s ? s.scrollTop : window.pageYOffset; }
+function pageTo(y) { var s = pageScroller(); if (s) s.scrollTop = y; else window.scrollTo(0, y); }
+function scrollToEl(el, gap) { var s = pageScroller(), r = el.getBoundingClientRect(); if (s) s.scrollTop = Math.max(0, s.scrollTop + r.top - Math.max(barH(), s.getBoundingClientRect().top) - gap); else window.scrollTo(0, Math.max(0, r.top + window.pageYOffset - barH() - gap)); }
 function barH() {
   function h(e) { try { var cs = getComputedStyle(e), r = e.getBoundingClientRect(); if ((cs.position === 'fixed' || cs.position === 'sticky') && r.top <= 2 && r.height > 10 && r.height < 220 && r.width > 300) return Math.round(r.bottom); } catch (x) {} return 0; }
   var best = h(document.querySelector('.lw-topbar') || document.body);
@@ -825,14 +831,14 @@ function foot() { return '<p class="pfoot">Your Growth \u00b7 build ' + BUILD + 
 function render(keepIt) {
   if (!D) return;
   moved = []; /* the panels moved by balance() belong to the DOM about to be replaced; a new view starts with none */
-  var y = window.pageYOffset, fs = focusSig();
+  var y = pageY(), fs = focusSig();
   var body = S.view === 'week' ? viewWeek() : S.view === 'shelf' ? viewShelf() : viewCraft();
   setBar();
   ROOT.innerHTML = band() + '<div class="pcwrap">' + menu() + '<div class="pcmain">' + body + foot() + '</div></div><div class="dimmer" id="gDim"></div><section class="sheet" id="gSheet" role="dialog" aria-modal="true" aria-labelledby="gSheetT" tabindex="-1"></section><div class="toast" id="gToast" role="status" aria-live="polite"></div>';
   if (S.toastM) { var tt = $('gToast'); tt.textContent = S.toastM; tt.classList.add('in'); }
   if (S.sheet) { var sh = $('gSheet'); sh.innerHTML = S.sheetHtml; sh.classList.add('open'); $('gDim').classList.add('on'); }
   settle(); balance(); settle();
-  if (keepIt) window.scrollTo(0, y);
+  if (keepIt) pageTo(y);
   restoreFocus(fs, keepIt);
   var f = $('findt'); if (f) f.addEventListener('input', function () { S.find = f.value; $('shelfRows').innerHTML = shelfRows(); balance(); });
 }
@@ -896,7 +902,7 @@ host.addEventListener('click', function (ev) {
   var b = ev.target.closest('[data-act]'); if (!b || !D) return;
   var a = b.dataset.act, k = b.dataset.k, v = b.dataset.v;
   switch (a) {
-    case 'tab': S.view = b.dataset.tab; closeSheet(); render(); window.scrollTo(0, 0); break;
+    case 'tab': S.view = b.dataset.tab; closeSheet(); render(); pageTo(0); break;
     case 'rooms': openSheet('Your Rooms', roomsHtml()); break;
     case 'panel': panelSet(k, b.getAttribute('aria-expanded') !== 'true'); balance(); break;
     case 'toggle':
@@ -915,7 +921,7 @@ host.addEventListener('click', function (ev) {
     case 'gopiece':
       var gp = $('p-piece'); if (!gp) break;
       if (gp.classList.contains('shut')) { panelSet('piece', true); balance(); gp = $('p-piece'); }
-      window.scrollTo(0, gp.getBoundingClientRect().top + window.pageYOffset - barH() - 12);
+      scrollToEl(gp, 12);
       var gd = $('pdec') || gp.querySelector('.ap-panel-head'); if (gd) gd.focus({ preventScroll: true }); break;
     case 'bline':
       var BL = shownPiece(); if (!BL || !v) break;
@@ -924,7 +930,7 @@ host.addEventListener('click', function (ev) {
       S.touched = true;
       call({ action: 'growth_answer', kind: 'line', id: BL.id, text: v, answer: onl ? 'on' : 'off' }).catch(function (e2) { if (onl) delete D.mine.lines[v]; else D.mine.lines[v] = true; render(true); fail(e2); });
       render(true); if (onl) toast('On the room\u2019s card for ' + ((D.room && D.room.weekday) || 'the night') + '.'); break;
-    case 'shelfweek': S.view = 'shelf'; S.filt = !!(D.room && D.room.week); closeSheet(); render(); window.scrollTo(0, 0); break;
+    case 'shelfweek': S.view = 'shelf'; S.filt = !!(D.room && D.room.week); closeSheet(); render(); pageTo(0); break;
     case 'after':
       var al = $('aline'); if (al) S.afterLine = al.value; S.afterWord = v; render(true); break;
     case 'afterkeep':
@@ -946,10 +952,10 @@ host.addEventListener('click', function (ev) {
       else if (v === 'back') { bringPiece(TP); S.sbk = '1'; }
       else { call({ action: 'growth_answer', kind: 'setaside', id: sid, text: D.room ? 'Week ' + D.room.week : '', answer: 'not now' }).then(function () { refresh(); }, fail); S.sbk = '0'; }
       sheetBody(shelfSheet()); render(true); var sk = ROOT.querySelector('#gSheet #sbk'); if (sk) sk.focus(); break;
-    case 'seeweek': S.view = 'week'; closeSheet(); render(); window.scrollTo(0, 0); break;
+    case 'seeweek': S.view = 'week'; closeSheet(); render(); pageTo(0); break;
     case 'close': closeSheet(); break;
     case 'gowho':
-      var pw = $('p-who'); if (pw) { if (pw.classList.contains('shut')) panelSet('who', true); balance(); pw = $('p-who'); var hb = pw.querySelector('.ap-panel-head'); window.scrollTo(0, pw.getBoundingClientRect().top + window.pageYOffset - barH() - 12); if (hb) hb.focus({ preventScroll: true }); } break;
+      var pw = $('p-who'); if (pw) { if (pw.classList.contains('shut')) panelSet('who', true); balance(); pw = $('p-who'); var hb = pw.querySelector('.ap-panel-head'); scrollToEl(pw, 12); if (hb) hb.focus({ preventScroll: true }); } break;
     case 'filt': S.filt = !!v; S.shelfMore = false; render(true); var fc = ROOT.querySelector('.fchip'); if (fc) fc.focus(); break;
     case 'lanes': openSheet('Every Lane', lanesSheet()); break;
     case 'lane':
