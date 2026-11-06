@@ -1,0 +1,28 @@
+<!-- RECORD COPY. Lives at the END of both Site custom code slots: <body> logged in (html) and <body> logged out (html), after what was already there. Installed Nov 6, 2026. If either slot is ever replaced with a new payload (e.g. a First Light stylesheet re-paste), add this block back at the end. -->
+<!-- AP-BOOKING-TRACK v1 (Nov 6, 2026). Site-wide. When any Calendly booking finishes on any page, sends one book_conversation event to Google Analytics with the Calendly event type as booking_type. Uses the site's existing gtag; never add a second Google tag. -->
+<script>
+(function () {
+  if (window.__apBookingTrack) return;
+  window.__apBookingTrack = "AP-BOOKING-TRACK v1";
+  function bookingType() {
+    var f = document.querySelector('iframe[src*="calendly.com"]');
+    var m = f && f.src.match(/calendly\.com\/[^\/?#]+\/([^\/?#]+)/);
+    return m ? m[1] : "unknown";
+  }
+  window.addEventListener("message", function (e) {
+    if (!/^https:\/\/([a-z0-9-]+\.)*calendly\.com$/.test(e.origin)) return;
+    var d = e.data;
+    if (!d || d.event !== "calendly.event_scheduled") return;
+    var p = d.payload || {};
+    var id = (p.event && p.event.uri) || "";
+    if (id && window.__apBookedLast === id) return;
+    window.__apBookedLast = id;
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "book_conversation", {
+        booking_type: bookingType(),
+        booking_page: location.pathname
+      });
+    }
+  });
+})();
+</script>
