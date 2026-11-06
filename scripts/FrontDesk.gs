@@ -1,5 +1,6 @@
 /**
- * Ancient Path — Front Desk · build 32
+ * Ancient Path — Front Desk · build 32.1
+ *   build 32.1 (Nov 6, 2026; one change, server only: the sheet records the build that is live; desk.js stays 32 and the Research reader is not changed): on every web-app call doGet reads the Config row "deployed build" on the Front Desk sheet; if it is missing or differs from FD.BUILD, stampDeployed_ writes FD.BUILD there and one line on the Research Engine's Log tab (the Front Desk sheet has no Log tab; relLog_ is where this script already logs), "build <n> — deployed, first served <date time Central>", then does nothing more for that build. A failure here never reaches the caller. Built on the live 32 read through the Google Drive connector; DESK_JS is byte for byte unchanged, so its stylesheet count stands. Counts taken: the file parses, the diff from 32 is these lines only, the served desk.js and its stylesheet are identical to 32 and parse to the same rule count, and doGet was run against a stub sheet for first call, repeat call, changed build, a lock held elsewhere and a sheet that throws. Moves to the platform as it is: a Config row and a Log row. Rebuilt: nothing. No setup run. Paste, Save, Deploy → Manage deployments → the pencil → New version → Deploy.
  *   build 32 (Nov 4, 2026, with desk.js 32; the Research reader is not changed): the card standard from build 30 and the Workshop on Your Desk from build 31.0, in one file. The two were built in parallel from the live 29.4 and both carried a card standard; this build is all of 30 (the fuller one, ruled on the What Needs Us 3.0 mockup) and all of 31's Workshop.
  *     1. The card standard is build 30's, as noted below: five lines written at the source (CARD_WORDS_, presentAction_), feed.doneWeek with by · undoUntil · canReopen, done with by and answer, undo (mode undo or reopen), notes_page, Wait and Drop on a page move, a taken move's card at once, the done by column on the Actions tab.
  *     2. The Workshop is build 31.0's, as noted below: partner_answer · partner_undo (a partner's question, a card in Today's lane), partner_need (Add · Set aside in Signals Waiting), workshop_send (the weekday update card), x.partners (admins only; the Through a Partner row). A partner's need added to For Us to Do (move "partner need") now reads in the five lines like every other move, and one that was added and then taken back is not listed in Done this week.
@@ -419,7 +420,7 @@
  */
 
 const FD = {
-  BUILD: '32',
+  BUILD: '32.1',
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SIGNALS_SHEET_ID: '1s79xljKjt-sYCZin0-oRFp5swxcETS0a4gzr126_Dns',
   SEARCH_SHEET_ID: '1V84E1Wg33DaI89wAP0GvDR5iHQX3ZFsM3kRzu1LatCE',
@@ -4428,9 +4429,33 @@ function alert_(text) {
 // closes that person's desk on his next read.
 
 function doGet(e) {
+  stampDeployed_(); // build 32.1: every web-app call; writes only when the Config row is missing or differs
   if (e && e.parameter && e.parameter.file === 'desk.js') return ContentService.createTextOutput(DESK_JS).setMimeType(ContentService.MimeType.JAVASCRIPT);
   if (e && e.parameter && e.parameter.road) { try { return json_(roadFeed_()); } catch (x) { return json_({ ok: false, error: 'road' }); } } // build 28.3: public, from Your Page; no key, no names
   return json_({ ok: true, service: 'Ancient Path — Front Desk', build: FD.BUILD, desk: DESK_BUILD });
+}
+
+/** build 32.1: the sheet records the build that is live. Reads Config "deployed build" on the Front Desk sheet; if it is missing or differs from FD.BUILD, writes FD.BUILD there and one line on the Research Engine's Log tab, once. Never throws. */
+function stampDeployed_() {
+  let lock = null;
+  try {
+    const sh = SpreadsheetApp.openById(FD.SHEET_ID).getSheetByName('Config');
+    const seen = () => { const n = sh.getLastRow(); let v = ''; (n > 1 ? sh.getRange(2, 1, n - 1, 2).getValues() : []).forEach(r => { if (String(r[0]).trim() === 'deployed build') v = String(r[1]).trim(); }); return v; };
+    if (seen() === FD.BUILD) return;
+    lock = LockService.getScriptLock();
+    if (!lock.tryLock(5000)) return; // another call is stamping this build; the next call checks again
+    if (seen() === FD.BUILD) return; // it did, while this call waited
+    const n = sh.getLastRow();
+    const keys = n > 1 ? sh.getRange(2, 1, n - 1, 1).getValues() : [];
+    let at = 0;
+    for (let i = 0; i < keys.length; i++) if (String(keys[i][0]).trim() === 'deployed build') at = i + 2;
+    if (!at) { sh.appendRow(['deployed build', '', 'build 32.1: the build this script last served from; the script writes it, never by hand']); at = sh.getLastRow(); }
+    sh.getRange(at, 2).setNumberFormat('@').setValue(FD.BUILD); // plain text, so 32.1 is never read back as a number
+    relLog_(SpreadsheetApp.openById(RESEARCH_SHEET_ID_), 'deployed', 'build ' + FD.BUILD + ' — deployed, first served ' + relStamp_(new Date()) + ' Central');
+  } catch (x) {
+  } finally {
+    if (lock) { try { lock.releaseLock(); } catch (xr) {} }
+  }
 }
 
 function doPost(e) { if (e && e.parameter && e.parameter.notice) return noticeHook_(e); // build N1

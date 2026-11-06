@@ -1,4 +1,5 @@
 /**
+ * Ancient Path — Research reader · build 13.1 (Nov 6, 2026; one change, server only: the sheet records the build that is live. On every web-app call doGet reads the Config row "deployed build"; if it is missing or differs from SCRIPT_BUILD, stampDeployed_ writes SCRIPT_BUILD there and one Log line, "build <n> — deployed, first served <date time Central>", then does nothing more for that build. A failure here never reaches the caller. Built on the live 13.0.1 read through the Google Drive connector; growth.js 4.3, road.js 11.6.1 and row.js are byte for byte unchanged, so their stylesheet counts stand. Counts taken: the file parses, the diff from 13.0.1 is these lines only, every served script and stylesheet is identical to 13.0.1 and parses to the same rule count, and doGet was run against a stub sheet for first call, repeat call, changed build, a lock held elsewhere and a sheet that throws. Moves to the platform as it is: a Config row and a Log row. Rebuilt: nothing. Paste, Save, Deploy → Manage deployments → the pencil → New version → Deploy; no setup run.)
  * Ancient Path — Research reader · build 13.0 (Readings 1.1, ruled Nov 5, 2026, https://claude.ai/artifact/91YHqB3T26pa6up3GGGXsU, "the mockup's words are the copy"; built on the live 12.9 read through the Google Drive connector; road.js 11.6, growth.js 4.3 unchanged). 1. Rule 9 tightened: the first sentence of Entries Y is the headline, 90 characters or fewer, and never drops a condition, a step or who acts (READING_RULES_PROMPT_, readingRulesFail_, the Standard tab); the 17 ruled rewrites are in Y; Entries F never reaches Your Page. 2. roadRead13_: the week's reading, the shelf's front table and order, What Has Helped, Where It Points. 3. New taps: road_by (what helped most), road_spot (the question's pick list), road_practice carries the reading's id; a reading from the shelf is his to open and mark. 4. roadDirections_: the weekly line, written the day before his group meets. 5. roadPicks_: Entries AD, the question's pick list. 6. Lane pictures: Config "lane picture <lane>". 7. roadNotice_ by ap-notice-standard. Install: paste, save, deploy a new version, then run rewriteHeldNow once (E-20261103-2 stays held until it passes). 13.0.1 (Nov 5, 2026, after the live look at 13.0): road.js 11.6.1 only (the course card in the side column keeps the full panel width on the live page); no server change. Counts taken before this card: this file parses; road.js 11.6.1 parses (new Function on the served file); its two stylesheets, assembled as the page assembles them, run through a real CSS parser (tinycss2) and in Chromium give 170 (hisroad) + 383 (apg) rules, the same in both, no parse errors, braces balanced, the @import first (11.5: 170 + 335; 48 rules added, none removed); AP-PANEL and AP-CARD blocks byte for byte as in 11.5; rule 9 holds the 17 ruled rewrites and the mockup's 38 headlines; the shelf order, front table and why lines equal the mockup's in four moments; 40 tap checks pass at desk and phone width.
  * Ancient Path — Research reader · build 12.9 (the readings content pass, ruled "go" Nov 5, 2026: the nine writing rules in the morning writer and its read-back; the writer on the Opus model the Console key accepts, proved with one call before Config "road model" changes; the release moves into the morning, after the lines are written and before readings are given, with 6:00 PM kept as the catch; a candidate reaches no one until its lines pass; a research:link card on the Front Desk puts a found link on a held entry and releases it; built on the live 12.8 read through the Google Drive connector; growth.js 4.3 and road.js 11.5 unchanged, byte for byte, so their stylesheet counts stand as stamped) · build 12.8 (John's three findings on the live Path view and the scroll: the line under the title level with the panels; a view opens at its top; the picture on a course card from Config "course picture <initials>"; built on 12.7; counts taken as in 12.7) · build 12.7 (the fixes John drew on the live pages Nov 4, 2026: Who We Read from Sources by status, the Lanes voices pulled from Sources, a ready copy per person so Your Page and Your Growth open at once, one frame, links, rows, words and dots; build 12.6: week lines for the Front Desk's weekly email) · road.js 11.4 · growth.js 4.2
  * Build 12.7 (Nov 4, 2026; the ruled list from Nov 4, 2026 and the drawn fixes, https://claude.ai/artifact/9UJsUiy8u8vxZo2g2jFLN2; built on the live 12.6 read through the Google Drive connector; numbered 12.7 because the live script already reads 12.6, so 12.5.1 would have gone backwards; counts taken: both scripts parse, every stylesheet parses with a real CSS parser, the rule counts are stamped in the scripts and the browser's accepted count equals them). SERVER: 1. sourcesOut_ (Who We Read) shows only the Sources rows whose status is read, shelf or no feed yet; paused, proposed and not recommended rows are never drawn. 2. The Lanes tab's typed voices column is no longer read: each lane's voices line is pulled from the Sources rows of the disciplines the lane folds in (Lanes column D), with the same status rule, so the two can never disagree. 3. A ready copy per person: the record Your Growth reads and the record Your Page reads are each kept six hours in the script cache (in pieces under its 100 KB limit), per person and per day; dropped the moment that person saves anything; rebuilt for everyone by the morning task (readFeeds, roadDaily) and by the 6:00 PM release (a generation number moves, so no copy from before is served); a cache hit on Your Page also keeps his last-seen stamp (one cell, at most every thirty minutes). Both pages draw their last copy first from the browser (growth.js 4.2, road.js 11.4). A change made by hand in the sheet (Sources, Lanes, Course map) reaches a page at the next morning run, the 6:00 PM release, or the person's own next save. One Log line, once. Moves to our platform as it is: all of it (the cache is an optimization, not a record). Rebuilt: nothing. Paste, Save, Deploy → Manage deployments → edit → New version → Deploy; no setup run.
@@ -1130,6 +1131,7 @@ var DESK_WEB_DEFAULT = 'https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3
 var EC = { id: 1, written: 2, source: 3, kind: 4, link: 5, claim: 6, question: 7, construct: 8, place: 9, audience: 10, text: 11, ours: 12, cost: 13, cut: 14, move: 15, status: 16, relBy: 17, relOn: 18, desk: 19, build: 20, quotes: 21, transcript: 22, deepened: 23, keywords: 24, road: 25, todo: 26, question2: 27, week: 28, act: 29, pick: 30 };
 
 function doGet(e) {
+  stampDeployed_(); // build 13.1: every web-app call; writes only when the Config row is missing or differs
   var p = (e && e.parameter) || {};
   if (p.file === 'growth.js') return ContentService.createTextOutput(GROWTH_JS).setMimeType(ContentService.MimeType.JAVASCRIPT);
   if (p.file === 'row.js') return ContentService.createTextOutput(rowJs_()).setMimeType(ContentService.MimeType.JAVASCRIPT);
@@ -1140,6 +1142,27 @@ function doGet(e) {
   try { ensureBuild12_(SpreadsheetApp.openById(RE_SHEET_ID)); } catch (xb) {}
   var rm = ''; try { rm = readConfig_(SpreadsheetApp.openById(RE_SHEET_ID))['road model'] || ''; } catch (xr) {}
   return jsonOut_({ ok: true, service: 'Ancient Path — Research reader', build: RE_BUILD, script: SCRIPT_BUILD, growth: GROWTH_BUILD, road: ROAD_BUILD, roadModel: rm });
+}
+
+/** build 13.1: the sheet records the build that is live. Reads Config "deployed build"; if it is missing or differs from SCRIPT_BUILD, writes SCRIPT_BUILD there and one Log line, once. Never throws. */
+function stampDeployed_() {
+  var lock = null;
+  try {
+    var ss = SpreadsheetApp.openById(RE_SHEET_ID);
+    if (String(readConfig_(ss)['deployed build'] || '') === SCRIPT_BUILD) return;
+    lock = LockService.getScriptLock();
+    if (!lock.tryLock(5000)) return; // another call is stamping this build; the next call checks again
+    if (String(readConfig_(ss)['deployed build'] || '') === SCRIPT_BUILD) return; // it did, while this call waited
+    var sh = ss.getSheetByName('Config'), n = sh.getLastRow(), at = 0;
+    var keys = n > 1 ? sh.getRange(2, 1, n - 1, 1).getValues() : [];
+    for (var i = 0; i < keys.length; i++) if (String(keys[i][0]).trim() === 'deployed build') at = i + 2; // the last one, as readConfig_ reads it
+    if (!at) { sh.appendRow(['deployed build', '', 'build 13.1: the build this script last served from; the script writes it, never by hand']); at = sh.getLastRow(); }
+    sh.getRange(at, 2).setNumberFormat('@').setValue(SCRIPT_BUILD); // plain text, so 13.1 is never read back as a number
+    try { log_(ss, 'deployed', 'build ' + SCRIPT_BUILD + ' — deployed, first served ' + stamp_(new Date()) + ' Central'); } catch (xl) {}
+  } catch (xs) {
+  } finally {
+    if (lock) { try { lock.releaseLock(); } catch (xr) {} }
+  }
 }
 
 function doPost(e) {
@@ -4259,7 +4282,7 @@ var ROAD_JS = "/* AP-HISROAD road.js build 11.6.1 — Readings 1.1 (ruled by Joh
  * what the room carried, The Shelf, Who We Read, his Craft and his lanes. New Answers kinds: after, less, voice, setaside, team, notice (Answers columns: when, who, entry id, kind, text, answer, room, build).
  * A Lanes tab (the twelve lanes of the mockup) and the Config lines are made once by ensureBuild12_. The 6:00 PM release (releaseTick) is switched by Config "auto release" (off until the hold is proven on the Front Desk).
  * Hold cards: research:hold:<entry id> on the Front Desk's Actions tab (rule RE15); a card marked done by hand is a hold. */
-var SCRIPT_BUILD = '13.0.1';
+var SCRIPT_BUILD = '13.1';
 var LANES_HEAD_12 = ['lane', 'what it covers', 'voices', 'Sources disciplines folded in', 'added'];
 var LANES_12 = [
   ['Narrative trauma care', 'How a man’s story holds his wounds', 'Dan Allender, Diane Langberg, Aundi Kolber', 'Narrative trauma care; Story work and attachment'],
