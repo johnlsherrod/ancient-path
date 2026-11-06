@@ -1,0 +1,56 @@
+<!-- RECORD COPY. Lives at the END of both Site custom code slots: <body> logged in (html) and <body> logged out (html), after what was already there. v2 installed Nov 6, 2026 (replaces v1 in both slots). If either slot is ever replaced with a new payload (e.g. a First Light stylesheet re-paste), add this block back at the end. Rollback: pages/site-body-booking-track-v1.html. -->
+<!-- AP-BOOKING-TRACK v2 (Nov 6, 2026). Site-wide. (1) When any Calendly booking finishes on any page, sends one book_conversation event to Google Analytics with the Calendly event type as booking_type (unchanged from v1). (2) NEW in v2: when the Join the Waitlist form (LearnWorlds marketing form 6a3d6fe9a7b3a921fc08b79c, opens in a dialog) is submitted successfully, sends one wait_list_signup event with signup_page set to the page path. The signal is the form's own save call, PATCH /api/assessment/submission/create_marketing_form_submission_id answering 2xx, with that form's dialog on the page. Uses the site's existing gtag; never add a second Google tag. Built on the v1 repo copy; both live slots were read first and carried v1 byte for byte. Parse check run on the extracted script; handler tested in a live tab on /course/student-course before install (no event on opening the form or on an empty Submit, one event on a real submit). What moves to our own platform: the booking listener moves as is; the wait-list handler is rebuilt there, because its signal is a LearnWorlds call. -->
+<script>
+(function () {
+  if (window.__apBookingTrack) return;
+  window.__apBookingTrack = "AP-BOOKING-TRACK v2";
+  function bookingType() {
+    var f = document.querySelector('iframe[src*="calendly.com"]');
+    var m = f && f.src.match(/calendly\.com\/[^\/?#]+\/([^\/?#]+)/);
+    return m ? m[1] : "unknown";
+  }
+  window.addEventListener("message", function (e) {
+    if (!/^https:\/\/([a-z0-9-]+\.)*calendly\.com$/.test(e.origin)) return;
+    var d = e.data;
+    if (!d || d.event !== "calendly.event_scheduled") return;
+    var p = d.payload || {};
+    var id = (p.event && p.event.uri) || "";
+    if (id && window.__apBookedLast === id) return;
+    window.__apBookedLast = id;
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "book_conversation", {
+        booking_type: bookingType(),
+        booking_page: location.pathname
+      });
+    }
+  });
+
+  var WAIT_FORM = "6a3d6fe9a7b3a921fc08b79c";
+  var WAIT_SAVE = "/api/assessment/submission/create_marketing_form_submission_id";
+  function waitFormOpen() {
+    return !!document.querySelector('[id^="programmatic_popup_section_' + WAIT_FORM + '"]');
+  }
+  function waitSignup(status) {
+    if (status < 200 || status > 299 || !waitFormOpen()) return;
+    var now = Date.now();
+    if (window.__apWaitLast && now - window.__apWaitLast < 5000) return;
+    window.__apWaitLast = now;
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "wait_list_signup", { signup_page: location.pathname });
+    }
+  }
+  var xOpen = XMLHttpRequest.prototype.open;
+  var xSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function (method, url) {
+    this.__apWait = /^patch$/i.test(method) && String(url).indexOf(WAIT_SAVE) > -1;
+    return xOpen.apply(this, arguments);
+  };
+  XMLHttpRequest.prototype.send = function () {
+    if (this.__apWait) {
+      var x = this;
+      x.addEventListener("loadend", function () { waitSignup(x.status); });
+    }
+    return xSend.apply(this, arguments);
+  };
+})();
+</script>
