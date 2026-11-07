@@ -1,0 +1,19 @@
+<section class="band art{{band_class}}" style="background-image:url('{{picture_url}}')">
+  <div class="band-in">
+    <p class="dt">{{date_long}} · {{minutes}}{{read_suffix}}</p>
+    <h1>{{title}}</h1>
+  </div>
+</section>
+<article class="rd">
+{{body_html}}
+</article>
+<div class="share"><div class="share-in">
+  <button id="sharebtn" type="button" data-title="{{title}}" data-copied="{{share_copied}}" data-manual="{{share_manual}}">{{share_label}}</button>
+  <span class="said" id="said" role="status" aria-live="polite"></span>
+</div></div>
+<section class="kr">
+  <div class="kr-h"><h2>{{keep_heading}}</h2><a href="{{index_href}}">{{all_label}}</a></div>
+  <div class="kr-g">
+{{keep_html}}
+  </div>
+</section>
