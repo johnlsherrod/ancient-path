@@ -1,0 +1,79 @@
+{
+  "id": "ancient-path",
+  "name": "The Ancient Path",
+  "lang": "en",
+  "address": "read.ancientpathcoaching.com",
+  "site": "https://www.ancientpathcoaching.com",
+  "google_tag": "G-VKPN74MHRZ",
+  "drive_folder": "",
+  "picture_base": "https://raw.githubusercontent.com/johnlsherrod/ancient-path/main/pictures/",
+  "brand": {
+    "navy": "#1F2A44",
+    "cream": "#F6F2EA",
+    "paper": "#FBF9F5",
+    "bronze": "#B8945F",
+    "brown": "#8C6A3F",
+    "brown_hover": "#74572F",
+    "ink": "#1F1D1A",
+    "quiet": "#635B50",
+    "rule": "#E4DCCB",
+    "gold": "#EDD59C",
+    "serif": "\"Source Serif 4\",\"Source Serif Pro\",Georgia,\"Times New Roman\",serif",
+    "sans": "\"Source Sans 3\",\"Source Sans Pro\",\"Segoe UI\",Helvetica,Arial,sans-serif",
+    "fonts_href": "https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap",
+    "tint_article": 0.70,
+    "tint_index": 0.78
+  },
+  "band_align": "center",
+  "menu": [
+    { "label": "The Work", "href": "https://www.ancientpathcoaching.com/how-the-work-is-carried" },
+    { "label": "Courses", "href": "https://www.ancientpathcoaching.com/courses" },
+    { "label": "Read", "href": "https://www.ancientpathcoaching.com/read", "on": true },
+    { "label": "Your Story", "href": "https://www.ancientpathcoaching.com/your-story" },
+    { "label": "About", "href": "https://www.ancientpathcoaching.com/about" },
+    { "label": "Let's Talk", "href": "https://www.ancientpathcoaching.com/begin" },
+    { "label": "Sign In", "href": "https://www.ancientpathcoaching.com/start" }
+  ],
+  "footer": [
+    { "label": "About", "href": "https://www.ancientpathcoaching.com/about" },
+    { "label": "Courses", "href": "https://www.ancientpathcoaching.com/courses" },
+    { "label": "Read", "href": "https://www.ancientpathcoaching.com/read" },
+    { "label": "Contact", "href": "https://www.ancientpathcoaching.com/contact" },
+    { "label": "Terms", "href": "https://www.ancientpathcoaching.com/terms" },
+    { "label": "Privacy", "href": "https://www.ancientpathcoaching.com/privacy-policy" }
+  ],
+  "index": {
+    "search_title": "Articles — Plain Words for Hard Things — Ancient Path",
+    "search_description": "Plain words for hard things. Read to learn, and come ready to talk about it.",
+    "eyebrow": "Articles",
+    "title": "Plain Words for Hard Things",
+    "line": "Read to learn, and come ready to talk about it.",
+    "picture": "table-under-the-tree",
+    "card_cta": "Read the Article",
+    "row_cta": "Read →",
+    "more_heading": "More to Read",
+    "more_line": "Every earlier article, newest first.",
+    "ask_label": "Looking for something? Ask on Read →",
+    "ask_href": "https://www.ancientpathcoaching.com/read",
+    "stories_label": "Our Stories →",
+    "stories_href": "https://www.ancientpathcoaching.com/your-story?stories=all",
+    "empty_title": "The First Articles Are on Their Way",
+    "empty_line": "Each one will answer a question people bring to us, in plain words.",
+    "empty_label": "See What We Offer →",
+    "empty_href": "https://www.ancientpathcoaching.com/courses"
+  },
+  "invite": {
+    "line": "Thirty minutes with our team is free: you say where you are, and we say plainly whether we can walk with you.",
+    "label": "Let's Talk",
+    "href": "https://www.ancientpathcoaching.com/begin"
+  },
+  "article": {
+    "keep_heading": "Keep Reading",
+    "all_label": "All articles →",
+    "share_label": "Share this article",
+    "share_copied": "Link copied.",
+    "share_manual": "Copy the address from the bar above.",
+    "read_suffix": "-minute read",
+    "skip_label": "Skip to the Article"
+  }
+}
