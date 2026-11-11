@@ -1,51 +1,77 @@
 /**
- * Ancient Path — Front Desk · Notices.gs · build N3 (Nov 3, 2026)
- * N3: one off switch. Config "text notices" (yes/no) — made by noticeSetup as "no"; nothing is sent while it reads anything but yes,
- *     and the Texts tab says so. It moves to "yes" by one word once Twilio shows the campaign Approved. Moves to the platform as it is.
- * Text notices through Twilio. One generic function, sendNotice(email): it says only that something is waiting on the
- * man's page, never what. No course, room or piece is named here.
+ * Ancient Path — Front Desk · Notices.gs · build N4 · Text Notices Build 1 (Nov 11, 2026)
+ * Text Notices Build 1 = Notices.gs N4 + Front Desk 35 (Code.gs, desk.js 35) + Research reader 13.7 (road.js 11.9). One label, stamped in every file's header, in the Log line each script writes when it is deployed, and in the repo commit.
  *
- * Twilio: Messages API, sent through our Messaging Service (Ancient Path Notices, the 469 number), Basic auth with a
- * Standard API key. Script Properties (never the sheet, never chat):
- *   TWILIO_ACCOUNT_SID, TWILIO_SERVICE_SID, TWILIO_KEY_SID, TWILIO_KEY_SECRET   (added by hand)
- *   NOTICE_HOOK_SECRET                                                         (made by noticeSetup, never typed)
+ * N4 (Nov 11, 2026): Twilio approved the Low Volume Mixed campaign on Nov 10. This file carries the whole of ap-text-standard that a script can carry:
+ *   - Every text is word for word one of the registered samples (notice, confirmation, HELP, any other reply); a team note is the frame plus the words our team wrote.
+ *   - One notice a day to a man (cards that land the same day are gathered into one); two texts a day is the ceiling on any text we start to him. A confirmation or a reply to his own text never counts.
+ *   - Nothing we start goes between 9:00 PM and 8:00 AM Central; it waits and the sweep (every 10 minutes) sends it from 8:00 AM. A reply to his own text goes at once.
+ *   - STOP turns his texts off at once (Twilio's opt-out is mirrored on TextOptIn); START turns them on; HELP gets the registered HELP text; any other reply lands on the Actions tab as a card and gets one automatic answer a day.
+ *   - Every send, delivery status, failure, STOP, START, HELP and reply is a row on the Texts tab.
+ *   - Settings (Your Page) reaches this file through one keyed call: ?notice=api, key = Research Engine Config "text send key" (made by noticeSetup, never typed).
+ *   - noticeSetup checks, before anything is switched on, that (469) 557-5502 is in the notices Messaging Service's sender pool, adds it through the API if it is not, and points the service's incoming-message address at this script. The answer is one line in Config "text sender". Nobody goes into the Twilio Console.
+ *   - Save our number: ?file=ancient-path.vcf serves a contact card named Ancient Path (469) 557-5502 and the site (ContentService, MimeType VCARD).
+ *   - Text him (desk): textCheck_ and textHim_ send the words our team wrote as the text, framed by the standard; off until Config "text him" says yes (ruled to ship off: a free-written team text is outside what the opt-in screen promises).
+ * Moves to the platform as it is: a read and write of the record's tables (person, text, setting). Rebuilt there: the Twilio calls only.
  *
- * Ruled Nov 2–3, 2026: at most two texts a day to one man (Central day); none between 9:00 PM and 8:00 AM Central
- * (it waits and goes at 8:00 AM); only to a man whose "text me" is yes on the TextOptIn tab; STOP ends them at once.
- *
+ * Twilio: Messages API through the notices Messaging Service, Basic auth with a Standard API key. Script Properties (never the sheet, never chat):
+ *   TWILIO_ACCOUNT_SID, TWILIO_SERVICE_SID, TWILIO_KEY_SID, TWILIO_KEY_SECRET   (already set)
+ *   NOTICE_HOOK_SECRET                                                         (made by noticeSetup)
  * Sheet tabs this file makes for itself (the Front Desk sheet):
  *   Texts      when (Central) · email · phone (last four) · message id · status · error · note · day
- *   TextOptIn  email · phone · text me · changed · by · stopped by reply     (Settings writes it; STOP/START change it)
- *
- * Install: Code.gs gets ONE line at the top of doPost (see NOTICE_POST_LINE below). Then run noticeSetup once.
- * No deploy-time setting changes: Twilio posts to the web address with ?notice=status&k=<secret> or ?notice=inbound&k=<secret>.
+ *   TextOptIn  email · phone · text me · changed · by · stopped by reply
+ * Install: Code.gs carries the two hook lines (NOTICE_POST_LINE in doPost, NOTICE_GET_LINE in doGet). Then run noticeSetup once.
  */
 
 const NOTICE = {
-  BUILD: 'N3',
-  BODY: 'Ancient Path: something is waiting for you on Your Page.\nancientpathcoaching.com/start\nReply STOP to end these texts, HELP for help.',
-  PER_DAY: 2,
-  QUIET_FROM: 21,   // 9:00 PM Central
-  QUIET_TO: 8,      // 8:00 AM Central
+  BUILD: 'N4',
+  LABEL: 'Text Notices Build 1',
+  SENDER: '+14695575502',
+  SENDER_SHOWN: '(469) 557-5502',
+  SERVICE: 'MGa52ac58544f99799e55cf4788c7906e9',
+  CAMPAIGN: 'CM16447a1d485fa084dbaf06eca12a242e',
+  BRAND: 'BN70aff39096ff0d5fa260718f2bae236b',
+  SITE: 'https://www.ancientpathcoaching.com',
+  STOPLINE: 'Reply STOP to end these texts, HELP for help.',
+  NOTICES_PER_DAY: 1,   // ap-text-standard and the opt-in screen the carriers saw: "at most one a day"
+  ALL_PER_DAY: 2,       // John's ceiling on any text we start to one man (a notice and a team note)
+  QUIET_FROM: 21,       // 9:00 PM Central
+  QUIET_TO: 8,          // 8:00 AM Central
+  TEXTS: {
+    notice: 'Ancient Path: something new is waiting on Your Page. https://www.ancientpathcoaching.com/start Reply STOP to end these texts, HELP for help.',
+    confirm: 'Ancient Path: texts are on. A text when something new lands on Your Page or before your room meets, at most one a day. Message and data rates may apply. Reply STOP to end these texts, HELP for help.',
+    help: 'Ancient Path: notices from Ancient Path Biblical Coaching. For help, write to us at https://www.ancientpathcoaching.com/contact Reply STOP to end these texts.',
+    other: "Ancient Path: we read replies during the day. If it can't wait, call 214-736-1024. If you are in danger, call 911, or call or text 988."
+  },
   TABS: {
     Texts: ['when (Central)', 'email', 'phone (last four)', 'message id', 'status', 'error', 'note', 'day'],
     TextOptIn: ['email', 'phone', 'text me', 'changed', 'by', 'stopped by reply']
   },
   COUNTS: ['queued', 'accepted', 'sending', 'sent', 'delivered', 'undelivered'],  // a text that left us counts toward the day
+  FAILED: ['failed', 'undelivered'],
   RANK: { held: 0, queued: 1, accepted: 1, sending: 2, sent: 3, delivered: 4, undelivered: 4, failed: 4 },
   STOP_WORDS: ['STOP', 'STOPALL', 'UNSUBSCRIBE', 'CANCEL', 'END', 'QUIT'],
   START_WORDS: ['START', 'YES', 'UNSTOP'],
   HELP_WORDS: ['HELP', 'INFO']
 };
-const NOTICE_POST_LINE = "if (e && e.parameter && e.parameter.notice) return noticeHook_(e); // build N1: Twilio status and inbound posts";
+const NOTICE_POST_LINE = "if (e && e.parameter && e.parameter.notice) return noticeHook_(e); // Text Notices Build 1: Twilio status and inbound posts, and Your Page's keyed call";
+const NOTICE_GET_LINE = "if (e && e.parameter && e.parameter.file === 'ancient-path.vcf') return noticeCard_(); // Text Notices Build 1: Save our number";
+
+/** The clock, so a test can set it. Production: now. */
+function noticeNow_() { return new Date(); }
 
 // ───────────────────────────── the one function ─────────────────────────────
 
 /**
- * Text one man that something is waiting on his page.
+ * Text one man.
  * @param {string} email  the man's email (his row on TextOptIn)
- * @param {{test?: boolean}} opts  test: true skips only the quiet hours; never the cap, never his "text me".
- * @return {{ok: boolean, status: string, sid?: string, note?: string}}
+ * @param {{kind?: 'notice'|'confirm'|'note', words?: string, by?: string, test?: boolean}} opts
+ *   notice (default): something new is waiting on his page; held in quiet hours; one a day.
+ *   confirm: the text after his yes; goes at once, any hour, and never counts toward a day.
+ *   note: the words our team wrote (framed by the standard); held in quiet hours; counts toward the two-a-day ceiling.
+ *   test: skips only the quiet hours; never the caps, never his "text me".
+ * @return {{ok: boolean, status: string, sid?: string, note?: string, fallback?: boolean}}
+ *   fallback true = he cannot be texted right now (off, stopped, no number, the send failed), so the caller sends this one notice by email.
  */
 function sendNotice(email, opts) { return noticeRun_(String(email || '').trim().toLowerCase(), opts || {}, 0); }
 
@@ -56,41 +82,54 @@ function noticeRun_(email, opts, heldRow) {
     const ss = SpreadsheetApp.openById(FD.SHEET_ID);
     noticeEnsureTabs_(ss);
     const tx = ss.getSheetByName('Texts'), op = ss.getSheetByName('TextOptIn');
-    const now = new Date(), today = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd'), hour = Number(Utilities.formatDate(now, FD.TZ, 'H'));
-    const log = (status, note, sid, err, last4) => noticeLog_(tx, heldRow, [Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd h:mm a'), email, last4 || '', sid || '', status, err || '', note || '', today]);
-    if (!email || email.indexOf('@') < 0) { log('not sent', 'no email'); return { ok: false, status: 'not sent', note: 'no email' }; }
-
-    if (!noticeOn_(ss)) { log('not sent', 'text notices are off (Config: text notices)'); return { ok: false, status: 'not sent', note: 'text notices are off' }; }
+    const now = noticeNow_(), today = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd'), hour = Number(Utilities.formatDate(now, FD.TZ, 'H'));
+    const kind = opts.kind === 'confirm' ? 'confirm' : opts.kind === 'note' ? 'note' : 'notice';
+    const words = kind === 'note' ? noticeWords_(opts.words) : '';
+    const by = String(opts.by || '').replace(/[|\n]/g, ' ').trim();
+    const stampNow = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd h:mm a');
+    const log = (status, detail, sid, err, last4) => {
+      const note = kind === 'note' ? 'team note|' + by + '|' + words : (kind === 'confirm' ? 'confirmation' : 'notice') + (detail ? ' · ' + detail : '');
+      noticeLog_(tx, heldRow, [stampNow, email, last4 || '', sid || '', status, err || (kind === 'note' ? detail || '' : ''), note, today]);
+    };
+    const no = (detail, last4, fallback) => { log('not sent', detail, '', '', last4); return { ok: false, status: 'not sent', note: detail, fallback: !!fallback }; };
+    if (!email || email.indexOf('@') < 0) return no('no email', '', false);
+    if (kind === 'note' && !words) return no('no words', '', false);
+    if (!noticeOn_(ss)) return no('text notices are off (Config: text notices)', '', true);
+    if (kind === 'note' && !noticeFlag_(ss, 'text him')) return no('Text him is off (Config: text him)', '', false);
 
     const opt = noticeFindOpt_(op, email);
-    if (!opt) { log('not sent', 'no text setting on file'); return { ok: false, status: 'not sent', note: 'no text setting' }; }
+    if (!opt) return no('no text setting on file', '', true);
     const last4 = String(opt.phone || '').replace(/\D/g, '').slice(-4);
-    if (String(opt.textMe).trim().toLowerCase() !== 'yes') { log('not sent', 'text me is off', '', '', last4); return { ok: false, status: 'not sent', note: 'text me is off' }; }
+    if (String(opt.textMe).trim().toLowerCase() !== 'yes') return no('text me is off', last4, true);
     const to = noticePhone_(opt.phone);
-    if (!to) { log('not sent', 'no usable phone number', '', '', last4); return { ok: false, status: 'not sent', note: 'no phone' }; }
+    if (!to) return no('no usable phone number', last4, true);
 
-    // the day's cap: texts that left us today, Central
-    const had = noticeRows_(tx).filter(r => String(r[1]).toLowerCase() === email && noticeDay_(r[7]) === today && NOTICE.COUNTS.indexOf(String(r[4])) >= 0).length;
-    if (had >= NOTICE.PER_DAY) { log('not sent', 'two texts already today', '', '', last4); return { ok: false, status: 'not sent', note: 'two today' }; }
+    // the day's caps: texts that left us today, Central
+    if (kind !== 'confirm') {
+      const mine = noticeRows_(tx).filter(r => String(r[1]).toLowerCase() === email && noticeDay_(r[7]) === today && NOTICE.COUNTS.indexOf(String(r[4])) >= 0);
+      const counted = mine.filter(r => { const k = noticeKindOf_(r[6]); return k === 'notice' || k === 'note'; });
+      if (kind === 'notice' && counted.some(r => noticeKindOf_(r[6]) === 'notice')) return no('one notice already today', last4, false);
+      if (counted.length >= NOTICE.ALL_PER_DAY) return no('two texts already today', last4, false);
+    }
 
-    // quiet hours: it waits (one held notice per man; a second request while one waits adds nothing)
-    if (!opts.test && (hour >= NOTICE.QUIET_FROM || hour < NOTICE.QUIET_TO)) {
+    // quiet hours: it waits (one held text of a kind per man; a second request while one waits adds nothing)
+    if (kind !== 'confirm' && !opts.test && (hour >= NOTICE.QUIET_FROM || hour < NOTICE.QUIET_TO)) {
       if (heldRow) return { ok: true, status: 'held', note: 'still quiet hours' };
-      const already = noticeRows_(tx).some(r => String(r[1]).toLowerCase() === email && String(r[4]) === 'held');
-      if (already) { return { ok: true, status: 'held', note: 'one already waiting' }; }
+      const already = noticeRows_(tx).some(r => String(r[1]).toLowerCase() === email && String(r[4]) === 'held' && noticeKindOf_(r[6]) === kind);
+      if (already) return { ok: true, status: 'held', note: 'one already waiting' };
       log('held', 'waits until 8:00 AM Central', '', '', last4);
       return { ok: true, status: 'held' };
     }
 
     const p = PropertiesService.getScriptProperties().getProperties();
     const need = ['TWILIO_ACCOUNT_SID', 'TWILIO_SERVICE_SID', 'TWILIO_KEY_SID', 'TWILIO_KEY_SECRET', 'NOTICE_HOOK_SECRET'].filter(k => !p[k]);
-    if (need.length) { log('not sent', 'Twilio not set up: missing ' + need.join(', '), '', '', last4); return { ok: false, status: 'not sent', note: 'missing ' + need.join(', ') }; }
+    if (need.length) return no('Twilio not set up: missing ' + need.join(', '), last4, true);
 
-    const base = ScriptApp.getService().getUrl();
+    const body = kind === 'confirm' ? NOTICE.TEXTS.confirm : kind === 'note' ? noticeFrame_(words) : NOTICE.TEXTS.notice;
     const res = UrlFetchApp.fetch('https://api.twilio.com/2010-04-01/Accounts/' + p.TWILIO_ACCOUNT_SID + '/Messages.json', {
       method: 'post',
       headers: { Authorization: 'Basic ' + Utilities.base64Encode(p.TWILIO_KEY_SID + ':' + p.TWILIO_KEY_SECRET) },
-      payload: { To: to, MessagingServiceSid: p.TWILIO_SERVICE_SID, Body: NOTICE.BODY, StatusCallback: base + '?notice=status&k=' + encodeURIComponent(p.NOTICE_HOOK_SECRET) },
+      payload: { To: to, MessagingServiceSid: p.TWILIO_SERVICE_SID, Body: body, StatusCallback: ScriptApp.getService().getUrl() + '?notice=status&k=' + encodeURIComponent(p.NOTICE_HOOK_SECRET) },
       muteHttpExceptions: true
     });
     let j = {};
@@ -101,17 +140,40 @@ function noticeRun_(email, opts, heldRow) {
       return { ok: true, status: j.status || 'queued', sid: j.sid };
     }
     const errCode = j.code ? String(j.code) : 'HTTP ' + code;
-    if (errCode === '21610') noticeSetOpt_(op, email, 'no', 'Twilio', true);   // he has already stopped them with Twilio
+    const stopped = errCode === '21610';
+    if (stopped) noticeSetOpt_(op, email, 'no', 'Twilio', true);   // he has already stopped them with Twilio
     log('failed', String(j.message || '').slice(0, 160), '', errCode, last4);
-    return { ok: false, status: 'failed', note: errCode };
+    return { ok: false, status: 'failed', note: errCode, stopped: stopped, fallback: kind === 'notice' };
   } finally { lock.releaseLock(); }
 }
 
-// ───────────────────────────── Twilio posts back here (doPost line) ─────────────────────────────
+/** The standard's frame around the words our team wrote. The words themselves are never changed. */
+function noticeFrame_(words) { return 'Ancient Path: ' + words + ' ' + NOTICE.STOPLINE; }
+
+/** The words our team wrote: whitespace tidied, curly quotes and long dashes made plain (one curly quote turns a 160-character text into three). Only links on our own site pass. */
+function noticeWords_(w) {
+  let t = String(w == null ? '' : w).replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim();
+  if (t.length > 320) t = t.slice(0, 320).trim();
+  const links = t.match(/(?:https?:\/\/|www\.)\S+/gi) || [];
+  if (links.some(l => !/^(?:https?:\/\/)?(?:www\.)?ancientpathcoaching\.com(?:[\/?#]\S*)?$/i.test(l.replace(/[.,;:!?)]+$/, '')))) return '';
+  return t;
+}
+
+function noticeKindOf_(note) {
+  const n = String(note || '').toLowerCase();
+  if (n.indexOf('team note') === 0) return 'note';
+  if (n.indexOf('confirmation') === 0) return 'confirm';
+  if (n.indexOf('notice') === 0) return 'notice';
+  if (n.indexOf('auto') === 0) return 'auto';
+  return '';
+}
+
+// ───────────────────────────── Twilio posts back here, and Your Page's keyed call ─────────────────────────────
 
 function noticeHook_(e) {
   const xml = (s) => ContentService.createTextOutput(s || '<Response></Response>').setMimeType(ContentService.MimeType.XML);
   const p = (e && e.parameter) || {};
+  if (p.notice === 'api') return noticeApi_(e);   // before the lock: noticeRun_ takes it itself
   const secret = PropertiesService.getScriptProperties().getProperty('NOTICE_HOOK_SECRET');
   if (!secret || String(p.k || '') !== secret) return xml();   // refused: nothing is read, nothing is written
   const lock = LockService.getScriptLock();
@@ -120,9 +182,9 @@ function noticeHook_(e) {
     const ss = SpreadsheetApp.openById(FD.SHEET_ID);
     noticeEnsureTabs_(ss);
     const tx = ss.getSheetByName('Texts'), op = ss.getSheetByName('TextOptIn');
-    const now = new Date(), stamp = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd h:mm a'), today = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd');
+    const now = noticeNow_(), stamp = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd h:mm a'), today = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd');
     if (p.notice === 'status') { noticeStatus_(tx, op, p, stamp, today); return xml(); }
-    if (p.notice === 'inbound') { noticeInbound_(tx, op, p, stamp, today); return xml(); }
+    if (p.notice === 'inbound') return xml(noticeInbound_(ss, tx, op, p, stamp, today));
     return xml();
   } finally { lock.releaseLock(); }
 }
@@ -142,30 +204,181 @@ function noticeStatus_(tx, op, p, stamp, today) {
   if (err === '21610') noticeSetOpt_(op, String(all[at - 1][1]).toLowerCase(), 'no', 'Twilio', true);
 }
 
-function noticeInbound_(tx, op, p, stamp, today) {
-  const from = String(p.From || ''), body = String(p.Body || '').trim().toUpperCase();
+/** An incoming text. Returns the TwiML for the one reply that goes at once (HELP, or the once-a-day answer to anything else), or ''. */
+function noticeInbound_(ss, tx, op, p, stamp, today) {
+  const from = String(p.From || ''), raw = String(p.Body || '').trim(), body = raw.toUpperCase();
   let kind = String(p.OptOutType || '').toUpperCase();
   if (!kind) kind = NOTICE.STOP_WORDS.indexOf(body) >= 0 ? 'STOP' : NOTICE.START_WORDS.indexOf(body) >= 0 ? 'START' : NOTICE.HELP_WORDS.indexOf(body) >= 0 ? 'HELP' : '';
   const last10 = from.replace(/\D/g, '').slice(-10);
   const data = op.getDataRange().getValues();
   let email = '';
   for (let i = 1; i < data.length; i++) if (last10 && String(data[i][1]).replace(/\D/g, '').slice(-10) === last10) { email = String(data[i][0]).toLowerCase(); break; }
-  if (kind === 'STOP' && email) noticeSetOpt_(op, email, 'no', 'reply STOP', true);
-  if (kind === 'START' && email) noticeSetOpt_(op, email, 'yes', 'reply START', false);
-  tx.appendRow([stamp, email, last10.slice(-4), String(p.MessageSid || p.SmsSid || ''), kind || 'reply', '', kind ? 'he texted ' + kind : 'he replied (not a keyword; not stored)', today]);
+  const sid = String(p.MessageSid || p.SmsSid || '');
+  if (kind === 'STOP') { if (email) noticeSetOpt_(op, email, 'no', 'reply STOP', true); tx.appendRow([stamp, email, last10.slice(-4), sid, 'STOP', '', 'he texted STOP; texts are off at once', today]); return ''; }
+  if (kind === 'START') { if (email) noticeSetOpt_(op, email, 'yes', 'reply START', false); tx.appendRow([stamp, email, last10.slice(-4), sid, 'START', '', 'he texted START', today]); return ''; }
+  if (kind === 'HELP') { tx.appendRow([stamp, email, last10.slice(-4), sid, 'HELP', '', 'he texted HELP; the registered HELP text went back', today]); return noticeTwiml_(NOTICE.TEXTS.help); }
+  // any other reply: a card for our team, and one automatic answer a day
+  tx.appendRow([stamp, email, last10.slice(-4), sid, 'reply', '', 'he replied; the card is on the Actions tab', today]);
+  noticeReplyCard_(ss, email, last10, raw, stamp, today);
+  const had = noticeRows_(tx).some(r => noticeDay_(r[7]) === today && noticeKindOf_(r[6]) === 'auto' && String(r[2]) === last10.slice(-4));
+  if (had) return '';
+  tx.appendRow([stamp, email, last10.slice(-4), '', 'sent', '', 'auto answer (once a day)', today]);
+  return noticeTwiml_(NOTICE.TEXTS.other);
+}
+
+function noticeTwiml_(s) { return '<Response><Message>' + String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</Message></Response>'; }
+
+/** A card for our team: what he said, and who. Key textreply:<who>:<day> (not script-owned, so it stays until someone closes it; safeguarding protocol governs what our team does next). */
+function noticeReplyCard_(ss, email, last10, raw, stamp, today) {
+  try {
+    const ac = ss.getSheetByName('Actions'); if (!ac) return;
+    const who = email || ('a number ending ' + last10.slice(-4));
+    const key = 'textreply:' + (email || last10) + ':' + today;
+    const keys = ac.getLastRow() > 1 ? ac.getRange(2, 1, ac.getLastRow() - 1, 1).getValues() : [];
+    if (keys.some(r => String(r[0]) === key)) return;
+    ac.appendRow([key, stamp, 'John', 'Read his text and answer him', who, 'He replied to our text: ' + raw.slice(0, 300) + ' — read it today; if it is a hand raised, follow the safeguarding protocol.', '', 'open', false, '', 'R26']);
+  } catch (x) {}
+}
+
+// ───────────────────────────── Your Page's keyed call (Settings) ─────────────────────────────
+
+/** POST ?notice=api, body { key, op, email, phone?, kind? }. key = Research Engine Config "text send key". ops: start · off · state · send. */
+function noticeApi_(e) {
+  const out = (o) => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+  let b = {};
+  try { b = JSON.parse((e && e.postData && e.postData.contents) || '{}'); } catch (x) { b = {}; }
+  const key = noticeSendKey_();
+  if (key.length < 24 || String(b.key || '') !== key) return out({ ok: false, error: 'no_key' });
+  const email = String(b.email || '').trim().toLowerCase();
+  if (!email || email.indexOf('@') < 0) return out({ ok: false, error: 'no_email' });
+  try {
+    if (b.op === 'state') return out(Object.assign({ ok: true }, noticeState_(SpreadsheetApp.openById(FD.SHEET_ID), email)));
+    if (b.op === 'off') { noticeOptWrite_(email, null, 'no', 'Settings', false); return out({ ok: true }); }
+    if (b.op === 'send') { const r = sendNotice(email, { kind: 'notice' }); return out(r); }
+    if (b.op === 'start') return out(noticeStart_(email, b.phone));
+    return out({ ok: false, error: 'bad_op' });
+  } catch (x) { return out({ ok: false, error: 'failed' }); }
+}
+
+/** Start Texts: his own number, his own yes. A landline is caught by Twilio's number check; then the yes is written and one confirmation goes at once. */
+function noticeStart_(email, phone) {
+  const to = noticePhone_(phone);
+  if (!to) return { ok: false, error: 'bad_phone' };
+  const look = noticeLookup_(to);
+  if (!look.ok) return { ok: false, error: look.error };
+  noticeOptWrite_(email, noticeShow_(to), 'yes', 'Settings', false);
+  const r = noticeRun_(email, { kind: 'confirm' }, 0);
+  const st = noticeState_(SpreadsheetApp.openById(FD.SHEET_ID), email);
+  if (!r.ok && r.stopped) return Object.assign({ ok: false, error: 'stopped' }, st);
+  if (!r.ok) return Object.assign({ ok: false, error: 'failed', why: r.note }, st);
+  return Object.assign({ ok: true }, st);
+}
+
+function noticeOptWrite_(email, phone, value, by, byReply) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    const ss = SpreadsheetApp.openById(FD.SHEET_ID);
+    noticeEnsureTabs_(ss);
+    const op = ss.getSheetByName('TextOptIn');
+    let o = noticeFindOpt_(op, email);
+    if (!o) { if (value !== 'yes') return; op.appendRow([email, phone || '', '', '', '', '']); o = noticeFindOpt_(op, email); }
+    if (phone) op.getRange(o.row, 2).setValue(phone);
+    noticeSetOpt_(op, email, value, by, byReply);
+  } finally { lock.releaseLock(); }
+}
+
+/** What Settings and the desk need to know about one man's texts. */
+function noticeState_(ss, email) {
+  const op = ss.getSheetByName('TextOptIn'), tx = ss.getSheetByName('Texts');
+  const o = op ? noticeFindOpt_(op, email) : null;
+  const out = { textMe: '', phone: '', last4: '', stopped: false, failing: false, on: false };
+  if (!o) return out;
+  const row = op.getRange(o.row, 1, 1, 6).getValues()[0];
+  out.textMe = String(row[2]).trim().toLowerCase();
+  out.phone = String(row[1] || '');
+  out.last4 = out.phone.replace(/\D/g, '').slice(-4);
+  out.stopped = out.textMe !== 'yes' && !!String(row[5] || '').trim();
+  const mine = tx ? noticeRows_(tx).filter(r => String(r[1]).toLowerCase() === email && (NOTICE.COUNTS.concat(NOTICE.FAILED)).indexOf(String(r[4])) >= 0) : [];
+  const last3 = mine.slice(-3);
+  out.failing = last3.length === 3 && last3.every(r => NOTICE.FAILED.indexOf(String(r[4])) >= 0);
+  out.on = out.textMe === 'yes' && !out.failing;
+  return out;
+}
+
+/** Twilio's number check (Lookup, line type). A landline cannot get texts. If the check itself cannot run, the delivery status catches it later. */
+function noticeLookup_(to) {
+  try {
+    const p = PropertiesService.getScriptProperties().getProperties();
+    if (!p.TWILIO_KEY_SID || !p.TWILIO_KEY_SECRET) return { ok: true, skipped: true };
+    const res = UrlFetchApp.fetch('https://lookups.twilio.com/v2/PhoneNumbers/' + encodeURIComponent(to) + '?Fields=line_type_intelligence', { headers: { Authorization: 'Basic ' + Utilities.base64Encode(p.TWILIO_KEY_SID + ':' + p.TWILIO_KEY_SECRET) }, muteHttpExceptions: true });
+    if (res.getResponseCode() !== 200) return { ok: true, skipped: true };
+    const j = JSON.parse(res.getContentText());
+    if (j.valid === false) return { ok: false, error: 'bad_phone' };
+    const t = j.line_type_intelligence && j.line_type_intelligence.type;
+    if (t === 'landline') return { ok: false, error: 'landline' };
+    return { ok: true };
+  } catch (x) { return { ok: true, skipped: true }; }
+}
+
+function noticeSendKey_() {
+  try {
+    const d = SpreadsheetApp.openById(RESEARCH_SHEET_ID_).getSheetByName('Config').getDataRange().getValues();
+    for (let i = 1; i < d.length; i++) if (String(d[i][0]).trim() === 'text send key') return String(d[i][1] || '').trim();
+  } catch (x) {}
+  return '';
+}
+
+// ───────────────────────────── the card, and Text him ─────────────────────────────
+
+/** Save our number: a contact card named Ancient Path with the number and the site. He names it himself. */
+function noticeCard_() {
+  const v = ['BEGIN:VCARD', 'VERSION:3.0', 'FN:Ancient Path', 'N:Path;Ancient;;;', 'ORG:Ancient Path', 'TEL;TYPE=CELL:' + NOTICE.SENDER, 'URL:' + NOTICE.SITE, 'END:VCARD', ''].join('\r\n');
+  return ContentService.createTextOutput(v).setMimeType(ContentService.MimeType.VCARD);
+}
+
+/** desk action text_check: can our team text this man, and what will the text look like. Admins only. */
+function textCheck_(who, b) {
+  psAdmin_(who);
+  const email = String(b.email || '').trim().toLowerCase();
+  const ss = SpreadsheetApp.openById(FD.SHEET_ID);
+  const st = noticeState_(ss, email);
+  const first = String((b.first || '')).trim();
+  let why = '';
+  if (!noticeFlag_(ss, 'text him')) why = 'off';
+  else if (!noticeOn_(ss)) why = 'notices_off';
+  else if (st.stopped) why = 'stopped';
+  else if (st.textMe !== 'yes') why = 'not_on';
+  else if (st.failing) why = 'failing';
+  return { ok: true, can: !why, why: why, last4: st.last4, first: first, frame: { open: 'Ancient Path: ', close: ' ' + NOTICE.STOPLINE } };
+}
+
+/** desk action text_him: send the words our team wrote, framed by the standard. Admins only. */
+function textHim_(who, b) {
+  psAdmin_(who);
+  const email = String(b.email || '').trim().toLowerCase();
+  const words = noticeWords_(b.words);
+  if (!words) return { ok: true, sent: false, why: 'bad_words' };   // a normal answer, so the desk shows its own line, not a generic one
+  const r = noticeRun_(email, { kind: 'note', words: words, by: String(who.name || who.email || 'our team') }, 0);
+  return { ok: true, sent: !!r.ok, status: r.status, note: r.note || '' };
 }
 
 // ───────────────────────────── the sweep: held texts go at 8:00 AM ─────────────────────────────
 
-/** Every 30 minutes. Sends each held notice once quiet hours are over, and only if he still wants texts and is under the day's cap. */
+/** Every 10 minutes. Sends each held text once quiet hours are over, and only if he still wants texts and is under the day's caps. */
 function noticeSweep() {
-  const hour = Number(Utilities.formatDate(new Date(), FD.TZ, 'H'));
+  const hour = Number(Utilities.formatDate(noticeNow_(), FD.TZ, 'H'));
   if (hour >= NOTICE.QUIET_FROM || hour < NOTICE.QUIET_TO) return;
   const ss = SpreadsheetApp.openById(FD.SHEET_ID);
   noticeEnsureTabs_(ss);
   const tx = ss.getSheetByName('Texts');
   const all = tx.getDataRange().getValues();
-  for (let i = 1; i < all.length; i++) if (String(all[i][4]) === 'held') noticeRun_(String(all[i][1]).toLowerCase(), {}, i + 1);
+  for (let i = 1; i < all.length; i++) {
+    if (String(all[i][4]) !== 'held') continue;
+    const note = String(all[i][6]), k = noticeKindOf_(note);
+    if (k === 'note') { const m = /^team note\|([^|]*)\|([\s\S]*)$/.exec(note); noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'note', by: m ? m[1] : '', words: m ? m[2] : '' }, i + 1); }
+    else noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'notice' }, i + 1);
+  }
 }
 
 // ───────────────────────────── keeping the property list short (Google makes it read-only past 50) ─────────────────────────────
@@ -193,35 +406,90 @@ function noticePruneKeys_() {
   }).sort();
 }
 
-// ───────────────────────────── setup, hooks, test ─────────────────────────────
+// ───────────────────────────── setup, the sender check, hooks, test ─────────────────────────────
 
-/** Run once after pasting this file and the doPost line. Makes the tabs, the callback secret and the two timers. Safe to run again. */
+/**
+ * Run once after pasting this file (safe to run again). In this order, and it stops where something is wrong:
+ *  1. the tabs and the Config rows; the callback secret; the key Your Page uses ("text send key" on the Research Engine Config);
+ *  2. the sender check: (469) 557-5502 is in the notices Messaging Service's pool (added through the API if not), and the service's incoming-message address points at this script;
+ *  3. only if that passed: Config "text notices" moves from no to yes (the campaign was approved Nov 10, 2026);
+ *  4. the two timers (the sweep every 10 minutes, the daily prune).
+ * The answer is one line in Config "text sender" and in the log.
+ */
 function noticeSetup() {
   const ss = SpreadsheetApp.openById(FD.SHEET_ID);
   noticeEnsureTabs_(ss);
   noticeEnsureSwitch_(ss);
+  noticeConfigSet_(ss, 'text him', 'no', 'yes/no. Text him on the Front Desk sends the words our team writes as the text (framed by ap-text-standard). Ships off: a free-written team text is outside what the opt-in screen promises. John rules it on.', true);
   const props = PropertiesService.getScriptProperties();
   if (!props.getProperty('NOTICE_HOOK_SECRET')) props.setProperty('NOTICE_HOOK_SECRET', (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, ''));
-  const have = ScriptApp.getProjectTriggers().map(t => t.getHandlerFunction());
-  if (have.indexOf('noticeSweep') < 0) ScriptApp.newTrigger('noticeSweep').timeBased().everyMinutes(30).create();
-  if (have.indexOf('noticeDaily') < 0) ScriptApp.newTrigger('noticeDaily').timeBased().atHour(3).everyDays(1).inTimezone(FD.TZ).create();
-  Logger.log('Notices ' + NOTICE.BUILD + ' is set up. Tabs: Texts, TextOptIn. Config "text notices" is no until you change it to yes. Run noticeShowHooks to read the two Twilio addresses.');
+  if (noticeSendKey_().length < 24) noticeConfigSet_(SpreadsheetApp.openById(RESEARCH_SHEET_ID_), 'text send key', (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, ''), 'Text Notices Build 1: the key Your Page (the Research reader) uses to ask the Front Desk script to start, stop or send a text. Made by noticeSetup; never typed, never shared.', true);
+  const check = noticeSenderCheck();
+  if (check.ok && !noticeOn_(ss)) { noticeConfigSet_(ss, 'text notices', 'yes', 'yes/no. Turned on by noticeSetup, Nov 11, 2026, after the sender check passed (campaign approved Nov 10).', false); check.line += ' Text notices: yes.'; noticeConfigSet_(ss, 'text sender', check.line, 'noticeSenderCheck, written by the script', false); }
+  const have = ScriptApp.getProjectTriggers();
+  have.filter(t => t.getHandlerFunction() === 'noticeSweep').forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger('noticeSweep').timeBased().everyMinutes(10).create();
+  if (!have.some(t => t.getHandlerFunction() === 'noticeDaily')) ScriptApp.newTrigger('noticeDaily').timeBased().atHour(3).everyDays(1).inTimezone(FD.TZ).create();
+  Logger.log('Notices ' + NOTICE.BUILD + ' (' + NOTICE.LABEL + '): ' + check.line);
+  try { relLog_(SpreadsheetApp.openById(RESEARCH_SHEET_ID_), 'text sender', NOTICE.LABEL + ' · Notices ' + NOTICE.BUILD + ' · ' + check.line); } catch (x) {}
+  return check;
 }
 
-function noticeDaily() { noticePrune(); }
+function noticeDaily() { noticePrune(); try { noticeSenderCheck(); } catch (x) {} }
 
-/** Logs the two addresses to paste into Twilio. They carry the secret, so they appear only here, in this log. */
+/**
+ * Is (469) 557-5502 in the notices Messaging Service's sender pool? If not, add it through the API and read it back. Also points the service's incoming-message address at this script,
+ * and reads the campaign's status. Writes one line to Config "text sender". Never reads or writes a secret to the sheet.
+ * @return {{ok: boolean, line: string}}
+ */
+function noticeSenderCheck() {
+  const ss = SpreadsheetApp.openById(FD.SHEET_ID);
+  const done = (ok, line) => { const stamp = Utilities.formatDate(noticeNow_(), FD.TZ, 'MMM d, h:mm a'); line = line + ' (' + stamp + ' Central)'; try { noticeConfigSet_(ss, 'text sender', line, 'noticeSenderCheck, written by the script', false); } catch (x) {} return { ok: ok, line: line }; };
+  const p = PropertiesService.getScriptProperties().getProperties();
+  const need = ['TWILIO_ACCOUNT_SID', 'TWILIO_SERVICE_SID', 'TWILIO_KEY_SID', 'TWILIO_KEY_SECRET'].filter(k => !p[k]);
+  if (need.length) return done(false, 'Not checked: Script Properties is missing ' + need.join(', ') + '.');
+  if (p.TWILIO_SERVICE_SID !== NOTICE.SERVICE) return done(false, 'Not checked: TWILIO_SERVICE_SID is not the notices Messaging Service (' + NOTICE.SERVICE + ').');
+  const auth = { Authorization: 'Basic ' + Utilities.base64Encode(p.TWILIO_KEY_SID + ':' + p.TWILIO_KEY_SECRET) };
+  const get = (u) => { const r = UrlFetchApp.fetch(u, { headers: auth, muteHttpExceptions: true }); let j = {}; try { j = JSON.parse(r.getContentText()); } catch (x) {} return { code: r.getResponseCode(), j: j }; };
+  const post = (u, payload) => { const r = UrlFetchApp.fetch(u, { method: 'post', headers: auth, payload: payload, muteHttpExceptions: true }); let j = {}; try { j = JSON.parse(r.getContentText()); } catch (x) {} return { code: r.getResponseCode(), j: j }; };
+  const svc = 'https://messaging.twilio.com/v1/Services/' + NOTICE.SERVICE;
+  const sv = get(svc);
+  if (sv.code !== 200) return done(false, 'Twilio would not show the Messaging Service (HTTP ' + sv.code + (sv.j && sv.j.code ? ', ' + sv.j.code : '') + '). The API key may not be the Standard key for this account.');
+  const inPool = () => { const g = get(svc + '/PhoneNumbers?PageSize=50'); return g.code === 200 && (g.j.phone_numbers || []).some(n => n.phone_number === NOTICE.SENDER); };
+  let said = '';
+  if (inPool()) said = NOTICE.SENDER_SHOWN + ' is in the notices sender pool.';
+  else {
+    const f = get('https://api.twilio.com/2010-04-01/Accounts/' + p.TWILIO_ACCOUNT_SID + '/IncomingPhoneNumbers.json?PhoneNumber=' + encodeURIComponent(NOTICE.SENDER));
+    const pn = f.code === 200 && f.j.incoming_phone_numbers && f.j.incoming_phone_numbers[0];
+    if (!pn) return done(false, NOTICE.SENDER_SHOWN + ' is not in the pool and is not a number on this Twilio account (HTTP ' + f.code + ').');
+    const a = post(svc + '/PhoneNumbers', { PhoneNumberSid: pn.sid });
+    if (a.code >= 300 && !inPool()) return done(false, NOTICE.SENDER_SHOWN + ' was not in the pool and Twilio refused to add it (' + (a.j.code || 'HTTP ' + a.code) + ': ' + String(a.j.message || '').slice(0, 120) + ').');
+    if (!inPool()) return done(false, NOTICE.SENDER_SHOWN + ' was added but is not showing in the pool yet.');
+    said = NOTICE.SENDER_SHOWN + ' was not in the notices sender pool; it was added through the API and read back.';
+  }
+  // incoming messages come here (STOP, START, HELP and every other reply)
+  const secret = p.NOTICE_HOOK_SECRET || PropertiesService.getScriptProperties().getProperty('NOTICE_HOOK_SECRET');
+  if (secret) {
+    const want = ScriptApp.getService().getUrl() + '?notice=inbound&k=' + secret;
+    if (sv.j.inbound_request_url !== want) { const u = post(svc, { InboundRequestUrl: want, InboundMethod: 'POST' }); said += u.code < 300 ? ' Incoming replies now come to this script.' : ' Twilio would not set the incoming-message address (' + (u.j.code || 'HTTP ' + u.code) + ').'; }
+    else said += ' Incoming replies already come to this script.';
+  }
+  // the campaign, read only
+  try { const c = get(svc + '/Compliance/Usa2p'); const rec = c.code === 200 && (c.j.compliance || []).filter(x => x.campaign_id === NOTICE.CAMPAIGN)[0]; if (rec && rec.campaign_status) said += ' Campaign: ' + rec.campaign_status + '.'; } catch (x) {}
+  return done(true, said);
+}
+
+/** Logs the two Twilio addresses (they carry the secret, so they appear only in this log). Kept for the record; noticeSetup points Twilio at this script by itself. */
 function noticeShowHooks() {
   const s = PropertiesService.getScriptProperties().getProperty('NOTICE_HOOK_SECRET');
   if (!s) { Logger.log('Run noticeSetup first.'); return; }
-  const base = ScriptApp.getService().getUrl();
-  Logger.log('INCOMING MESSAGES (Twilio Messaging Service → Integration → Send a webhook):\n' + base + '?notice=inbound&k=' + s);
-  Logger.log('Delivery status is attached to each text by the script itself; nothing to set in Twilio for it.');
+  Logger.log('INCOMING MESSAGES: ' + ScriptApp.getService().getUrl() + '?notice=inbound&k=' + s);
+  Logger.log('Delivery status is attached to each text by the script itself.');
 }
 
 /** One test send to John's own TextOptIn row (his phone and "text me" = yes must be on that row). Skips quiet hours only. */
 function noticeTestSend() {
-  const r = sendNotice('john@ancientpathcoaching.com', { test: true });
+  const r = sendNotice('john@ancientpathcoaching.com', { kind: 'notice', test: true });
   Logger.log('Test send: ' + JSON.stringify(r) + '. Read the Texts tab for delivery.');
   return r;
 }
@@ -229,21 +497,30 @@ function noticeTestSend() {
 // ───────────────────────────── small helpers ─────────────────────────────
 
 /** The off switch: Config "text notices". Anything but yes (or a missing row) is off. */
-function noticeOn_(ss) {
+function noticeOn_(ss) { return noticeFlag_(ss, 'text notices'); }
+
+function noticeFlag_(ss, key) {
   const cf = ss.getSheetByName('Config');
   if (!cf || cf.getLastRow() < 2) return false;
   const rows = cf.getRange(2, 1, cf.getLastRow() - 1, 2).getValues();
-  for (let i = 0; i < rows.length; i++) if (String(rows[i][0]).trim().toLowerCase() === 'text notices') return String(rows[i][1]).trim().toLowerCase() === 'yes';
+  for (let i = rows.length - 1; i >= 0; i--) if (String(rows[i][0]).trim().toLowerCase() === key) return String(rows[i][1]).trim().toLowerCase() === 'yes';
   return false;
 }
 
 /** Makes the Config row, set to no, if it is not there. Never changes a value already set. */
 function noticeEnsureSwitch_(ss) {
+  noticeConfigSet_(ss, 'text notices', 'no', 'yes/no. Texts to men are off until Twilio shows the campaign Approved; noticeSetup moves no to yes after the sender check passes.', true);
+}
+
+/** Sets Config key → value (the last matching row), or appends it. onlyIfMissing leaves a value already there alone. */
+function noticeConfigSet_(ss, key, value, note, onlyIfMissing) {
   const cf = ss.getSheetByName('Config');
   if (!cf) return;
   const n = Math.max(cf.getLastRow() - 1, 0), rows = n ? cf.getRange(2, 1, n, 1).getValues() : [];
-  if (rows.some(r => String(r[0]).trim().toLowerCase() === 'text notices')) return;
-  cf.appendRow(['text notices', 'no', 'yes/no. Texts to men are off until Twilio shows the campaign Approved; then change no to yes. Nothing else needs to change.']);
+  let at = 0;
+  for (let i = 0; i < rows.length; i++) if (String(rows[i][0]).trim().toLowerCase() === key) at = i + 2;
+  if (at) { if (!onlyIfMissing) cf.getRange(at, 2).setNumberFormat('@').setValue(value); return; }
+  cf.appendRow([key, value, note || '']);
 }
 
 function noticeEnsureTabs_(ss) {
@@ -254,7 +531,6 @@ function noticeEnsureTabs_(ss) {
     want.forEach((h, i) => { if (have[i] !== h) sh.getRange(1, i + 1).setValue(h); });
     if (sh.getFrozenRows() < 1) sh.setFrozenRows(1);
     // keep day, phone and ids as plain text so Sheets never turns them into dates or drops a leading zero.
-    // Done once per column (a cheap one-cell check first), over a bounded range, so a slow sheet is not asked twice.
     const text = name === 'Texts' ? [3, 4, 8] : [2];
     text.forEach(c => { if (sh.getRange(2, c).getNumberFormat() !== '@') sh.getRange(2, c, 2000, 1).setNumberFormat('@'); });
   });
@@ -279,7 +555,7 @@ function noticeFindOpt_(op, email) {
 function noticeSetOpt_(op, email, value, by, byReply) {
   const o = noticeFindOpt_(op, email);
   if (!o) return;
-  const stamp = Utilities.formatDate(new Date(), FD.TZ, 'yyyy-MM-dd h:mm a');
+  const stamp = Utilities.formatDate(noticeNow_(), FD.TZ, 'yyyy-MM-dd h:mm a');
   op.getRange(o.row, 3, 1, 3).setValues([[value, stamp, by]]);
   op.getRange(o.row, 6).setValue(byReply ? stamp : '');
 }
@@ -291,3 +567,6 @@ function noticePhone_(v) {
   if (d.length === 11 && d.charAt(0) === '1') return '+' + d;
   return '';
 }
+
+/** +12145550142 → (214) 555-0142 */
+function noticeShow_(e164) { const d = String(e164 || '').replace(/\D/g, '').slice(-10); return d.length === 10 ? '(' + d.slice(0, 3) + ') ' + d.slice(3, 6) + '-' + d.slice(6) : String(e164 || ''); }
