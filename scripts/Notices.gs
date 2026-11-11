@@ -1,4 +1,12 @@
 /**
+ * Ancient Path — Front Desk · Notices.gs · build N5 · Text Him: Notice and Card (Nov 11, 2026; with Front Desk 36.3 and Research reader 13.9). John's ruling, Nov 11, 2026: Text him on the Front Desk no longer sends our team's words as the text. It sends the approved notice ("Ancient Path: something new is waiting on Your Page. https://www.ancientpathcoaching.com/start Reply STOP to end these texts, HELP for help.") through the existing notice path (op send: his yes, quiet hours, one a day), and the words our team wrote land as a card on his Your Page. If he has no text yes, the same card lands and the notice goes by email.
+ *   1. textHim_ (desk action text_him, admins only) asks the Research reader's keyed team_card action (key = the Research Engine Config row "week lines key", the one personalLines_ reads; no new key) to land the card and tell him. The reader writes the card first, then runs the notice: by text through sendNotice (this file), by email when he has no text yes or the text cannot go, nothing when he chose "Only on this page", nothing when a notice already went today. It answers how it went and the desk says it in one calm line. Still behind Config "text him" (yes/no; John rules it on).
+ *   2. Retired: the "note" kind (our team's words as the text), noticeFrame_, noticeWords_, textCheck_ and the desk action text_check, the two-texts-a-day ceiling (there is one kind of text we start now, the notice, so one a day is the whole rule). A held "team note" row, if one were ever on the Texts tab, is marked not sent by the sweep. The registered samples stay word for word the only texts this file sends: notice, confirmation, HELP, any other reply.
+ *   Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged. Retires: a free-written team text outside what the opt-in screen promises; text_check. When it breaks: the card is written first, so a failed notice never loses the words; the desk says which part went. Next school: nothing more.
+ *   Moves to the platform as it is: textHim_ (one call to the record's piece table and the notice). Rebuilt there: the UrlFetch to the Research reader (a call inside one system).
+ *   Counts taken: the file parses; the diff from N4 is the lines named in patch_notices.py only.
+ */
+/**
  * Ancient Path — Front Desk · Notices.gs · build N4 · Text Notices Build 1 (Nov 11, 2026)
  * Text Notices Build 1 = Notices.gs N4 + Front Desk 35 (Code.gs, desk.js 35) + Research reader 13.7 (road.js 11.9). One label, stamped in every file's header, in the Log line each script writes when it is deployed, and in the repo commit.
  *
@@ -24,8 +32,8 @@
  */
 
 const NOTICE = {
-  BUILD: 'N4',
-  LABEL: 'Text Notices Build 1',
+  BUILD: 'N5',
+  LABEL: 'Text Him: Notice and Card',
   SENDER: '+14695575502',
   SENDER_SHOWN: '(469) 557-5502',
   SERVICE: 'MGa52ac58544f99799e55cf4788c7906e9',
@@ -34,7 +42,6 @@ const NOTICE = {
   SITE: 'https://www.ancientpathcoaching.com',
   STOPLINE: 'Reply STOP to end these texts, HELP for help.',
   NOTICES_PER_DAY: 1,   // ap-text-standard and the opt-in screen the carriers saw: "at most one a day"
-  ALL_PER_DAY: 2,       // John's ceiling on any text we start to one man (a notice and a team note)
   QUIET_FROM: 21,       // 9:00 PM Central
   QUIET_TO: 8,          // 8:00 AM Central
   TEXTS: {
@@ -54,6 +61,7 @@ const NOTICE = {
   START_WORDS: ['START', 'YES', 'UNSTOP'],
   HELP_WORDS: ['HELP', 'INFO']
 };
+const NOTICE_CARD_MAX = 600; // the words on the card (the Research reader refuses more)
 const NOTICE_POST_LINE = "if (e && e.parameter && e.parameter.notice) return noticeHook_(e); // Text Notices Build 1: Twilio status and inbound posts, and Your Page's keyed call";
 const NOTICE_GET_LINE = "if (e && e.parameter && e.parameter.file === 'ancient-path.vcf') return noticeCard_(); // Text Notices Build 1: Save our number";
 
@@ -65,10 +73,9 @@ function noticeNow_() { return new Date(); }
 /**
  * Text one man.
  * @param {string} email  the man's email (his row on TextOptIn)
- * @param {{kind?: 'notice'|'confirm'|'note', words?: string, by?: string, test?: boolean}} opts
+ * @param {{kind?: 'notice'|'confirm', test?: boolean}} opts
  *   notice (default): something new is waiting on his page; held in quiet hours; one a day.
  *   confirm: the text after his yes; goes at once, any hour, and never counts toward a day.
- *   note: the words our team wrote (framed by the standard); held in quiet hours; counts toward the two-a-day ceiling.
  *   test: skips only the quiet hours; never the caps, never his "text me".
  * @return {{ok: boolean, status: string, sid?: string, note?: string, fallback?: boolean}}
  *   fallback true = he cannot be texted right now (off, stopped, no number, the send failed), so the caller sends this one notice by email.
@@ -83,19 +90,15 @@ function noticeRun_(email, opts, heldRow) {
     noticeEnsureTabs_(ss);
     const tx = ss.getSheetByName('Texts'), op = ss.getSheetByName('TextOptIn');
     const now = noticeNow_(), today = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd'), hour = Number(Utilities.formatDate(now, FD.TZ, 'H'));
-    const kind = opts.kind === 'confirm' ? 'confirm' : opts.kind === 'note' ? 'note' : 'notice';
-    const words = kind === 'note' ? noticeWords_(opts.words) : '';
-    const by = String(opts.by || '').replace(/[|\n]/g, ' ').trim();
+    const kind = opts.kind === 'confirm' ? 'confirm' : 'notice';
     const stampNow = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd h:mm a');
     const log = (status, detail, sid, err, last4) => {
-      const note = kind === 'note' ? 'team note|' + by + '|' + words : (kind === 'confirm' ? 'confirmation' : 'notice') + (detail ? ' · ' + detail : '');
-      noticeLog_(tx, heldRow, [stampNow, email, last4 || '', sid || '', status, err || (kind === 'note' ? detail || '' : ''), note, today]);
+      const note = (kind === 'confirm' ? 'confirmation' : 'notice') + (detail ? ' · ' + detail : '');
+      noticeLog_(tx, heldRow, [stampNow, email, last4 || '', sid || '', status, err || '', note, today]);
     };
     const no = (detail, last4, fallback) => { log('not sent', detail, '', '', last4); return { ok: false, status: 'not sent', note: detail, fallback: !!fallback }; };
     if (!email || email.indexOf('@') < 0) return no('no email', '', false);
-    if (kind === 'note' && !words) return no('no words', '', false);
     if (!noticeOn_(ss)) return no('text notices are off (Config: text notices)', '', true);
-    if (kind === 'note' && !noticeFlag_(ss, 'text him')) return no('Text him is off (Config: text him)', '', false);
 
     const opt = noticeFindOpt_(op, email);
     if (!opt) return no('no text setting on file', '', true);
@@ -107,9 +110,7 @@ function noticeRun_(email, opts, heldRow) {
     // the day's caps: texts that left us today, Central
     if (kind !== 'confirm') {
       const mine = noticeRows_(tx).filter(r => String(r[1]).toLowerCase() === email && noticeDay_(r[7]) === today && NOTICE.COUNTS.indexOf(String(r[4])) >= 0);
-      const counted = mine.filter(r => { const k = noticeKindOf_(r[6]); return k === 'notice' || k === 'note'; });
-      if (kind === 'notice' && counted.some(r => noticeKindOf_(r[6]) === 'notice')) return no('one notice already today', last4, false);
-      if (counted.length >= NOTICE.ALL_PER_DAY) return no('two texts already today', last4, false);
+      if (mine.some(r => noticeKindOf_(r[6]) === 'notice')) return no('one notice already today', last4, false);
     }
 
     // quiet hours: it waits (one held text of a kind per man; a second request while one waits adds nothing)
@@ -125,7 +126,7 @@ function noticeRun_(email, opts, heldRow) {
     const need = ['TWILIO_ACCOUNT_SID', 'TWILIO_SERVICE_SID', 'TWILIO_KEY_SID', 'TWILIO_KEY_SECRET', 'NOTICE_HOOK_SECRET'].filter(k => !p[k]);
     if (need.length) return no('Twilio not set up: missing ' + need.join(', '), last4, true);
 
-    const body = kind === 'confirm' ? NOTICE.TEXTS.confirm : kind === 'note' ? noticeFrame_(words) : NOTICE.TEXTS.notice;
+    const body = kind === 'confirm' ? NOTICE.TEXTS.confirm : NOTICE.TEXTS.notice;
     const res = UrlFetchApp.fetch('https://api.twilio.com/2010-04-01/Accounts/' + p.TWILIO_ACCOUNT_SID + '/Messages.json', {
       method: 'post',
       headers: { Authorization: 'Basic ' + Utilities.base64Encode(p.TWILIO_KEY_SID + ':' + p.TWILIO_KEY_SECRET) },
@@ -145,18 +146,6 @@ function noticeRun_(email, opts, heldRow) {
     log('failed', String(j.message || '').slice(0, 160), '', errCode, last4);
     return { ok: false, status: 'failed', note: errCode, stopped: stopped, fallback: kind === 'notice' };
   } finally { lock.releaseLock(); }
-}
-
-/** The standard's frame around the words our team wrote. The words themselves are never changed. */
-function noticeFrame_(words) { return 'Ancient Path: ' + words + ' ' + NOTICE.STOPLINE; }
-
-/** The words our team wrote: whitespace tidied, curly quotes and long dashes made plain (one curly quote turns a 160-character text into three). Only links on our own site pass. */
-function noticeWords_(w) {
-  let t = String(w == null ? '' : w).replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim();
-  if (t.length > 320) t = t.slice(0, 320).trim();
-  const links = t.match(/(?:https?:\/\/|www\.)\S+/gi) || [];
-  if (links.some(l => !/^(?:https?:\/\/)?(?:www\.)?ancientpathcoaching\.com(?:[\/?#]\S*)?$/i.test(l.replace(/[.,;:!?)]+$/, '')))) return '';
-  return t;
 }
 
 function noticeKindOf_(note) {
@@ -337,30 +326,37 @@ function noticeCard_() {
   return ContentService.createTextOutput(v).setMimeType(ContentService.MimeType.VCARD);
 }
 
-/** desk action text_check: can our team text this man, and what will the text look like. Admins only. */
-function textCheck_(who, b) {
-  psAdmin_(who);
-  const email = String(b.email || '').trim().toLowerCase();
-  const ss = SpreadsheetApp.openById(FD.SHEET_ID);
-  const st = noticeState_(ss, email);
-  const first = String((b.first || '')).trim();
-  let why = '';
-  if (!noticeFlag_(ss, 'text him')) why = 'off';
-  else if (!noticeOn_(ss)) why = 'notices_off';
-  else if (st.stopped) why = 'stopped';
-  else if (st.textMe !== 'yes') why = 'not_on';
-  else if (st.failing) why = 'failing';
-  return { ok: true, can: !why, why: why, last4: st.last4, first: first, frame: { open: 'Ancient Path: ', close: ' ' + NOTICE.STOPLINE } };
-}
-
-/** desk action text_him: send the words our team wrote, framed by the standard. Admins only. */
+/** desk action text_him (admins only). John's ruling, Nov 11, 2026: Text him lands the words our team wrote as a card on his Your Page and sends the approved notice (by text through sendNotice, or by email when he has no text yes). The Research reader does both in one keyed call, team_card; the card is written first.
+ *  Answers { ok: true, sent: true, notice } where notice is text · held · email · page · cap · off · failed, or { ok: true, sent: false, why } where why is off (Config "text him") · no_email · bad_words · no_page (he has no Your Page yet) · fail (the reader could not be reached). */
 function textHim_(who, b) {
   psAdmin_(who);
   const email = String(b.email || '').trim().toLowerCase();
-  const words = noticeWords_(b.words);
-  if (!words) return { ok: true, sent: false, why: 'bad_words' };   // a normal answer, so the desk shows its own line, not a generic one
-  const r = noticeRun_(email, { kind: 'note', words: words, by: String(who.name || who.email || 'our team') }, 0);
-  return { ok: true, sent: !!r.ok, status: r.status, note: r.note || '' };
+  const ss = SpreadsheetApp.openById(FD.SHEET_ID);
+  if (!noticeFlag_(ss, 'text him')) return { ok: true, sent: false, why: 'off' };
+  if (!email || email.indexOf('@') < 0) return { ok: true, sent: false, why: 'no_email' };
+  const words = String(b.words == null ? '' : b.words).replace(/\r/g, '').trim();
+  if (!words || words.length > NOTICE_CARD_MAX) return { ok: true, sent: false, why: 'bad_words' };
+  const key = noticeReaderKey_();
+  if (key.length < 24) return { ok: true, sent: false, why: 'fail' };
+  let j = null;
+  try {
+    const res = UrlFetchApp.fetch(RR_EXEC_, { method: 'post', contentType: 'application/json', payload: JSON.stringify({ action: 'team_card', key: key, email: email, words: words, by: String((who && (who.name || who.email)) || 'our team') }), muteHttpExceptions: true, followRedirects: true });
+    j = JSON.parse(res.getContentText());
+  } catch (x) { j = null; }
+  if (!j || !j.ok) {
+    const err = j && j.error ? String(j.error) : '';
+    return { ok: true, sent: false, why: (err === 'no_page' || err === 'bad_words' || err === 'no_email') ? err : 'fail' };
+  }
+  return { ok: true, sent: true, notice: String(j.notice || '') };
+}
+
+/** The key the Research reader checks on team_card: the Research Engine Config row "week lines key" (the row personalLines_ reads too). */
+function noticeReaderKey_() {
+  try {
+    const d = SpreadsheetApp.openById(RESEARCH_SHEET_ID_).getSheetByName('Config').getDataRange().getValues();
+    for (let i = 1; i < d.length; i++) if (String(d[i][0]).trim() === 'week lines key') return String(d[i][1] || '').trim();
+  } catch (x) {}
+  return '';
 }
 
 // ───────────────────────────── the sweep: held texts go at 8:00 AM ─────────────────────────────
@@ -376,8 +372,8 @@ function noticeSweep() {
   for (let i = 1; i < all.length; i++) {
     if (String(all[i][4]) !== 'held') continue;
     const note = String(all[i][6]), k = noticeKindOf_(note);
-    if (k === 'note') { const m = /^team note\|([^|]*)\|([\s\S]*)$/.exec(note); noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'note', by: m ? m[1] : '', words: m ? m[2] : '' }, i + 1); }
-    else noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'notice' }, i + 1);
+    if (k === 'note') { tx.getRange(i + 1, 5, 1, 2).setValues([['not sent', 'retired: our team\'s words go as a card on his page (N5)']]); continue; }   // the old free-written text is never sent
+    noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'notice' }, i + 1);
   }
 }
 
@@ -420,7 +416,7 @@ function noticeSetup() {
   const ss = SpreadsheetApp.openById(FD.SHEET_ID);
   noticeEnsureTabs_(ss);
   noticeEnsureSwitch_(ss);
-  noticeConfigSet_(ss, 'text him', 'no', 'yes/no. Text him on the Front Desk sends the words our team writes as the text (framed by ap-text-standard). Ships off: a free-written team text is outside what the opt-in screen promises. John rules it on.', true);
+  noticeConfigSet_(ss, 'text him', 'no', 'yes/no. Text him on the Front Desk lands the words our team writes as a card on his Your Page and sends the approved notice (text if he has texts on, else email). Ruled by John Nov 11, 2026; John rules it on.', true);
   const props = PropertiesService.getScriptProperties();
   if (!props.getProperty('NOTICE_HOOK_SECRET')) props.setProperty('NOTICE_HOOK_SECRET', (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, ''));
   if (noticeSendKey_().length < 24) noticeConfigSet_(SpreadsheetApp.openById(RESEARCH_SHEET_ID_), 'text send key', (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, ''), 'Text Notices Build 1: the key Your Page (the Research reader) uses to ask the Front Desk script to start, stop or send a text. Made by noticeSetup; never typed, never shared.', true);
