@@ -1,4 +1,15 @@
 /**
+ * Ancient Path — Front Desk · Notices.gs · build N7 · Text Him 2.0 (Nov 11, 2026; with Front Desk 38, Research reader 13.13 and desk.js 37; John's "yes" to all three on the Text Him Sheet 2.0 Mockup, https://claude.ai/artifact/Q3UQAsxjTkwrLjh4xZaJRA; built on the live N6 read through the Google Drive connector, so everything in N6 is kept).
+ *   1. Card first, notice after. textHim_ (desk action text_him, admins only) asks the Research reader's team_card and answers as soon as the card is written, with the plan (text · held · email · page · cap · off) worked out from his row, the card's id the words as the reader kept them, and whether a notice is owed. It no longer waits on a text or an email. A Research reader older than 13.13 sends the notice inside team_card and answers { notice }; that answer is read as the plan with nothing owed, so installing this file first is safe.
+ *   2. textNotice_ (desk action text_notice) asks the Research reader's team_notice, which sends the owed notice through the same notice path as before (his yes, quiet hours, one a day, email when a text cannot go). The desk asks for it right after the card and does not wait on it; if the call never arrives the card's row stays owed and the daily run and the 6:00 PM catch send it.
+ *   3. textPlan_ (desk action text_plan) reads team_plan in the background when the sheet opens: the plan, the time of today's notice (cap), and whether he has opened a reading. Read only.
+ *   4. textUndo_ (desk action text_undo) asks team_undo, which takes the card off his page for ten minutes after the press. A text kept for 8:00 AM is let go too (noticeCancelHeld_ marks the held row not sent); a notice that already went is not recalled and the answer says so.
+ *   5. textMail_ (desk action text_mail) is Email him instead, for the day a second notice cannot go: the words carried into an email from this desk, a preview for The email ▾ and, with send: true, the send. It greets him by his first name, is signed by whoever pressed, replies go to the presser with the other founder copied, and it still sends from the address that runs this script. Never a mailto link.
+ *   Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged; Config "text him" and "text notices" stay as they are. Desk actions: text_him stays, four join it (text_plan, text_notice, text_undo, text_mail); the ruling named three, and Undo and Email him instead need one each. Retires: the wait on the notice inside the press. When it breaks: the card is written first; an owed notice goes on the next run; the sheet says so in one line. Next school: nothing more.
+ *   Moves to the platform as it is: all five actions as calls on the record's piece and text tables. Rebuilt there: the UrlFetch to the Research reader and the Gmail send.
+ *   Counts taken: the file parses (new Function over the whole file); the diff from N6 is the lines named in patch_fd.py only; the five actions were run against a stand-in sheet and a stand-in Research reader; the registered texts match ap-text-standard word for word (no text is added or changed here).
+ */
+/**
  * Ancient Path — Front Desk · Notices.gs · build N6 · Witness Build 3 (Nov 11, 2026; built on the live N5 (Text Him: Notice and Card) read through the Google Drive connector, so everything in N5 is kept).
  * Ruled in the Witness Build 3 Mockup (https://claude.ai/artifact/T78zh37T9XAsUgWAAPHVws) and ap-text-standard: an invited witness chooses Email or Text right after his yes, and Text asks its own yes.
  *   1. Two new kinds, word for word the registered samples: wconfirm (the witness confirmation, at once, any hour, never counts toward a day) and wweekly (the witness weekly: this week's page is ready, with the page's address; held in quiet hours; at most one a day to one witness). Nothing a man or a witness wrote ever goes in a text (ap-witness rule 9).
@@ -42,8 +53,8 @@
  */
 
 const NOTICE = {
-  BUILD: 'N6',
-  LABEL: 'Witness Build 3',
+  BUILD: 'N7',
+  LABEL: 'Text Him 2.0',
   SENDER: '+14695575502',
   SENDER_SHOWN: '(469) 557-5502',
   SERVICE: 'MGa52ac58544f99799e55cf4788c7906e9',
@@ -354,35 +365,131 @@ function noticeCard_() {
   return ContentService.createTextOutput(v).setMimeType(ContentService.MimeType.VCARD);
 }
 
-/** desk action text_him (admins only). John's ruling, Nov 11, 2026: Text him lands the words our team wrote as a card on his Your Page and sends the approved notice (by text through sendNotice, or by email when he has no text yes). The Research reader does both in one keyed call, team_card; the card is written first.
- *  Answers { ok: true, sent: true, notice } where notice is text · held · email · page · cap · off · failed, or { ok: true, sent: false, why } where why is off (Config "text him") · no_email · bad_words · no_page (he has no Your Page yet) · fail (the reader could not be reached). */
+/** desk action text_him (admins only). Text him lands the words our team wrote as a card on his Your Page and the notice follows. Build N7: this answers as soon as the card is written; it does not wait on the notice.
+ *  Answers { ok: true, sent: true, plan, capAt, opened, owed, cid, at, day, legacy, ms } where plan is text · held · email · page · cap · off (how he will be told), owed says a notice is still to go (the desk then asks text_notice), cid names the card for Undo;
+ *  or { ok: true, sent: false, why } where why is off (Config "text him") · no_email · bad_words · no_page (he has no Your Page yet) · fail (the reader could not be reached). */
 function textHim_(who, b) {
   psAdmin_(who);
-  const email = String(b.email || '').trim().toLowerCase();
+  const t0 = Date.now(), email = String(b.email || '').trim().toLowerCase();
   const ss = SpreadsheetApp.openById(FD.SHEET_ID);
   if (!noticeFlag_(ss, 'text him')) return { ok: true, sent: false, why: 'off' };
   if (!email || email.indexOf('@') < 0) return { ok: true, sent: false, why: 'no_email' };
   const words = String(b.words == null ? '' : b.words).replace(/\r/g, '').trim();
   if (!words || words.length > NOTICE_CARD_MAX) return { ok: true, sent: false, why: 'bad_words' };
-  const key = noticeReaderKey_();
-  if (key.length < 24) return { ok: true, sent: false, why: 'fail' };
-  let j = null;
-  try {
-    const res = UrlFetchApp.fetch(RR_EXEC_, { method: 'post', contentType: 'application/json', payload: JSON.stringify({ action: 'team_card', key: key, email: email, words: words, by: String((who && (who.name || who.email)) || 'our team') }), muteHttpExceptions: true, followRedirects: true });
-    j = JSON.parse(res.getContentText());
-  } catch (x) { j = null; }
+  const j = noticeReaderCall_({ action: 'team_card', email: email, words: words, by: String((who && (who.name || who.email)) || 'our team') });
   if (!j || !j.ok) {
     const err = j && j.error ? String(j.error) : '';
     return { ok: true, sent: false, why: (err === 'no_page' || err === 'bad_words' || err === 'no_email') ? err : 'fail' };
   }
-  return { ok: true, sent: true, notice: String(j.notice || '') };
+  const legacy = j.plan === undefined && j.notice !== undefined;   // a Research reader before 13.13 already sent the notice inside team_card
+  return { ok: true, sent: true, plan: String(legacy ? j.notice : j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, owed: legacy ? false : !!j.owed, cid: String(j.cid || ''), words: j.words === undefined ? '' : String(j.words), at: String(j.at || new Date().toISOString()), day: String(j.day || ''), legacy: legacy, ms: Date.now() - t0 };
+}
+
+/** desk action text_plan (admins only): how he will be told, read when the Text him sheet opens. Read only.
+ *  { ok: true, plan, capAt, opened, on } where plan is text · held · email · page · cap · off · nopage (he has no Your Page) · '' (the reader did not answer: the sheet shows no line); on is Config "text him". */
+function textPlan_(who, b) {
+  psAdmin_(who);
+  const email = String(b.email || '').trim().toLowerCase();
+  if (!email || email.indexOf('@') < 0) return { ok: true, plan: '', on: true };
+  const on = noticeFlag_(SpreadsheetApp.openById(FD.SHEET_ID), 'text him');
+  const j = noticeReaderCall_({ action: 'team_plan', email: email });
+  if (!j) return { ok: true, plan: '', on: on };
+  if (!j.ok) return { ok: true, plan: j.error === 'no_page' ? 'nopage' : '', on: on };
+  return { ok: true, plan: String(j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, on: on };
+}
+
+/** desk action text_notice (admins only): the owed notice goes now. The desk asks right after the card and does not wait; a call that never arrives leaves the notice owed and the daily run or the 6:00 PM catch sends it.
+ *  { ok: true, notice, at, already } where notice is text · held · email · page · cap · off · failed · owed (another run held the lock; it goes on the next run) · none (nothing was owed). */
+function textNotice_(who, b) {
+  psAdmin_(who);
+  const email = String(b.email || '').trim().toLowerCase();
+  if (!email || email.indexOf('@') < 0) return { ok: true, notice: 'owed', at: '' };
+  const j = noticeReaderCall_({ action: 'team_notice', email: email });
+  if (!j || !j.ok) return { ok: true, notice: 'owed', at: '' };
+  return { ok: true, notice: String(j.notice || ''), at: String(j.at || ''), already: !!j.already };
+}
+
+/** desk action text_undo (admins only): for ten minutes after the press the card comes off his page. A text kept for 8:00 AM is let go; a notice that already went is not recalled.
+ *  { ok: true, undone: true, went, held } where went is what the notice did (text · held · email · ...) or '' and held says the text kept for 8:00 AM was let go; or { ok: true, undone: false, why: too_late · no_card · fail }. */
+function textUndo_(who, b) {
+  psAdmin_(who);
+  const email = String(b.email || '').trim().toLowerCase();
+  const j = noticeReaderCall_({ action: 'team_undo', email: email, cid: String(b.cid || '') });
+  if (!j) return { ok: true, undone: false, why: 'fail' };
+  if (!j.ok) return { ok: true, undone: false, why: String(j.error || 'fail') };
+  const went = String(j.went || '');
+  return { ok: true, undone: true, went: went, held: went === 'held' ? noticeCancelHeld_(email) : false };
+}
+
+/** The held text for one man (waiting for 8:00 AM) is marked not sent, so Undo on a card pressed at night sends nothing. True when one was let go. */
+function noticeCancelHeld_(email) {
+  const lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    const ss = SpreadsheetApp.openById(FD.SHEET_ID); noticeEnsureTabs_(ss);
+    const tx = ss.getSheetByName('Texts'), all = tx.getDataRange().getValues(); let n = 0;
+    for (let i = 1; i < all.length; i++) {
+      if (String(all[i][1]).toLowerCase() === email && String(all[i][4]) === 'held' && noticeKindOf_(all[i][6]) === 'notice') { tx.getRange(i + 1, 5, 1, 2).setValues([['not sent', 'taken off by our team (Undo on Text him)']]); n++; }
+    }
+    return n > 0;
+  } finally { lock.releaseLock(); }
+}
+
+/** The words our team wrote, tidied the way the Research reader tidies them (plain text, paragraph breaks kept, at most 600 characters, links only on our own site); '' when they cannot be used. */
+function noticeTidyWords_(w) {
+  const t = String(w == null ? '' : w).replace(/\r/g, '').replace(/[ \t]+/g, ' ').replace(/ ?\n ?/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  if (!t || t.length > NOTICE_CARD_MAX) return '';
+  const links = t.match(/(?:https?:\/\/|www\.)\S+/gi) || [];
+  return links.some(l => !/^(?:https?:\/\/)?(?:www\.)?ancientpathcoaching\.com(?:[\/?#]\S*)?$/i.test(l.replace(/[.,;:!?)]+$/, ''))) ? '' : t;
+}
+
+/** desk action text_mail (admins only): Email him instead. The words carried into an email from this desk (ap-desk-standard, the personal email): it greets him by his first name, is signed by whoever pressed, replies go to the presser with the other founder copied, and it sends from the address that runs this script. Never a mailto link.
+ *  Without send: the email exactly as he will get it { ok, subject, body, to, from, replyTo, cc, copy } (copy = the first names copied). With send: true: sends it, logs it on the Sends tab, { ok, sent: true, at }. */
+function textMail_(who, b) {
+  psAdmin_(who);
+  const email = String(b.email || '').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw { code: 'bad_email' };
+  const words = noticeTidyWords_(b.words);
+  if (!words) throw { code: 'bad_words' };
+  const cfg = readConfig_(), ss = SpreadsheetApp.openById(FD.SHEET_ID);
+  const man = rows_(ss.getSheetByName('Roster')).find(r => String(r['email']).toLowerCase() === email) || {};
+  const first = firstOf_(man['name'] || names_(ss)[email] || '');
+  const me = Session.getEffectiveUser().getEmail(), mine = String((who && who.email) || '').toLowerCase();
+  const sign = firstOf_(who && who.name) || firstFromEmail_(mine) || 'Our team';
+  const ppl = people_(), nameOf = e => (ppl.find(p => p.email === e) || {}).name || '';
+  const cc = [me, cfg.reminderCc].join(',').split(/[\s,;]+/).map(s => s.toLowerCase().trim()).filter((s, i, a) => /@/.test(s) && s !== mine && a.indexOf(s) === i);
+  const subject = 'A note from Ancient Path';
+  const body = (first && !/@/.test(first) ? first + ',' : 'Hello,') + '\n\n' + words + '\n\n' + sign + '\n';
+  const copy = cc.map(e => firstOf_(nameOf(e)) || firstFromEmail_(e)).filter(Boolean);
+  if (b.send !== true) return { ok: true, subject: subject, body: body, to: email, from: me, replyTo: mine, cc: cc, copy: copy };
+  const props = PropertiesService.getScriptProperties(), dayKey = 'fd:asksent:' + dayStamp_(), n = Number(props.getProperty(dayKey) || 0);
+  if (n >= 40) throw { code: 'too_many' };
+  const opts = { name: String((who && who.name) || sign), replyTo: mine || me };
+  if (cc.length) opts.cc = cc.join(',');
+  GmailApp.sendEmail(email, subject, body, opts);
+  const now = new Date(); props.setProperty(dayKey, String(n + 1));
+  const sends = ss.getSheetByName('Sends');
+  if (sends) append_(sends, [[now, 'Email to him (from the Text him sheet)', subject, email + (cc.length ? ' · cc ' + cc.join(', ') : ''), 0, 'sent by ' + mine + (first ? ' for ' + first : '')]]);
+  return { ok: true, sent: true, at: now.toISOString() };
+}
+
+/** One keyed call to the Research reader (the key is the Research Engine Config row "week lines key", the one team_card has always used; kept five minutes in the script cache, so a press does not read the sheet for it). null when the reader cannot be reached. */
+function noticeReaderCall_(payload) {
+  const key = noticeReaderKey_();
+  if (key.length < 24) return null;
+  try {
+    const res = UrlFetchApp.fetch(RR_EXEC_, { method: 'post', contentType: 'application/json', payload: JSON.stringify(Object.assign({ key: key }, payload)), muteHttpExceptions: true, followRedirects: true });
+    const j = JSON.parse(res.getContentText());
+    return j && typeof j === 'object' ? j : null;
+  } catch (x) { return null; }
 }
 
 /** The key the Research reader checks on team_card: the Research Engine Config row "week lines key" (the row personalLines_ reads too). */
 function noticeReaderKey_() {
+  const cache = CacheService.getScriptCache(), hit = cache.get('fd:rrkey');
+  if (hit) return hit;
   try {
     const d = SpreadsheetApp.openById(RESEARCH_SHEET_ID_).getSheetByName('Config').getDataRange().getValues();
-    for (let i = 1; i < d.length; i++) if (String(d[i][0]).trim() === 'week lines key') return String(d[i][1] || '').trim();
+    for (let i = 1; i < d.length; i++) if (String(d[i][0]).trim() === 'week lines key') { const k = String(d[i][1] || '').trim(); if (k.length >= 24) cache.put('fd:rrkey', k, 300); return k; }
   } catch (x) {}
   return '';
 }
