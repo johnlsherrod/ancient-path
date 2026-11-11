@@ -1,4 +1,14 @@
 /**
+ * Ancient Path — Front Desk · Notices.gs · build N6 · Witness Build 3 (Nov 11, 2026; built on the live N5 (Text Him: Notice and Card) read through the Google Drive connector, so everything in N5 is kept).
+ * Ruled in the Witness Build 3 Mockup (https://claude.ai/artifact/T78zh37T9XAsUgWAAPHVws) and ap-text-standard: an invited witness chooses Email or Text right after his yes, and Text asks its own yes.
+ *   1. Two new kinds, word for word the registered samples: wconfirm (the witness confirmation, at once, any hour, never counts toward a day) and wweekly (the witness weekly: this week's page is ready, with the page's address; held in quiet hours; at most one a day to one witness). Nothing a man or a witness wrote ever goes in a text (ap-witness rule 9).
+ *   2. Two keyed ops on ?notice=api, the same key as Your Page's Settings (Config "text send key"): wstart (his number, his yes, Twilio's number check, then the confirmation) and wsend (the weekly text; the address must be https://www.ancientpathcoaching.com/witness?k=<his token>, nothing else passes). A witness's number lives on TextOptIn like every other; it is never sent to ActiveCampaign or any list (ap-witness growth guard 1).
+ *   3. A weekly text that cannot go (he stopped, no number, failing, Twilio unset) answers fallback: true, and the Research reader sends that one page by email. A held weekly text is sent by the same 10-minute sweep at 8:00 AM Central.
+ *   Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged; no new tab (the Texts and TextOptIn tabs carry both kinds). Retires: nothing outside this file; the witness weekly email stays as the fallback. When it breaks: the page falls back to email and the Texts tab says why. Next school: nothing more, the key is the school's own Config row.
+ *   Moves to the platform as it is: the two kinds as rows of the record's text table. Rebuilt there: the Twilio calls only.
+ *   Counts taken: the file parses (new Function over the whole file); the diff from N5 is the lines named in patch_n6b.py only; the registered texts match ap-text-standard word for word.
+ */
+/**
  * Ancient Path — Front Desk · Notices.gs · build N5 · Text Him: Notice and Card (Nov 11, 2026; with Front Desk 36.3 and Research reader 13.9). John's ruling, Nov 11, 2026: Text him on the Front Desk no longer sends our team's words as the text. It sends the approved notice ("Ancient Path: something new is waiting on Your Page. https://www.ancientpathcoaching.com/start Reply STOP to end these texts, HELP for help.") through the existing notice path (op send: his yes, quiet hours, one a day), and the words our team wrote land as a card on his Your Page. If he has no text yes, the same card lands and the notice goes by email.
  *   1. textHim_ (desk action text_him, admins only) asks the Research reader's keyed team_card action (key = the Research Engine Config row "week lines key", the one personalLines_ reads; no new key) to land the card and tell him. The reader writes the card first, then runs the notice: by text through sendNotice (this file), by email when he has no text yes or the text cannot go, nothing when he chose "Only on this page", nothing when a notice already went today. It answers how it went and the desk says it in one calm line. Still behind Config "text him" (yes/no; John rules it on).
  *   2. Retired: the "note" kind (our team's words as the text), noticeFrame_, noticeWords_, textCheck_ and the desk action text_check, the two-texts-a-day ceiling (there is one kind of text we start now, the notice, so one a day is the whole rule). A held "team note" row, if one were ever on the Texts tab, is marked not sent by the sweep. The registered samples stay word for word the only texts this file sends: notice, confirmation, HELP, any other reply.
@@ -32,8 +42,8 @@
  */
 
 const NOTICE = {
-  BUILD: 'N5',
-  LABEL: 'Text Him: Notice and Card',
+  BUILD: 'N6',
+  LABEL: 'Witness Build 3',
   SENDER: '+14695575502',
   SENDER_SHOWN: '(469) 557-5502',
   SERVICE: 'MGa52ac58544f99799e55cf4788c7906e9',
@@ -48,12 +58,16 @@ const NOTICE = {
     notice: 'Ancient Path: something new is waiting on Your Page. https://www.ancientpathcoaching.com/start Reply STOP to end these texts, HELP for help.',
     confirm: 'Ancient Path: texts are on. A text when something new lands on Your Page or before your room meets, at most one a day. Message and data rates may apply. Reply STOP to end these texts, HELP for help.',
     help: 'Ancient Path: notices from Ancient Path Biblical Coaching. For help, write to us at https://www.ancientpathcoaching.com/contact Reply STOP to end these texts.',
+    wconfirm: 'Ancient Path: texts are on. A text when a page is ready to read, at most one a day. Message and data rates may apply. Reply STOP to end these texts, HELP for help.',
+    wweekly: "Ancient Path: this week's page is ready to read. {link} Reply STOP to end these texts, HELP for help.",
     other: "Ancient Path: we read replies during the day. If it can't wait, call 214-736-1024. If you are in danger, call 911, or call or text 988."
   },
   TABS: {
     Texts: ['when (Central)', 'email', 'phone (last four)', 'message id', 'status', 'error', 'note', 'day'],
     TextOptIn: ['email', 'phone', 'text me', 'changed', 'by', 'stopped by reply']
   },
+  KINDS: ['confirm', 'wconfirm', 'wweekly'],  // anything else is a notice
+  WITNESS_LINK: /^https:\/\/www\.ancientpathcoaching\.com\/witness\?k=[A-Za-z0-9]{32,128}$/,
   COUNTS: ['queued', 'accepted', 'sending', 'sent', 'delivered', 'undelivered'],  // a text that left us counts toward the day
   FAILED: ['failed', 'undelivered'],
   RANK: { held: 0, queued: 1, accepted: 1, sending: 2, sent: 3, delivered: 4, undelivered: 4, failed: 4 },
@@ -73,9 +87,11 @@ function noticeNow_() { return new Date(); }
 /**
  * Text one man.
  * @param {string} email  the man's email (his row on TextOptIn)
- * @param {{kind?: 'notice'|'confirm', test?: boolean}} opts
+ * @param {{kind?: 'notice'|'confirm'|'wconfirm'|'wweekly', link?: string, test?: boolean}} opts
  *   notice (default): something new is waiting on his page; held in quiet hours; one a day.
  *   confirm: the text after his yes; goes at once, any hour, and never counts toward a day.
+ *   wconfirm: the witness's confirmation after his own yes to texts; goes at once, any hour, and never counts toward a day.
+ *   wweekly: the witness's weekly text, with the address of his page (opts.link); held in quiet hours; one a day to one witness.
  *   test: skips only the quiet hours; never the caps, never his "text me".
  * @return {{ok: boolean, status: string, sid?: string, note?: string, fallback?: boolean}}
  *   fallback true = he cannot be texted right now (off, stopped, no number, the send failed), so the caller sends this one notice by email.
@@ -90,14 +106,17 @@ function noticeRun_(email, opts, heldRow) {
     noticeEnsureTabs_(ss);
     const tx = ss.getSheetByName('Texts'), op = ss.getSheetByName('TextOptIn');
     const now = noticeNow_(), today = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd'), hour = Number(Utilities.formatDate(now, FD.TZ, 'H'));
-    const kind = opts.kind === 'confirm' ? 'confirm' : 'notice';
+    const kind = NOTICE.KINDS.indexOf(opts.kind) >= 0 ? opts.kind : 'notice';
+    const isConfirm = kind === 'confirm' || kind === 'wconfirm';   // goes at once, any hour, never counts toward a day
+    const link = kind === 'wweekly' ? noticeWitnessLink_(opts.link) : '';
     const stampNow = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd h:mm a');
     const log = (status, detail, sid, err, last4) => {
-      const note = (kind === 'confirm' ? 'confirmation' : 'notice') + (detail ? ' · ' + detail : '');
+      const note = kind === 'wweekly' ? 'witness weekly|' + link + (detail ? ' · ' + detail : '') : (kind === 'confirm' ? 'confirmation' : kind === 'wconfirm' ? 'witness confirmation' : 'notice') + (detail ? ' · ' + detail : '');
       noticeLog_(tx, heldRow, [stampNow, email, last4 || '', sid || '', status, err || '', note, today]);
     };
     const no = (detail, last4, fallback) => { log('not sent', detail, '', '', last4); return { ok: false, status: 'not sent', note: detail, fallback: !!fallback }; };
     if (!email || email.indexOf('@') < 0) return no('no email', '', false);
+    if (kind === 'wweekly' && !link) return no('no usable page address', '', false);
     if (!noticeOn_(ss)) return no('text notices are off (Config: text notices)', '', true);
 
     const opt = noticeFindOpt_(op, email);
@@ -108,13 +127,14 @@ function noticeRun_(email, opts, heldRow) {
     if (!to) return no('no usable phone number', last4, true);
 
     // the day's caps: texts that left us today, Central
-    if (kind !== 'confirm') {
+    if (!isConfirm) {
       const mine = noticeRows_(tx).filter(r => String(r[1]).toLowerCase() === email && noticeDay_(r[7]) === today && NOTICE.COUNTS.indexOf(String(r[4])) >= 0);
-      if (mine.some(r => noticeKindOf_(r[6]) === 'notice')) return no('one notice already today', last4, false);
+      if (kind === 'wweekly') { if (mine.some(r => noticeKindOf_(r[6]) === 'wweekly')) return no('one page text already today', last4, false); }   // a witness: one page text a day
+      else if (mine.some(r => noticeKindOf_(r[6]) === 'notice')) return no('one notice already today', last4, false);
     }
 
     // quiet hours: it waits (one held text of a kind per man; a second request while one waits adds nothing)
-    if (kind !== 'confirm' && !opts.test && (hour >= NOTICE.QUIET_FROM || hour < NOTICE.QUIET_TO)) {
+    if (!isConfirm && !opts.test && (hour >= NOTICE.QUIET_FROM || hour < NOTICE.QUIET_TO)) {
       if (heldRow) return { ok: true, status: 'held', note: 'still quiet hours' };
       const already = noticeRows_(tx).some(r => String(r[1]).toLowerCase() === email && String(r[4]) === 'held' && noticeKindOf_(r[6]) === kind);
       if (already) return { ok: true, status: 'held', note: 'one already waiting' };
@@ -126,7 +146,7 @@ function noticeRun_(email, opts, heldRow) {
     const need = ['TWILIO_ACCOUNT_SID', 'TWILIO_SERVICE_SID', 'TWILIO_KEY_SID', 'TWILIO_KEY_SECRET', 'NOTICE_HOOK_SECRET'].filter(k => !p[k]);
     if (need.length) return no('Twilio not set up: missing ' + need.join(', '), last4, true);
 
-    const body = kind === 'confirm' ? NOTICE.TEXTS.confirm : NOTICE.TEXTS.notice;
+    const body = kind === 'confirm' ? NOTICE.TEXTS.confirm : kind === 'wconfirm' ? NOTICE.TEXTS.wconfirm : kind === 'wweekly' ? NOTICE.TEXTS.wweekly.replace('{link}', link) : NOTICE.TEXTS.notice;
     const res = UrlFetchApp.fetch('https://api.twilio.com/2010-04-01/Accounts/' + p.TWILIO_ACCOUNT_SID + '/Messages.json', {
       method: 'post',
       headers: { Authorization: 'Basic ' + Utilities.base64Encode(p.TWILIO_KEY_SID + ':' + p.TWILIO_KEY_SECRET) },
@@ -144,13 +164,18 @@ function noticeRun_(email, opts, heldRow) {
     const stopped = errCode === '21610';
     if (stopped) noticeSetOpt_(op, email, 'no', 'Twilio', true);   // he has already stopped them with Twilio
     log('failed', String(j.message || '').slice(0, 160), '', errCode, last4);
-    return { ok: false, status: 'failed', note: errCode, stopped: stopped, fallback: kind === 'notice' };
+    return { ok: false, status: 'failed', note: errCode, stopped: stopped, fallback: kind === 'notice' || kind === 'wweekly' };
   } finally { lock.releaseLock(); }
 }
+
+/** The address a witness's weekly text may carry: the site's /witness page with his own token, nothing else (ap-text-standard: a full ancientpathcoaching.com address, never a shortener or a script address). */
+function noticeWitnessLink_(l) { const s = String(l == null ? '' : l).trim(); return NOTICE.WITNESS_LINK.test(s) ? s : ''; }
 
 function noticeKindOf_(note) {
   const n = String(note || '').toLowerCase();
   if (n.indexOf('team note') === 0) return 'note';
+  if (n.indexOf('witness weekly') === 0) return 'wweekly';
+  if (n.indexOf('witness confirmation') === 0) return 'wconfirm';
   if (n.indexOf('confirmation') === 0) return 'confirm';
   if (n.indexOf('notice') === 0) return 'notice';
   if (n.indexOf('auto') === 0) return 'auto';
@@ -231,7 +256,7 @@ function noticeReplyCard_(ss, email, last10, raw, stamp, today) {
 
 // ───────────────────────────── Your Page's keyed call (Settings) ─────────────────────────────
 
-/** POST ?notice=api, body { key, op, email, phone?, kind? }. key = Research Engine Config "text send key". ops: start · off · state · send. */
+/** POST ?notice=api, body { key, op, email, phone?, link?, by? }. key = Research Engine Config "text send key". ops: start · off · state · send · wstart · wsend (the last two are a witness's: his own yes, and his weekly text). */
 function noticeApi_(e) {
   const out = (o) => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
   let b = {};
@@ -242,21 +267,24 @@ function noticeApi_(e) {
   if (!email || email.indexOf('@') < 0) return out({ ok: false, error: 'no_email' });
   try {
     if (b.op === 'state') return out(Object.assign({ ok: true }, noticeState_(SpreadsheetApp.openById(FD.SHEET_ID), email)));
-    if (b.op === 'off') { noticeOptWrite_(email, null, 'no', 'Settings', false); return out({ ok: true }); }
+    if (b.op === 'off') { noticeOptWrite_(email, null, 'no', b.by === 'witness' ? 'Witness page' : 'Settings', false); return out({ ok: true }); }
     if (b.op === 'send') { const r = sendNotice(email, { kind: 'notice' }); return out(r); }
     if (b.op === 'start') return out(noticeStart_(email, b.phone));
+    if (b.op === 'wstart') return out(noticeStart_(email, b.phone, 'wconfirm'));
+    if (b.op === 'wsend') return out(sendNotice(email, { kind: 'wweekly', link: b.link }));
     return out({ ok: false, error: 'bad_op' });
   } catch (x) { return out({ ok: false, error: 'failed' }); }
 }
 
 /** Start Texts: his own number, his own yes. A landline is caught by Twilio's number check; then the yes is written and one confirmation goes at once. */
-function noticeStart_(email, phone) {
+function noticeStart_(email, phone, kind) {
   const to = noticePhone_(phone);
   if (!to) return { ok: false, error: 'bad_phone' };
   const look = noticeLookup_(to);
   if (!look.ok) return { ok: false, error: look.error };
-  noticeOptWrite_(email, noticeShow_(to), 'yes', 'Settings', false);
-  const r = noticeRun_(email, { kind: 'confirm' }, 0);
+  const wit = kind === 'wconfirm';   // a witness's own yes, on his own page
+  noticeOptWrite_(email, noticeShow_(to), 'yes', wit ? 'Witness page' : 'Settings', false);
+  const r = noticeRun_(email, { kind: wit ? 'wconfirm' : 'confirm' }, 0);
   const st = noticeState_(SpreadsheetApp.openById(FD.SHEET_ID), email);
   if (!r.ok && r.stopped) return Object.assign({ ok: false, error: 'stopped' }, st);
   if (!r.ok) return Object.assign({ ok: false, error: 'failed', why: r.note }, st);
@@ -373,7 +401,8 @@ function noticeSweep() {
     if (String(all[i][4]) !== 'held') continue;
     const note = String(all[i][6]), k = noticeKindOf_(note);
     if (k === 'note') { tx.getRange(i + 1, 5, 1, 2).setValues([['not sent', 'retired: our team\'s words go as a card on his page (N5)']]); continue; }   // the old free-written text is never sent
-    noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'notice' }, i + 1);
+    if (k === 'wweekly') { const m = /^witness weekly\|(\S+)/.exec(note); noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'wweekly', link: m ? m[1] : '' }, i + 1); }
+    else noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'notice' }, i + 1);
   }
 }
 
