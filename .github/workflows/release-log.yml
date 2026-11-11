@@ -1,0 +1,22 @@
+# Records every release of the platform on the release log, so it reaches The Plan.
+# GitHub signs a short-lived token for this repository; the release-log function checks it.
+# Nothing secret is stored here or anywhere else.
+name: Release log
+on:
+  push:
+    branches: [main]
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record this release
+        env:
+          MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=ancient-path-release-log" | jq -r .value)
+          jq -n --arg m "$MESSAGE" '{message:$m}' | curl -sS --fail-with-body -X POST \
+            "https://eyiqlyaridagclnbxhzy.supabase.co/functions/v1/release-log" \
+            -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" --data @-
