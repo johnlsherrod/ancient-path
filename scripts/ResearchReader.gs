@@ -1,5 +1,5 @@
 /**
- * Ancient Path — Research reader · build 13.6 (Nov 10, 2026; Signals, the spine: one change, server only. The morning writer now puts the guidepost of each new question back in Entries column AE. roadDaily calls roadGuideposts_ right after roadPicks_ (in its own try/catch, so a failure never stops the morning): for each released or candidate entry that has a question back and an empty AE it asks Claude (Config "claude model", as the pick list does) for one digit, 1 to 9, from the nine guideposts and their "Sounds like" lines on the Standard tab, and writes "N Name" (for example "3 The Word for It"), the same shape the 40 hand-filled cells use. Twenty a morning at most; a cell that has a value is never touched, so John's or a coach's change stands. EC gains gp: 31, entries_ reads one column wider and carries gp; SCRIPT_BUILD 13.6 (ROAD_BUILD and GROWTH_BUILD unchanged, so road.js and growth.js and their stylesheet counts stand). Built on the live 13.5 read through the Google Drive connector (modified Nov 7, 2026). HELPFUL FIRST. The man: nothing changes on his page. The business: every question back lands on the spine without a hand, so the Friday count by guidepost needs no filling. UX: none. SIMPLICITY CHECK. Count: scheduled tasks 0 before, 0 after (it rides the existing roadDaily); connectors, pages and docs the same; no new tab, no new column (AE exists). Retires: filling AE by hand. When it breaks: with no CLAUDE_KEY it writes nothing; a failed call leaves the cell empty and the next morning tries again; a failure logs "guideposts" to the Log tab. Next school: nothing more (the nine and their lines are the school's Standard tab). WHAT MOVES TO THE PLATFORM AS IT IS: the Entries column and the nine names. REBUILT THERE: the one classification call. Install: Paste, Save, Deploy > Manage deployments > the pencil > New version > Deploy. No setup run. First proof: the next roadDaily Log line "guideposts chosen".)
+ * Ancient Path — Research reader · build 13.7.1 (Nov 11, 2026; 13.7 mended quotes and breaks, but the first run showed the reply fails inside its weeks field as well (3 of 5 entries), so parseLinesJson_ now ends with parseLinesKeyed_, which reads the six fields by their key names whatever sits between them (a week written '3-4' or '3 (Week 3)', a stray quote anywhere); the Log now carries the first 700 characters of any reply that cannot be used, an empty reply included, so the next break can be read. Build 13.7: the lines repair, server only: the morning writer no longer drops an entry when Claude's JSON has a break in it. New parseLinesJson_ reads the reply as written, and if that throws it mends the usual breaks (a straight double quote inside a value, a raw line break or tab inside a value, a trailing comma) and reads it again; roadLines_ now asks once more, naming the break, if the reply still cannot be read, and logs 'lines: no usable answer' with the first 160 characters when the reply parses but lacks road, todo or question, so a silent skip can be seen. Nothing else changes; built on the live 13.6 read through the Google Drive connector (modified Nov 10, 2026 2:59 PM Central). Install: Paste, Save, Deploy > Manage deployments > the pencil > New version > Deploy. First proof: the next roadDaily Log shows 'lines written' for E-20261108-1 and -2. Build 13.6, kept below:  Signals, the spine: one change, server only. The morning writer now puts the guidepost of each new question back in Entries column AE. roadDaily calls roadGuideposts_ right after roadPicks_ (in its own try/catch, so a failure never stops the morning): for each released or candidate entry that has a question back and an empty AE it asks Claude (Config "claude model", as the pick list does) for one digit, 1 to 9, from the nine guideposts and their "Sounds like" lines on the Standard tab, and writes "N Name" (for example "3 The Word for It"), the same shape the 40 hand-filled cells use. Twenty a morning at most; a cell that has a value is never touched, so John's or a coach's change stands. EC gains gp: 31, entries_ reads one column wider and carries gp; SCRIPT_BUILD 13.6 (ROAD_BUILD and GROWTH_BUILD unchanged, so road.js and growth.js and their stylesheet counts stand). Built on the live 13.5 read through the Google Drive connector (modified Nov 7, 2026). HELPFUL FIRST. The man: nothing changes on his page. The business: every question back lands on the spine without a hand, so the Friday count by guidepost needs no filling. UX: none. SIMPLICITY CHECK. Count: scheduled tasks 0 before, 0 after (it rides the existing roadDaily); connectors, pages and docs the same; no new tab, no new column (AE exists). Retires: filling AE by hand. When it breaks: with no CLAUDE_KEY it writes nothing; a failed call leaves the cell empty and the next morning tries again; a failure logs "guideposts" to the Log tab. Next school: nothing more (the nine and their lines are the school's Standard tab). WHAT MOVES TO THE PLATFORM AS IT IS: the Entries column and the nine names. REBUILT THERE: the one classification call. Install: Paste, Save, Deploy > Manage deployments > the pencil > New version > Deploy. No setup run. First proof: the next roadDaily Log line "guideposts chosen".)
  */
 /**
  * Ancient Path — Research reader · build 13.5 (Nov 6, 2026; Your Page 11.8, the truth pass: road.js 11.8 and four server changes; every word ruled by John Nov 6, 2026, "Accept" on all four sets; built on the live 13.4 read through the Google Drive connector, which was byte for byte the repo copy; page block AP-HOME-v37.14 is not touched). HELPFUL FIRST. The man: what a page says is now true of his week (a reading is named only when one is chosen for him, an earlier week's piece is "ready when you are" instead of late, Hard Things Done lists only weeks he said he kept, his witness has a name); the business: a man who trusts what the page says opens it again, and one less thing for our team to explain; UX: one tap opens the reading on the Week Ahead, Our Group is ready when he opens it, nothing is counted against him. SIMPLICITY CHECK. Count: scheduled tasks 0 before, 0 after; connectors, pages and docs the same. Retires: "Your first reading comes with your next morning's reading.", "Nothing new today · next at your rhythm", "Arrives tomorrow morning", the Revelation 12:10 opening of Hard Things Done, the empty Monthly Volumes panel, "before Wednesday" and "Your course asks it this week." on an earlier week's piece, and room as a man's word for his group. When it breaks: a group whose course the Course map does not know leaves Readings as in 13.4; a failed Our Group read leaves "Our Group did not open. Try again in a moment." and the next tap reads again; a leader with no People tab name leaves "your group's leader"; stampDeployed_ writes 13.5 to Config "deployed build" on the first call. Next school: nothing more; every read comes from the school's own Rooms, People, Road and Course map. WHAT CHANGED. 1. roadRead13_: a man with a group reads the group's course first (roomLead13_, the lead or second course when his road holds it, else stood from the group's own night and the Course map): the shelf, What Has Helped, Where It Points and the course line follow it, the same rule storyOut_ got in 13.2.2; a man with no group is as before. 2. storyOut_: Road rows what='did' (most, some, notyet; 'did' reads as most; week = the practice week; the latest row wins) go onto that chapter as kept. 3. roadGroup_ sends leaderName, the People tab name, beside leader (handLeaderPerson_ is the one lookup; handLeader_ still answers the address). 4. ROAD_BUILD 11.8, SCRIPT_BUILD 13.5, ROAD_JS is road.js 11.8; the ready-cache key carries the build, so the change reaches every man at once. NOT CHANGED, and why: the shelf's own line when a man is on his own road ("Chosen for The Starting Point") or in his first week ("Chosen for Week 1") stays as ruled before; the note under the First Reading title ("Comes with your next morning's reading") stays, it is not in the retired list; the practice shown in a Hard Things Done row has its closing period removed to fit the ruled quotation marks. WHAT MOVES TO THE PLATFORM AS IT IS: the story record's kept field and the group's course rule (both are sheet reads). REBUILT THERE: nothing. Counts taken before this card: the file parses (acorn); road.js 11.8 parses (new Function) and equals the embedded ROAD_JS byte for byte; its two stylesheets, assembled as the page assembles them, are 170 (hisroad) + 440 (apg) rules in a real CSS parser (tinycss2, no errors, braces balanced) and in Chromium, byte for byte the 11.7.2 sheets (none added, none removed); 234 page checks pass in Chromium at 390 and 1440 wide for a group man in Week 6 with an unwritten Week 2 piece, a reading-less week with a shelf, a man with nothing yet, a man with did rows most, some and notyet, a man with and without a leader on People, and Our Group with all, some and no lines; 23 server checks pass (storyOut_ did rows, roomLead13_, roadGroup_, and roadRead13_, where the same test run on the live 13.4 leads the group man with Known by Jesus and on 13.5 leads him with Breaking Free); a scan of every string road.js draws for "room" returns the Rooms menu heading and its class names, two ESV quotations (Proverbs 24:3-4, 24:4), and "In my room" (a place he practices, not his group). Install: Paste, Save, Deploy > Manage deployments > the pencil > New version > Deploy. No setup run.)
@@ -2609,22 +2609,79 @@ function roadLines_(cfg, key, e, map) {
       payload: JSON.stringify({ model: cfg['road model'] || 'claude-sonnet-4-5', max_tokens: 1400, system: system, messages: [{ role: 'user', content: user + (extra ? '\n\nYour last answer failed the read: ' + extra + '. Write it again, keeping every rule.' : '') }] }) });
     if (res.getResponseCode() !== 200) { log_(ss, 'road', 'lines: Claude ' + res.getResponseCode() + ' for ' + e.id, String(res.getContentText() || '').slice(0, 200)); return null; }
     var j = JSON.parse(res.getContentText()); var txt = (j.content || []).map(function (c) { return c && typeof c.text === 'string' ? c.text : ''; }).join('\n');
-    var m = txt.match(/\{[\s\S]*\}/); var ans = m ? JSON.parse(m[0]) : null;
-    if (!ans || !ans.road || !ans.todo || !ans.question) return null;
+    if (!String(txt || '').trim() && !attempt.again) { attempt.again = true; log_(ss, 'road', 'lines: empty reply for ' + e.id + ' (asking again)', 'stop: ' + String(j.stop_reason || '') + ' · blocks: ' + (j.content || []).map(function (c) { return c && c.type; }).join(',')); return attempt(extra); } // build 13.7.1
+    var ans; try { ans = parseLinesJson_(txt); } catch (pj) { pj.reply = String(txt || '').replace(/\s+/g, ' ').slice(0, 700); throw pj; } // build 13.7: a break in the reply's JSON is mended, never the end of the entry
+    if (!ans || !ans.road || !ans.todo || !ans.question) { log_(ss, 'road', 'lines: no usable answer for ' + e.id, String(txt || '(empty reply)').replace(/\s+/g, ' ').slice(0, 700)); return null; }
     var weeks = {}; var W = ans.weeks && typeof ans.weeks === 'object' ? ans.weeks : (ans.week ? { first: ans.week } : {});
     Object.keys(W).forEach(function (k) { var c = k === 'first' ? courseList_(map)[0] : courseOf_(k, map), v = String(W[k] == null ? '' : W[k]).toLowerCase().trim(); if (c && /^\d+$/.test(v)) weeks[c.abbr.toLowerCase()] = Number(v); });
     if (!Object.keys(weeks).length) weeks.any = true;
     return { keywords: String(ans.keywords || '').slice(0, 300), road: unlabel(ans.road).slice(0, 900), todo: unlabel(ans.todo).slice(0, 400), question: unlabel(ans.question).slice(0, 300), weeks: weeks, pick: PICKS_.indexOf(String(ans.pick || '').toLowerCase().trim()) >= 0 ? String(ans.pick).toLowerCase().trim() : 'places' };
   };
+  // build 13.7: if the reply cannot be read as JSON even after mending, ask once more, saying what broke (the rest of the read-back loop is unchanged)
+  var attemptMended = function (extra) {
+    try { return attempt(extra); }
+    catch (px) {
+      if (!(px && px.name === 'SyntaxError')) throw px;
+      log_(ss, 'road', 'lines: reply not valid JSON for ' + e.id + ' (asking again)', String(px.message || px).slice(0, 100) + ' · ' + String(px.reply || '').slice(0, 700));
+      return attempt((extra ? extra + '. Also: ' : '') + 'your last answer was not valid JSON (' + String(px.message || px).slice(0, 80) + '). Reply with one JSON object only, every double quotation mark inside a value written as a curly quotation mark or escaped, and no line breaks inside a value');
+    }
+  };
   try {
     var titles = (map && map.names || []).map(function (t) { return t.replace(/^(week\s*\d+\s*[—–:-]\s*)/i, '').trim(); }).filter(Boolean);
     var avoid = titles.length ? ' These are the course\'s week titles; never write any of them, in whole or in part, anywhere in the three lines (say what the week teaches in other words): ' + titles.join(' · ') + '.' : '';
-    var L = attempt(''); if (!L) return null;
+    var L = attemptMended(''); if (!L) return null;
     var why = roadLinesFail_(L, map), tries = 0;
-    while (why && tries < 2) { tries++; log_(ss, 'road', 'lines read back and rewritten for ' + e.id + ' (' + tries + ')', why); L = attempt(why + avoid); if (!L) return null; why = roadLinesFail_(L, map); }
+    while (why && tries < 2) { tries++; log_(ss, 'road', 'lines read back and rewritten for ' + e.id + ' (' + tries + ')', why); L = attemptMended(why + avoid); if (!L) return null; why = roadLinesFail_(L, map); }
     if (why) { log_(ss, 'road', 'lines failed the read three times for ' + e.id + ' (left empty; not given)', why); return null; }
     return L;
-  } catch (x) { log_(ss, 'road', 'lines failed for ' + e.id, String(x && (x.code || x.message) || x).slice(0, 160)); return null; }
+  } catch (x) { log_(ss, 'road', 'lines failed for ' + e.id, String(x && (x.code || x.message) || x).slice(0, 100) + (x && x.reply ? ' · ' + String(x.reply).slice(0, 700) : '')); return null; }
+}
+/** build 13.7: reads the JSON object out of a model reply. Tries it as written; if that throws, mends the usual breaks (a straight double quotation mark inside a value, a raw line break or tab inside a value, a comma before a closing brace, curly marks used as the JSON's own quotes) and tries again. Returns null when there is no object; throws the SyntaxError when it still cannot be read. */
+function parseLinesJson_(txt) {
+  var m = String(txt || '').match(/\{[\s\S]*\}/); if (!m) return null;
+  var raw = m[0];
+  try { return JSON.parse(raw); } catch (e1) {}
+  var out = '', inStr = false, i, c, nx, j;
+  for (i = 0; i < raw.length; i++) {
+    c = raw.charAt(i);
+    if (!inStr) { if (c === '"') inStr = true; out += c; continue; }
+    if (c === '\\') { out += c + raw.charAt(i + 1); i++; continue; }
+    if (c === '\n') { out += '\\n'; continue; }
+    if (c === '\r') { continue; }
+    if (c === '\t') { out += ' '; continue; }
+    if (c === '"') {
+      j = i + 1; while (j < raw.length && /\s/.test(raw.charAt(j))) j++;
+      nx = raw.charAt(j);
+      // a closing quote is followed by : , } or the end; anything else means the mark is inside the value
+      if (nx === ':' || nx === '}' || (nx === ',' && /^\s*["}]/.test(raw.slice(j + 1, j + 4))) || j >= raw.length) { inStr = false; out += c; }
+      else out += '\\"';
+      continue;
+    }
+    out += c;
+  }
+  out = out.replace(/,\s*([}\]])/g, '$1');
+  try { return JSON.parse(out); } catch (e2) {}
+  return parseLinesKeyed_(raw); // build 13.7.1: last resort, by the six key names, whatever sits between them
+}
+/** build 13.7.1: reads the six fields by their key names when the reply is not JSON at all inside (a week written as "3-4" or "3 (Week 3)", a quote mark anywhere). Each field is the text from its key to the next key, trimmed of its quotes and comma; the weeks field keeps each course name with the first number after it. Returns null unless road, todo and question are all found. */
+function parseLinesKeyed_(raw) {
+  var keys = ['keywords', 'weeks', 'road', 'todo', 'question', 'pick'], at = [], from = 0, k, m, f = {}, i;
+  for (i = 0; i < keys.length; i++) {
+    k = keys[i]; m = new RegExp('"' + k + '"\\s*:', 'g'); m.lastIndex = from;
+    var hit = m.exec(raw);
+    if (hit) { at.push({ key: k, start: hit.index, valFrom: hit.index + hit[0].length }); from = hit.index + hit[0].length; }
+  }
+  for (i = 0; i < at.length; i++) {
+    var end = i + 1 < at.length ? at[i + 1].start : raw.length, v = raw.slice(at[i].valFrom, end).trim();
+    if (i + 1 >= at.length) v = v.replace(/\}\s*$/, '').trim();
+    v = v.replace(/,\s*$/, '').trim();
+    f[at[i].key] = v;
+  }
+  var clean = function (v) { v = String(v || '').trim(); if (v.charAt(0) === '"') v = v.slice(1); if (v.charAt(v.length - 1) === '"') v = v.slice(0, -1); return v.replace(/\\n/g, ' ').replace(/\\"/g, '"').replace(/\s+/g, ' ').trim(); };
+  var weeks = {}, wm, re = /"([^"]+)"\s*:\s*"?[^0-9",}]*?(\d+)/g;
+  while (f.weeks && (wm = re.exec(f.weeks))) weeks[wm[1]] = Number(wm[2]);
+  var ans = { keywords: clean(f.keywords), weeks: weeks, road: clean(f.road), todo: clean(f.todo), question: clean(f.question), pick: clean(f.pick) };
+  return ans.road && ans.todo && ans.question ? ans : null;
 }
 function roadLinesNow() { var ss = SpreadsheetApp.openById(RE_SHEET_ID); ensureBuild4_(ss); ensureBuild402_(ss); return roadWriteLines_(ss, readConfig_(ss), 20); }
 
@@ -4543,7 +4600,7 @@ var ROAD_JS = "/* AP-HISROAD road.js build 11.8 (Nov 6, 2026, the truth pass; ev
  * what the room carried, The Shelf, Who We Read, his Craft and his lanes. New Answers kinds: after, less, voice, setaside, team, notice (Answers columns: when, who, entry id, kind, text, answer, room, build).
  * A Lanes tab (the twelve lanes of the mockup) and the Config lines are made once by ensureBuild12_. The 6:00 PM release (releaseTick) is switched by Config "auto release" (off until the hold is proven on the Front Desk).
  * Hold cards: research:hold:<entry id> on the Front Desk's Actions tab (rule RE15); a card marked done by hand is a hold. */
-var SCRIPT_BUILD = '13.6';
+var SCRIPT_BUILD = '13.7.1';
 var LANES_HEAD_12 = ['lane', 'what it covers', 'voices', 'Sources disciplines folded in', 'added'];
 var LANES_12 = [
   ['Narrative trauma care', 'How a man’s story holds his wounds', 'Dan Allender, Diane Langberg, Aundi Kolber', 'Narrative trauma care; Story work and attachment'],
