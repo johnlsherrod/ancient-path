@@ -19,7 +19,7 @@ function page(stateHistory) {
   };
   w.eval(src); w.eval(stoneSrc);
   const inst = w.APStory.init({ form: "t", root: "#root", actionsRow: "#acts", pagePath: "/start", navHost: "#navOff", buttonClass: "b", primaryClass: "p", ghostClass: "g",
-    fields: [{ id: "a", key: "a" }, { id: "b", key: "b" }, { id: "meta", key: "meta" }], lw: { unit: "U", blocks: { json: "J", whole: "W", history: "H" } }, document: a => (a.a || "") + (a.b ? "\n" + a.b : "") });
+    fields: [{ id: "a", key: "a" }, { id: "b", key: "b" }, { id: "meta", key: "meta" }], returnView: false, lw: { unit: "U", blocks: { json: "J", whole: "W", history: "H" } }, document: a => (a.a || "") + (a.b ? "\n" + a.b : "") });
   return { w, d, inst, sent };
 }
 const type = (w, d, id, v) => { const n = d.getElementById(id); n.value = v; n.dispatchEvent(new w.Event("input", { bubbles: true })); };
