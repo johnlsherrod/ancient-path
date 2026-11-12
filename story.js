@@ -1,5 +1,10 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v19.3
+   AP-STORY-MODULE-v19.4
+
+   v19.4 (12 Nov 2026) — the return view, second cut. v19.3 left out every form that keeps a history block; all four Your Story pages
+     keep one, so it would have been off on the pages that need it. Now it applies to every form. A page opts out with
+     cfg.returnView = false — Set a Stone only: there a blank page is how he sets the next stone, and opening the newest would turn that
+     Save into an edit of it. Tag story-v19.3 is spent and no page loads it. Nothing else changes.
 
    v19.3 (12 Nov 2026) — the return view (Return View build 1; John Nov 12, "Ruled, build it"). A signed-in man who opens a piece he
      already saved lands on his own words from ANY door, not only from Your Page with ?open=1. Elizabeth Payne (Nov 11) opened a
@@ -8,8 +13,8 @@
        ?open=1 opens it (applyLatest — the form is filled, meta last, so the page puts itself on the finish or on the part he stopped
        at, his earlier answers behind Back). No saved piece: nothing happens and the page starts as it always has. The read fails:
        the existing line, "Your saved piece could not be opened just now. Try again from your page.", and the page starts as it
-       does today. Words held on this device still win (step 1 of afterMount is untouched). A form that keeps a
-       collection (lw.blocks.history — Set a Stone, Ending Well) is left as it is: blank is how he adds the next piece; his pieces open one at a time by ?open=<id>.
+       does today. Words held on this device still win (step 1 of afterMount is untouched). A form whose blank page is how he adds the
+       next piece (Set a Stone) says so with cfg.returnView = false and is left as it is.
        The saved line says when: "Saved to your page · Wednesday, Nov 11, 2:00 PM." — the day is added when the save is not from
        today, the year when it is not from this year; times are 12-hour with AM/PM, in Central time whatever the device says
        (APStory.savedWhen). A save made now keeps the time only. Every door shows it: the piece is held as saved, so Save reads
@@ -1536,9 +1541,9 @@
 
     /* 3. v19.3 · the return view: no ?open, signed in, nothing held on this device. If he saved this piece before, it opens on his own
           words, from any door. Nothing saved: nothing happens. The read fails: the same calm line as ?open, the page as it is today.
-          A form that keeps a COLLECTION (cfg.lw.blocks.history: Set a Stone, Ending Well) is the exception: a blank page there is how he adds
-          the next piece, and opening the newest would turn that next Save into an edit of it. Its pieces are opened one at a time, by ?open=<id>. */
-    if (!openMatch && signedIn() && !this.cfg.lw.blocks.history) {
+          A page whose blank form is how he adds the next piece (Set a Stone) opts out with cfg.returnView = false: opening the newest would
+          turn that next Save into an edit of it. Its pieces are opened one at a time, by ?open=<id>. */
+    if (!openMatch && signedIn() && this.cfg.returnView !== false) {
       this.returnToLatest().catch(function () {
         var note = $("apsNote");
         if (note) { note.textContent = "Your saved piece could not be opened just now. Try again from your page."; }
@@ -2806,7 +2811,7 @@
   };
 
   window.APStory = {
-    version: "19.3",
+    version: "19.4",
     assistant: ASSIST,
     row: ROW,   /* v19.2: the row standard every piece draws its foot rows through */
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
