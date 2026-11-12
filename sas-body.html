@@ -266,7 +266,7 @@
 
 <script>
 (function () {
-  /* AP-SAS-CONFIG-v1 — the shared save (story.js) and the stone (stone.js v2), both pinned by commit and integrity hash. The Stones form is this page's own form: a finished save is the stone. */
+  /* AP-SAS-CONFIG-v2 — the shared save (story.js) and the stone (stone.js v2), both pinned by commit and integrity hash. The Stones form is this page's own form: a finished save is the stone. */
   try { localStorage.setItem("apAdult", "1"); sessionStorage.setItem("apAdult", "1"); } catch (e) {}
   var SRC = "https://cdn.jsdelivr.net/gh/johnlsherrod/ancient-path@{{STORY_COMMIT}}/story.js";
   var SRI = "{{STORY_SRI}}";
@@ -288,6 +288,7 @@
     noteBefore: "Saving puts your stone on your page, where you can read it whenever you want. You will be asked to sign in — that is the only thing an account is for here.",
     signInSelector: 'a[data-interactive-link-type="openformslink"][data-interactive-link-var1="signin"]',
     document: function (a) { return typeof window.sasDocument === "function" ? window.sasDocument(a) : ""; },
+    returnView: false,   /* story.js 19.4: a blank Set a Stone is how he sets the next stone; opening the newest would turn that Save into an edit of it */
     lw: { unit: STONES.unit, blocks: { whole: STONES.blocks.whole, json: STONES.blocks.json, history: STONES.blocks.history } },
     fields: window.sasFields || []
   };
