@@ -1,5 +1,22 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v19.2
+   AP-STORY-MODULE-v19.3
+
+   v19.3 (12 Nov 2026) — the return view (Return View build 1; John Nov 12, "Ruled, build it"). A signed-in man who opens a piece he
+     already saved lands on his own words from ANY door, not only from Your Page with ?open=1. Elizabeth Payne (Nov 11) opened a
+     saved piece straight from the course, met a blank first question over her saved work, thought it was lost and wrote it again.
+       On mount, signed in, no words held on this device, no ?open: lwLatest(unit) is read once. A saved piece is opened exactly as
+       ?open=1 opens it (applyLatest — the form is filled, meta last, so the page puts itself on the finish or on the part he stopped
+       at, his earlier answers behind Back). No saved piece: nothing happens and the page starts as it always has. The read fails:
+       the existing line, "Your saved piece could not be opened just now. Try again from your page.", and the page starts as it
+       does today. Words held on this device still win (step 1 of afterMount is untouched). A form that keeps a
+       collection (lw.blocks.history — Set a Stone, Ending Well) is left as it is: blank is how he adds the next piece; his pieces open one at a time by ?open=<id>.
+       The saved line says when: "Saved to your page · Wednesday, Nov 11, 2:00 PM." — the day is added when the save is not from
+       today, the year when it is not from this year; times are 12-hour with AM/PM, in Central time whatever the device says
+       (APStory.savedWhen). A save made now keeps the time only. Every door shows it: the piece is held as saved, so Save reads
+       Saved and sends nothing twice, and the restored words are not held on the device as if he had typed them.
+       His own typing is never overwritten: if words are in the boxes when the read comes back they stay, and a quiet save (keep)
+       cannot start while the read is on its way, so a saved piece is not shadowed by a newer, emptier one.
+       No new buttons, no new copy, no new screen.
 
    v19.2 (13 Oct 2026) — the row standard lives in the engine (ap-story-navigation, John Oct 13: "a prescribed flow in all our
      stories"). APStory.row: css() injects the one row stylesheet (the engine's own rows and the standard's), html(o) draws a row
@@ -378,6 +395,34 @@
       });
   }
 
+  /* v19.3 · when it was saved, as a man reads it. Central time (John, Oct 1), 12-hour with AM/PM, whatever the device says.
+     A save from today: the time only ("2:14 PM"). Any other day: the day first ("Wednesday, Nov 11, 2:00 PM"); a save from an
+     earlier year says the year. A time we cannot read gives "" — the line then says Saved to your page. and nothing wrong. */
+  function whenMs(v) {
+    if (v == null || v === "") { return NaN; }
+    if (typeof v === "number") { return v < 100000000000 ? v * 1000 : v; }
+    var n = Date.parse(v);
+    if (isNaN(n) && /^\d{10,13}$/.test(String(v))) { n = Number(v); if (n < 100000000000) { n *= 1000; } }
+    return n;
+  }
+  function centralParts(ms) {
+    try {
+      var parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", weekday: "long", year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }).formatToParts(new Date(ms));
+      var o = {}, i;
+      for (i = 0; i < parts.length; i++) { o[parts[i].type] = parts[i].value; }
+      return (o.hour && o.minute && o.dayPeriod) ? o : null;
+    } catch (e) { return null; }
+  }
+  function savedWhen(v) {
+    var ms = whenMs(v);
+    if (isNaN(ms)) { return ""; }
+    var p = centralParts(ms), n = centralParts(Date.now());
+    if (!p || !n) { return ""; }
+    var time = p.hour + ":" + p.minute + " " + String(p.dayPeriod).toUpperCase().replace(/\./g, "");
+    if (p.year === n.year && p.month === n.month && p.day === n.day) { return time; }
+    return p.weekday + ", " + p.month + " " + p.day + (p.year !== n.year ? ", " + p.year : "") + ", " + time;
+  }
+
   /* The latest piece a man saved to this form, as {blockId: value}. */
   function lwLatest(unit) {
     return lwFetch("GET", "/api/assessment/state?sourceType=unit&objectId=" + encodeURIComponent(unit))
@@ -735,7 +780,7 @@
     }
 
     /* v19: already on his page exactly as it stands (a keep just took it): say so, send nothing twice */
-    if (this.saved && this.savedAnswers && JSON.stringify(answers) === this.savedAnswers) { ui.done(this.saved); return; }
+    if (this.saved && this.savedAnswers && JSON.stringify(answers) === this.savedAnswers) { ui.done(this.saved, this.saved.restored ? this.saved.when : undefined); return; }   /* v19.3: a restored piece keeps its own time */
 
     /* THE DOOR. Not signed in: keep his words, send him to sign in.
        When he comes back, start() finds the stash and finishes this save. */
@@ -808,7 +853,7 @@
      here: the device hold keeps his words and the sign-in door waits for his Save. A failure says nothing; his next Save will. */
   Story.prototype.keep = function () {
     var self = this;
-    if (!signedIn() || this.busy || !this.ui) { return false; }
+    if (!signedIn() || this.busy || this._returning || !this.ui) { return false; }   /* v19.3: not while the return view's read is on its way */
     var a = this.answers(); if (!this.document(a)) { return false; }
     if (this.savedAnswers && JSON.stringify(a) === this.savedAnswers) { return false; }
     var ui = this.ui;
@@ -831,6 +876,19 @@
     if (typeof this.cfg.onStartNew === "function") { try { this.cfg.onStartNew(); } catch (e) {} }
   };
 
+  /* v19.3 · a saved piece is on the page. Hold it as saved (Save reads Saved and sends nothing twice; the leave-site guards stand down; the
+     restored words are not held on this device as if he had typed them) and say so, with the day when the save is not from today. The page's
+     own listeners run when fill() writes the fields, so the snapshot is taken after them, and again once the page has settled. */
+  Story.prototype.markReturned = function (savedAt) {
+    var self = this, untouched = interactEpoch;
+    function snap() { try { self.savedAnswers = JSON.stringify(self.answers()); } catch (e) {} }
+    var at = savedAt == null ? null : savedAt;
+    this.saved = { restored: true, when: at };
+    snap();
+    window.setTimeout(function () { if (interactEpoch === untouched && !self.busy) { snap(); } }, 500);
+    if (this.ui && typeof this.ui.done === "function") { this.ui.done(this.saved, at); }
+  };
+
   /* Open ONE specific saved piece from history — used for `?open=<id>`,
      as opposed to `?open=1` which still means "the latest" via
      restoreLatest() below, unchanged from v5. */
@@ -848,6 +906,7 @@
       if (!entry) { return null; }
       self.fill(entry.answers || {});
       self.openEntryId = entry.id;
+      self.markReturned(entry.when);   /* v19.3 */
       onArrival(function () { seekTo(self.host(), {}); }, untouched);
       return entry;
     });
@@ -882,6 +941,14 @@
     var untouched = interactEpoch;   /* BEFORE the read, not after it returns */
     return lwLatest(this.cfg.lw.unit).then(function (latest) {
       if (!latest) { return null; }
+      return self.applyLatest(latest, untouched);
+    });
+  };
+
+  /* v19.3 · put a saved piece (as lwLatest returns it) on the page. The one body ?open=1 and the return view share. */
+  Story.prototype.applyLatest = function (latest, untouched) {
+    var self = this;
+    {
       var a = {}, blocks = self.cfg.lw.blocks, i, f;
       /* v4: the JSON question, when the form has one, carries every answer. */
       if (blocks.json && typeof latest.answers[blocks.json] === "string") {
@@ -905,9 +972,35 @@
         var hist = parseHistoryList(latest.answers[blocks.history]);
         if (hist.length) { self.openEntryId = hist[hist.length - 1].id; }
       }
+      self.markReturned(latest.when);   /* v19.3 */
       onArrival(function () { seekTo(self.host(), {}); }, untouched);
       return latest;
-    });
+    }
+  };
+
+  /* v19.3 · does the page already hold words he wrote? (the hidden meta field and any hidden field are not words) */
+  Story.prototype.hasWords = function () {
+    for (var i = 0; i < this.cfg.fields.length; i++) {
+      var f = this.cfg.fields[i]; if (f.key === "meta") { continue; }
+      var node = $(f.id); if (!node || node.type === "hidden") { continue; }
+      if (String(node.value == null ? "" : node.value).trim()) { return true; }
+    }
+    return false;
+  };
+
+  /* v19.3 · THE RETURN VIEW. He opened a piece from any door (the course, a link, a bookmark), signed in, nothing held on this device, no
+     ?open: if he saved this piece before, it opens on his own words. Read once; no saved piece → nothing happens (the page starts as it
+     always has); words already typed into the boxes while the read was on its way are never overwritten. A failed read throws, and the
+     caller says the one calm line. While the read is on its way keep() cannot start, so a newer save cannot shadow the saved piece. */
+  Story.prototype.returnToLatest = function () {
+    var self = this, untouched = interactEpoch;   /* BEFORE the read, not after it returns */
+    this._returning = true;
+    return lwLatest(this.cfg.lw.unit).then(function (latest) {
+      self._returning = false;
+      if (!latest || self.hasWords()) { return null; }
+      self._opened = true;   /* v16: opening a saved piece is not a start */
+      return self.applyLatest(latest, untouched);
+    }, function (err) { self._returning = false; throw err; });
   };
 
   Story.prototype.host = function () {
@@ -999,14 +1092,14 @@
       working: function () { btn.disabled = true; btn.textContent = "Saving"; note.textContent = ""; },
       stillWorking: function () { btn.textContent = "Still saving"; note.textContent = "Still saving. Do not close the page."; },
       signingIn: function () { btn.disabled = false; btn.textContent = "Save"; note.textContent = "You will be asked to sign in. Your words stay on this page."; },
-      done: function () {
+      done: function (sub, savedAt) {
         btn.disabled = true;
         btn.textContent = "Saved";
         /* v10: after a save the first things he reads are that it is saved and what is left; the Save button goes quiet and the way out is the dark button */
         if (cfg.primaryClass) { btn.classList.remove(cfg.primaryClass); }
         if (cfg.ghostClass) { btn.classList.add(cfg.ghostClass); }
         var pr = self.progress(), when = "";
-        try { when = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).toLowerCase(); } catch (e) {}
+        try { when = savedWhen(savedAt === undefined ? Date.now() : savedAt); } catch (e) {}   /* v19.3: Central, 12-hour, the day when it is not today */
         note.innerHTML = "";
         var l1 = el("b", "aps-saved", "Saved to your page" + (when ? " \u00b7 " + when : "") + ".");
         var l2 = el("span", "aps-left", pr.finished ? "Finished. It is on your page." : pr.written + " of " + pr.total + " " + (cfg.parts || "parts") + " written. Save keeps your place.");
@@ -1435,6 +1528,18 @@
         ? this.restoreLatest()
         : this.restoreEntry(openVal);
       restored.catch(function () {
+        var note = $("apsNote");
+        if (note) { note.textContent = "Your saved piece could not be opened just now. Try again from your page."; }
+      });
+      return;
+    }
+
+    /* 3. v19.3 · the return view: no ?open, signed in, nothing held on this device. If he saved this piece before, it opens on his own
+          words, from any door. Nothing saved: nothing happens. The read fails: the same calm line as ?open, the page as it is today.
+          A form that keeps a COLLECTION (cfg.lw.blocks.history: Set a Stone, Ending Well) is the exception: a blank page there is how he adds
+          the next piece, and opening the newest would turn that next Save into an edit of it. Its pieces are opened one at a time, by ?open=<id>. */
+    if (!openMatch && signedIn() && !this.cfg.lw.blocks.history) {
+      this.returnToLatest().catch(function () {
         var note = $("apsNote");
         if (note) { note.textContent = "Your saved piece could not be opened just now. Try again from your page."; }
       });
@@ -2701,7 +2806,7 @@
   };
 
   window.APStory = {
-    version: "19.2",
+    version: "19.3",
     assistant: ASSIST,
     row: ROW,   /* v19.2: the row standard every piece draws its foot rows through */
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
@@ -2737,6 +2842,7 @@
     voice: VOICE, handoffLink: handoffLink, qrSVG: qrSVG, handoffCSS: handoffCSS, handoffBoxHTML: handoffBoxHTML,   /* v17 */
     safe: safe,
     latest: lwLatest,
+    savedWhen: savedWhen,   /* v19.3: "2:14 PM" today, "Wednesday, Nov 11, 2:00 PM" another day — Central, 12-hour */
     _submit: lwSubmit,
     _seekTo: seekTo,
     _scrollerFor: scrollerFor,
