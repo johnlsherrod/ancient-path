@@ -1,4 +1,12 @@
 /**
+ * Ancient Path — Front Desk · Notices.gs · build N8 · Text Him 2.1 (Nov 11, 2026; with Front Desk 39, Research reader 13.15 and desk.js 38; built on the live N7 read through the Google Drive connector, so everything in N7 is kept).
+ *   1. text_him and text_plan now answer rms, the milliseconds the Research reader spent (its own ms), beside the ms this desk spent, so a slow press can be placed (the browser, this desk, or the reader). An older reader answers none and rms is 0.
+ *   2. textMail_ greets our own addresses by first name (ownAddress_, Code.gs 39), so Email him instead on John Sherrod · yours opens "John," and not "Hello,".
+ *   Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged; no new desk action. Retires: nothing. When it breaks: rms reads 0 and nothing else changes. Next school: nothing more.
+ *   Moves to the platform as it is: all of it. Rebuilt there: nothing.
+ *   Counts taken: the file parses (new Function over the whole file); the diff from N7 is the lines named in patch_fd.py only; no text is added or changed (ap-text-standard word for word).
+ */
+/**
  * Ancient Path — Front Desk · Notices.gs · build N7 · Text Him 2.0 (Nov 11, 2026; with Front Desk 38, Research reader 13.13 and desk.js 37; John's "yes" to all three on the Text Him Sheet 2.0 Mockup, https://claude.ai/artifact/Q3UQAsxjTkwrLjh4xZaJRA; built on the live N6 read through the Google Drive connector, so everything in N6 is kept).
  *   1. Card first, notice after. textHim_ (desk action text_him, admins only) asks the Research reader's team_card and answers as soon as the card is written, with the plan (text · held · email · page · cap · off) worked out from his row, the card's id the words as the reader kept them, and whether a notice is owed. It no longer waits on a text or an email. A Research reader older than 13.13 sends the notice inside team_card and answers { notice }; that answer is read as the plan with nothing owed, so installing this file first is safe.
  *   2. textNotice_ (desk action text_notice) asks the Research reader's team_notice, which sends the owed notice through the same notice path as before (his yes, quiet hours, one a day, email when a text cannot go). The desk asks for it right after the card and does not wait on it; if the call never arrives the card's row stays owed and the daily run and the 6:00 PM catch send it.
@@ -53,8 +61,8 @@
  */
 
 const NOTICE = {
-  BUILD: 'N7',
-  LABEL: 'Text Him 2.0',
+  BUILD: 'N8',
+  LABEL: 'Text Him 2.1',
   SENDER: '+14695575502',
   SENDER_SHOWN: '(469) 557-5502',
   SERVICE: 'MGa52ac58544f99799e55cf4788c7906e9',
@@ -382,7 +390,7 @@ function textHim_(who, b) {
     return { ok: true, sent: false, why: (err === 'no_page' || err === 'bad_words' || err === 'no_email') ? err : 'fail' };
   }
   const legacy = j.plan === undefined && j.notice !== undefined;   // a Research reader before 13.13 already sent the notice inside team_card
-  return { ok: true, sent: true, plan: String(legacy ? j.notice : j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, owed: legacy ? false : !!j.owed, cid: String(j.cid || ''), words: j.words === undefined ? '' : String(j.words), at: String(j.at || new Date().toISOString()), day: String(j.day || ''), legacy: legacy, ms: Date.now() - t0 };
+  return { ok: true, sent: true, plan: String(legacy ? j.notice : j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, owed: legacy ? false : !!j.owed, cid: String(j.cid || ''), words: j.words === undefined ? '' : String(j.words), at: String(j.at || new Date().toISOString()), day: String(j.day || ''), legacy: legacy, ms: Date.now() - t0, rms: Number(j.ms) || 0 };
 }
 
 /** desk action text_plan (admins only): how he will be told, read when the Text him sheet opens. Read only.
@@ -395,7 +403,7 @@ function textPlan_(who, b) {
   const j = noticeReaderCall_({ action: 'team_plan', email: email });
   if (!j) return { ok: true, plan: '', on: on };
   if (!j.ok) return { ok: true, plan: j.error === 'no_page' ? 'nopage' : '', on: on };
-  return { ok: true, plan: String(j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, on: on };
+  return { ok: true, plan: String(j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, on: on, rms: Number(j.ms) || 0 };
 }
 
 /** desk action text_notice (admins only): the owed notice goes now. The desk asks right after the card and does not wait; a call that never arrives leaves the notice owed and the daily run or the 6:00 PM catch sends it.
@@ -452,7 +460,8 @@ function textMail_(who, b) {
   if (!words) throw { code: 'bad_words' };
   const cfg = readConfig_(), ss = SpreadsheetApp.openById(FD.SHEET_ID);
   const man = rows_(ss.getSheetByName('Roster')).find(r => String(r['email']).toLowerCase() === email) || {};
-  const first = firstOf_(man['name'] || names_(ss)[email] || '');
+  const own = ownAddress_(email); // build N8: our own addresses carry their name here
+  const first = firstOf_(man['name'] || (own && own.name) || names_(ss)[email] || '');
   const me = Session.getEffectiveUser().getEmail(), mine = String((who && who.email) || '').toLowerCase();
   const sign = firstOf_(who && who.name) || firstFromEmail_(mine) || 'Our team';
   const ppl = people_(), nameOf = e => (ppl.find(p => p.email === e) || {}).name || '';
