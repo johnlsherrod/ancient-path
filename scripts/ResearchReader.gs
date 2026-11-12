@@ -1,4 +1,13 @@
 /**
+ * Ancient Path — Research reader · build 13.15.3 · Who Is Asking (Nov 12, 2026; the Witness proof walk found that the road API answered a call made with an email alone, and gave a second test man's witness name and role to a call with no credentials; John ruled "go". Built on the live 13.15.2, identical to the repo's scripts/ResearchReader.gs.)
+ *   What was open. learnerFor_ turned a call away only when the call carried an id AND the row had one AND they differed, so a call that left the id out passed. The ready copy of Your Page matched on "both empty" too.
+ *   1. learnerFor_. The site's id must come with every call. A row that has an id answers only to that id; no id, or another id, is turned away exactly like a man with no row (the bare road for 'road', nothing for the rest). A row with no id binds to the first id it sees, and is never bound or served without one.
+ *   2. roadReadyHit_. A call with no id never gets a ready copy.
+ *   3. Stamps: SCRIPT_BUILD 13.15.3; ROAD_BUILD 11.14.1, GROWTH_BUILD 4.5.1 and SCRIPT_LABEL unchanged. One Log line, "build 13.15.3", is written once (ensureBuild13153_).
+ *   What this does not do. The id is not secret from the man himself (his own browser has it), so this closes the hole of an email alone, not a determined man who reads his own page's traffic. The stronger check, an emailed-link sign-in, waits for Foundation (Nov 23). road.js already sends the id on every call, so Your Page does not change.
+ *   Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged; no new key. When it breaks: a man whose page sends no id sees the bare road; the Log says "id did not match" only when an id was sent and was wrong. Moves to the platform: the rule itself (identity required on every call).
+ */
+/**
  * Ancient Path — Research reader · build 13.15.2 · Same-Group Guard (Nov 12, 2026; the Witness proof walk of the invited-witness side, Builds 1-3, run end to end in Claude in Chrome: the invitation, Before You Say Yes, the yes, Email, the Witness tab row, the "said yes" email, Your Desk and Who Sees What; built on the live 13.15.1 read through the Google Drive connector, so everything in 13.15.1 is kept).
  *   What the walk found. Every item in ap-witness "Before any build reaches John" held except one: rule 2, "Members of the same group do not ask each other to be their road witness", was only a rule on the page. The invitation takes a name and an email, and roadWitness_ never asked whether that email belongs to a man in the same room, so a man in the second half of a course could invite a groupmate and the invitation would go.
  *   1. roadWitness_ (server). A man in a room whose invited address is another man in the same room (his Learners row, the room cell, any case) is handled exactly like an address at its limit: nothing is sent, the one waiting invitation is closed, the Log (team only) says "that address is in his own group", and the answer is { ok: true, limited: true }, so no one is told why. A man outside a room is not affected; a man in another room is not affected. learnerOne_ reads the one row.
@@ -1917,8 +1926,9 @@ function learnerFor_(ss, cfg, b) {
   }
   if (L.status !== 'open' && L.status !== 'complete') throw { code: 'closed' }; // build 11.0: a man who has finished his course still has his page (the course-ended state)
   var sh = ss.getSheetByName('Learners');
-  if (L.lwid && lwid && L.lwid !== lwid) { log_(ss, 'road', 'id did not match for ' + email, lwid.slice(0, 12)); throw { code: 'no_learner' }; }
-  if (!L.lwid && lwid) { sh.getRange(L.row, LC.lwid).setValue(lwid); L.lwid = lwid; }
+  // build 13.15.3 (Who Is Asking): the site's id must come with every call. A bound row answers only to its own id; a call with no id, or another id, is turned away like a man with no row. A row with no id binds to the first id it sees, and never without one.
+  if (L.lwid && lwid !== L.lwid) { if (lwid) log_(ss, 'road', 'id did not match for ' + email, lwid.slice(0, 12)); throw { code: 'no_learner' }; }
+  if (!L.lwid) { if (!lwid) throw { code: 'no_learner' }; sh.getRange(L.row, LC.lwid).setValue(lwid); L.lwid = lwid; }
   if (!L.name && b.name) { sh.getRange(L.row, LC.name).setValue(String(b.name).trim().slice(0, 80)); L.name = String(b.name).trim(); }
   L.seenBefore = L.lastSeen; sh.getRange(L.row, LC.lastSeen).setValue(stamp_(new Date()));
   LAST_LEARNER_ = L; // 12.7: the ready copy is kept for the man this call served
@@ -2408,6 +2418,7 @@ function roadCallInner_(b) {
   try { ensureBuild1314_(ss); } catch (xe1314) {} // build 13.14: one Log line, once
   try { ensureBuild1315_(ss); } catch (xe1315) {} // build 13.15: one Log line, once
   try { ensureBuild13152_(ss); } catch (xe13152) {} // build 13.15.2: one Log line, once
+  try { ensureBuild13153_(ss); } catch (xe13153) {} // build 13.15.3: one Log line, once
   try { ensureBuild111_(ss); } catch (xe7) {} // build 11.1: the Witness pages and Notes tabs, the Config email: lines, the hourly trigger, one Log line, once
   var L;
   try { L = learnerFor_(ss, cfg, b); }
@@ -3515,6 +3526,13 @@ function ensureBuild1312_(ss) {
 }
 
 /** build 13.15: one Log line when this build is first served. */
+/** build 13.15.3: one Log line when this build is first served. */
+function ensureBuild13153_(ss) {
+  var props = PropertiesService.getScriptProperties();
+  if (props.getProperty('b13153') === '1') return;
+  log_(ss, 'build 13.15.3', SCRIPT_LABEL + ' \u00b7 Research reader 13.15.3 + road.js 11.14.1 \u00b7 Who Is Asking: the road answers only a call that carries the site\u2019s id for that man; a call with email alone is turned away');
+  props.setProperty('b13153', '1');
+}
 /** build 13.15.2: one Log line when this build is first served, so the Log, the page and the repo carry the same build. */
 function ensureBuild13152_(ss) {
   var props = PropertiesService.getScriptProperties();
@@ -5252,7 +5270,7 @@ var ROAD_JS = "/* AP-HISROAD road.js build 11.14.1 (Nov 12, 2026; Witness proof 
  * what the room carried, The Shelf, Who We Read, his Craft and his lanes. New Answers kinds: after, less, voice, setaside, team, notice (Answers columns: when, who, entry id, kind, text, answer, room, build).
  * A Lanes tab (the twelve lanes of the mockup) and the Config lines are made once by ensureBuild12_. The 6:00 PM release (releaseTick) is switched by Config "auto release" (off until the hold is proven on the Front Desk).
  * Hold cards: research:hold:<entry id> on the Front Desk's Actions tab (rule RE15); a card marked done by hand is a hold. */
-var SCRIPT_BUILD = '13.15.2';
+var SCRIPT_BUILD = '13.15.3';
 var SCRIPT_LABEL = 'Double Underline'; // the one label stamped in every file of the build (Notices.gs N8, Front Desk 39, this script, desk.js 38; road.js stays 11.14), in the Log and in the repo commit
 var LANES_HEAD_12 = ['lane', 'what it covers', 'voices', 'Sources disciplines folded in', 'added'];
 var LANES_12 = [
@@ -5637,7 +5655,8 @@ var ROAD_READONLY_ = ['road', 'road_ours', 'road_voices', 'road_text_state'];
 function roadReadyKey_(b) { return readyKey_('r', b.email); }
 function roadReadyHit_(b) {
   var w = readyGet_(roadReadyKey_(b));
-  if (!w || !w.data || String(w.lwid || '') !== String(b.lwid || '').trim()) return null;
+  var asked = String(b.lwid || '').trim(); // build 13.15.3: a call with no id never gets a ready copy
+  if (!asked || !w || !w.data || String(w.lwid || '') !== asked) return null;
   try {
     var email = String(b.email || '').toLowerCase().trim(), cache = CacheService.getScriptCache(), mk = 'seen:' + email;
     if (w.row && !cache.get(mk)) {
