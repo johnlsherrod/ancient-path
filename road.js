@@ -1,4 +1,4 @@
-/* AP-ROAD-v1 (v39.3: the owner walk of Oct 14, 2026, four findings ruled. 1 · Every line a man wrote is tappable on Your words — Edit and the group mark work on all of them, not only the chapter's job line: every line of the chapter record has a seat in the story draft (the ones not "on" sit at the end of their part, out of the workshop), the two screens meet by seat (chapter and line), never by wording, a line with a label no part knows is drawn like the rest, and the tail (Today I am camped at …) is a line too; being on decides what enters One story, never what can be tapped. A walk saved before this build gets its seats when it loads. Must-survive check: tappable lines on Your words equals lines written in the chapter, on a real walk and on the sample. 2 · The Your words row ends with Your page on the right, every time: ← The Road I Walked · Download · Copy · Save · Begin chapter N · Your page — one navy per row, the next step is the navy one (Begin chapter N, Pick up, Make it one story), Your page the quiet way out after it; when there is no other next step (a course, a story made) Your page is the next step itself. 3 · In What did you hear? the two asks read as things to tap (house link style) and "Tap that line." shows under them from the moment the box opens. 4 · The account line ("Saving puts your story on your page… that is the only thing an account is for here") is gone from under the row on every step and on Your words; the door keeps its one Finish sentence; nothing under a row but the note and Continue on your phone. story.js 19.2 untouched. Tests: test-road-v39.3.js.)
+/* AP-ROAD-v1 (v40: integrity-1, Nov 14, 2026 — the Story Ledger on The Road I Walked. His words are kept from the first word, as he writes and as he speaks, as new versions in our own store (story.js 20.1), held on his device until the store's receipt matches; opening reads our store first with LearnWorlds as the second copy; signed out they wait on his device and move at sign-in; the page shows one line, "Kept [time]", and the Begin sentence at the foot of every writing step; no alert to our team about how anyone writes. What moves to the platform as it is: the ledger calls. Rebuilt there: the LearnWorlds second copy and his key's seat in his LearnWorlds record. Tests: test-road-v40.js.) (v39.3: the owner walk of Oct 14, 2026, four findings ruled. 1 · Every line a man wrote is tappable on Your words — Edit and the group mark work on all of them, not only the chapter's job line: every line of the chapter record has a seat in the story draft (the ones not "on" sit at the end of their part, out of the workshop), the two screens meet by seat (chapter and line), never by wording, a line with a label no part knows is drawn like the rest, and the tail (Today I am camped at …) is a line too; being on decides what enters One story, never what can be tapped. A walk saved before this build gets its seats when it loads. Must-survive check: tappable lines on Your words equals lines written in the chapter, on a real walk and on the sample. 2 · The Your words row ends with Your page on the right, every time: ← The Road I Walked · Download · Copy · Save · Begin chapter N · Your page — one navy per row, the next step is the navy one (Begin chapter N, Pick up, Make it one story), Your page the quiet way out after it; when there is no other next step (a course, a story made) Your page is the next step itself. 3 · In What did you hear? the two asks read as things to tap (house link style) and "Tap that line." shows under them from the moment the box opens. 4 · The account line ("Saving puts your story on your page… that is the only thing an account is for here") is gone from under the row on every step and on Your words; the door keeps its one Finish sentence; nothing under a row but the note and Continue on your phone. story.js 19.2 untouched. Tests: test-road-v39.3.js.)
    (v39.2: Hear it on Read — John, Oct 14, 2026: "when you read your own story, you already know what you meant; when someone else reads it to you, you hear what the words actually communicate." On Your words and One story a navy Hear it sits under his words, above the row: it reads everything on that screen in order, in the engine's voice (story.js APStory.voice, the same man's-voice pick as Read it to me — nothing here speaks on its own), one unit at a time with the unit being read lit and the screen following it; the same button reads Stop while it speaks, and any other press stops it. When the reading ends, "What did you hear?" with two asks — a line that said more than I meant, a line that said less — each a tap away from Edit beside that line (on One story a tap on his line carries him to Your words with that line open; a tap on what he wrote between lines opens that box; a part he put together is already his to type in); "It said what I meant." closes it. Back from the old chapter page: "Tap one line to mark it as the one you will read aloud at group" — the Edit box beside a line has Read this one at group, the marked line carries a gold mark and the words "The line you will read aloud at group. · Unmark" under its paragraph, one line per story, saved with the walk. Must-survive checks in test-road-v39.2.js: the voice on every box, bridgeFor, Make it one story, Keep and sign-in, Edit beside the line, the four assistant buttons, the privacy line at the foot, APStory.row on every row, Hear it on both story screens. story.js untouched (19.2)) (v39.1: the privacy line at the foot — John, Oct 13, 2026: "We agreed to demote this to the bottom of the page." The fixed line ("Nothing you write here reaches us unless you choose to save it with us. Everything else stays on your device.", first sentence bold, nothing after it) sits under the writing on every chapter and step screen of the Road and of Where Are You?, the last thing before the row; it is gone from the Where Are You? door, and the chapter promise ("When you press Finish, this chapter is saved…") is gone from the step screens — the two Begin screens keep their one sentence about what Finish does. story.js untouched (19.2)) (v39: story navigation — the one road through the Road (ap-story-navigation, John Oct 13, 2026: "a prescribed flow in all our stories, a defined map that navigates with integrity and logic"). Begin · Write · Read · Your page. Every row at the foot of a screen is drawn by the engine's row standard (story.js v19.2, APStory.row): the way back on the left named for where it goes, the quiet things (Download · Copy) between as small links, Saved as words with the time, ONE navy next step on the right, the row inside the sheet on the words' left edge — the cushion lives in the engine so it cannot go missing here. The story screens are two: Your words (his lines in order with the map; tap any line to change it — Edit lives there and nowhere else) and One story (the workshop; ← Your words on the left, Finish on the right). The chapter list, the edit-everything screen and the chapter page (Save as a door) are gone: Finish on the last step saves the chapter and lands on Your words; the discipline picker is the last step of the chapters that have one. No button is named Chapters, Story, Read, Open it or Done-that-goes-somewhere. "Your Story" names the shelf, never a screen here. Where Are You? draws its rows through the same standard. Two things left with the chapter page: the tap-to-read-aloud mark (nothing else showed it) and the "word you keep using" list) (v38: Speak it 2 — keep as he speaks on the Road and Where Are You? (the engine's microphone saves what he says every few seconds while he is signed in, through a quiet save that says nothing on failure); the Story assistant heading with its ⓘ sits over every row of its buttons (Better questions · Check it · Smooth it · Read it back) and the line at the top of Your story is gone; a press on one of those buttons lets the last spoken words land first) (v37: Speak it — Tap and talk and Read it to me on every box the Road and Where Are You? draw, and Continue on your phone in the save row, all through story.js v17 (APStory.voice.attach, handoffLink); nothing here listens or speaks on its own) (v36: the count — story_start · story_save · story_finish through APStory.track (story.js v16), the piece named road or where, nothing of what he wrote) (v35: The Word for It is read from the engine (story.js v15, APStory.wordForIt) on the Road's feel step and on Where Are You?; road.js keeps one fallback copy, identical, for a page whose engine predates v15. v34: "a reader", never "a stranger", wherever a man reads it (John, 28 Sept). v33: one engine — the Story assistant (the house document, the four asks and their second reads, the relay, the page-side guards) now lives in story.js as APStory.assistant and this file calls it with the Road profile; a page that runs without story.js must inline it first. v32: one row on every screen — Back or Edit · Download · Copy · Save · Next · Your page — the screen's own bottom row, kept at the foot of the screen; no "leave this page?" box: what he types is held on this device (a day) and put back and saved when he returns, unless a newer save exists; his page opens in the full window from inside a course frame. v31: on Your story a man can edit any of his lines where it sits (Edit beside the line, Done, Cancel); the chapter keeps its wording and "Changed from your chapter · Undo" puts it back; the edited line is what Put it together, Better questions, the turn picker and the story page use. v30: the Story assistant line is small and plainly pressable — "Story assistant ⓘ How it helps" in the sheet's small-link style; the cream box appears only when it is open. v29: Story assistant — the four Claude buttons (Better questions · Check it · Smooth it · Read it back) named once as one helper at the top of Your story, with a circled i that opens what it does and what it never does; the "Four buttons send your story to Claude" paragraph retired. v28: the story he makes in Make it one story — the answers between his lines, each movement put together, smoothed, with where it starts and where God was — is the story his page and his PDF carry; a finished story that is still a list invites him to make it one. v27: one PDF from every Download button — the story first, flowing beginning to end under its three movements, then the road, the plate and the Lower Still page; the plate is fetched before the PDF is made. v26: the Lower Still page after the plate at the end of a finished story's PDF, John's notes set as teaching. v25: after the last map, the Lower Still plate — the road back down, with the act named; the road on the story page; the last line of a finished story; the plate on the last page of the PDF. v24: the map is cumulative and a low answer that is good news is left out; the Numbers 33 chain replaces the between step; short choices on a 3; The Word for It feeling words; Read more under pruning; the story page opens on the newest chapter; his name as byline; one button size) · The Road I Walked · Walk With Me. One file: styles, the ten chapters, the story, the save. Built from the walk-through modules. */(function(){
 
 if(!window.AP_ROAD||window.__apRoadStarted)return;window.__apRoadStarted=1;
@@ -130,7 +130,9 @@ function stdRow(o) {
   return h;
 }
 /* v39.1 · the fixed privacy line, at the foot of every chapter and step screen, under the writing: the first sentence bold, nothing added after the second (story-standard) */
-function footLine() { return '<p class="fixed foot"><b>Nothing you write here reaches us unless you choose to save it with us.</b> Everything else stays on your device.</p>'; }
+function beginSentence() { return (window.APStory && window.APStory.beginSentence) || "Everything you write here is kept as you write it, so nothing is lost. It's yours: no one sees it unless you share it, and you can delete any of it at any time."; }
+/* v40 \u00b7 (integrity-1, Nov 14) the privacy line at the foot of every writing step is the Begin sentence, the same one the story pages carry; the first sentence bold */
+function footLine() { var b = beginSentence(), i = b.indexOf(". ") + 1; return '<p class="fixed foot"><b>' + b.slice(0, i) + '</b> ' + b.slice(i + 1) + '</p>'; }
 /* the way out: his page, in the full window from inside a course frame */
 function pageLink(extra) {
   var C = window.AP_ROAD || {}, inFrame = false; try { inFrame = window.top !== window.self; } catch (e) { inFrame = true; }
@@ -2343,19 +2345,22 @@ if (typeof module !== "undefined") module.exports = TELL;
 
 /* ---- road_site.js ---- */
 /* AP-ROAD-SITE-v1 (v20: AP_ROAD_WHOLE / AP_ROAD_META hooks for a piece such as Where Are You?) · The Road I Walked on ancientpathcoaching.com.
-   Only runs when the page sets window.AP_ROAD. Saves through the shared save (story.js: APStory._submit / latest / signedIn).
-   Nothing is sent until he presses Save. The whole walk is one JSON document split evenly across the form's "walk" questions;
-   the readable story goes in "whole"; where he is goes in "meta". */
+   Only runs when the page sets window.AP_ROAD. v40 (integrity-1, Nov 14, 2026): his words are kept from the first word, as he writes; saving is
+   never his decision. Every keep (on a pause and every few seconds while he writes, and as he speaks) is a new version in our own store
+   (APStory.ledger, story.js 20.1), held on his device until the store's receipt matches; the LearnWorlds save below is the second copy, and
+   opening reads our store first. Signed out, it waits on his device and moves at sign-in. His key rides inside his own snapshot (_vk).
+   The whole walk is one JSON document split evenly across the form's "walk" questions; the readable story goes in "whole"; where he is goes in "meta". */
 (function () {
   var C = window.AP_ROAD; if (!C) return;
   var STASH = "apStoryPending:road", TTL = 30 * 60 * 1000, HELD_TTL = 24 * 60 * 60 * 1000;
+  var BUILD = "AP-ROAD-v40", FORM = "road" + (C.piece ? "-" + String(C.piece).toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 50) : "");
+  var TM = C.timing || {}, K_PAUSE = TM.pause || 1200, K_EVERY = TM.every || 4000, K_SECOND = TM.second === undefined ? 30000 : TM.second, lastSecond = 0, kTimer = null, kBeat = null, keptAt = null, keyP = null, listening = false;
   var lastSeen = "", blocked = false, tHold = null;
   var state = "idle", dirtyFlag = false, typed = false, savedOnce = false, note = "", t5 = null, bar = null, savedAt = null;   /* v39 · savedAt: the time Saved shows as words */
   var startSent = false, finishSent = false, opened = false, keepCounted = false;   /* v36 · the count · v38 keepCounted */
   /* v39.3 · the account line ("Saving puts your story on your page…") is gone from under the row on every step and on Your words (John, Oct 14):
      the door keeps its one Finish sentence; under a row there is nothing but the note (the owner note, or what a press said) and Continue on your phone */
   var W = {
-    landed: "Saved to your page. Everything you write here will be waiting there.",
     unavailable: "Saving is not available right now. Your words are still on this page — use Copy and paste them somewhere safe before you close it.",
     owner: "You are signed in as a site owner. The site keeps an owner's answers only as a preview, so nothing was saved. Sign in as a learner to save.",
     ownerNote: "You are signed in as a site owner. You can write here, but the site keeps an owner's answers only as a preview, so Save will not keep anything. Sign in as a learner to save.",
@@ -2374,9 +2379,64 @@ if (typeof module !== "undefined") module.exports = TELL;
   function stashClear() { try { window.localStorage.removeItem(STASH); } catch (e) {} }
   function holdSoon() { clearTimeout(tHold); tHold = setTimeout(function () { try { if (typed || dirtyFlag) stashSet(APP.snapshot(), false); } catch (e) {} }, 700); }
 
+  /* v40 \u00b7 THE LEDGER. A keep is a new version: his words (the readable story) and his whole place in the walk (the snapshot, as base64url).
+     It waits in the outbox on his device until our store's receipt matches. "Kept" is said only on that receipt. */
+  function led() { var A = api(); return A && A.ledger && A.ledger.note ? A.ledger : null; }
+  function readable() {
+    var text = ""; try { text = window.AP_ROAD_WHOLE ? window.AP_ROAD_WHOLE() : ((typeof TELL !== "undefined" && TELL.whole && TELL.whole()) || ROAD.text(APP.D, "me")); } catch (e) { text = ""; }
+    return String(text || "").replace(/^\[([^\]\n]{1,60})\]\n/gm, function (m, name) { return name.toUpperCase() + "\n\n"; });
+  }
+  /* the words he has typed into the writer that are not in the story yet (a chapter in progress): they are his words, and they are kept */
+  function draftWords(snap) {
+    var out = [], parts = snap && snap.w && typeof snap.w === "object" ? snap.w : null, k, p, i, v, FREE = ["follow", "root", "feelOwn", "setOut", "camped", "discText", "between", "doorText"], ARR = ["t", "o", "o2", "mid"];
+    if (!parts) return "";
+    for (k in parts) { p = parts[k]; if (!p || typeof p !== "object") continue;
+      for (i = 0; i < FREE.length; i++) { v = p[FREE[i]]; if (typeof v === "string" && v.trim()) out.push(v.trim()); }
+      for (i = 0; i < ARR.length; i++) { var a = p[ARR[i]]; if (Array.isArray(a)) a.forEach(function (x) { if (typeof x === "string" && x.trim()) out.push(x.trim()); }); }
+    }
+    return out.join("\n");
+  }
+  function listen() { var L = led(); if (L && !listening) { listening = true; L.on(function (form, v) { if (form === FORM) { keptAt = v.t; paint(); } }); } }
+  /* his key, settled once per page, signed in: adopted from his own record when it is there, else the one on this device, else a new one.
+     Until it is settled nothing is sent (a second device must not write under a key of its own). The read is the LearnWorlds copy. */
+  function settle() {
+    if (keyP) return keyP;
+    var L = led(), A = api(); if (!L || !A) return Promise.reject(new Error("no engine"));
+    keyP = A.latest(C.lw.unit).then(function (latest) {
+      var snap = null, bad = false;
+      if (latest && latest.answers) { try { snap = unpack(latest.answers); } catch (e) { bad = true; } }
+      var k = snap && snap._vk; if (L.validKey(k)) { L.adopt(k); } else { L.ensureVault(); }
+      L.setReady(FORM); listen();
+      return { latest: latest, snap: snap, bad: bad };
+    }, function (err) { keyP = null; if (L.vault()) { L.setReady(FORM); listen(); } throw err; });
+    return keyP;
+  }
+  /* keep this moment as a version; second = also make the quiet LearnWorlds copy (on a pause, not on every beat) */
+  function keepVersion(second) {
+    var L = led(); if (!L) return;
+    var snap, text = readable();
+    try { snap = APP.snapshot(); } catch (e) { return; }
+    var extra = draftWords(snap);
+    if (snap && snap.w) { if (!extra && !(snap.me && snap.me.meCount > 0)) return; text = String(text || "").trim() + (extra ? "\n\n" + extra : ""); }
+    else if (!String(text).trim()) return;
+    var json = "b64." + b64(JSON.stringify(snap));
+    L.note(FORM, { road: json }, text, json);
+    if (!signedIn()) return;
+    settle().then(function () { L.flush(FORM); if (second && !blocked && Date.now() - lastSecond >= K_SECOND) { lastSecond = Date.now(); save(true); } }   /* the second copy, quietly, at most once in half a minute of writing */, function () { L.flush(FORM); });
+  }
+  function scheduleKeep() {
+    clearTimeout(kTimer); kTimer = setTimeout(function () { clearTimeout(kBeat); kBeat = null; keepVersion(true); }, K_PAUSE);
+    if (!kBeat) { kBeat = setTimeout(function () { kBeat = null; keepVersion(false); }, K_EVERY); }
+  }
+  function fromVersion(v) {
+    var a = v && v.answers && v.answers.road; if (typeof a !== "string") return null;
+    try { return JSON.parse(a.indexOf("b64.") === 0 ? unb64(a.slice(4)) : a); } catch (e) { return null; }
+  }
+
   function pack(snap) {
     /* His walk travels as plain letters and digits only (base64url of the JSON), so nothing between here and the form can trim it,
        collapse its spaces, or read any of it as markup. First live failure, Sept 19: what came back did not match what was sent. */
+    var L0 = led(), vk0 = L0 && L0.vault(); if (vk0) { snap._vk = vk0; }   /* v40 \u00b7 his key rides in his own record, so it follows him to any device */
     var json = "b64." + b64(JSON.stringify(snap));
     var ids = C.lw.blocks.walk, n = ids.length, size = Math.ceil(json.length / n) || 1, out = [], i, from = 0, to;
     for (i = 0; i < n; i++) {
@@ -2386,9 +2446,7 @@ if (typeof module !== "undefined") module.exports = TELL;
       out.push({ blockId: ids[i], value: json.slice(from, to) || "-" }); from = to;
     }
     var done = (snap.me && snap.me.meCount) || 0, text = "";
-    try { text = window.AP_ROAD_WHOLE ? window.AP_ROAD_WHOLE() : ((typeof TELL !== "undefined" && TELL.whole && TELL.whole()) || ROAD.text(APP.D, "me")); } catch (e) { text = ""; }
-    /* his page shows the first two lines of "whole" and skips a short first paragraph in capitals: movement names go in that form */
-    text = String(text || "").replace(/^\[([^\]\n]{1,60})\]\n/gm, function (m, name) { return name.toUpperCase() + "\n\n"; });
+    text = readable();   /* his page shows the first two lines of "whole" and skips a short first paragraph in capitals: movement names go in that form */
     if (C.lw.blocks.whole) out.push({ blockId: C.lw.blocks.whole, value: text || " " });
     if (C.lw.blocks.meta) out.push({ blockId: C.lw.blocks.meta, value: JSON.stringify(window.AP_ROAD_META ? window.AP_ROAD_META() : { step: Math.min(done, 9), part: done, of: 10, finished: done >= 10, when: new Date().toISOString() }) });
     return { answers: out, json: json };
@@ -2407,25 +2465,23 @@ if (typeof module !== "undefined") module.exports = TELL;
   function paint() {
     if (!bar) return;
     /* v37 · Speak it: the engine puts Tap and talk and Read it to me on the boxes this screen drew (idempotent; a box gets them once) */
-    try { var A = api(); if (A && A.voice && A.voice.attach) { A.voice.attach(document.getElementById("ap-road-app"), null, { keep: function () { save(true); } }); } } catch (e) {}   /* v38: keep as he speaks */
+    try { var A = api(); if (A && A.voice && A.voice.attach) { A.voice.attach(document.getElementById("ap-road-app"), null, { keep: function () { keepVersion(true); } }); } } catch (e) {}   /* v38: keep as he speaks */
     /* v39 · the row standard: Save is a quiet link while there is something to save; once saved, "Saved · 2:14 PM" as words, never a button */
     var btn = bar.saveBtn, nt = bar.saveNote, sv = bar.savedEl, appEl = document.getElementById("ap-road-app");
-    var saved = state === "saved" && !dirtyFlag, writing = !!(appEl && appEl.querySelector("textarea, input[type=text]"));
+    var saved = state === "saved" && !dirtyFlag, writing = !!(appEl && appEl.querySelector("textarea, input[type=text]")), kept = !!keptAt && signedIn();
     btn.textContent = state === "saving" ? "Saving…" : state === "still" ? "Still saving…" : "Save"; btn.disabled = state === "saving" || state === "still";
-    btn.hidden = saved || !(writing || dirtyFlag || typed);
-    sv.textContent = saved ? savedWords() : ""; sv.hidden = !saved;
-    nt.textContent = note || (typed && savedOnce ? "You have written something that is not saved yet." : ""); nt.hidden = !nt.textContent;
+    /* v40 · his words are kept as he writes; once our store has said so there is one line, "Kept [time]", and no Save to decide on */
+    btn.hidden = saved || kept || !(writing || dirtyFlag || typed);
+    sv.textContent = kept ? keptWords() : ""; sv.hidden = !kept;
+    nt.textContent = note || ""; nt.hidden = !nt.textContent;
     place();
     /* the way out shows beside Saved only where the row's own next step is not his page */
-    var link = bar.saveLink, rowNow = appEl && appEl.querySelector(".aps-row.aps-std"); link.hidden = !(saved && !(rowNow && rowNow.querySelector('[data-page="1"]')));
+    var link = bar.saveLink, rowNow = appEl && appEl.querySelector(".aps-row.aps-std"); link.hidden = !((saved || kept) && !(rowNow && rowNow.querySelector('[data-page="1"]')));
     /* inside a course section the card stands alone: no Save bar under it unless something is waiting to be saved or said */
     if (C.course) bar.hidden = !!document.querySelector("#ap-road-app .coursecard") && !dirtyFlag && !typed && !note;
   }
-  function savedWords() {
-    var d = savedAt instanceof Date && !isNaN(savedAt) ? savedAt : null; if (!d) return "Saved";
-    var now = new Date(), sameDay = d.toDateString() === now.toDateString();
-    try { return "Saved · " + (sameDay ? d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) : d.toLocaleDateString("en-US", { month: "short", day: "numeric" })); } catch (e) { return "Saved"; }
-  }
+  /* v40 · "Kept 2:14 PM" in his own time zone (the day when it is not today), said only when our store's receipt matched */
+  function keptWords() { var A = api(), w = ""; try { w = A && A.savedWhen ? A.savedWhen(keptAt) : ""; } catch (e) {} return "Kept" + (w ? " " + w : ""); }
   /* v39 · the row standard (story.js v19.2): the screen draws its row through APStory.row; the save bar puts Save (a quiet link), Your page
      and the Saved words into the row's middle, and the note, "Continue on your phone" and its box on the line under the row. */
   function place() {
@@ -2442,8 +2498,8 @@ if (typeof module !== "undefined") module.exports = TELL;
   function openSignIn() {
     try { if (window.l_settings && typeof window.l_settings === "object") window.l_settings.redirectUrl = window.location.pathname + window.location.search; } catch (e) {}
     var el = C.signInSelector ? document.querySelector(C.signInSelector) : null;
-    if (el) { el.click(); set("idle", "Sign in, and you will come straight back here. Your words are held on this device for the next half hour."); }
-    else set("idle", "Sign in from the top of this page, then come back here and press Save. Your words are held on this device for the next half hour.");
+    if (el) { el.click(); set("idle", "Sign in, and you will come straight back here. Your words are held on this device."); }
+    else set("idle", "Sign in from the top of this page, then come back here and press Save. Your words are held on this device.");
   }
   function save(quiet) {
     if (state === "saving" || state === "still") return;
@@ -2454,7 +2510,11 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (!api()) { set("idle", W.unavailable); return; }
     var snap = APP.snapshot();
     if (!signedIn()) { if (!stashSet(snap, true)) { set("idle", W.unavailable); return; } typed = false; /* his words are held on this device; no "leave this page?" box on the way to sign in */ openSignIn(); return; }
+    if (!quiet) { keepVersion(false); }   /* v40 · a Save he presses is a keep too: the store has it before LearnWorlds is asked */
+    var Lk = led();
+    if (Lk && !keyP) { settle().then(function () { save(quiet); }, function () { if (!quiet) { set("idle", W.failed("The connection dropped or the site did not answer.")); } }); return; }   /* his key first: a save must carry it */
     var p = pack(snap);
+    if (quiet && p.json === lastSeen) { return; }   /* v40 · nothing new since the last copy on LearnWorlds */
     set("saving", ""); clearTimeout(t5); t5 = setTimeout(function () { if (state === "saving") set("still"); }, 5000);
     /* The site confirms the save itself (_submit rejects unless it answers "submitted"). Then read it back. The read can lag a moment
        behind the save, so look up to four times; an older save coming back is lag, not loss. Anything else is a real mismatch, and
@@ -2501,17 +2561,30 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (!signedIn()) { if (pending) { restore(pending); dirtyFlag = true; typed = !held.press; } done(); return; }
     if (pending && held.press) { restore(pending); done(); save(); return; }
     if (owner()) note = W.ownerNote;
-    api().latest(C.lw.unit).then(function (latest) {
-      var snap = null;
+    /* v40 · his newest words: whatever waits on this device if it is newer, else our store's newest, else the LearnWorlds copy (the newest
+       finished save, never an open attempt: story.js 20.1). Words that came from LearnWorlds only are copied into our store at once. */
+    var L = led(), fromLw = false;
+    var first = L ? settle() : api().latest(C.lw.unit).then(function (latest) { var sn = null, bad = false; if (latest && latest.answers) { try { sn = unpack(latest.answers); } catch (e) { bad = true; } } return { latest: latest, snap: sn, bad: bad }; });
+    first.then(function (r) {
+      var latest = r.latest, snap = r.snap;
       if (latest && latest.answers) { opened = true; }   /* v36: a save on the site, readable or not, means this piece was started before */
-      try { snap = latest && latest.answers ? unpack(latest.answers) : null; }
-      catch (e) { note = "Your last save could not be read, so this page is starting fresh. If you save here, it replaces that save."; return; }
-      /* v32 · words he typed here and did not save come back, unless he saved something newer since (on this device or another) */
-      var when = latest && latest.when ? Date.parse(latest.when) : 0;
-      if (pending && !(when && when > held.t)) { restore(pending); savedOnce = !!snap; dirtyFlag = true; typed = true; again = true; return; }
-      if (pending) stashClear();
-      if (snap) { restore(snap); savedOnce = true; state = "saved"; savedAt = when ? new Date(when) : null; }
-    }).catch(function () { blocked = true; note = "Your saved words could not be loaded just now. Reload the page before you write. Nothing can be saved until they load, so nothing is written over."; }).then(function () { done(); if (again) save(); });
+      return (L ? L.flush(FORM).then(function () { return L.latest(FORM); }).then(null, function () { return null; }) : Promise.resolve(null)).then(function (v) {
+        var waiting = L ? L.outbox(FORM) : [], tail = waiting.length ? waiting[waiting.length - 1] : null;
+        var pick = tail && (!v || tail.t >= v.t) ? tail : v, ps = pick ? fromVersion(pick) : null;
+        if (!ps && r.bad) { note = "Your last save could not be read, so this page is starting fresh. If you save here, it replaces that save."; return; }
+        var when = ps ? pick.t : (latest && latest.when ? Date.parse(latest.when) : 0), use = ps || snap;
+        if (ps && pick === v) { keptAt = v.t; }
+        /* v32 · words he typed here and did not save come back, unless he saved something newer since (on this device or another) */
+        if (pending && !(when && when > held.t)) { restore(pending); savedOnce = !!use; dirtyFlag = true; typed = true; again = true; return; }
+        if (pending) stashClear();
+        if (use) { opened = true; restore(use); savedOnce = true; state = "saved"; savedAt = when ? new Date(when) : null; if (!ps) { fromLw = true; } }
+      });
+    }).catch(function () {
+      /* the LearnWorlds copy could not be read: our store may still have his words */
+      var L2 = led();
+      if (!L2) { blocked = true; note = "Your saved words could not be loaded just now. Reload the page before you write. Nothing can be saved until they load, so nothing is written over."; return; }
+      return L2.latest(FORM).then(function (v) { var ps = v ? fromVersion(v) : null; if (!ps) { throw new Error("none"); } keptAt = v.t; opened = true; restore(ps); savedOnce = true; state = "saved"; savedAt = new Date(v.t); }).catch(function () { blocked = true; note = "Your saved words could not be loaded just now. Reload the page before you write. Nothing can be saved until they load, so nothing is written over."; });
+    }).then(function () { done(); if (fromLw) { keepVersion(false); } if (again) save(); });
     var again = false;
   }
   function mountBar() {
@@ -2526,7 +2599,7 @@ if (typeof module !== "undefined") module.exports = TELL;
     if (C.course || inFrame()) { a.target = "_top"; }
     bar.saveBtn = bar.querySelector("[data-site=save]"); bar.saveLink = a; bar.saveNote = bar.querySelector(".savenote"); bar.savedEl = bar.querySelector(".aps-saved");
     bar.handLink = bar.querySelector(".handofflink"); bar.handBox = bar.querySelector(".handoffbox");
-    host.appendChild(bar);
+    host.appendChild(bar); listen();
     bar.saveBtn.addEventListener("click", function () { save(); });
     /* v37 · Continue on your phone (a desk only): save what he has, then the square code that opens this piece where he left off */
     (function () {
@@ -2546,14 +2619,14 @@ if (typeof module !== "undefined") module.exports = TELL;
     host.addEventListener("input", function (e) { var t = e.target; if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT")) {
       /* v36 · the count: the first words into a piece that had no save and nothing held on this device */
       if (!startSent && !opened && !savedOnce) { startSent = true; try { if (api() && api().track) { api().track("story_start", C.piece || "road"); } } catch (e2) {} }
-      typed = true; if (state === "saved") { note = ""; } paint(); holdSoon(); } });
+      typed = true; if (state === "saved") { note = ""; } paint(); holdSoon(); scheduleKeep(); } });
   }
   function inFrame() { try { return window.top !== window.self; } catch (e) { return true; } }
   window.AP_ROAD_SITE = {
-    load: load, save: save, paint: paint,
-    dirty: function () { dirtyFlag = true; if (state === "saved") note = ""; paint(); holdSoon(); },
+    load: load, save: save, paint: paint, keep: keepVersion,
+    dirty: function () { dirtyFlag = true; if (state === "saved") note = ""; paint(); holdSoon(); scheduleKeep(); },
     erased: function () { stashClear(); typed = false; if (savedOnce && signedIn()) save(); else { dirtyFlag = false; paint(); } },
-    _pack: pack, _unpack: unpack
+    build: BUILD, _pack: pack, _unpack: unpack
   };
 })();
 
@@ -2915,7 +2988,7 @@ window.AP_WHERE = WHERE;
         stdRow({ next: { text: "Your words", attrs: 'data-do="readstory"' }, quiet: [pageLink()] }) +
         '<p class="quiet">To change anything you wrote, open Your words and tap the line.' + (n < all ? ' When you are ready, go on to the next section with "next" at the top of this page.' : '') + '</p>';
     } else {
-      h += '<p class="fixed">Before you go on, take five minutes. Answer five statements honestly and write a few sentences. <b>When you press Finish, this chapter is saved to your page — yours to read, change or delete. Ancient Path reads only what you choose to publish.</b></p>';
+      h += '<p class="fixed">Before you go on, take five minutes. Answer five statements honestly and write a few sentences. <b>' + beginSentence().slice(0, beginSentence().indexOf(". ") + 1) + '</b> ' + beginSentence().slice(beginSentence().indexOf(". ") + 2) + '</p>';
       if (n < here) h += '<p class="say">Your story is written in order, and your next chapter is ' + esc(next.part + " · " + next.name) + '. Write that one first. Then come back here for ' + esc(me.part) + '.</p>';
       h += (under ? '<p class="state"><b>In progress</b> — Pick up where you left off</p>' : "") +
         stdRow({ next: { text: under ? "Pick up where you left off" : n ? "Begin " + esc(next.part.toLowerCase().replace("part", "chapter")) : "Begin", attrs: 'data-do="pickup"' }, quiet: (n ? [{ text: "Your words", attrs: 'data-do="readstory"' }] : []).concat([pageLink()]) }) + ROAD.paperLine();
@@ -2925,7 +2998,7 @@ window.AP_WHERE = WHERE;
 
   function minePage(chs) {
     var n = chs.length, all = D.chapters.length, next = ROAD_PARTS[n], h = '<div class="sheet"><div class="eyebrow">' + (SITE ? "The Road I Walked" : "Your page") + '</div><h1>Welcome' + (n ? " back" : "") + '.</h1>' +
-      '<p class="fixed">This one is yours. Write a chapter after each section of the course, and watch your story grow. ' + (SITE ? '<b>When you press Finish, the chapter is saved to your page — yours to read, change or delete. Ancient Path reads only what you choose to publish. You’ll be asked to sign in the first time.</b>' : 'What you write here is kept with your Claude account, private to you.') + '</p>' +
+      '<p class="fixed">This one is yours. Write a chapter after each section of the course, and watch your story grow. ' + (SITE ? '<b>' + beginSentence().slice(0, beginSentence().indexOf(". ") + 1) + '</b> ' + beginSentence().slice(beginSentence().indexOf(". ") + 2) : 'What you write here is kept with your Claude account, private to you.') + '</p>' +
       '<div class="cards"><article class="card main"><div class="eyebrow">Walk With Me</div><h2>' + esc(D.title) + '</h2>';
     var under = SITE && n < all && WRITER.begun && WRITER.begun(n);
     /* v39 · one next step on the card: Begin, Pick up where you left off, or Your words once it is finished; the quiet things beside it */

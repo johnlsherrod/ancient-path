@@ -1,5 +1,12 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v20.0
+   AP-STORY-MODULE-v20.1
+
+   v20.1 (14 Nov 2026) — integrity-1, the build John pushes: the engine of v20.0 stands as written, proved by tests/test-story-v20.1.js (52 checks:
+     kept on a pause and every few seconds, nothing overwrites, a dropped connection / closed tab / store down loses nothing, newest from our store
+     with LearnWorlds second and never an open attempt, signed out then signed in, his key riding in his own record, the one line and the Begin
+     sentence). One addition for the Road: LEDGER.note takes an optional `sig`, so a piece whose place in the walk is part of what is kept can say
+     what "the same version" means (road.js v40). What moves to our own platform as it is: this whole ledger and the story-keep store. What is
+     rebuilt there: the LearnWorlds second copy and the key's seat in his LearnWorlds record (the platform's own account holds the key).
 
    v20.0 (14 Nov 2026) — integrity-1: his words are kept from the first word, as he writes; saving is never his decision (John, Nov 14).
      1. KEPT AS HE WRITES. Every writing box keeps his words on a pause (1.2 s) and every few seconds while he keeps going (4 s), and as he
@@ -626,11 +633,11 @@
     function keptFp(form) { return lsGet(KEPT_KEY + ":" + form) || ""; }
     function newId() { return String(Date.now()) + "-" + ("000000" + Math.floor(Math.random() * 1e6)).slice(-6); }
     /* a new version, unless it is the words already last kept or last waiting */
-    function note(form, answers, text) {
+    function note(form, answers, text, sig) {   /* v20.1 · sig: what "the same version" means when the words are not all of it (the Road's place in his walk) */
       text = String(text || ""); if (!text) { return null; }
-      var b = box(form), tail = b.length ? b[b.length - 1] : null, f = fp(text);
-      if (tail ? tail.fp === f : keptFp(form) === f) { return null; }
-      var v = { id: newId(), t: Date.now(), text: text, answers: answers, fp: f };
+      var b = box(form), tail = b.length ? b[b.length - 1] : null, f = fp(text), g = sig ? fp(sig) : f;
+      if (tail ? (tail.sg || tail.fp) === g : keptFp(form) === g) { return null; }
+      var v = { id: newId(), t: Date.now(), text: text, answers: answers, fp: f, sg: g };
       b.push(v); putBox(form, b); return v;
     }
     function markKept(form, text) { lsSet(KEPT_KEY + ":" + form, fp(text)); }
@@ -656,7 +663,7 @@
         return post({ op: "keep", vk: vk, form: form, id: v.id, t: v.t, text: v.text, answers: v.answers }).then(function (r) {
           if (r.id !== v.id || r.fp !== v.fp) { throw new Error("the receipt did not match"); }
           var cur = box(form).filter(function (x) { return x.id !== v.id; }); putBox(form, cur);
-          markKept(form, v.text);
+          lsSet(KEPT_KEY + ":" + form, v.sg || v.fp);
           for (var i = 0; i < listeners.length; i++) { try { listeners[i](form, v); } catch (e) {} }
           return next();
         });
@@ -2757,8 +2764,8 @@
         VOICE_NOTE_DONE = true;
         var dev = touch ? "Your phone" : "Your computer";
         var note = el("p", "aps-voice-note", signedIn()
-          ? dev + " turns your voice into words, and they are saved to your page as you speak."
-          : dev + " turns your voice into words. Nothing is saved until you press Save.");
+          ? dev + " turns your voice into words, and they are kept as you speak."
+          : dev + " turns your voice into words. They stay on this device, and move to your page when you sign in.");   /* v20.1: the publish gate caught "Nothing is saved until you press Save", false since v20 */
         var after = node.nextSibling; node.parentNode.insertBefore(note, after && after.nextSibling ? after.nextSibling : null);
       }
       if (mounted || (TTS && ask)) { done++; }
@@ -3045,7 +3052,7 @@
   };
 
   window.APStory = {
-    version: "20.0",
+    version: "20.1",
     assistant: ASSIST,
     row: ROW,   /* v19.2: the row standard every piece draws its foot rows through */
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
