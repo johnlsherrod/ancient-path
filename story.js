@@ -1,5 +1,22 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v20.1
+   AP-STORY-MODULE-v20.2
+
+   v20.2 (14 Nov 2026) — a save never takes a piece away on his page (John, Nov 14: the card on Your Page showed what a later save had left, not
+     what he had written). Built on v20.1 (the Story Ledger), which stands as written. The ledger keeps every version in our store, but Your Page
+     reads the LearnWorlds copy, and that copy keeps only the newest. Two men lost work there: a 2,553-character piece was replaced three minutes
+     later by a 121-character note (Nov 11, 1:57 PM to 2:00 PM), and a lament written to step 8 of 9 was replaced by a save at step 0. So, before
+     any signed-in write to LearnWorlds, the engine looks at the piece already on his page; when the new piece would hold less than half of the
+     earlier piece's three-word runs (much shorter, or a different piece), the earlier piece is kept in the same record as an earlier version,
+     with its own time and its own answers, and carried forward by every later write. Every form, with no new question to add in LearnWorlds and
+     no change to any page's own script: the versions ride inside the record the form already keeps (its answers JSON when it has one, else its
+     meta question), as `earlier`, five at most (when a sixth comes the shortest goes, never the newest). A form that keeps a history list does
+     not keep the same words twice. A piece shorter than twelve words is a first line and is never kept; the same words are never kept twice.
+     One read of his page before the first write of a sitting, and before every Save he presses; a keep as he writes uses what that read (and
+     the last write) showed, so the every-few-seconds keeps add no reads. If the read fails the write does not run and says so (his words stay on
+     the page and wait in our store's outbox), because a write that cannot see what is on his page cannot protect it. Opening one with
+     ?open=<id> works for an earlier version as for a history entry. APStory.earlierFor(unit, blocks) reads them for a page. Counted:
+     story_earlier (the form's name only, nothing he wrote).
+     Moves to the platform as it is: all of it (a piece's earlier versions are a list on the piece's record). Rebuilt there: nothing.
 
    v20.1 (14 Nov 2026) — integrity-1, the build John pushes: the engine of v20.0 stands as written, proved by tests/test-story-v20.1.js (52 checks:
      kept on a pause and every few seconds, nothing overwrites, a dropped connection / closed tab / store down loses nothing, newest from our store
@@ -569,6 +586,108 @@
   }
 
   /* ======================================================================
+     1c. EARLIER VERSIONS — a save never takes a piece away (v20.2)
+     ------------------------------------------------------------------
+     A save sends the whole piece, and LearnWorlds keeps only the newest. So before a signed-in save the engine reads what is on his
+     page and asks one question: does the new piece still hold what the earlier one said? Measured in three-word runs (a run is three
+     words in a row, lower-cased, with his own words only: not the form's closing line, not its meta). If the new piece holds fewer
+     than half of the earlier piece's runs, it is much shorter or a different piece, and the earlier piece is kept:
+       { id, when, kept, text, answers }   (when = when he saved it; kept = when the engine set it aside)
+     in `earlier` inside the record the form already keeps: the answers JSON when the form has one, else the meta question. Five at most; when
+     a sixth comes, the shortest goes (the long piece a man wrote is the one to protect), never the newest. Every save carries the list forward (a save that left it out would delete it), so the list is read on every signed-in save.
+     ====================================================================== */
+  var EARLIER_KEEP = 5;          /* at most five earlier versions stay in the record */
+  var EARLIER_MIN_WORDS = 12;    /* shorter than this is a first line, not yet a piece */
+  var EARLIER_HELD = 0.5;        /* the new piece must still hold this share of the earlier piece's runs */
+
+  function ownWords(cfg, answers) {
+    var out = [], i, f, v;
+    for (i = 0; i < cfg.fields.length; i++) {
+      f = cfg.fields[i]; if (f.key === "meta") { continue; }
+      v = answers ? answers[f.key] : null;
+      if (typeof v === "string" && v.trim()) { out.push(v.trim()); }
+    }
+    return out.join(" ");
+  }
+  function runsOf(text) {
+    var w = String(text || "").toLowerCase().match(/[a-z0-9\u2019']+/g) || [], list = [], i;
+    for (i = 0; i + 2 < w.length; i++) { list.push(w[i] + " " + w[i + 1] + " " + w[i + 2]); }
+    return { words: w.length, list: list };
+  }
+  /* does saving `now` over `before` lose most of what `before` said? */
+  function losesMost(cfg, before, now) {
+    var e = runsOf(ownWords(cfg, before));
+    if (e.words < EARLIER_MIN_WORDS || !e.list.length) { return false; }
+    var n = {}, kept = 0, i, list = runsOf(ownWords(cfg, now)).list;
+    for (i = 0; i < list.length; i++) { n[list[i]] = 1; }
+    for (i = 0; i < e.list.length; i++) { if (n[e.list[i]]) { kept++; } }
+    return kept / e.list.length < EARLIER_HELD;
+  }
+  /* the answers a saved piece holds, as {key: text}: the answers JSON first, then any question the form keeps for a single part */
+  function answersFromRaw(cfg, raw) {
+    var a = {}, blocks = cfg.lw.blocks, i, f;
+    if (blocks.json && typeof raw[blocks.json] === "string") {
+      try {
+        var j = JSON.parse(raw[blocks.json]);
+        for (i = 0; i < cfg.fields.length; i++) {
+          f = cfg.fields[i];
+          if (j && typeof j[f.key] === "string") { a[f.key] = j[f.key]; }
+        }
+      } catch (e) {}
+    }
+    for (i = 0; i < cfg.fields.length; i++) {
+      f = cfg.fields[i];
+      if (blocks[f.key] && typeof raw[blocks[f.key]] === "string") { a[f.key] = raw[blocks[f.key]]; }
+    }
+    return a;
+  }
+  /* where the list rides: the answers JSON when the form has one, else its meta question; "" when it has neither (then nothing is kept) */
+  function carrierOf(cfg) { var b = cfg.lw.blocks; return b.json ? "json" : (b.meta ? "meta" : ""); }
+  function readEarlier(cfg, raw) {
+    var c = carrierOf(cfg), v;
+    if (!c || !raw || typeof raw[cfg.lw.blocks[c]] !== "string") { return []; }
+    try { v = JSON.parse(raw[cfg.lw.blocks[c]]); } catch (e) { return []; }
+    return (v && Array.isArray(v.earlier) ? v.earlier : []).filter(function (e) { return e && typeof e === "object" && typeof e.text === "string" && e.text; });
+  }
+  function shortestOf(list) {
+    var at = 0, least = Infinity, i, n;
+    for (i = 0; i < list.length - 1; i++) { n = runsOf(list[i].text).words; if (n < least) { least = n; at = i; } }   /* the last one is the newest: never chosen */
+    return at;
+  }
+  function holds(list, text) {
+    for (var i = 0; i < list.length; i++) { if (list[i] && list[i].text === text) { return true; } }
+    return false;
+  }
+  /* the list a save carries: what the page already holds, plus the piece this save would replace when it would be lost */
+  function earlierFor(cfg, latest, answers, document) {
+    var raw = (latest && latest.answers) || {}, list = readEarlier(cfg, raw), c = carrierOf(cfg), added = false;
+    if (!c) { return { list: [], added: false }; }
+    var text = typeof raw[cfg.lw.blocks.whole] === "string" ? raw[cfg.lw.blocks.whole] : "";
+    var before = answersFromRaw(cfg, raw);
+    if (!text) { text = document(before) || ""; }
+    var hist = cfg.lw.blocks.history ? parseHistoryList(raw[cfg.lw.blocks.history]) : [];
+    if (text && losesMost(cfg, before, answers) && !holds(list, text) && !holds(hist, text)) {
+      var ms = whenMs(latest && latest.when);
+      list = list.concat([{ id: newEntryId(), when: isNaN(ms) ? null : new Date(ms).toISOString(), kept: new Date().toISOString(), text: text, answers: before }]);
+      while (list.length > EARLIER_KEEP) { list.splice(shortestOf(list), 1); }   /* the shortest goes, the newest never */
+      added = true;
+    }
+    return { list: list, added: added };
+  }
+  /* the value a save writes for the carrier question, with the list in it (and out of it when there is none) */
+  function withEarlierJSON(answers, list) {
+    var o = {}, k; for (k in answers) { if (Object.prototype.hasOwnProperty.call(answers, k)) { o[k] = answers[k]; } }
+    if (list && list.length) { o.earlier = list; }
+    return o;
+  }
+  function withEarlierMeta(raw, list) {
+    if (!list || !list.length) { return raw; }
+    var m = {}; try { m = JSON.parse(raw || "{}") || {}; } catch (e) { m = {}; }
+    m.earlier = list;
+    return lwJSON(m);
+  }
+
+  /* ======================================================================
      2. THE STASH — words waiting on sign-in
      ------------------------------------------------------------------
      Sign-in reloads the page (or lands him elsewhere first). The words
@@ -876,11 +995,15 @@
   /* Map answers onto the form's blocks. `blocks` in the config maps each
      field key to its LearnWorlds question, plus `whole` for the assembled
      piece — so LearnWorlds' own view of a saved lament reads as a lament. */
-  Story.prototype.toBlocks = function (answers, extraBlock) {
-    var lw = this.cfg.lw, out = [];
+  Story.prototype.toBlocks = function (answers, extraBlock, earlier) {
+    var lw = this.cfg.lw, out = [], metaCarries = carrierOf(this.cfg) === "meta";
     for (var i = 0; i < this.cfg.fields.length; i++) {
       var f = this.cfg.fields[i];
-      if (lw.blocks[f.key]) { out.push({ blockId: lw.blocks[f.key], value: answers[f.key] || "" }); }
+      if (lw.blocks[f.key]) {
+        var fv = answers[f.key] || "";
+        if (metaCarries && f.key === "meta") { fv = withEarlierMeta(fv, earlier); }   /* v20.2: the earlier versions ride in the meta question when the form has no answers JSON */
+        out.push({ blockId: lw.blocks[f.key], value: fv });
+      }
     }
     if (lw.blocks.whole) { out.push({ blockId: lw.blocks.whole, value: this.document(answers) }); }
     /* v4: one question can hold every answer as JSON, so a form with many
@@ -889,7 +1012,7 @@
        unit has one, else "_vk" inside the answers JSON (the form's own fields ignore it). A form with neither keeps its key on the device. */
     var vk = LEDGER.ensureVault();
     if (lw.blocks.vault) { out.push({ blockId: lw.blocks.vault, value: vk }); }
-    if (lw.blocks.json) { var jsonAnswers = {}, jk; for (jk in answers) { if (Object.prototype.hasOwnProperty.call(answers, jk)) { jsonAnswers[jk] = answers[jk]; } } if (!lw.blocks.vault) { jsonAnswers._vk = vk; } out.push({ blockId: lw.blocks.json, value: lwJSON(jsonAnswers) }); }
+    if (lw.blocks.json) { var jsonAnswers = {}, jk; for (jk in answers) { if (Object.prototype.hasOwnProperty.call(answers, jk)) { jsonAnswers[jk] = answers[jk]; } } if (!lw.blocks.vault) { jsonAnswers._vk = vk; } if (earlier && earlier.length) { jsonAnswers.earlier = earlier; } out.push({ blockId: lw.blocks.json, value: lwJSON(jsonAnswers) }); }   /* v20.2: earlier versions ride here */
     /* v6: the history array, when this form keeps one — computed by the
        caller (save()) before toBlocks is called, just carried across. */
     if (extraBlock) { out.push(extraBlock); }
@@ -937,16 +1060,26 @@
     ui.working();
     var slow = window.setTimeout(function () { ref.ui.stillWorking(); }, SLOW_AT);
 
-    var historyBlock = this.cfg.lw.blocks.history;
+    var historyBlock = this.cfg.lw.blocks.history, carrier = carrierOf(this.cfg);
     var gate = this._vkp || window.Promise.resolve(null);   /* v20: his key is settled (adopted from his record, or made) before anything is written to it */
-    var readFirst = historyBlock
-      ? gate.then(function () { return lwLatest(self.cfg.lw.unit); }).then(function (latest) { return (latest && latest.answers) || {}; })
+    /* v20.2: every signed-in form looks at what is on his page before it writes (the earlier versions must be carried, and the piece about to be replaced must be seen).
+       A keep as he writes reuses what the last read or write showed; the first write of a sitting, and every Save he presses, read. */
+    var readFirst = (historyBlock || carrier)
+      ? gate.then(function () {
+          if (ref.quiet && self._lwSeen) { return self._lwSeen; }
+          return lwLatest(self.cfg.lw.unit).then(function (latest) { return latest || { answers: {}, when: null }; });
+        })
       : gate.then(function () { return null; });
 
     readFirst
-      .then(function (rawByBlockId) {
-        var extraBlock = null, newEntryId = null;
-        if (rawByBlockId) {
+      .then(function (latest) {
+        var rawByBlockId = latest ? (latest.answers || {}) : null, extraBlock = null, newEntryId = null, earlier = null;
+        if (rawByBlockId && carrier) {
+          var kept = earlierFor(self.cfg, latest, answers, function (a) { return self.document(a); });
+          earlier = kept.list;
+          if (kept.added) { track("story_earlier", self.cfg.form); }
+        }
+        if (rawByBlockId && historyBlock) {
           if (isFinishedSave(self.cfg, rawByBlockId, answers)) {
             var priorList = parseHistoryList(rawByBlockId[historyBlock]);
             var entryAnswers = {};
@@ -961,7 +1094,9 @@
             extraBlock = { blockId: historyBlock, value: lwJSON(parseHistoryList(rawByBlockId[historyBlock])) };
           }
         }
-        return lwSubmit(self.cfg.lw.unit, self.toBlocks(answers, extraBlock)).then(function (sub) {
+        var blocks = self.toBlocks(answers, extraBlock, earlier);
+        return lwSubmit(self.cfg.lw.unit, blocks).then(function (sub) {
+          if (carrier) { var wrote = {}; blocks.forEach(function (b) { wrote[b.blockId] = b.value; }); self._lwSeen = { answers: wrote, when: Date.now() }; }   /* v20.2: what his page now holds */
           return { sub: sub, newEntryId: newEntryId };
         });
       })
@@ -984,7 +1119,7 @@
       })
       .catch(function (err) {
         window.clearTimeout(slow);
-        self.busy = false; self._saving = null;
+        self.busy = false; self._saving = null; self._lwSeen = null;   /* v20.2: whether the write landed is not known: the next one reads */
         var why = (err && err.serviceError) ? err.message : "The connection dropped.";
         ref.ui.fail("It did not save. " + why + " Your words are still here — nothing has been lost. Try again, or copy them before you close the page.");
         if (self._again) { var u2 = self._again; self._again = null; self.save(u2); }
@@ -1103,17 +1238,21 @@
     this._opened = true;   /* v16: opening a saved piece is not a start */
     var self = this;
     var historyBlock = this.cfg.lw.blocks.history;
-    if (!historyBlock) { return window.Promise.resolve(null); }
+    if (!historyBlock && !carrierOf(this.cfg)) { return window.Promise.resolve(null); }
     var untouched = interactEpoch;
     return (this._vkp || this.resolveKey()).then(function (latest) {
       if (!latest && self._lwFailed) { throw new Error("his saved piece could not be read"); }
       var raw = (latest && latest.answers) || {};
-      var list = parseHistoryList(raw[historyBlock]);
-      var entry = null, i;
+      var list = historyBlock ? parseHistoryList(raw[historyBlock]) : [];
+      var entry = null, i, isEarlier = false;
       for (i = 0; i < list.length; i++) { if (list[i] && list[i].id === entryId) { entry = list[i]; break; } }
+      if (!entry) {   /* v20.2: an earlier version the engine set aside */
+        list = readEarlier(self.cfg, raw);
+        for (i = 0; i < list.length; i++) { if (list[i] && list[i].id === entryId) { entry = list[i]; isEarlier = true; break; } }
+      }
       if (!entry) { return null; }
       self.fill(entry.answers || {});
-      self.openEntryId = entry.id;
+      self.openEntryId = isEarlier ? null : entry.id;   /* an earlier version is not a history entry: a finished save from it starts its own */
       self.markReturned(entry.when);   /* v19.3 */
       onArrival(function () { seekTo(self.host(), {}); }, untouched);
       return entry;
@@ -1157,21 +1296,9 @@
   Story.prototype.applyLatest = function (latest, untouched) {
     var self = this;
     {
-      var a = {}, blocks = self.cfg.lw.blocks, i, f;
-      /* v4: the JSON question, when the form has one, carries every answer. */
-      if (blocks.json && typeof latest.answers[blocks.json] === "string") {
-        try {
-          var j = JSON.parse(latest.answers[blocks.json]);
-          for (i = 0; i < self.cfg.fields.length; i++) {
-            f = self.cfg.fields[i];
-            if (j && typeof j[f.key] === "string") { a[f.key] = j[f.key]; }
-          }
-        } catch (e) {}
-      }
-      for (i = 0; i < self.cfg.fields.length; i++) {
-        f = self.cfg.fields[i];
-        if (blocks[f.key] && typeof latest.answers[blocks[f.key]] === "string") { a[f.key] = latest.answers[blocks[f.key]]; }
-      }
+      var blocks = self.cfg.lw.blocks;
+      /* v4: the JSON question, when the form has one, carries every answer. v20.2: one reader (answersFromRaw) for this and the earlier-version check. */
+      var a = answersFromRaw(self.cfg, latest.answers);
       self.fill(a);
       /* v6: opening "the latest" this way is opening the newest history
          entry too, when this form keeps one — so a save right after
@@ -3052,7 +3179,7 @@
   };
 
   window.APStory = {
-    version: "20.1",
+    version: "20.2",
     assistant: ASSIST,
     row: ROW,   /* v19.2: the row standard every piece draws its foot rows through */
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
@@ -3079,6 +3206,13 @@
       return lwLatest(unit).then(function (latest) {
         var raw = (latest && latest.answers) || {};
         return parseHistoryList(raw[historyBlockId]);
+      });
+    },
+
+    /* v20.2: the earlier versions the engine set aside for one form, newest last: [{ id, when, kept, text, answers }]. Resolves to [] when there are none. */
+    earlierFor: function (unit, blocks) {
+      return lwLatest(unit).then(function (latest) {
+        return readEarlier({ lw: { blocks: blocks || {} } }, (latest && latest.answers) || {});
       });
     },
 
