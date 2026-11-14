@@ -1,5 +1,23 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v19.4
+   AP-STORY-MODULE-v20.0
+
+   v20.0 (14 Nov 2026) — integrity-1: his words are kept from the first word, as he writes; saving is never his decision (John, Nov 14).
+     1. KEPT AS HE WRITES. Every writing box keeps his words on a pause (1.2 s) and every few seconds while he keeps going (4 s), and as he
+        speaks (the voice's own beat), to a store of our own (Supabase, through the story-keep function) and on his device.
+     2. NOTHING OVERWRITES. Each keep is a new version he can bring back (APStory.ledger.versions / story.bringBack). A version is never
+        replaced or erased.
+     3. A DROPPED CONNECTION OR A CLOSED TAB LOSES NOTHING. A version waits in an outbox on his device until our store's receipt (its id and a
+        fingerprint of the words) matches what was sent; it goes when he is back (online, the page reopening, the tab returning).
+     4. EVERY PAGE READS HIS NEWEST WORDS FROM OUR STORE, with LearnWorlds as the second copy, and NEVER an open, unfinished attempt: the old
+        lwLatest read only the latest attempt and, when that was open, found nothing — the lost stories. It now reads the newest FINISHED save.
+     5. SIGNED OUT, his words stay on his device and move to his page at sign-in.
+     6. THE PAGE SHOWS ONE LINE: "Kept [time]", in HIS time zone (the Oct 1 Central-time ruling is replaced), only after the store's receipt
+        matches (or, for a Save he pressed, after LearnWorlds confirms the second copy). The privacy line at the foot of every writing page is
+        now the Begin sentence, and "Save and stop for now" reads "Stop for now".
+     7. WHO HE IS. LearnWorlds cannot prove it, so the store is keyed by a long random key, not by him. The key is on his device and, once he is
+        signed in, in his own LearnWorlds record (a vault question, cfg.lw.blocks.vault, or "_vk" inside the answers JSON), so it follows him.
+        Nobody at Ancient Path can look a man up or read his words. Counts only (gtag), never words; no alert to anyone about how anyone writes.
+
 
    v19.4 (12 Nov 2026) — the return view, second cut. v19.3 left out every form that keeps a history block; all four Your Story pages
      keep one, so it would have been off on the pages that need it. Now it applies to every form. A page opts out with
@@ -412,7 +430,7 @@
   }
   function centralParts(ms) {
     try {
-      var parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", weekday: "long", year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }).formatToParts(new Date(ms));
+      var parts = new Intl.DateTimeFormat("en-US", { weekday: "long", year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }).formatToParts(new Date(ms));
       var o = {}, i;
       for (i = 0; i < parts.length; i++) { o[parts[i].type] = parts[i].value; }
       return (o.hour && o.minute && o.dayPeriod) ? o : null;
@@ -428,18 +446,32 @@
     return p.weekday + ", " + p.month + " " + p.day + (p.year !== n.year ? ", " + p.year : "") + ", " + time;
   }
 
-  /* The latest piece a man saved to this form, as {blockId: value}. */
+  /* The newest FINISHED piece a man saved to this form, as {blockId: value}. v20: never an open, unfinished attempt, and never blind to a
+     finished save because an open attempt sits in front of it. The state answer is scanned for every submission it carries (the latest one,
+     and any other the site returns beside it); only a submitted one with answers is a candidate, and the newest wins. */
   function lwLatest(unit) {
     return lwFetch("GET", "/api/assessment/state?sourceType=unit&objectId=" + encodeURIComponent(unit))
       .then(function (data) {
-        var sub = data.latestSubmission;
-        if (!sub || sub.status !== "submitted" || !sub.answers) { return null; }
+        var cands = [], best = null, bestAt = -1, i, k;
+        function add(x) {
+          var j;
+          if (Array.isArray(x)) { for (j = 0; j < x.length; j++) { add(x[j]); } }
+          else if (x && typeof x === "object" && x.status && Array.isArray(x.answers)) { cands.push(x); }
+        }
+        for (k in data) { if (Object.prototype.hasOwnProperty.call(data, k) && k !== "success") { add(data[k]); } }
+        for (i = 0; i < cands.length; i++) {
+          var c = cands[i];
+          if (c.status !== "submitted") { continue; }
+          var at = whenMs(c.submittedTimestamp || c.modified); if (isNaN(at)) { at = 0; }
+          if (at >= bestAt) { best = c; bestAt = at; }
+        }
+        if (!best) { return null; }
         var out = {};
-        for (var i = 0; i < sub.answers.length; i++) {
-          var a = sub.answers[i];
+        for (i = 0; i < best.answers.length; i++) {
+          var a = best.answers[i];
           if (a && a.blockId && a.answer && typeof a.answer.value === "string") { out[a.blockId] = a.answer.value; }
         }
-        return { answers: out, when: sub.submittedTimestamp || sub.modified || null };
+        return { answers: out, when: best.submittedTimestamp || best.modified || null };
       });
   }
 
@@ -553,6 +585,98 @@
   function stashGet(form) { var v = stashRaw(form); return v ? v.a : null; }
   function stashClear(form) {
     try { window.localStorage.removeItem(STASH_KEY + ":" + form); } catch (e) {}
+  }
+
+  /* ======================================================================
+     2b. v20 — THE LEDGER: HIS WORDS ARE KEPT FROM THE FIRST WORD
+     ------------------------------------------------------------------
+     John, Nov 14, 2026 (integrity-1): "words are kept from the first word, as he writes; saving is never his decision."
+     Every keep is a NEW VERSION in our own store (Supabase, through the story-keep function); nothing is overwritten, and any
+     version can be brought back. The store is keyed by a long random key, not by who he is: LearnWorlds cannot prove who a man
+     is, so a key is the one thing that cannot be guessed. The key lives on his device and, once he is signed in, in his own
+     LearnWorlds record (a vault question, or "_vk" inside the answers JSON), so it follows him to any device. Nobody here can
+     look a man up or read his words.
+     A version waits in an outbox ON HIS DEVICE until our store answers with a receipt (its id and a fingerprint of the words) that
+     matches what was sent. Offline, signed out, or a closed tab: it waits, and goes when he is back. "Kept" is said only on a match.
+     ====================================================================== */
+  var LEDGER_URL = "https://eyiqlyaridagclnbxhzy.supabase.co/functions/v1/story-keep";
+  var OUTBOX_KEY = "apStoryKeep", KEPT_KEY = "apStoryKept", VAULT_KEY = "apStoryVault", OUTBOX_MAX = 150;
+  function lsGet(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { window.localStorage.setItem(k, v); return true; } catch (e) { return false; } }
+  function lsDel(k) { try { window.localStorage.removeItem(k); } catch (e) {} }
+  var LEDGER = (function () {
+    var ready = {}, sending = {}, listeners = [], retryAt = {}, retryN = {}, last = {};
+    /* the fingerprint of the words: the store computes the same one and sends it back as the receipt */
+    function fp(s) { s = String(s); var h = 2166136261, i; for (i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return ("00000000" + h.toString(16)).slice(-8) + ":" + s.length; }
+    function newKey() {
+      var out = "", i, a = null;
+      try { if (window.crypto && window.crypto.getRandomValues) { a = new Uint8Array(32); window.crypto.getRandomValues(a); } } catch (e) { a = null; }
+      for (i = 0; i < 32; i++) { out += ("0" + (a ? a[i] : Math.floor(Math.random() * 256)).toString(16)).slice(-2); }
+      return out;
+    }
+    function validKey(k) { return typeof k === "string" && /^[a-f0-9]{64}$/.test(k); }
+    function vault() { var k = lsGet(VAULT_KEY); return validKey(k) ? k : null; }
+    function ensureVault() { var k = vault(); if (!k) { k = newKey(); lsSet(VAULT_KEY, k); } return k; }
+    function adopt(k) { if (validKey(k)) { lsSet(VAULT_KEY, k); return true; } return false; }
+    function box(form) { try { var v = JSON.parse(lsGet(OUTBOX_KEY + ":" + form) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+    function putBox(form, arr) {
+      if (arr.length > OUTBOX_MAX) { arr = arr.slice(0, 1).concat(arr.slice(arr.length - (OUTBOX_MAX - 1))); }   /* never the first, never the newest */
+      if (!arr.length) { lsDel(OUTBOX_KEY + ":" + form); } else { lsSet(OUTBOX_KEY + ":" + form, JSON.stringify(arr)); }
+    }
+    function keptFp(form) { return lsGet(KEPT_KEY + ":" + form) || ""; }
+    function newId() { return String(Date.now()) + "-" + ("000000" + Math.floor(Math.random() * 1e6)).slice(-6); }
+    /* a new version, unless it is the words already last kept or last waiting */
+    function note(form, answers, text) {
+      text = String(text || ""); if (!text) { return null; }
+      var b = box(form), tail = b.length ? b[b.length - 1] : null, f = fp(text);
+      if (tail ? tail.fp === f : keptFp(form) === f) { return null; }
+      var v = { id: newId(), t: Date.now(), text: text, answers: answers, fp: f };
+      b.push(v); putBox(form, b); return v;
+    }
+    function markKept(form, text) { lsSet(KEPT_KEY + ":" + form, fp(text)); }
+    function post(body) {
+      return window.fetch(LEDGER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+        .then(function (res) { return res.json().catch(function () { return null; }); })
+        .then(function (data) { if (!data || data.ok !== true) { throw new Error("the store did not answer"); } return data; });
+    }
+    function on(fn) { listeners.push(fn); }
+    function setReady(form) { ready[form] = true; }
+    function later(form) {
+      var n = retryN[form] = (retryN[form] || 0) + 1, wait = Math.min(60000, 5000 * Math.pow(3, Math.min(n - 1, 3)));
+      window.clearTimeout(retryAt[form]); retryAt[form] = window.setTimeout(function () { flush(form); }, wait);
+    }
+    /* send what is waiting, oldest first, one at a time. A version leaves the outbox only when the receipt matches. */
+    function flush(form) {
+      if (!ready[form] || !signedIn() || sending[form]) { return window.Promise.resolve(false); }
+      var b = box(form); if (!b.length) { return window.Promise.resolve(true); }
+      sending[form] = true;
+      function next() {
+        var q = box(form); if (!q.length) { sending[form] = false; retryN[form] = 0; return true; }
+        var v = q[0], vk = ensureVault();
+        return post({ op: "keep", vk: vk, form: form, id: v.id, t: v.t, text: v.text, answers: v.answers }).then(function (r) {
+          if (r.id !== v.id || r.fp !== v.fp) { throw new Error("the receipt did not match"); }
+          var cur = box(form).filter(function (x) { return x.id !== v.id; }); putBox(form, cur);
+          markKept(form, v.text);
+          for (var i = 0; i < listeners.length; i++) { try { listeners[i](form, v); } catch (e) {} }
+          return next();
+        });
+      }
+      return window.Promise.resolve().then(next).catch(function () { sending[form] = false; later(form); return false; });
+    }
+    function latest(form) { var k = vault(); if (!k) { return window.Promise.resolve(null); } return post({ op: "latest", vk: k, form: form }).then(function (r) { return r.version || null; }); }
+    function versions(form) { var k = vault(); if (!k) { return window.Promise.resolve([]); } return post({ op: "list", vk: k, form: form }).then(function (r) { return r.versions || []; }); }
+    function get(form, id) { var k = vault(); if (!k) { return window.Promise.resolve(null); } return post({ op: "get", vk: k, form: form, id: id }).then(function (r) { return r.version || null; }); }
+    function flushAll() { for (var f in ready) { if (Object.prototype.hasOwnProperty.call(ready, f)) { flush(f); } } }
+    try { window.addEventListener("online", flushAll); window.addEventListener("pageshow", flushAll); document.addEventListener("visibilitychange", function () { if (!document.hidden) { flushAll(); } }); } catch (e) {}
+    return { fp: fp, vault: vault, ensureVault: ensureVault, adopt: adopt, validKey: validKey, note: note, markKept: markKept, flush: flush, setReady: setReady, on: on, latest: latest, versions: versions, get: get, outbox: box, url: LEDGER_URL };
+  })();
+  /* the vault key as his LearnWorlds record carries it: a vault question when the unit has one, else "_vk" inside the answers JSON */
+  function vkFrom(cfg, raw) {
+    var b = cfg.lw.blocks, k = null;
+    if (!raw) { return null; }
+    if (b.vault && LEDGER.validKey(raw[b.vault])) { return raw[b.vault]; }
+    if (b.json && typeof raw[b.json] === "string") { try { k = JSON.parse(raw[b.json])._vk; } catch (e) { k = null; } }
+    return LEDGER.validKey(k) ? k : null;
   }
 
   /* ======================================================================
@@ -754,7 +878,11 @@
     if (lw.blocks.whole) { out.push({ blockId: lw.blocks.whole, value: this.document(answers) }); }
     /* v4: one question can hold every answer as JSON, so a form with many
        small fields needs two questions in LearnWorlds, not thirty. */
-    if (lw.blocks.json) { out.push({ blockId: lw.blocks.json, value: lwJSON(answers) }); }
+    /* v20: the vault key rides in his own LearnWorlds record so any device can find his words in our store: a vault question when the
+       unit has one, else "_vk" inside the answers JSON (the form's own fields ignore it). A form with neither keeps its key on the device. */
+    var vk = LEDGER.ensureVault();
+    if (lw.blocks.vault) { out.push({ blockId: lw.blocks.vault, value: vk }); }
+    if (lw.blocks.json) { var jsonAnswers = {}, jk; for (jk in answers) { if (Object.prototype.hasOwnProperty.call(answers, jk)) { jsonAnswers[jk] = answers[jk]; } } if (!lw.blocks.vault) { jsonAnswers._vk = vk; } out.push({ blockId: lw.blocks.json, value: lwJSON(jsonAnswers) }); }
     /* v6: the history array, when this form keeps one — computed by the
        caller (save()) before toBlocks is called, just carried across. */
     if (extraBlock) { out.push(extraBlock); }
@@ -783,6 +911,7 @@
       ui.fail("There is nothing written yet. Write something first, then save.");
       return;
     }
+    LEDGER.note(this.cfg.form, answers, this.document(answers));   /* v20: whatever is on the page is a version waiting for our store, press or not */
 
     /* v19: already on his page exactly as it stands (a keep just took it): say so, send nothing twice */
     if (this.saved && this.savedAnswers && JSON.stringify(answers) === this.savedAnswers) { ui.done(this.saved, this.saved.restored ? this.saved.when : undefined); return; }   /* v19.3: a restored piece keeps its own time */
@@ -802,9 +931,10 @@
     var slow = window.setTimeout(function () { ref.ui.stillWorking(); }, SLOW_AT);
 
     var historyBlock = this.cfg.lw.blocks.history;
+    var gate = this._vkp || window.Promise.resolve(null);   /* v20: his key is settled (adopted from his record, or made) before anything is written to it */
     var readFirst = historyBlock
-      ? lwLatest(this.cfg.lw.unit).then(function (latest) { return (latest && latest.answers) || {}; })
-      : window.Promise.resolve(null);
+      ? gate.then(function () { return lwLatest(self.cfg.lw.unit); }).then(function (latest) { return (latest && latest.answers) || {}; })
+      : gate.then(function () { return null; });
 
     readFirst
       .then(function (rawByBlockId) {
@@ -841,7 +971,8 @@
         if (self.progress(answers).finished && !self._finishSent) { self._finishSent = true; track("story_finish", self.cfg.form); }
         /* "Saved" is set ONLY here — when LearnWorlds has said submitted. */
         self._saving = null;
-        ref.ui.done(result.sub);
+        if (!ref.quiet) { ref.ui.done(result.sub); }   /* v20: a quiet keep says nothing here; the store's receipt says Kept */
+        self.flushKeeps();
         if (self._again) { var u = self._again; self._again = null; self.save(u); }
       })
       .catch(function (err) {
@@ -853,17 +984,81 @@
       });
   };
 
-  /* v19 · keep as he speaks: a quiet save while he is signed in and the piece has changed since the last one. Nothing is said
-     on the way (no "Saving"); when the site confirms it, the same "Saved to your page" line as a pressed Save. Signed out, nothing
-     here: the device hold keeps his words and the sign-in door waits for his Save. A failure says nothing; his next Save will. */
+  /* v20 · keep as he writes and as he speaks. Every keep, signed in or not, is a version on his device; signed in, it goes to our store
+     and, quietly, to LearnWorlds as the second copy. Nothing is said on the way: the store's receipt puts up "Kept". A failure says nothing;
+     the version waits in the outbox and goes when he is back. */
   Story.prototype.keep = function () {
-    var self = this;
-    if (!signedIn() || this.busy || this._returning || !this.ui) { return false; }   /* v19.3: not while the return view's read is on its way */
-    var a = this.answers(); if (!this.document(a)) { return false; }
-    if (this.savedAnswers && JSON.stringify(a) === this.savedAnswers) { return false; }
+    var self = this, a = this.answers(), text = this.document(a);
+    if (!text) { return false; }
+    var queued = LEDGER.note(this.cfg.form, a, text);
+    if (queued) { stashSet(this.cfg.form, a, false); }   /* held on this device, put back if the tab closes */
+    if (!signedIn()) { return !!queued; }
+    this.flushKeeps();
+    if (this.busy || this._returning || !this.ui) { return !!queued; }   /* not while the return view's read is on its way */
+    if (this.savedAnswers && JSON.stringify(a) === this.savedAnswers) { return !!queued; }
     var ui = this.ui;
     this.save({ working: function () {}, stillWorking: function () {}, signingIn: function () {}, done: function (sub) { ui.done(sub); }, fail: function () {} }, a, true);
     return true;
+  };
+
+  /* v20 · his key, settled once per page: adopted from his own LearnWorlds record when it is there, else the one on this device, else a
+     new one. Until it is settled nothing is sent to the store (a second device must not write under a key of its own). The read it takes is
+     the LearnWorlds copy, handed on to whoever needs it. */
+  Story.prototype.resolveKey = function () {
+    var self = this;
+    if (this._vkp) { return this._vkp; }
+    this._vkp = lwLatest(this.cfg.lw.unit).then(function (lw) {
+      self._lwFailed = false;
+      var k = lw ? vkFrom(self.cfg, lw.answers) : null;
+      if (k) { LEDGER.adopt(k); } else { LEDGER.ensureVault(); }
+      self._vkReady = true; LEDGER.setReady(self.cfg.form);
+      return lw;
+    }, function () {
+      self._lwFailed = true;   /* the second copy could not be read: newest() says so unless our store has his words */
+      if (LEDGER.vault()) { self._vkReady = true; LEDGER.setReady(self.cfg.form); }
+      return null;
+    });
+    return this._vkp;
+  };
+  Story.prototype.flushKeeps = function () {
+    var self = this;
+    if (!signedIn()) { return window.Promise.resolve(false); }
+    if (!this._vkReady) { this._vkp = null; return this.resolveKey().then(function () { return self._vkReady ? LEDGER.flush(self.cfg.form) : false; }); }
+    return LEDGER.flush(this.cfg.form);
+  };
+  /* v20 · the newest words: whatever waits on this device if it is newer, else our store's newest, else the LearnWorlds copy. Resolves to
+     the same shape lwLatest gives, so every restore path is one path. */
+  Story.prototype.fromVersion = function (v, lw) {
+    var blocks = this.cfg.lw.blocks, m = {}, i, f;
+    for (i = 0; i < this.cfg.fields.length; i++) { f = this.cfg.fields[i]; if (blocks[f.key] && v.answers && typeof v.answers[f.key] === "string") { m[blocks[f.key]] = v.answers[f.key]; } }
+    if (blocks.json) { m[blocks.json] = lwJSON(v.answers || {}); }
+    if (blocks.whole) { m[blocks.whole] = v.text; }
+    if (blocks.history && lw && lw.answers && typeof lw.answers[blocks.history] === "string") { m[blocks.history] = lw.answers[blocks.history]; }
+    return { answers: m, when: v.t, fromStore: true, text: v.text };
+  };
+  Story.prototype.newest = function () {
+    var self = this, form = this.cfg.form;
+    return (this._vkp || this.resolveKey()).then(function (lw) {
+      return self.flushKeeps().then(function () {
+        var waiting = LEDGER.outbox(form), tail = waiting.length ? waiting[waiting.length - 1] : null;
+        return LEDGER.latest(form).then(function (v) { return v; }, function () { return null; }).then(function (v) {
+          if (tail && (!v || tail.t >= v.t)) { var wr = self.fromVersion(tail, lw); wr.waiting = true; return wr; }
+          if (v) { return self.fromVersion(v, lw); }
+          if (self._lwFailed) { throw new Error("his saved piece could not be read"); }
+          return lw;
+        });
+      });
+    });
+  };
+  /* v20 · bring an earlier version back. It goes into the boxes as he left it; the next keep makes it a NEW version, and nothing is erased. */
+  Story.prototype.bringBack = function (id) {
+    var self = this;
+    return LEDGER.get(this.cfg.form, id).then(function (v) {
+      if (!v) { return null; }
+      self.fill(v.answers || {});
+      self.keep();
+      return v;
+    });
   };
 
   /* Start a new piece rather than continuing the one that was open. A
@@ -903,7 +1098,8 @@
     var historyBlock = this.cfg.lw.blocks.history;
     if (!historyBlock) { return window.Promise.resolve(null); }
     var untouched = interactEpoch;
-    return lwLatest(this.cfg.lw.unit).then(function (latest) {
+    return (this._vkp || this.resolveKey()).then(function (latest) {
+      if (!latest && self._lwFailed) { throw new Error("his saved piece could not be read"); }
       var raw = (latest && latest.answers) || {};
       var list = parseHistoryList(raw[historyBlock]);
       var entry = null, i;
@@ -944,7 +1140,7 @@
     var self = this;
     this._opened = true;   /* v16: opening a saved piece is not a start */
     var untouched = interactEpoch;   /* BEFORE the read, not after it returns */
-    return lwLatest(this.cfg.lw.unit).then(function (latest) {
+    return this.newest().then(function (latest) {
       if (!latest) { return null; }
       return self.applyLatest(latest, untouched);
     });
@@ -978,6 +1174,10 @@
         if (hist.length) { self.openEntryId = hist[hist.length - 1].id; }
       }
       self.markReturned(latest.when);   /* v19.3 */
+      /* v20: words that came from our store are already kept; words that came from LearnWorlds only are copied into our store now */
+      var doc = self.document(a);
+      if (latest.fromStore) { LEDGER.markKept(self.cfg.form, doc || latest.text || ""); }
+      else if (doc) { LEDGER.note(self.cfg.form, self.answers(), self.document()); self.flushKeeps(); }
       onArrival(function () { seekTo(self.host(), {}); }, untouched);
       return latest;
     }
@@ -1000,7 +1200,7 @@
   Story.prototype.returnToLatest = function () {
     var self = this, untouched = interactEpoch;   /* BEFORE the read, not after it returns */
     this._returning = true;
-    return lwLatest(this.cfg.lw.unit).then(function (latest) {
+    return this.newest().then(function (latest) {
       self._returning = false;
       if (!latest || self.hasWords()) { return null; }
       self._opened = true;   /* v16: opening a saved piece is not a start */
@@ -1087,7 +1287,7 @@
     btn.id = "apsSave";
     btn.type = "button";
 
-    var note = el("p", "aps-note", cfg.noteBefore || "");
+    var note = el("p", "aps-note", "");   /* v20: the foot line is the Begin sentence; under the writing there is only Kept */
     note.id = "apsNote";
 
     var panel = el("div", "aps-panel", "");
@@ -1103,12 +1303,11 @@
         /* v10: after a save the first things he reads are that it is saved and what is left; the Save button goes quiet and the way out is the dark button */
         if (cfg.primaryClass) { btn.classList.remove(cfg.primaryClass); }
         if (cfg.ghostClass) { btn.classList.add(cfg.ghostClass); }
-        var pr = self.progress(), when = "";
-        try { when = savedWhen(savedAt === undefined ? Date.now() : savedAt); } catch (e) {}   /* v19.3: Central, 12-hour, the day when it is not today */
+        var when = "";
+        try { when = savedWhen(savedAt === undefined ? Date.now() : savedAt); } catch (e) {}   /* v20: his own time zone, 12-hour, the day when it is not today */
         note.innerHTML = "";
-        var l1 = el("b", "aps-saved", "Saved to your page" + (when ? " \u00b7 " + when : "") + ".");
-        var l2 = el("span", "aps-left", pr.finished ? "Finished. It is on your page." : pr.written + " of " + pr.total + " " + (cfg.parts || "parts") + " written. Save keeps your place.");
-        note.appendChild(l1); note.appendChild(l2);
+        var l1 = el("b", "aps-saved", "Kept" + (when ? " " + when : ""));   /* v20: one line, in his own time zone */
+        note.appendChild(l1);
         note.classList.add("aps-status");
         row.appendChild(note); note.style.order = "5";
         self.renderSaved(panel);
@@ -1119,7 +1318,7 @@
           btn.disabled = false; btn.textContent = "Save";
           if (cfg.ghostClass) { btn.classList.remove(cfg.ghostClass); }
           if (cfg.primaryClass) { btn.classList.add(cfg.primaryClass); }
-          note.classList.remove("aps-status"); note.innerHTML = ""; note.textContent = cfg.noteBefore || ""; note.style.order = "";
+          note.classList.remove("aps-status"); note.innerHTML = ""; note.textContent = ""; note.style.order = "";
           row.parentNode.insertBefore(note, row);
           self.renderSaved(panel);
           document.removeEventListener("input", rearm, true);
@@ -1182,13 +1381,17 @@
      8b. v7 — WHAT HE TYPES IS HELD, SO NO PAGE NEEDS A "LEAVE?" BOX
      ====================================================================== */
   Story.prototype.holdTyping = function () {
-    var self = this, timer = null, ids = {};
+    var self = this, timer = null, ids = {}, kTimer = null, beat = null, tm = this.cfg.timing || {}, PAUSE = tm.pause || 1200, EVERY = tm.every || 4000;
     for (var i = 0; i < this.cfg.fields.length; i++) { ids[this.cfg.fields[i].id] = true; }
     this._fieldIds = ids;
     document.addEventListener("input", function (e) {
       var t = e.target; if (!t || !t.id || !ids[t.id]) { return; }
       /* v16 · the count: the first words into a piece that was not opened from a save and had nothing held on this device */
       if (!self._startSent && !self._opened) { self._startSent = true; track("story_start", self.cfg.form); }
+      /* v20 · kept as he writes: on a pause, and every few seconds while he keeps going */
+      window.clearTimeout(kTimer);
+      kTimer = window.setTimeout(function () { window.clearTimeout(beat); beat = null; self.keep(); }, PAUSE);
+      if (!beat) { beat = window.setTimeout(function () { beat = null; self.keep(); }, EVERY); }
       window.clearTimeout(timer);
       timer = window.setTimeout(function () {
         var a = self.answers();
@@ -1217,7 +1420,7 @@
        tier 3  the quiet things Back · Edit · Print · Save image · Copy,
                                 as small links, not buttons
      ====================================================================== */
-  var ORDER = [[/^(back|edit|cancel|go back|change the words|done editing)/i, 1], [/^(download|save image)/i, 2], [/^(copy|print)/i, 3], [/^(check it|read it back|reading)/i, 8], [/^(save|saving|still saving|saved)$/i, 4], [/^save and stop/i, 4]];
+  var ORDER = [[/^(back|edit|cancel|go back|change the words|done editing)/i, 1], [/^(download|save image)/i, 2], [/^(copy|print)/i, 3], [/^(check it|read it back|reading)/i, 8], [/^(save|saving|still saving|saved)$/i, 4], [/^save and stop/i, 4], [/^stop for now/i, 4]];
   function slotFor(node) {
     if (node.tagName === "A") { return 6; }
     if (node.tagName !== "BUTTON") { return 7; }
@@ -1255,7 +1458,7 @@
     }
     for (var i = 0; i < row.children.length; i++) {
       var c = row.children[i];
-      if (c.tagName === "BUTTON" && /^save and stop/i.test((c.textContent || "").trim())) { c.textContent = "Save"; }
+      if (c.tagName === "BUTTON" && /^save and stop/i.test((c.textContent || "").trim())) { c.textContent = "Stop for now"; }   /* v20 */
       if (c.tagName === "SPAN" && !(c.textContent || "").trim() && !c.id && !c.classList.contains("aps-break")) { c.style.display = "none"; }   /* a spacer that pushed Save to the far right */
       var slot = slotFor(c);
       if (finish) {
@@ -1470,11 +1673,40 @@
   /* ======================================================================
      9. START
      ====================================================================== */
+  /* v20 · the words on the page: the privacy line at the foot of every writing page is the Begin sentence (first sentence in bold), and
+     "Save and stop for now" reads "Stop for now". Run at mount and again once the page has finished building itself. */
+  var BEGIN_1 = "Everything you write here is kept as you write it, so nothing is lost.";
+  var BEGIN_2 = "It's yours: no one sees it unless you share it, and you can delete any of it at any time.";
+  var OLD_FIRST = "Nothing you write here reaches us unless you choose to save it with us.";
+  function norm(t) { return String(t || "").replace(/\s+/g, " ").trim(); }
+  Story.prototype.sweepWords = function () {
+    var i, j, nodes, hits = [], n, own;
+    try {
+      nodes = document.querySelectorAll("p, div, span, small, li, section, footer");
+      for (i = 0; i < nodes.length; i++) { n = norm(nodes[i].textContent); if (n.indexOf(OLD_FIRST) === 0 && n.length <= OLD_FIRST.length + 60 && /Everything else stays on your device\.?$/.test(n)) { hits.push(nodes[i]); } }
+      for (i = 0; i < hits.length; i++) {
+        own = true; for (j = 0; j < hits.length; j++) { if (j !== i && hits[i].contains(hits[j])) { own = false; } }
+        if (!own) { continue; }
+        hits[i].textContent = ""; var b = document.createElement("b"); b.textContent = BEGIN_1; hits[i].appendChild(b); hits[i].appendChild(document.createTextNode(" " + BEGIN_2));
+      }
+      nodes = document.querySelectorAll("button, a");
+      for (i = 0; i < nodes.length; i++) { if (/^save and stop for now$/i.test(norm(nodes[i].textContent))) { nodes[i].textContent = "Stop for now"; } }
+    } catch (e) {}
+  };
+
   Story.prototype.start = function () {
     var self = this;
+    LEDGER.on(function (form, v) {   /* v20: the store's receipt matched: say Kept, if the page still holds exactly those words */
+      if (form !== self.cfg.form || !self.ui) { return; }
+      self.keptAnswers = JSON.stringify(v.answers);
+      if (JSON.stringify(self.answers()) === self.keptAnswers) { self.ui.done({ kept: true }, v.t); }
+    });
+    window.setTimeout(function () { self.sweepWords(); }, 1500);
+    window.setTimeout(function () { self.sweepWords(); }, 5000);
 
     this.holdPlace();
     this.mount();
+    this.sweepWords();
 
     /* The page may still be building itself. Gate the retry on EXISTENCE. */
     if (!$("apsSave")) {
@@ -1492,6 +1724,8 @@
   Story.prototype.afterMount = function () {
     var self = this;
     if (!this.ui) { return; }
+    this.sweepWords();
+    if (signedIn()) { this.resolveKey().then(function () { self.flushKeeps(); }); }   /* v20: his key settled, then whatever waits on his device goes */
 
     /* 1. Words waiting on a sign-in he just did: put them back, finish
           the save he pressed. If he is still signed out, put them back
@@ -1513,9 +1747,9 @@
        he has saved something newer since, here or on another device. */
     if (pending) {
       if (!signedIn()) { this.fill(pending); return; }
-      lwLatest(this.cfg.lw.unit).then(function (latest) {
-        var when = latest && latest.when ? Date.parse(latest.when) : 0;
-        if (when && when > held.t) { stashClear(self.cfg.form); self.afterMount(); return; }
+      this.newest().then(function (latest) {
+        var when = latest && latest.when ? whenMs(latest.when) : 0;
+        if (when && when > held.t && !latest.waiting) { stashClear(self.cfg.form); LEDGER.markKept(self.cfg.form, ""); self.afterMount(); return; }
         self.fill(pending);
         self.save(self.ui, pending);
       }).catch(function () { self.fill(pending); });
@@ -2811,7 +3045,7 @@
   };
 
   window.APStory = {
-    version: "19.4",
+    version: "20.0",
     assistant: ASSIST,
     row: ROW,   /* v19.2: the row standard every piece draws its foot rows through */
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
@@ -2847,7 +3081,9 @@
     voice: VOICE, handoffLink: handoffLink, qrSVG: qrSVG, handoffCSS: handoffCSS, handoffBoxHTML: handoffBoxHTML,   /* v17 */
     safe: safe,
     latest: lwLatest,
-    savedWhen: savedWhen,   /* v19.3: "2:14 PM" today, "Wednesday, Nov 11, 2:00 PM" another day — Central, 12-hour */
+    savedWhen: savedWhen,   /* v20: "2:14 PM" today, "Wednesday, Nov 11, 2:00 PM" another day — in his own time zone, 12-hour */
+    ledger: LEDGER, vkFrom: vkFrom,   /* v20: the store, shared with road.js */
+    beginSentence: BEGIN_1 + " " + BEGIN_2,
     _submit: lwSubmit,
     _seekTo: seekTo,
     _scrollerFor: scrollerFor,
