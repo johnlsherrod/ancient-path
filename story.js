@@ -1,5 +1,12 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v20.3
+   AP-STORY-MODULE-v20.4
+
+   v20.4 (16 Nov 2026) — team waits for the page (John, Nov 16: "fix the open items"). Built on v20.3, which stands as written. One change: a
+     story event sent before the page has finished loading no longer counts one of our own as a man. LearnWorlds puts his session on the page
+     late on a slow page (Your Page), so "signed out" is believed only once the page has loaded; until then events wait, in order (fifteen
+     seconds at most, then "unknown"). Nothing else moves: the four things, the events, the engine, the look. Counts taken: parses; the
+     stylesheet is the same text as 20.3. Moves to the platform as it is: nothing (the platform's account carries the flag). Tests:
+     test-story-v20.4.js.
 
    v20.3 (15 Nov 2026) — the story events carry where and who (John, Nov 15). Built on v20.2, which stands as written; nothing of the engine,
      the ledger or any page's look changes (the stylesheet is the same text). Every story event now carries exactly four things, and nothing
@@ -396,7 +403,7 @@
      v20.3 · the count carries where and who. Every story_ and stone_ event leaves through here with exactly four things: piece (a slug),
      part (the part he is on, when known), build and team. Anything else a caller hands in is dropped. A script that sends its own
      gtag("event", "story_...") is caught by the wrapper below and goes through here too. */
-  var BUILD = "20.3";
+  var BUILD = "20.4";
   var TEAM_RE = /^johnlsherrod\+|^johnsherrod.*test|^johnlsherrod@gmail\.com$|@ancientpathcoaching\.com$/;   /* the Front Desk's isOurs_ rule, and John's own address */
   var TEAM = { v: null, started: false, queue: [], timer: null };
   var PARTS = {};   /* a script with steps of its own hands its part over: APStory.setPart(piece, n) */
@@ -424,16 +431,27 @@
     return window.fetch(path, { method: "GET", credentials: "include", headers: headers() }).then(function (r) { return r.json().catch(function () { return null; }); });
   }
   function isOurs(email, username) { return (!!email && TEAM_RE.test(email)) || String(username || "").toLowerCase() === "ancientpath"; }
+  /* v20.4 · the page must be ready before "signed out" can be believed: early on a slow page (Your Page) LearnWorlds has not yet put his
+     session on the page, and one of our own was counted as a man. Signed out is decided only once the page has loaded; until then the
+     events wait (they still go, in order, as "unknown", if the page has not loaded in fifteen seconds). */
+  function pageReady(fn) {
+    if (signedIn() || document.readyState === "complete") { fn(); return; }
+    var done = false, go = function () { if (done) { return; } done = true; fn(); };
+    window.addEventListener("load", go);
+    window.setTimeout(go, 15000);
+  }
   function startTeam() {
     if (TEAM.started) { return; }
     TEAM.started = true;
-    if (!signedIn()) { settleTeam("false"); return; }
-    TEAM.timer = window.setTimeout(function () { settleTeam("unknown"); }, teamWait());
-    getJson("/api/user_stats").then(function (j) {
-      var email = readEmail(j), name = ((j && j.me) || {}).username;
-      if (email) { return isOurs(email, name); }
-      return getJson("/api/user/me").then(function (x) { var u = (x && x.user) || x || {}; return isOurs(String(u.email || u.user_email || "").toLowerCase(), u.username || name); });
-    }).then(function (ours) { settleTeam(ours ? "true" : "false"); }, function () { settleTeam("unknown"); });
+    pageReady(function () {
+      if (!signedIn()) { settleTeam("false"); return; }
+      TEAM.timer = window.setTimeout(function () { settleTeam("unknown"); }, teamWait());
+      getJson("/api/user_stats").then(function (j) {
+        var email = readEmail(j), name = ((j && j.me) || {}).username;
+        if (email) { return isOurs(email, name); }
+        return getJson("/api/user/me").then(function (x) { var u = (x && x.user) || x || {}; return isOurs(String(u.email || u.user_email || "").toLowerCase(), u.username || name); });
+      }).then(function (ours) { settleTeam(ours ? "true" : "false"); }, function () { settleTeam("unknown"); });
+    });
   }
   function track(name, piece, extra) {
     try {
@@ -3305,8 +3323,8 @@
   };
 
   window.APStory = {
-    version: "20.3",
-    build: "20.3",   /* v20.3: rides on every story event */
+    version: "20.4",
+    build: "20.4",   /* v20.3: rides on every story event (v20.4: the team answer waits for the page) */
     assistant: ASSIST,
     row: ROW,   /* v19.2: the row standard every piece draws its foot rows through */
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
