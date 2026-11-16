@@ -1,5 +1,24 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v20.2
+   AP-STORY-MODULE-v20.3
+
+   v20.3 (15 Nov 2026) — the story events carry where and who (John, Nov 15). Built on v20.2, which stands as written; nothing of the engine,
+     the ledger or any page's look changes (the stylesheet is the same text). Every story event now carries exactly four things, and nothing
+     else: piece (the piece's key, a slug), part (the number of the part he is on), build (this file's, 20.3) and team (true for our own and
+     test accounts, false for a man, unknown if the lookup failed; a signed-out visitor is false). They go out through ONE place, so the
+     engine's own events, the Road's, the stone's and Your Page's own story_offer all carry them without those scripts changing: a story_ or
+     stone_ event sent straight to gtag by any script on the page is caught there, given the four things, and every other field is dropped.
+       part: the writing parts of the piece, in order (the same list "4 of 7 parts written" counts); the one he last typed or tapped into;
+       else the first with nothing in it; a finished piece is its last part. A script with steps of its own (the Road) hands its part over
+       with APStory.setPart(piece, n).
+       team: decided on the page, from who LearnWorlds says he is, by the Front Desk's own rule (an @ancientpathcoaching.com address, a
+       johnsherrod...test address, a johnlsherrod+ address, john's own gmail, or the ancientpath account). The address is read, compared and
+       dropped: only the answer leaves, and it is not stored. Events wait (two and a half seconds at most) for the answer, in order.
+       story_return (new): he opens a piece he kept on a day before today, in his own time zone, from his page, the course or a bookmark, or
+       words held on his device from an earlier day. Once a day per piece per device. A script with its own opening (the Road) calls
+       APStory.returned(piece, when). story_offer: sent by Your Page's offer step; it now carries the four things (part is left off: Your Page
+       does not know the piece's parts).
+       No words, no names, no addresses. Counts only. Moves to the platform as it is: all of it (the events are the platform's own count).
+       Rebuilt there: team's lookup (the platform's account carries the flag).
 
    v20.2 (14 Nov 2026) — a save never takes a piece away on his page (John, Nov 14: the card on Your Page showed what a later save had left, not
      what he had written). Built on v20.1 (the Story Ledger), which stands as written. The ledger keeps every version in our store, but Your Page
@@ -372,14 +391,87 @@
      Both values exist only then (measured on the logged-out markup). */
   function signedIn() { return !!(sessionToken() && csrf()); }
 
-  /* v16 · the count. One sender for every piece: an event name and the
-     piece's key, nothing of what he wrote. Silent when Analytics is not
-     on the page. Returns whether anything was sent (for the tests). */
+  /* v16 · the count. One sender for every piece: an event name and the piece's key, nothing of what he wrote. Silent when Analytics is not
+     on the page. Returns whether anything was sent (for the tests).
+     v20.3 · the count carries where and who. Every story_ and stone_ event leaves through here with exactly four things: piece (a slug),
+     part (the part he is on, when known), build and team. Anything else a caller hands in is dropped. A script that sends its own
+     gtag("event", "story_...") is caught by the wrapper below and goes through here too. */
+  var BUILD = "20.3";
+  var TEAM_RE = /^johnlsherrod\+|^johnsherrod.*test|^johnlsherrod@gmail\.com$|@ancientpathcoaching\.com$/;   /* the Front Desk's isOurs_ rule, and John's own address */
+  var TEAM = { v: null, started: false, queue: [], timer: null };
+  var PARTS = {};   /* a script with steps of its own hands its part over: APStory.setPart(piece, n) */
+  var COUNTED = /^(story|stone)_/;
+  function teamWait() { var n = +window.AP_TEAM_WAIT; return n > 0 ? n : 2500; }
+  function slug(p) {
+    var s = String(p == null ? "" : p).toLowerCase().replace(/[^a-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+    return s || "unknown";
+  }
+  function nativeGtag() { var g = window.gtag; if (typeof g !== "function") { return null; } return g.__apNative || g; }
+  function emit(item) { var g = nativeGtag(); if (!g) { return false; } g.call(window, "event", item.name, item.params); return true; }
+  function partOf(piece) {
+    for (var i = 0; i < instances.length; i++) { if (instances[i].cfg && slug(instances[i].cfg.form) === piece && typeof instances[i].partNow === "function") { return instances[i].partNow(); } }
+    return PARTS[piece] || null;
+  }
+  function settleTeam(v) {
+    if (TEAM.v !== null) { return; }
+    TEAM.v = v; window.clearTimeout(TEAM.timer);
+    var q = TEAM.queue; TEAM.queue = [];
+    for (var i = 0; i < q.length; i++) { q[i].params.team = v; try { emit(q[i]); } catch (e) {} }
+  }
+  /* who he is, read only to answer one question; the address is compared and let go, never kept or sent */
+  function readEmail(j) { var m = (j && j.me) || {}; return String(m.email || m.user_email || "").toLowerCase(); }
+  function getJson(path) {
+    return window.fetch(path, { method: "GET", credentials: "include", headers: headers() }).then(function (r) { return r.json().catch(function () { return null; }); });
+  }
+  function isOurs(email, username) { return (!!email && TEAM_RE.test(email)) || String(username || "").toLowerCase() === "ancientpath"; }
+  function startTeam() {
+    if (TEAM.started) { return; }
+    TEAM.started = true;
+    if (!signedIn()) { settleTeam("false"); return; }
+    TEAM.timer = window.setTimeout(function () { settleTeam("unknown"); }, teamWait());
+    getJson("/api/user_stats").then(function (j) {
+      var email = readEmail(j), name = ((j && j.me) || {}).username;
+      if (email) { return isOurs(email, name); }
+      return getJson("/api/user/me").then(function (x) { var u = (x && x.user) || x || {}; return isOurs(String(u.email || u.user_email || "").toLowerCase(), u.username || name); });
+    }).then(function (ours) { settleTeam(ours ? "true" : "false"); }, function () { settleTeam("unknown"); });
+  }
   function track(name, piece, extra) {
     try {
-      var p = { piece: String(piece || "") };
-      if (extra) { for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) { p[k] = extra[k]; } } }
-      if (typeof window.gtag === "function") { window.gtag("event", name, p); return true; }
+      if (!nativeGtag()) { return false; }
+      var item = { name: String(name), params: { piece: slug(piece) } };
+      var part = Number(extra && extra.part != null ? extra.part : partOf(item.params.piece));
+      if (part >= 1 && part <= 99 && part % 1 === 0) { item.params.part = String(part); }
+      item.params.build = BUILD;
+      if (TEAM.v === null) { TEAM.queue.push(item); startTeam(); return true; }
+      item.params.team = TEAM.v;
+      return emit(item);
+    } catch (e) {}
+    return false;
+  }
+  /* v20.3 · one place for every story event: a script that sends its own gtag("event", "story_offer", { piece, ... }) goes through track(),
+     so it carries the four things and nothing else. Other events and config calls pass straight through. Wrapped once. */
+  function wrapGtag() {
+    var g = window.gtag;
+    if (typeof g !== "function" || g.__apWrapped) { return; }
+    var w = function () {
+      var a = arguments;
+      if (a[0] === "event" && typeof a[1] === "string" && COUNTED.test(a[1])) { track(a[1], a[2] && a[2].piece); return; }
+      return g.apply(this, a);
+    };
+    w.__apWrapped = true; w.__apNative = g;
+    window.gtag = w;
+  }
+  wrapGtag();
+  function dayKey(ms) { var d = new Date(ms); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  /* v20.3 · story_return: a kept piece opened on a day after the day it was kept (his own time zone), once a day per piece per device */
+  function countReturn(piece, when, part) {
+    try {
+      var ms = whenMs(when);
+      if (isNaN(ms)) { return false; }
+      var today = dayKey(Date.now()), p = slug(piece), key = "apStoryReturn:" + p;
+      if (dayKey(ms) >= today || lsGet(key) === today) { return false; }
+      lsSet(key, today);
+      return track("story_return", p, part ? { part: part } : null);
     } catch (e) {}
     return false;
   }
@@ -908,6 +1000,7 @@
   var instances = [];
   function Story(cfg) {
     this.cfg = cfg;
+    this._partTouched = 0;   /* v20.3: the part he last typed or tapped into (1 = the first) */
     this.saved = null;      /* the LearnWorlds submission once saved */
     this.savedAnswers = null;
     this.busy = false;
@@ -961,13 +1054,16 @@
   /* Fill the fields and TELL THE FORM: the sealed script listens for
      `input`, so a synthetic event is what makes it re-render. */
   Story.prototype.fill = function (answers) {
-    for (var i = 0; i < this.cfg.fields.length; i++) {
-      var f = this.cfg.fields[i], node = $(f.id);
-      if (node && typeof answers[f.key] === "string") {
-        node.value = answers[f.key];
-        node.dispatchEvent(new Event("input", { bubbles: true }));
+    this._filling = true;   /* v20.3: the page filling the boxes is not him moving between parts */
+    try {
+      for (var i = 0; i < this.cfg.fields.length; i++) {
+        var f = this.cfg.fields[i], node = $(f.id);
+        if (node && typeof answers[f.key] === "string") {
+          node.value = answers[f.key];
+          node.dispatchEvent(new Event("input", { bubbles: true }));
+        }
       }
-    }
+    } finally { this._filling = false; }
   };
 
   /* The piece as the man holds it: the parts he wrote, a blank line
@@ -1226,6 +1322,7 @@
     function snap() { try { self.savedAnswers = JSON.stringify(self.answers()); } catch (e) {} }
     var at = savedAt == null ? null : savedAt;
     this.saved = { restored: true, when: at };
+    this.countReturn(at);   /* v20.3: a kept piece opened on a later day */
     snap();
     window.setTimeout(function () { if (interactEpoch === untouched && !self.busy) { snap(); } }, 500);
     if (this.ui && typeof this.ui.done === "function") { this.ui.done(this.saved, at); }
@@ -1520,6 +1617,7 @@
     this._fieldIds = ids;
     document.addEventListener("input", function (e) {
       var t = e.target; if (!t || !t.id || !ids[t.id]) { return; }
+      if (!self._filling) { var pn = self.partOfField(t.id); if (pn) { self._partTouched = pn; } }   /* v20.3: the part he is in (not the page filling the boxes) */
       /* v16 · the count: the first words into a piece that was not opened from a save and had nothing held on this device */
       if (!self._startSent && !self._opened) { self._startSent = true; track("story_start", self.cfg.form); }
       /* v20 · kept as he writes: on a pause, and every few seconds while he keeps going */
@@ -1828,8 +1926,36 @@
     } catch (e) {}
   };
 
+  /* v20.3 · the parts, in order, as progress() counts them, and the one he is on */
+  Story.prototype.partList = function () {
+    var out = [];
+    for (var i = 0; i < this.cfg.fields.length; i++) {
+      var f = this.cfg.fields[i]; if (f.key === "meta") { continue; }
+      var node = $(f.id); if (node && node.type === "hidden") { continue; }
+      out.push(f);
+    }
+    return out;
+  };
+  Story.prototype.partOfField = function (id) {
+    var list = this.partList();
+    for (var i = 0; i < list.length; i++) { if (list[i].id === id) { return i + 1; } }
+    return 0;
+  };
+  Story.prototype.partNow = function () {
+    var list = this.partList(), n = list.length;
+    if (!n) { return null; }
+    try { if (this.progress().finished) { return n; } } catch (e) {}
+    if (this._partTouched >= 1 && this._partTouched <= n) { return this._partTouched; }
+    var a = this.answers();
+    for (var i = 0; i < n; i++) { if (!String(a[list[i].key] || "").trim()) { return i + 1; } }
+    return n;
+  };
+  Story.prototype.countReturn = function (when) { return countReturn(this.cfg.form, when, this.partNow()); };
+
   Story.prototype.start = function () {
     var self = this;
+    wrapGtag(); startTeam();   /* v20.3: Analytics may have arrived since this file loaded; who he is is asked once, early */
+    document.addEventListener("focusin", function (e) { var t = e.target; if (t && t.id && self._fieldIds && self._fieldIds[t.id]) { var n = self.partOfField(t.id); if (n) { self._partTouched = n; } } }, true);
     LEDGER.on(function (form, v) {   /* v20: the store's receipt matched: say Kept, if the page still holds exactly those words */
       if (form !== self.cfg.form || !self.ui) { return; }
       self.keptAnswers = JSON.stringify(v.answers);
@@ -1865,7 +1991,7 @@
           the save he pressed. If he is still signed out, put them back
           and let him press Save again. */
     var held = stashRaw(this.cfg.form), pending = held ? held.a : null;
-    if (pending) { this._opened = true; }   /* v16: words held on this device were started before */
+    if (pending) { this._opened = true; this.countReturn(held && held.t); }   /* v16: words held on this device were started before; v20.3: a return when from an earlier day */
     if (pending && held.press) {
       this.fill(pending);
       /* Let the page put itself back where he pressed Save (the finish),
@@ -3179,7 +3305,8 @@
   };
 
   window.APStory = {
-    version: "20.2",
+    version: "20.3",
+    build: "20.3",   /* v20.3: rides on every story event */
     assistant: ASSIST,
     row: ROW,   /* v19.2: the row standard every piece draws its foot rows through */
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
@@ -3218,7 +3345,9 @@
 
     /* exposed for the personal page and for testing */
     signedIn: signedIn,
-    track: track,   /* v16: the one sender for the count */
+    track: track,   /* v16: the one sender for the count (v20.3: piece · part · build · team, nothing else) */
+    setPart: function (piece, n) { PARTS[slug(piece)] = Number(n) || 0; },   /* v20.3: a script with steps of its own (the Road) hands its part over */
+    returned: function (piece, when) { return countReturn(piece, when, PARTS[slug(piece)] || 0); },   /* v20.3: a script with its own opening reports a return (once a day per piece) */
     voice: VOICE, handoffLink: handoffLink, qrSVG: qrSVG, handoffCSS: handoffCSS, handoffBoxHTML: handoffBoxHTML,   /* v17 */
     safe: safe,
     latest: lwLatest,
