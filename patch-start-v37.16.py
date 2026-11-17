@@ -34,6 +34,11 @@ rep('                                from: s.from,\n                            
 # the live page already carries story.js 20.4 (the repo copy of v37.15 still named 20.2): v37.16 is built on the live page, so the pin is the live one
 rep('@5bab47d57efc66add5190da9157e519d6ed2875a/story.js', '@8f1abcc5e2cd47b36d27087bd7f85bd9b97b6ce7/story.js')
 rep('sha384-QEvus4BjWm7yg8cm3JZVqwOgZCooLWZXyZfxj+Efb1dsPmkNaoHp1HaPVpj1DlmG', 'sha384-5/Nz29bFGCTC933nXWFbIcnImlxfJ9SRAiy4ydf2IodROl/AcxOFVmYg0Lgxe8eT')
+# live carries no empty apRoad4 div after the Path button (road.js draws its own); the repo copy follows live
+import re as _re
+_m=_re.search(r'(Path</button>\s*</div>\s*</div>\s*</div>\s*</div>\s*)<div id="apRoad4"></div>\s*(<script>)', s)
+assert _m, "apRoad4 anchor"
+s = s[:_m.start()] + _m.group(1) + _m.group(2) + s[_m.end():]
 open("pages/start-v37.16.html", "w", encoding="utf-8").write(s)
 b = open("pages/start-v37.16.html", "rb").read()
 print("pages/start-v37.16.html", len(b), "bytes, sha256", hashlib.sha256(b.rstrip(b"\n")).hexdigest())
