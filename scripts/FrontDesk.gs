@@ -1,4 +1,10 @@
 /**
+ * Ancient Path — Front Desk · build 45 · Triage 1 for every script (Nov 17, 2026; John: "Every script gets the triage", "Every Needs us failure is one Front Desk card"). Built on build 44.
+ *   1. A fix: card written by another Ancient Path script (key fix:<script>:<signature>, for the reader relay, the save service, the ActiveCampaign bridge and the Research Engine) is that script's own: rebuildActions_ keeps it open (FOREIGN_FIX_) and the script closes it as Proven when its job has run clean for 30 minutes. Cards the Front Desk writes (fix:front-desk:) are unchanged.
+ *   2. Those scripts hold no log secret. They write their events as rows on a new Triage queue tab of this sheet (triDrain_ reads it on the 5-minute run, sends each row to the event log with its school and clears the rows the log took). The secret stays in this one script.
+ *   3. FD.BUILD 45. Nothing else changes. Simplicity check: count: one hidden tab (Triage queue), no trigger or page; retires nothing (it replaces one log secret per script); when it breaks, the card stays open and shows on Today until its own script closes it; next school: nothing more.
+ */
+/**
  * Ancient Path — Front Desk · build 44 · Triage 1 (Nov 17, 2026; John: "instead of sending me messages that i can really understand or do anything about, can we create a triage that addresses error logs and sets the course to repair?"; AP-TRIAGE 1). Built on build 43, so everything in 43 is kept.
  *   1. withRetry_ on the settings read (about 1, 4 and 10 seconds), and the last good copy of the settings kept in the Script Property fd:cfg, so a Google timeout on the sheet cannot stop a run (the 8:05 AM failure on Nov 17 and Oct 26).
  *   2. triage_(where, error) is the one door for every failure. Wait (silent; a card only at 30 minutes), Repair (a missing tab or Config row, a lost timer; the job then runs again) and Needs us (a code defect, a daily limit, a refused permission or key: one Actions card, key fix:front-desk:<signature>, closed as Proven after 30 clean minutes). alert_ is a one-line call to it; run() no longer rethrows; the room reminder, the nightly backup and the two text timers are wrapped the same way, so Google's own failure emails stop too. S1 only also sends one plain email with the desk link on its own line. Nothing emails an error.
@@ -573,7 +579,7 @@
  */
 
 const FD = {
-  BUILD: '44',
+  BUILD: '45',
   OWN: [{ email: 'john@ancientpathcoaching.com', name: 'John Sherrod' }, { email: 'johnsherrodtest@gmail.com', name: 'John Sherrod' }], // build 39: our own addresses, which an admin may press Text him on (isOurs_ keeps them off the Roster and out of every count)
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SIGNALS_SHEET_ID: '1s79xljKjt-sYCZin0-oRFp5swxcETS0a4gzr126_Dns',
@@ -1336,6 +1342,8 @@ function roomFeed_(ss, cfg) {
 // ───────────────────────────── the Action lane ─────────────────────────────
 
 /** Keys the script itself writes to the Actions tab (build 11). Any other key belongs to an outside automation and is never auto-closed. */
+/** build 45: a triage card another script writes (the reader relay, the save service, the ActiveCampaign bridge, the Research Engine). This script never closes it. */
+const FOREIGN_FIX_ = /^fix:(?!front-desk:)/;
 const SCRIPT_ACTION_KEY = /^(seat|first|bwm|wl|bug|testimony|look|contact|pay|cal|room|ans|add|askans|agr|search|move|check|fu|prom|hand|road|fix):/;
 /** build 21: the facilitator pages read on this run, for the cards and the facilitator desks. */
 let FAC_PAGES_ = [];
@@ -1555,7 +1563,8 @@ function rebuildActions_(ss, cfg, cal, search) {
   });
   existing.forEach((ex, key) => {
     if (wantKeys.has(key)) return;
-    if (!SCRIPT_ACTION_KEY.test(key)) {
+    if (!SCRIPT_ACTION_KEY.test(key) || FOREIGN_FIX_.test(key)) {
+      // build 45: a fix: card written by another Ancient Path script (fix:<script>:<signature>) is that script's own; it closes it as Proven when its job has run clean for 30 minutes.
       // build 11: written by another automation (draft:, refresh:, ...) — the script does not own it, so it never closes it.
       // It stays open until someone ticks "mark done by hand" (or types done in status).
       if (ex[H['mark done by hand']] === true && ex[H['status']] !== 'done' && !/^draft:/.test(key)) { ex[H['status']] = 'done'; ex[H['done at']] = now; setHow(ex, changedHow_(key)); } // build 36.1: an approved draft stays open (Waiting) until its article is live
@@ -5027,7 +5036,7 @@ function cleanRun_(src) {
       if (quiet >= TRI_.CLEAN_MIN * 60000 && (r !== false || quiet >= 4 * 36e5)) delete st[sig]; // gone from the index: the next rebuild closes its card as Proven
     });
     if (dirty) triSave_(st);
-    if (src === 'run') triTimers_();
+    if (src === 'run') { triTimers_(); triDrain_(); }
   } catch (e) {}
 }
 /** Repair: a lost timer. Once an hour, the daily timers are checked and a missing one is made again, with one line in the log. */
@@ -5045,6 +5054,31 @@ function triTimers_() {
 /** A timer's own job, handled where it happens: a failure goes to triage_, a clean pass to cleanRun_, and nothing is rethrown. */
 function triGuard_(job, src, fn) {
   try { const r = fn(); cleanRun_(src); return r; } catch (e) { triage_(job, e); }
+}
+/**
+ * build 45: the other scripts (the reader relay, the save service, the ActiveCampaign bridge, the Research Engine) hold no log secret. Each writes its events as rows on the
+ * Triage queue tab of this sheet (at, source, job, way, severity, signature, proof, note, school), and this script, which holds the secret, sends them to the log on the 5-minute run
+ * and clears the rows the log took. A row the log did not take stays for the next run; the queue is capped at 200 rows. Never throws.
+ */
+function triDrain_() {
+  try {
+    const c = triCfg_(); if (!c) return;
+    const sh = SpreadsheetApp.openById(FD.SHEET_ID).getSheetByName('Triage queue');
+    if (!sh || sh.getLastRow() < 2) return;
+    const n = Math.min(sh.getLastRow() - 1, 40), rows = sh.getRange(2, 1, n, 9).getValues();
+    let took = 0;
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      const res = UrlFetchApp.fetch(TRI_.URL, { method: 'post', contentType: 'application/json', headers: { apikey: TRI_.KEY }, muteHttpExceptions: true,
+        payload: JSON.stringify({ p_secret: c.secret, p_school: String(r[8] || c.school), p_source: String(r[1]), p_job: String(r[2]), p_way: String(r[3]), p_severity: r[4] ? String(r[4]) : null,
+          p_signature: String(r[5]), p_proof: r[6] ? String(r[6]) : null, p_note: r[7] ? String(r[7]) : null }) });
+      let ok = false; try { const j = JSON.parse(res.getContentText()); ok = res.getResponseCode() === 200 && j && (j.ok === true || /unknown school|needs_us needs/.test(String(j.error || ''))); } catch (e) {}
+      if (!ok) break;
+      took++;
+    }
+    if (took) sh.deleteRows(2, took);
+    if (sh.getLastRow() > 201) sh.deleteRows(2, sh.getLastRow() - 201);
+  } catch (e) {}
 }
 
 // ───────────────────────────── build 5 · the desk on the site ─────────────────────────────
