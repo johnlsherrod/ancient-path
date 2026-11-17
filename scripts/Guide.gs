@@ -1,52 +1,7 @@
-/* AP-GUIDE build 18 · Ancient Path Biblical Coaching · the Guide: the ask box and the concern doors on /read (11 Oct 2026)
- *   build 18: the fit decides. Claude scores how well each piece and each of our pages fits what he asked (0 to 100) and, for the
- *   strong ones, says when that one is the right start. The best fit leads; what fits nearly as well shows beside it (our pages
- *   under the pieces); when two fit about evenly he is offered both, this or that, each with when it is the right start. When
- *   nothing fits, the page says plainly that our library is growing and offers the four choices. guide.js build 6 draws it.
- *   build 17: a question about his own life that Claude answers only with the Contact page ("how do I talk to my teenage son about
- *   his faith") is not a site question either: it is answered as close or none (the four choices). A habit he cannot stop (drinking,
- *   a screen, food) is his own life, inside what we do, never "outside".
- *   build 16: an ask id always starts with a letter, so the sheet keeps it as written (one read as a number, 6.43E+07, and a choice
- *   on that ask could not find its row). A question about a man's own life is never "site": when Claude calls it site but names
- *   none of our pages, it is answered as close (when pieces fit) or none (the four choices), not a bare Let's talk. The concern and
- *   topic are named on every ask, site asks too. A step two with no saved row writes its row instead of calling itself.
- *   build 15: inside a quoted verse, a quote within the verse reads as curly single marks (“…said, ‘Where are you?’…”), never straight
- *   marks inside curly ones. The hourly read no longer asks Claude again about a piece it already found no concern for, while the
- *   piece's words are unchanged ("What Is Biblical Coaching?" was asked every hour).
- *   build 14: speed again. A two-step ask is written to the Asks tab once, after its answer, with its final outcome (step one no
- *   longer waits on the sheet). guide.js build 5: the first look — the moment he presses Ask, the page shows the closest door and
- *   its pieces from what it already holds, under his words, while Claude reads; Claude's answer then takes its place. The verse check
- *   ignores quote marks on both sides (Genesis 3:9–10 carries quotes inside the verse).
- *   build 13: the verse check is tight — the quoted words may not carry a reference inside them, and the reference must sit right
- *   right after the words in the piece (within a few characters), the way each piece sets its verses.
- *   build 12: "What Scripture says" is built here from three parts Claude names — the verse's exact words, its reference and the
- *   piece — and is shown only when those words and that reference both appear in that piece; one plain sentence follows. An
- *   article's own sentence can no longer sit under the Scripture heading.
- *   build 11: "What Scripture says" must carry a Bible reference (book chapter:verse) or it is dropped — the faster model once
- *   quoted an article's own sentence there; the instruction now says an article's words are never Scripture.
- *   build 10: speed. The Guide asks Claude itself when its own Script Properties carry ANTHROPIC_API_KEY (the hand-off back from
- *   the relay cost 5–30 seconds an ask); without the key it uses the relay as before. The lists an ask reads (pieces, pages,
- *   concerns, settings) come from the cache, not the sheet; the sheet is opened once per ask; the answer is written by the
- *   faster model unless the Config row "answer model" says full; step two writes its result straight onto the row step one made.
- *   build 9: the first step (choosing the pieces or pages) asks the relay for its faster model ("fast": true — the relay falls back
- *   to its usual model if the faster one does not answer); an ask about writing his story says to start with Where I Am From, as
- *   the Your Story page does, and offers The Story Path to walk all nine — and those two pages lead the cards.
- *   build 8: a Site row whose body starts "hand: " keeps the words typed there (Your Page needs a sign-in, so its page cannot be
- *   read — a signed-out read lands on /read); Your Page joins the seed and Facilitator Training (our own team's course) leaves it.
- *   build 7: the box answers questions about the site and points to the doors. A Site tab lists our pages a man can go to
- *   (the six Your Story pieces, the Story Path, the courses, Breaking Free, the paths, Investment, About, Let's talk); the
- *   hourly refresh reads each page, so the answer is drawn from the page itself. A new outcome, "site": he asks how to do
- *   something here, where something is, what something costs, how to start, write, join or talk — he gets a short plain
- *   answer from those pages and the pages as cards, then Let's talk. An ask about writing his story opens with John's line.
- *   guide.js build 4 (the box reads "What do you need help with? Ask in your own words.").
- *   build 6: the safeguarding screen runs before the daily brake (build 5 told a man past his day's asks that the box was done for
- *   today, even when he wrote that he did not want to wake up).
- *   build 5: the fixes from the 10 Oct test pass. An ask answers in two steps (the pieces in a few seconds, then the answer,
- *   op "answer"); "answer" is kept for a piece written for his very situation, everything else nearer is "close"; his concern
- *   is judged by his words, not by the pieces picked; "What you are carrying" names what is under his words and is dropped if
- *   it only repeats them; "What Scripture says" must quote a verse or it is dropped; a person named is introduced; the asking
- *   line points at the piece that answers it (Claude picks once per line), not the newest; the monthly review writes the
- *   "A group on this" count to its own column ("group asks") and never touches the "group" tick; guide.js build 3.
+/* AP-GUIDE build 6 (6 Nov 2026: the piece table — the Pieces tab gains ten columns at the end, school · status · search title · search description · picture · next · keep · published · handed in · lives; the hourly refresh no longer rewrites what it does not own: the rows the Publisher writes (lives = ours) are kept whole, the hand-typed cells ride with their piece by id, and a published one is asked about, read and shown like any other; a blog post in the category Our stories is kind Story with its author; guide.js build 4) · build 5 · the Guide: the ask box and the concern doors on /read (10 Oct 2026)
+ *   build 5 (12 Oct): a fifth outcome, "about" — a question about us (who we are, our team, how the work is carried, the paths,
+ *   the courses, what it costs, how to begin) is answered from our own site pages, read hourly like the articles (GUIDE.PAGES),
+ *   with the page it came from as a card and Let's talk. Site pages carry no concern and never stand behind a door.
  *   build 4: guide.js build 2 — the page lands on the answer (the live site ignored the smooth scroll call; the box is set directly).
  *   build 3: a concern Claude already gave a piece is reused while the piece's words are unchanged (build 2 asked again
  *   every hour for pieces whose date the sheet had reshaped — seven calls an hour for nothing).
@@ -108,7 +63,9 @@
  */
 
 const GUIDE = {
-  BUILD: 18,
+  BUILD: 6,
+  SCHOOL: 'ancient-path',                                                           // the one school this Guide serves (the piece table's school column)
+  PICTURES: 'https://lwfiles.mycourse.app/69ff74fa031fcc8033475300-public/',      // where a LearnWorlds post's picture file lives
   SHEET_NAME: 'Ancient Path — Guide',
   DOORS: ['Shame', 'Pornography', 'What people think of me', 'Anger', 'Where I’m from', 'Endings and new beginnings', 'Grief and lament', 'Fathers and children', 'Writing my story', 'How to be known in community'],
   SITE: 'https://www.ancientpathcoaching.com',
@@ -121,26 +78,32 @@ const GUIDE = {
   FD_SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',                   // the Front Desk sheet (Actions tab)
   SEARCH_SHEET_ID: '1V84E1Wg33DaI89wAP0GvDR5iHQX3ZFsM3kRzu1LatCE',               // the Search profile sheet (Monthly log tab)
   SKIP_SLUGS: { 'where-i-am-from': 1, 'write-a-lament': 1, 'poetry': 1 },         // Your Story signposts on the blog, not articles
+  PAGES: [                                                                           // our own pages: the source for a question about us
+    ['/about', 'About', 'About us'], ['/how-the-work-is-carried', 'The Work', 'About us'], ['/courses', 'Courses', 'About us'],
+    ['/investment', 'Investment', 'About us'], ['/begin', 'Let\'s Talk', 'About us'],
+    ['/the-integrity-path', 'The Integrity Path', 'A path'], ['/the-mending-path', 'The Mending Path', 'A path'], ['/the-pastors-path', 'The Pastor\'s Path', 'A path'],
+    ['/the-crossing', 'The Crossing', 'A path'], ['/the-guide-path', 'The Guide Path', 'A path'],
+    ['/course/the-story-path', 'The Story Path', 'A course'], ['/course/student-course', 'Breaking Free', 'A course'], ['/course/i-want-you-to-know-me', 'Known by Jesus', 'A course'],
+    ['/course/do-hard-things', 'Do Hard Things', 'A course'], ['/course/walk-with-me', 'Walk With Me', 'A course'], ['/course/facilitator-training', 'Facilitator Training', 'A course']
+  ],
   TABS: {
-    Pieces:   ['id', 'source', 'kind', 'title', 'who', 'description', 'address', 'concern', 'concern by', 'words', 'updated', 'body'],
-    Concerns: ['concern', 'order', 'open', 'asking', 'group', 'rename to', 'was', 'line', 'where we are', 'state', 'pieces', 'asks', 'reads', 'talk', 'write', 'story', 'search', 'phrase', 'recommendation', 'added', 'group asks'],
+    Pieces:   ['id', 'source', 'kind', 'title', 'who', 'description', 'address', 'concern', 'concern by', 'words', 'updated', 'body',
+               'school', 'status', 'search title', 'search description', 'picture', 'next', 'keep', 'published', 'handed in', 'lives'],
+    Concerns: ['concern', 'order', 'open', 'asking', 'group', 'rename to', 'was', 'line', 'where we are', 'state', 'pieces', 'asks', 'reads', 'talk', 'write', 'story', 'search', 'phrase', 'recommendation', 'added'],
     Asks:     ['at', 'ask id', 'question', 'door', 'outcome', 'concern', 'topic', 'pieces shown', 'choice', 'his line', 'email given', 'chosen at', 'build'],
-    Site:     ['id', 'kind', 'title', 'line', 'address', 'go', 'body', 'updated'],
     Config:   ['key', 'value', 'note'],
     Log:      ['at', 'what', 'detail']
   },
   MAX_Q: 600,
   MAX_PIECE_CHARS: 9000,
-  MAX_READ_CHARS: 18000,
-  API_URL: 'https://api.anthropic.com/v1/messages',
-  FAST_MODEL: 'claude-haiku-4-5',
-  FULL_MODEL: 'claude-sonnet-5',
-  STORY_LINE: 'We have several ways to engage your story — from poems to a lament, to setting a remembrance stone, to courses. Take a look below and see if one matches what you need.',
-  STORY_START: 'Start with Where I Am From. If you want to walk all nine as one path, The Story Path is the way.'
+  MAX_READ_CHARS: 52000
 };
 
 const CHOICES = { talk: "Let's talk", write: 'Write about it', story: 'A story to write', group: 'A group on this' };
 const TICKS = ['open', 'asking', 'group'];
+const PIECE_OWN = ['school', 'status', 'picture', 'published', 'lives'];                    // the columns a source fills; the rest are typed by hand or written by the Publisher and ride with the piece by id
+const PIECE_NEW = ['school', 'status', 'search title', 'search description', 'picture', 'next', 'keep', 'published', 'handed in', 'lives'];
+function dayCentral_(epochSeconds) { const n = Number(epochSeconds); return n > 0 ? Utilities.formatDate(new Date(n * 1000), 'America/Chicago', 'yyyy-MM-dd') : ''; }
 
 // ───────────────────────────── setup ─────────────────────────────
 
@@ -156,18 +119,15 @@ function setup() {
   Logger.log('The Guide is up. Build ' + GUIDE.BUILD + '. Pieces: ' + n + '. Sheet: https://docs.google.com/spreadsheets/d/' + ss.getId());
 }
 
-let SS_ = null;   // opened once per run
 function sheet_() {
-  if (SS_) return SS_;
   const props = PropertiesService.getScriptProperties();
   let id = props.getProperty('GUIDE_SHEET_ID');
-  if (id) { try { SS_ = SpreadsheetApp.openById(id); return SS_; } catch (e) {} }
+  if (id) { try { return SpreadsheetApp.openById(id); } catch (e) {} }
   const found = DriveApp.getFilesByName(GUIDE.SHEET_NAME);
   let ss = null;
   while (found.hasNext()) { const f = found.next(); if (f.getMimeType() === MimeType.GOOGLE_SHEETS) { ss = SpreadsheetApp.openById(f.getId()); break; } }
   if (!ss) ss = SpreadsheetApp.create(GUIDE.SHEET_NAME);
   props.setProperty('GUIDE_SHEET_ID', ss.getId());
-  SS_ = ss;
   return ss;
 }
 
@@ -247,19 +207,14 @@ function ensureConfig_(ss) {
     ['review owner', 'John', 'Whose name goes on the Front Desk action for the monthly review.'],
     ['master list', '3', 'The ActiveCampaign list a left email joins (3 = Master Contact List).'],
     ['front desk actions', 'yes', 'yes: the monthly review also writes one row on the Front Desk Actions tab.'],
-    ['newest handful', '6', 'How many pieces each section on /read shows before "All our stories" / "All articles".'],
-    ['answer model', 'fast', 'fast: the answer under the pieces is written by the faster model (a few seconds). full: the usual model (slower, about ten seconds more).']
+    ['newest handful', '6', 'How many pieces each section on /read shows before "All our stories" / "All articles".']
   ];
   const add = want.filter(w => !have[w[0]]);
   if (add.length) sh.getRange(sh.getLastRow() + 1, 1, add.length, 3).setValues(add);
 }
 
 function config_(ss) {
-  if (!ss) { const hit = bigGet_('cfg'); if (hit) return hit; const c = readConfig_(sheet_()); bigPut_('cfg', c, 600); return c; }
-  return readConfig_(ss);
-}
-function readConfig_(ss) {
-  const rows = ss.getSheetByName('Config').getDataRange().getValues().slice(1);
+  const rows = (ss || sheet_()).getSheetByName('Config').getDataRange().getValues().slice(1);
   const c = {}; rows.forEach(r => { const k = String(r[0]).trim(); if (k) c[k] = String(r[1]).trim(); });
   return {
     perVisitor: numOr_(c['asks per visitor per day'], 12),
@@ -269,8 +224,7 @@ function readConfig_(ss) {
     owner: c['review owner'] || 'John',
     masterList: numOr_(c['master list'], 3),
     fdActions: String(c['front desk actions'] || 'yes').toLowerCase() !== 'no',
-    handful: Math.max(3, numOr_(c['newest handful'], 6)),
-    answerFull: String(c['answer model'] || 'fast').toLowerCase() === 'full'
+    handful: Math.max(3, numOr_(c['newest handful'], 6))
   };
 }
 
@@ -284,12 +238,6 @@ function ensureTriggers_() {
 // ───────────────────────────── the concerns (the one list) ─────────────────────────────
 
 /** The list as the sheet has it: renames applied, each row with its name, old names, ticks and state. Order column, then sheet order. */
-/** The list for an ask: cached ten minutes (the hourly refresh clears it), so a tick reaches the box within ten minutes. */
-function concernsFast_() {
-  const hit = bigGet_('concerns'); if (hit) return hit;
-  const list = concerns_(); bigPut_('concerns', list, 600); return list;
-}
-
 function concerns_(ss) {
   ss = ss || sheet_();
   const sh = ss.getSheetByName('Concerns');
@@ -336,41 +284,17 @@ function updateConcernStates_(ss, pieces) {
   list.forEach(c => {
     const ps = (byName[c.name] || []).slice().sort((a, b) => String(b.updated).localeCompare(String(a.updated)));
     const state = ps.length ? 'door' : 'following';
-    const best = ps.length ? (c.asking && c.line ? askingPiece_(c, ps) : ps[0]) : null;   // an asking line points at the piece that answers it
     let where;
     if (c.group) where = 'We are opening a group on this.';
-    else if (best) where = 'The piece we have: ' + best.title;
+    else if (ps.length) where = 'The piece we have: ' + ps[0].title;
     else where = 'We are writing on this.';
     sh.getRange(c.row, H['state'] + 1).setValue(state);
     sh.getRange(c.row, H['pieces'] + 1).setValue(ps.length);
     sh.getRange(c.row, H['where we are'] + 1).setValue(where);
-    c.state = state; c.where = where; c.address = best ? best.address : '';
+    c.state = state; c.where = where; c.address = ps.length ? ps[0].address : '';
   });
   CacheService.getScriptCache().remove('guidefeed');
-  bigDel_('concerns');
   return list;
-}
-
-/** The piece an asking line should point at. One piece: that one. Several: Claude reads the line and the pieces once and picks;
- *  the pick is kept (Script Properties) until the line or the concern's pieces change. Newest is the fallback. ps: newest first. */
-function askingPiece_(c, ps) {
-  if (!ps.length) return null;
-  if (ps.length === 1 || !c.line) return ps[0];
-  const props = PropertiesService.getScriptProperties();
-  const sig = Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, c.name + '|' + c.line + '|' + ps.map(p => p.id).join(','), Utilities.Charset.UTF_8));
-  const key = 'ASKPICK_' + sig.replace(/=+$/, '');
-  const kept = props.getProperty(key);
-  if (kept) { const hit = ps.find(p => p.id === kept); if (hit) return hit; }
-  const input = GUIDE.HOUSE_MARK + ' On our Read page, under "What men are asking", a line in a man\'s own words points to ONE of our pieces. Choose the piece that answers this line best — the one a man who said it should read first. ' +
-    'Judge by what the line is about, not by the date. Reply with only this JSON: {"id": "<one id from the list>"}\n\n' +
-    'THE LINE: "' + c.line + '"\n\nTHE PIECES (id | title | one line | opening):\n' +
-    ps.map(p => p.id + ' | ' + p.title + ' | ' + String(p.description || '').slice(0, 160) + ' | ' + clean_(String(p.body || '')).slice(0, 700)).join('\n');
-  const r = relay_(input, '');
-  const id = r.ok && r.data ? String(r.data.id || '') : '';
-  const pick = ps.find(p => p.id === id);
-  if (!pick) return ps[0];
-  try { props.setProperty(key, pick.id); } catch (e) {}
-  return pick;
 }
 
 // ───────────────────────────── the list of pieces (hourly) ─────────────────────────────
@@ -378,8 +302,11 @@ function askingPiece_(c, ps) {
 /** Reads every piece from the two sources /read already uses (the Published feed and the blog's own list) plus the founders'
  *  pieces baked into the Your Story hub, gives each one its concern, and rewrites the Pieces tab. Bodies and concerns already
  *  on the tab are reused when a piece has not changed, so the hourly run is light. Returns the count. */
-function refreshPieces() {
+function refreshPieces() { return triGuard_('Guide refresh', 'refresh', refreshPieces_); }
+
+function refreshPieces_() {
   const ss = sheet_();
+  ensureTabs_(ss);
   const sh = ss.getSheetByName('Pieces');
   const H = headerIndex_(sh);
   const old = {};
@@ -397,9 +324,10 @@ function refreshPieces() {
       const from = clean_(it.from) || 'Testimony', text = String(it.piece || '');
       push({ id: id, source: 'story', kind: from, title: clean_(it.title) || 'A testimony', who: clean_(it.name) || 'Shared anonymously',
         description: firstSentence_(text), address: GUIDE.SITE + '/your-story?p=' + safeId_(it.id), body: text.slice(0, GUIDE.MAX_PIECE_CHARS), updated: String(it.at || ''),
-        given: clean_(it.concern || ''), givenBy: 'man' });
+        given: clean_(it.concern || ''), givenBy: 'man',
+        extra: { 'school': GUIDE.SCHOOL, 'status': 'published', 'published': /^20\d\d-\d\d-\d\d/.test(String(it.at || '')) ? String(it.at).slice(0, 10) : '', 'lives': 'LearnWorlds' } });
     });
-  } catch (e) { log_('refresh', 'feed failed: ' + e); }
+  } catch (e) { log_('refresh', 'feed failed: ' + e); triage_('Guide refresh: the feed', e); }
 
   // 2. the founders' pieces baked into the hub (sections class="itow-piece" data-p="…")
   try {
@@ -414,9 +342,10 @@ function refreshPieces() {
       [kind, title, who].forEach(s => { if (s && text.indexOf(s) === 0) text = text.slice(s.length).trim(); });   // the section opens with eyebrow, title, byline
       text = text.replace(/^·\s*[^.]{0,80}?(?=[A-Z])/, '').trim();
       push({ id: 'story:' + pid, source: 'story', kind: kind, title: title, who: who, description: firstSentence_(text),
-        address: GUIDE.SITE + '/your-story?p=' + pid, body: text.slice(0, GUIDE.MAX_PIECE_CHARS), updated: 'hub', given: '', givenBy: '' });
+        address: GUIDE.SITE + '/your-story?p=' + pid, body: text.slice(0, GUIDE.MAX_PIECE_CHARS), updated: 'hub', given: '', givenBy: '',
+        extra: { 'school': GUIDE.SCHOOL, 'status': 'published', 'lives': 'LearnWorlds' } });
     }
-  } catch (e) { log_('refresh', 'hub failed: ' + e); }
+  } catch (e) { log_('refresh', 'hub failed: ' + e); triage_('Guide refresh: the hub', e); }
 
   // 3. the blog's own list — articles; the body is read from the post page only when the post is new or changed
   try {
@@ -431,42 +360,81 @@ function refreshPieces() {
       // the post's own category names the concern when it is one of ours
       const cats = String(Array.isArray(p.categories) ? p.categories.join(',') : (p.categories || '')).split(',').map(s => s.trim()).filter(Boolean);
       const cat = cats.map(cn => concernFor_(cn, list)).find(Boolean);
-      push({ id: id, source: 'article', kind: 'Article', title: clean_(p.title) || slug, who: 'Ancient Path', description: firstSentence_(p.description || body),
-        address: GUIDE.SITE + '/blog/' + slug, body: body.slice(0, GUIDE.MAX_PIECE_CHARS), updated: stamp, given: cat ? cat.name : '', givenBy: cat ? 'category' : '' });
+      const isStory = cats.some(cn => cn.toLowerCase() === 'our stories');   // a post filed under Our stories is a story, told by its author
+      push({ id: id, source: 'article', kind: isStory ? 'Story' : 'Article', title: clean_(p.title) || slug, who: isStory ? (clean_(p.author_name) || 'Ancient Path') : 'Ancient Path', description: firstSentence_(p.description || body),
+        address: GUIDE.SITE + '/blog/' + slug, body: body.slice(0, GUIDE.MAX_PIECE_CHARS), updated: stamp, given: cat ? cat.name : '', givenBy: cat ? 'category' : '',
+        extra: { 'school': GUIDE.SCHOOL, 'status': 'published', 'picture': p.image ? GUIDE.PICTURES + clean_(p.image) : '', 'published': dayCentral_(p.published), 'lives': 'LearnWorlds' } });
     });
-  } catch (e) { log_('refresh', 'blog failed: ' + e); }
+  } catch (e) { log_('refresh', 'blog failed: ' + e); triage_('Guide refresh: the blog', e); }
+
+  // 4. our own pages — the source for a question about us; read again only when the page's words changed is not knowable, so read each hour (small pages)
+  GUIDE.PAGES.forEach(pg => {
+    const id = 'page:' + pg[0].replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    let body = '';
+    try { body = pageBody_(fetch_(GUIDE.SITE + pg[0])); } catch (e) { const prev = old[id]; body = prev ? String(prev['body'] || '') : ''; log_('refresh', 'page ' + pg[0] + ': ' + e); }
+    if (!body) return;
+    push({ id: id, source: 'page', kind: pg[2], title: pg[1], who: 'Ancient Path', description: firstSentence_(body), address: GUIDE.SITE + pg[0], body: body.slice(0, GUIDE.MAX_PIECE_CHARS), updated: 'page', given: '', givenBy: 'page' });
+  });
+
+  // 3b. the rows the Publisher owns (lives = ours): a published one is a piece like any other (asked about, read, shown behind a door); every one is kept whole below
+  rows_(sh).forEach(r => {
+    if (String(r['lives'] || '') !== 'ours' || !r['id']) return;
+    if (String(r['status'] || '') !== 'published') return;
+    const body = textOf_(String(r['body'] || ''));
+    const p = { id: String(r['id']), source: String(r['source'] || 'article'), kind: String(r['kind'] || 'Article'), title: String(r['title']), who: String(r['who'] || 'Ancient Path'),
+      description: String(r['description'] || firstSentence_(body)), address: String(r['address']), body: body.slice(0, GUIDE.MAX_PIECE_CHARS), updated: String(r['published'] || r['updated'] || ''), given: '', givenBy: '', ours: true };
+    if (!seen[p.id]) { seen[p.id] = 1; pieces.push(p); }
+  });
 
   if (!pieces.length) { log_('refresh', 'nothing came back; the tab is left as it was'); return rows_(sh).length; }
 
   // 4. one concern per piece: a hand-typed one is kept; the source's own comes next; a kept Claude pick is reused; otherwise Claude reads it once
   let asked = 0;
   pieces.forEach(p => {
+    if (p.source === 'page') { p.concern = ''; p.by = 'page'; return; }   // our own pages carry no concern and stand behind no door
     const prev = old[p.id];
     const prevConcern = prev ? String(prev['concern'] || '').trim() : '', prevBy = prev ? String(prev['concern by'] || '').trim() : '';
     const prevC = concernFor_(prevConcern, list);
     if (prevC && prevBy === 'hand') { p.concern = prevC.name; p.by = 'hand'; return; }
     const givenC = concernFor_(p.given, list);
     if (givenC) { p.concern = givenC.name; p.by = p.givenBy; return; }
-    if (prev && prevBy && String(prev['body'] || '') === p.body && (prevC || prevBy === 'claude')) { p.concern = prevC ? prevC.name : ''; p.by = prevBy; return; }   // the words are the same: the pick stands, a "none" too
+    if (prevC && prevBy && (p.ours || String(prev['body'] || '') === p.body)) { p.concern = prevC.name; p.by = prevBy; return; }   // the words are the same (a Publisher row's body is HTML, so its pick stands until a hand changes it): the pick stands
     if (asked >= 25) { p.concern = prevC ? prevC.name : ''; p.by = prevC ? prevBy : ''; return; }   // a very large first run finishes next hour
     asked++;
     const c = assignConcern_(p, list);
-    p.concern = c ? c.name : ''; p.by = 'claude';   // "claude" with no concern = asked, none fits; kept until the words change
+    p.concern = c ? c.name : ''; p.by = c ? 'claude' : '';
   });
 
-  const out = pieces.map(p => {
-    const row = new Array(GUIDE.TABS.Pieces.length).fill('');
-    row[H['id']] = p.id; row[H['source']] = p.source; row[H['kind']] = p.kind; row[H['title']] = p.title; row[H['who']] = p.who;
-    row[H['description']] = p.description; row[H['address']] = p.address; row[H['concern']] = p.concern || ''; row[H['concern by']] = p.by || '';
-    row[H['words']] = p.body.split(/\s+/).filter(Boolean).length; row[H['updated']] = p.updated; row[H['body']] = p.body;
+  // the write: the sheet is read again just before it, so a row the Publisher wrote while this run was reading the web is not lost.
+  // Existing rows keep their place; a row this run made refreshes the columns a source owns and keeps every typed cell; a Publisher row is kept whole
+  // (only its concern, concern by and words move); a row whose source is gone is dropped; new rows go to the end.
+  const H2 = headerIndex_(sh), width = Object.keys(H2).length;
+  const fresh = rows_(sh), made = {}; pieces.forEach(p => { made[p.id] = p; });
+  const toRow = (r) => { const row = new Array(width).fill(''); Object.keys(H2).forEach(h => { row[H2[h]] = r[h] === undefined || r[h] === null ? '' : r[h]; }); return row; };
+  const build = (p, prev) => {
+    const row = prev ? toRow(prev) : new Array(width).fill('');
+    if (!p.ours) {
+      row[H2['id']] = p.id; row[H2['source']] = p.source; row[H2['kind']] = p.kind; row[H2['title']] = p.title; row[H2['who']] = p.who;
+      row[H2['description']] = p.description; row[H2['address']] = p.address; row[H2['updated']] = p.updated; row[H2['body']] = p.body;
+      PIECE_OWN.forEach(c => { const v = p.extra && p.extra[c]; if (v !== undefined && v !== '') row[H2[c]] = v; });
+    }
+    row[H2['concern']] = p.concern || ''; row[H2['concern by']] = p.by || '';
+    row[H2['words']] = p.body.split(/\s+/).filter(Boolean).length;
     return row;
+  };
+  const final = [], placed = {};
+  fresh.forEach(r => {
+    const id = String(r['id'] || ''); if (!id) return;
+    if (String(r['lives'] || '') === 'ours') { final.push(made[id] ? build(made[id], r) : toRow(r)); placed[id] = 1; return; }
+    if (made[id]) { final.push(build(made[id], r)); placed[id] = 1; }
   });
+  pieces.forEach(p => { if (!placed[p.id]) { final.push(build(p, null)); placed[p.id] = 1; } });
   const last = sh.getLastRow();
-  if (last > 1) sh.getRange(2, 1, last - 1, GUIDE.TABS.Pieces.length).clearContent();
-  sh.getRange(2, 1, out.length, GUIDE.TABS.Pieces.length).setValues(out);
-  bigDel_('pieces');
+  if (last > 1) sh.getRange(2, 1, last - 1, Math.max(width, sh.getLastColumn())).clearContent();
+  sh.getRange(2, 1, final.length, width).setValues(final);
+  const out = final;
+  CacheService.getScriptCache().remove('pieces');
   updateConcernStates_(ss, pieces);
-  try { refreshSite_(); } catch (e) { log_('site', 'read failed: ' + String(e).slice(0, 160)); }
   PropertiesService.getScriptProperties().setProperty('GUIDE_REFRESHED', new Date().toISOString());
   if (asked) log_('refresh', asked + ' concern' + (asked === 1 ? '' : 's') + ' assigned by Claude');
   return out.length;
@@ -493,145 +461,33 @@ function articleBody_(html) {
   return s.trim();
 }
 
+/** A site page's own text: the page container with the top bar, scripts and styles gone, cut before the footer. */
+function pageBody_(html) {
+  let s = html;
+  const k = s.indexOf('id="pageContainer"'); if (k > 0) s = s.slice(k);
+  s = s.replace(/<(section|header|div)[^>]*class="[^"]*lw-topbar[^"]*"[\s\S]*?<\/\1>/i, ' ');
+  s = s.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<noscript[\s\S]*?<\/noscript>/gi, ' ');
+  s = textOf_(s);
+  ['© Ancient Path', 'If any of this brings up more than you can carry'].forEach(cut => { const c = s.indexOf(cut); if (c > 300) s = s.slice(0, c); });
+  return s.trim();
+}
+
 function pieces_() {
   const cache = CacheService.getScriptCache();
-  const hit = bigGet_('pieces');
-  if (hit) return hit;
+  const hit = cache.get('pieces');
+  if (hit) { try { return JSON.parse(hit); } catch (e) {} }
   const sh = sheet_().getSheetByName('Pieces');
-  const list = rows_(sh).filter(r => r['id']).map(r => ({ id: String(r['id']), source: String(r['source']), kind: String(r['kind']), title: String(r['title']), who: String(r['who']),
-    description: String(r['description']), address: String(r['address']), concern: String(r['concern'] || ''), updated: String(r['updated'] || ''), body: String(r['body'] || '') }));
-  bigPut_('pieces', list, 3600);   // kept in parts, so a long list still fits the cache
+  const list = rows_(sh).filter(r => r['id'] && (!String(r['status'] || '') || String(r['status']) === 'published')).map(r => ({ id: String(r['id']), source: String(r['source']), kind: String(r['kind']), title: String(r['title']), who: String(r['who']),
+    description: String(r['description']), address: String(r['address']), concern: String(r['concern'] || ''), updated: String(r['updated'] || r['published'] || ''),
+    body: String(r['lives'] || '') === 'ours' ? textOf_(String(r['body'] || '')) : String(r['body'] || '') }));   // a Publisher row's body is HTML; the Guide reads it as words
+  try { cache.put('pieces', JSON.stringify(list), 1800); } catch (e) {}   // a big list may not fit the cache; the sheet is read each time then
   return list;
-}
-
-// ───────────────────────────── the site: the pages a man can go to (build 7) ─────────────────────────────
-
-/** The seed of the Site tab — our pages a man can be sent to, in this order. The lines of the six Your Story pieces and the
- *  courses card are the hub's own words. A blank line is filled from the page's own description on the hourly read.
- *  After the seed, the tab is the list: add a row to send men to a new page; the body and date are read for you. */
-const SITE_SEED = [
-  ['site:where-i-am-from', 'Poetry', 'Where I Am From', 'Find out what you are made of — the good and the hard, in your own words.', '/where-i-am-from', 'Write it'],
-  ['site:write-a-lament', 'Prayer', 'A Lament', 'Say the thing to God you have been carrying alone, in a form old enough to hold it.', '/write-a-lament', 'Write it'],
-  ['site:asked-of-me', 'Poetry', 'Asked of Me', 'One question God asked. You answer it as your story moves — where you came from, the names you lived under, the turn, who He is to you, and where you are going.', '/asked-of-me', 'Write it'],
-  ['site:what-kind-of-light', 'Poetry', 'What Kind of Light', 'Jesus is the light of the world, and He said His followers are too. Ask what His light looks like coming through you. Then write the question to one person in your life, near, far or gone.', '/what-kind-of-light', 'Write it'],
-  ['site:where-are-you', 'The map', 'Where Are You?', 'The first question God ever asked a man, asked to you, today. Say what you are walking away from, put your own X on Walk With Me’s map, and choose one step. Nobody places the X for you, and nobody grades it.', '/where-are-you', 'Place it'],
-  ['site:set-a-stone', 'Remembrance Stones', 'Set a Stone', 'Samuel set a stone and named it. Set yours: who it is for, what the LORD has done, and the name you give it. Three months on, it asks you to look again: what has the LORD done since?', '/set-a-stone', 'Set it'],
-  ['site:the-story-path', 'Course', 'The Story Path', '', '/course/the-story-path', 'See the course'],
-  ['site:courses', 'Courses', 'Your story, written at the end', 'Every course ends with a story piece. Here I Am closes Known by Jesus. The Man Who Crossed closes Do Hard Things. The Road I Walked runs through Walk With Me, one chapter a part. Run Your Race is coming.', '/courses', 'See the courses'],
-  ['site:breaking-free', 'Cohort', 'Breaking Free', '', '/course/student-course', 'See it'],
-  ['site:known-by-jesus', 'Course', 'Known by Jesus', '', '/course/i-want-you-to-know-me', 'See the course'],
-  ['site:do-hard-things', 'Course', 'Do Hard Things', '', '/course/do-hard-things', 'See the course'],
-  ['site:walk-with-me', 'Course', 'Walk With Me', '', '/course/walk-with-me', 'See the course'],
-  ['site:the-work', 'The Work', 'How the Work Is Carried', '', '/how-the-work-is-carried', 'Read it'],
-  ['site:the-integrity-path', 'The Work', 'The Integrity Path', '', '/the-integrity-path', 'Read it'],
-  ['site:the-mending-path', 'The Work', 'The Mending Path', '', '/the-mending-path', 'Read it'],
-  ['site:the-pastors-path', 'The Work', 'The Pastor’s Path', '', '/the-pastors-path', 'Read it'],
-  ['site:the-crossing', 'The Work', 'The Crossing', '', '/the-crossing', 'Read it'],
-  ['site:the-guide-path', 'The Work', 'The Guide Path', '', '/the-guide-path', 'Read it'],
-  ['site:investment', 'Coaching', 'Investment', '', '/investment', 'See it'],
-  ['site:your-story', 'Your Story', 'Your Story', '', '/your-story', 'Open it'],
-  ['site:your-page', 'Your Page', 'Your Page', 'Sign in, and everything you have written and kept is on Your Page. Only you can read it.', '/start', 'Open it', 'hand: Your Page is your own page on the site. Sign in, and everything you have written and kept is there, and only you can read it unless you choose to offer it.'],
-  ['site:read', 'Read', 'Our stories and articles', '', '/read', 'Open it'],
-  ['site:about', 'About', 'About Ancient Path', '', '/about', 'Read it'],
-  ['site:contact', 'Contact', 'Contact', '', '/contact', 'Open it'],
-  ['site:begin', 'Let’s talk', 'Let’s talk', 'Thirty minutes with one of our team, free. You tell us where you are and what you are carrying.', '/begin', 'Let’s talk']
-];
-const SITE_CONTACT = 'site:contact';
-const SITE_TALK = 'site:begin';   // drawn as the closing Let's talk box, never as a card
-
-/** The Site tab, made and seeded the first time it is needed. */
-function siteTab_(ss) {
-  ss = ss || sheet_();
-  let sh = ss.getSheetByName('Site');
-  if (!sh) {
-    sh = ss.insertSheet('Site');
-    sh.getRange(1, 1, 1, GUIDE.TABS.Site.length).setValues([GUIDE.TABS.Site]);
-    sh.setFrozenRows(1);
-  }
-  if (sh.getLastRow() < 2) {
-    const rows = SITE_SEED.map(r => { const row = r.slice(0, 6); row.push(r[6] || '', ''); return row; });
-    sh.getRange(2, 1, rows.length, GUIDE.TABS.Site.length).setValues(rows);
-  }
-  return sh;
-}
-
-/** Every row of the Site tab, as the ask reads it. Cached half an hour; the hourly read clears it. */
-function site_() {
-  const cache = CacheService.getScriptCache();
-  const hit = bigGet_('site');
-  if (hit) return hit;
-  const list = rows_(siteTab_()).filter(r => String(r['id']).trim() && String(r['address']).trim()).map(r => ({
-    id: String(r['id']).trim(), source: 'site', kind: String(r['kind'] || ''), title: String(r['title'] || ''), line: String(r['line'] || ''),
-    address: absUrl_(String(r['address']).trim()), go: String(r['go'] || 'Open it'), body: String(r['body'] || '').replace(/^hand:\s*/, '')
-  }));
-  bigPut_('site', list, 3600);
-  return list;
-}
-function absUrl_(a) { return /^https?:/.test(a) ? a : GUIDE.SITE + (a.charAt(0) === '/' ? '' : '/') + a; }
-
-/** The hourly read of every page on the Site tab: the page's own words go in "body", its description fills a blank line. */
-function refreshSite_() {
-  const sh = siteTab_(), H = headerIndex_(sh), data = sh.getDataRange().getValues();
-  let n = 0;
-  for (let i = 1; i < data.length; i++) {
-    const addr = String(data[i][H['address']] || '').trim(); if (!addr) continue;
-    if (String(data[i][H['body']] || '').indexOf('hand:') === 0) continue;   // words typed by hand are kept (a page behind a sign-in)
-    let html = '';
-    try { html = fetch_(absUrl_(addr)); } catch (e) { log_('site', addr + ': ' + String(e).slice(0, 120)); continue; }
-    const body = articleBody_(html).slice(0, 6000);
-    if (body.length > 80) { sh.getRange(i + 1, H['body'] + 1).setValue(body); n++; }
-    if (!String(data[i][H['line']] || '').trim()) {
-      const m = html.match(/<meta[^>]+name="description"[^>]+content="([^"]*)"/i) || html.match(/<meta[^>]+content="([^"]*)"[^>]+name="description"/i);
-      const d = m ? clean_(textOf_(m[1])) : '';
-      if (d) sh.getRange(i + 1, H['line'] + 1).setValue(firstSentence_(d));
-    }
-    sh.getRange(i + 1, H['updated'] + 1).setValue(new Date());
-  }
-  bigDel_('site');
-  return n;
-}
-
-function siteCard_(p) { return { id: p.id, source: 'site', kind: p.kind, title: p.title, line: p.line, address: p.address, go: p.go }; }
-
-/** Step two for a "site" ask: Claude reads only the chosen pages and answers his question from them, plainly. */
-function siteStep_(q, rows, v) {
-  let budget = 24000;
-  const blocks = rows.map(p => { const b = (p.body || p.line || '').slice(0, Math.max(0, Math.min(6000, budget))); budget -= b.length; return '=== ' + p.id + ' · ' + p.title + ' · ' + p.address + ' ===\n' + b; });
-  const input = GUIDE.HOUSE_MARK + ' A man typed a question into the ask box on our Read page. It is about our site or our work: how to do something here, where something is, what it costs, how to start, write, join or talk with someone. ' +
-    'Below are the only pages you may draw from. Answer his question in one to three plain sentences, to him as "you", using only what these pages say. ' +
-    'If the pages do not answer it, say so plainly in one sentence and say that Let’s talk is the way to ask our team. Never invent a price, date, time, name or promise. ' +
-    'If he is asking for help writing or telling his story, write exactly these two sentences and nothing else: "' + GUIDE.STORY_LINE + ' ' + GUIDE.STORY_START + '" ' +
-    'Also "used": the ids of the pages he should open next, best first (one to five; never ' + SITE_TALK + ', which always closes the answer).\n' +
-    'If what he wrote discloses harm to himself or anyone, or danger now, reply only {"unsafe": true}.\n' + HOUSE_RULES + '\n\n' +
-    'Reply with only this JSON: {"text": "", "used": ["id"]}\n\nTHE PAGES:\n' + blocks.join('\n\n') + '\n\nHIS WORDS:\n' + q;
-  const r = relay_(input, v, !config_().answerFull, 600);
-  if (!r.ok) return { kind: 'error', error: r.error || 'failed' };
-  const a = r.data || {};
-  if (a.unsafe === true) return { kind: 'safety' };
-  const byId = {}; rows.forEach(p => { byId[p.id] = p; });
-  const used = (Array.isArray(a.used) ? a.used : []).map(String).filter(id => byId[id] && id !== SITE_TALK);
-  const shown = (used.length ? used : rows.map(p => p.id).filter(id => id !== SITE_TALK)).slice(0, 5).map(id => byId[id]);
-  const text = oneLine_(a.text, 700);
-  if (!text) return { kind: 'error', error: 'failed' };
-  if (text.indexOf(GUIDE.STORY_LINE.slice(0, 40)) === 0) {   // his story: Where I Am From and The Story Path lead the cards, as the line says
-    const all = {}; site_().forEach(p => { all[p.id] = p; });
-    const lead = ['site:where-i-am-from', 'site:the-story-path'].map(id => byId[id] || all[id]).filter(Boolean);
-    const rest = shown.filter(p => lead.indexOf(p) < 0 && ['site:where-i-am-from', 'site:the-story-path'].indexOf(p.id) < 0);
-    return { kind: 'site', answer: { text: text, close: 'talk' }, shown: lead.concat(rest).slice(0, 5) };
-  }
-  return { kind: 'site', answer: { text: text, close: 'talk' }, shown: shown };
 }
 
 // ───────────────────────────── the web app ─────────────────────────────
 
 function doGet(e) {
   const p = (e && e.parameter) || {};
-  if (p.refresh === 'site') {   // read the Site pages now (once in ten minutes at most), e.g. right after an install
-    const c = CacheService.getScriptCache();
-    if (c.get('siteread')) return json_({ ok: true, skipped: true });
-    c.put('siteread', '1', 600);
-    return json_({ ok: true, pages: refreshSite_() });
-  }
   if (p.file === 'guide.js') return ContentService.createTextOutput(GUIDE_JS()).setMimeType(ContentService.MimeType.JAVASCRIPT);
   if (p.feed === 'guide') {
     const body = JSON.stringify(guideFeed_());
@@ -650,21 +506,12 @@ function guideFeed_() {
   if (hit) { try { return JSON.parse(hit); } catch (e) {} }
   const ss = sheet_(), cfg = config_(ss);
   const list = concerns_(ss), pieces = pieces_();
-  const byC = {}; pieces.forEach(p => { if (!p.concern) return; const c = concernFor_(p.concern, list); if (!c) return; (byC[c.name] = byC[c.name] || []).push(p); });
-  Object.keys(byC).forEach(k => byC[k].sort((a, b) => String(b.updated).localeCompare(String(a.updated))));
-  /* "Where we are": a group John opened; else the piece that answers the line (Claude picks once per line, kept); else we are writing on it */
-  const whereOf = c => {
-    if (c.group) return { where: 'We are opening a group on this.', title: '', address: '' };
-    const ps = byC[c.name] || [];
-    if (!ps.length) return { where: 'We are writing on this.', title: '', address: '' };
-    const best = askingPiece_(c, ps);
-    return { where: 'We have a piece on this:', title: best.title, address: best.address };
-  };
+  const addr = {}; pieces.forEach(p => { if (!p.concern) return; const c = concernFor_(p.concern, list); if (!c) return; if (!addr[c.name] || String(p.updated) > String(addr[c.name].updated)) addr[c.name] = p; });
   const out = {
     ok: true, build: GUIDE.BUILD, handful: cfg.handful,
-    concerns: list.filter(c => c.open).map(c => ({ name: c.name, state: byC[c.name] ? 'door' : 'following' })),
-    asking: list.filter(c => c.open && c.asking && c.line).slice(0, 5).map((c, i) => { const w = whereOf(c); return { id: 'asking:' + (i + 1), concern: c.name, line: c.line, where: w.where, title: w.title, address: w.address }; }),
-    pieces: pieces.map(p => { const c = concernFor_(p.concern, list); return { id: p.id, source: p.source, kind: p.kind, title: p.title, who: p.who, line: p.description, address: p.address, concern: c ? c.name : '', updated: p.updated }; })
+    concerns: list.filter(c => c.open).map(c => ({ name: c.name, state: addr[c.name] ? 'door' : 'following' })),
+    asking: list.filter(c => c.open && c.asking && c.line).slice(0, 5).map((c, i) => ({ id: 'asking:' + (i + 1), concern: c.name, line: c.line, where: c.where || (addr[c.name] ? 'The piece we have: ' + addr[c.name].title : 'We are writing on this.'), address: c.where && c.where.indexOf('The piece we have') === 0 && addr[c.name] ? addr[c.name].address : '' })),
+    pieces: pieces.filter(p => p.source !== 'page').map(p => { const c = concernFor_(p.concern, list); return { id: p.id, source: p.source, kind: p.kind, title: p.title, who: p.who, line: p.description, address: p.address, concern: c ? c.name : '', updated: p.updated }; })
   };
   try { cache.put('guidefeed', JSON.stringify(out), 600); } catch (e) {}
   return out;
@@ -676,10 +523,10 @@ function doPost(e) {
   if (!req || typeof req !== 'object') return json_({ ok: false, error: 'bad_request' });
   try {
     if (req.op === 'ask') return json_(ask_(req));
-    if (req.op === 'answer') return json_(answer_(req));
     if (req.op === 'choice') return json_(choice_(req));
   } catch (err) {
     log_('error', String(err && err.stack || err).slice(0, 500));
+    triage_('Guide call', err); // sorted: a hiccup waits, a defect is one Front Desk card; the page still gets the same short answer
     return json_({ ok: false, error: 'failed' });
   }
   return json_({ ok: false, error: 'bad_request' });
@@ -692,217 +539,83 @@ function ask_(req) {
   const v = /^[a-f0-9]{32}$/.test(String(req.v || '')) ? String(req.v) : '';
   if (q.length < 3) return { ok: false, error: 'bad_request' };
   const cfg = config_();
-  const askId = 'a' + Utilities.getUuid().replace(/-/g, '').slice(0, 9);   // a letter first: the sheet keeps it as text
+  const gate = allow_(v, cfg);
+  if (gate !== 'ok') return { ok: false, error: 'rate_limited' };
+
+  const askId = Utilities.getUuid().replace(/-/g, '').slice(0, 10);
   const at = new Date();
-  const concerns = concernsFast_();
+  const concerns = concerns_();
   const door = concernFor_(req.door, concerns);
   const doorName = door ? door.name : '';
 
-  // 1. the safeguarding screen, before anyone is asked — and before the daily brake, so a man past his asks for the day still gets the safeguarding line
+  // 1. the safeguarding screen, before anyone is asked
   if (harmSaid_(q)) {
     record_(at, askId, q, doorName, 'safety', '', '', []);
     return { ok: true, askId: askId, outcome: 'safety', pieces: [] };
   }
 
-  const gate = allow_(v, cfg);
-  if (gate !== 'ok') return { ok: false, error: 'rate_limited' };
-
-  let list = pieces_();
-  if (door) { const inside = list.filter(p => { const c = concernFor_(p.concern, concerns); return c && c.name === door.name; }); if (inside.length) list = inside; }
+  const all = pieces_();
+  let list = all;
+  if (door) { const inside = all.filter(p => { const c = concernFor_(p.concern, concerns); return c && c.name === door.name; }); if (inside.length) list = inside.concat(all.filter(p => p.source === 'page')); }   // inside a door: that door's pieces, and our pages for a question about us
+  const pagesIn = all.filter(p => p.source === 'page');
   if (!list.length) { record_(at, askId, q, doorName, 'none', doorName, '', []); return { ok: true, askId: askId, outcome: 'none', concern: doorName, pieces: [] }; }
 
-  // 2. Claude reads the pieces and our pages (titles and one line each) and scores how well each fits; or says outside / safety
-  const site = site_();
-  const pick = relay_(pickInstruction_(q, list, concerns, door, site), v, true, 600);   // judging fit only: the faster model
+  // 2. Claude reads the list (titles and one line each) and picks three to five, or says none / close / outside / safety
+  const pick = relay_(pickInstruction_(q, list, concerns, door), v);
   if (!pick.ok) { record_(at, askId, q, doorName, 'error', doorName, '', []); return { ok: false, error: pick.error || 'failed' }; }
   const d = pick.data || {};
-  const said = String(d.outcome || '').toLowerCase();
+  let outcome = String(d.outcome || '').toLowerCase();
   const topic = clean_(String(d.topic || '')).toLowerCase().slice(0, 40);
   const picked = concernFor_(d.concern, concerns);
   const concern = door ? door.name : (picked ? picked.name : '');
-  if (said === 'safety') { record_(at, askId, q, doorName, 'safety', concern, topic, []); return { ok: true, askId: askId, outcome: 'safety', concern: concern, topic: topic, pieces: [] }; }
-  if (said === 'outside') { record_(at, askId, q, doorName, 'outside', concern, topic, []); return { ok: true, askId: askId, outcome: 'outside', concern: concern, topic: topic, ack: oneLine_(d.ack), pieces: [] }; }
-  const wg = weigh_(d, list, site, concern);
-  const outcome = wg.outcome;
-  if (outcome === 'none') { record_(at, askId, q, doorName, 'none', concern, topic, []); return { ok: true, askId: askId, outcome: 'none', concern: concern, topic: topic, pieces: [] }; }
-  const pageIds = wg.pages.map(p => p.id);
-  if (outcome === 'site') {
-    // only our pages fit: a plain answer from them, the pages as cards, then Let's talk
-    const siteById = {}; site.forEach(p => { siteById[p.id] = p; });
-    const rows = wg.pages.concat(siteById[SITE_TALK] ? [siteById[SITE_TALK]] : []);
-    if (req.two === true) {
-      CacheService.getScriptCache().put('ask:' + askId, JSON.stringify({ q: q, ids: rows.map(p => p.id), outcome: 'site', fork: wg.fork, concern: concern, topic: topic, v: v, rec: { at: at.toISOString(), door: doorName } }), 900);   // written with its answer
-      return { ok: true, askId: askId, outcome: 'site', concern: concern, topic: topic, pending: true, fork: wg.fork, pieces: wg.pages.map(siteCard_) };
-    }
-    const sw = siteStep_(q, rows, v);
-    if (sw.kind === 'error') { record_(at, askId, q, doorName, 'error', concern, topic, pageIds); return { ok: false, error: sw.error }; }
-    if (sw.kind === 'safety') { record_(at, askId, q, doorName, 'safety', concern, topic, []); return { ok: true, askId: askId, outcome: 'safety', concern: concern, topic: topic, pieces: [] }; }
-    record_(at, askId, q, doorName, 'site', concern, topic, sw.shown.map(p => p.id));
-    return { ok: true, askId: askId, outcome: 'site', concern: concern, topic: topic, answer: sw.answer, fork: wg.fork, pieces: sw.shown.map(siteCard_) };
+  const byId = {}; all.forEach(p => { byId[p.id] = p; });
+  let chosen = (Array.isArray(d.pieces) ? d.pieces : []).map(String).filter(id => byId[id]).slice(0, 5).map(id => byId[id]);
+  if (['answer', 'close', 'none', 'outside', 'safety', 'about'].indexOf(outcome) < 0) outcome = chosen.length ? 'answer' : 'none';
+  if (outcome === 'about') {
+    // a question about us: answered from our own pages, plainly, with the page it came from
+    let pages = chosen.filter(p => p.source === 'page');
+    if (!pages.length) pages = pagesIn.filter(p => p.id === 'page:about').concat(pagesIn.filter(p => p.id !== 'page:about')).slice(0, 2);
+    if (!pages.length) { record_(at, askId, q, doorName, 'outside', concern, topic, []); return { ok: true, askId: askId, outcome: 'outside', concern: concern, topic: topic, ack: oneLine_(d.ack), pieces: [] }; }
+    const readA = relay_(aboutInstruction_(q, pages), v);
+    if (!readA.ok) { record_(at, askId, q, doorName, 'error', concern, topic, pages.map(p => p.id)); return { ok: false, error: readA.error || 'failed' }; }
+    const ad = readA.data || {};
+    if (ad.unsafe === true) { record_(at, askId, q, doorName, 'safety', concern, topic, []); return { ok: true, askId: askId, outcome: 'safety', concern: concern, topic: topic, pieces: [] }; }
+    const usedA = (Array.isArray(ad.used) ? ad.used : []).map(String).filter(id => byId[id] && byId[id].source === 'page');
+    const shownA = (usedA.length ? usedA : pages.map(p => p.id)).slice(0, 3).map(id => byId[id]);
+    const text = oneLine_(ad.answer, 900);
+    if (!text) { record_(at, askId, q, doorName, 'outside', concern, topic, []); return { ok: true, askId: askId, outcome: 'outside', concern: concern, topic: topic, ack: oneLine_(d.ack), pieces: [] }; }
+    record_(at, askId, q, doorName, 'about', concern, topic, shownA.map(p => p.id));
+    return { ok: true, askId: askId, outcome: 'about', concern: concern, topic: topic, about: text, next: String(ad.next || '').toLowerCase() === 'begin' ? 'begin' : 'talk', pieces: shownA.map(card_) };
   }
-  const chosen = wg.pieces;
+  if (outcome === 'safety') { record_(at, askId, q, doorName, 'safety', concern, topic, []); return { ok: true, askId: askId, outcome: 'safety', concern: concern, topic: topic, pieces: [] }; }
+  if (outcome === 'outside') { record_(at, askId, q, doorName, 'outside', concern, topic, []); return { ok: true, askId: askId, outcome: 'outside', concern: concern, topic: topic, ack: oneLine_(d.ack), pieces: [] }; }
+  if (!chosen.length || outcome === 'none') { record_(at, askId, q, doorName, 'none', concern, topic, []); return { ok: true, askId: askId, outcome: 'none', concern: concern, topic: topic, pieces: [] }; }
 
-  // 3a. two steps (guide.js build 3): the outcome and the pieces now, the answer on the next call — he sees the pieces in seconds
-  if (req.two === true) {
-    CacheService.getScriptCache().put('ask:' + askId, JSON.stringify({ q: q, ids: chosen.map(p => p.id), pages: pageIds, fork: wg.fork, outcome: outcome, concern: concern, topic: topic, v: v, rec: { at: at.toISOString(), door: doorName } }), 900);   // written with its answer
-    return { ok: true, askId: askId, outcome: outcome, concern: concern, topic: topic, pending: true, fork: wg.fork, pieces: chosen.slice(0, 3).map(card_), pages: wg.pages.map(siteCard_) };
-  }
-
-  // 3. one step (an older page): Claude reads only those pieces and answers under the Window
-  const w = windowStep_(q, chosen, outcome, v);
-  if (w.kind === 'error') { record_(at, askId, q, doorName, 'error', concern, topic, chosen.map(p => p.id)); return { ok: false, error: w.error }; }
-  if (w.kind === 'safety') { record_(at, askId, q, doorName, 'safety', concern, topic, []); return { ok: true, askId: askId, outcome: 'safety', concern: concern, topic: topic, pieces: [] }; }
-  if (w.kind === 'none') { record_(at, askId, q, doorName, 'none', concern, topic, chosen.map(p => p.id)); return { ok: true, askId: askId, outcome: 'none', concern: concern, topic: topic, pieces: [] }; }
-  record_(at, askId, q, doorName, outcome, concern, topic, w.shown.map(p => p.id).concat(pageIds));
-  return { ok: true, askId: askId, outcome: outcome, concern: concern, topic: topic, answer: w.answer, fork: wg.fork, pieces: w.shown.map(card_), pages: wg.pages.map(siteCard_) };
-}
-
-/** build 18: the fit decides. Claude scored each piece and page 0 to 100 against what he asked. The best fit leads; what fits
- *  nearly as well shows beside it; two (or three) near even are offered as this or that, each with when it is the right start.
- *  Nothing near enough: none, and the page says our library is growing. Contact and Let's talk never count as a fit for what a
- *  man carries. Returns { outcome: answer | close | site | none, pieces, pages, fork }. */
-const FIT = { SHOW: 45, ANSWER: 70, REACH: 20, EVEN: 12 };
-function weigh_(d, list, site, concern) {
-  const byId = {}; list.forEach(p => { byId[p.id] = p; }); site.forEach(p => { byId[p.id] = p; });
-  const ok = id => byId[id] && id !== SITE_TALK && !(concern && id === SITE_CONTACT);
-  let fits = (Array.isArray(d.fits) ? d.fits : []).map(f => ({ id: String((f && f.id) || ''), fit: Math.max(0, Math.min(100, Number(f && f.fit) || 0)), when: oneLine_((f && f.when) || '', 160) })).filter(f => ok(f.id));
-  if (!fits.length && Array.isArray(d.pieces)) fits = d.pieces.map(String).filter(ok).map((id, i) => ({ id: id, fit: 65 - i, when: '' }));   // an older reply with no scores
-  const seen = {}; fits = fits.filter(f => (seen[f.id] ? false : (seen[f.id] = true)));
-  fits.sort((a, b) => b.fit - a.fit);
-  const top = fits.length ? fits[0].fit : 0;
-  if (top < FIT.SHOW) return { outcome: 'none', pieces: [], pages: [], fork: [] };
-  const kept = fits.filter(f => f.fit >= Math.max(FIT.SHOW, top - FIT.REACH)).slice(0, 5);
-  const pieces = kept.filter(f => byId[f.id].source !== 'site').map(f => byId[f.id]);
-  const pages = kept.filter(f => byId[f.id].source === 'site').map(f => byId[f.id]);
-  const even = kept.filter(f => f.fit >= top - FIT.EVEN && f.when).slice(0, 3);
-  const fork = even.length > 1 ? even.map(f => ({ id: f.id, title: byId[f.id].title, when: f.when, address: byId[f.id].address })) : [];
-  const bestPiece = kept.filter(f => byId[f.id].source !== 'site').reduce((m, f) => Math.max(m, f.fit), 0);
-  return { outcome: pieces.length ? (bestPiece >= FIT.ANSWER ? 'answer' : 'close') : 'site', pieces: pieces, pages: pages, fork: fork };
-}
-
-/** Step two of an ask: the answer from the pieces step one chose. One answer per ask; kept fifteen minutes. */
-function answer_(req) {
-  const askId = String(req.askId || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 24);
-  const v = /^[a-f0-9]{32}$/.test(String(req.v || '')) ? String(req.v) : '';
-  const cache = CacheService.getScriptCache();
-  const raw = askId ? cache.get('ask:' + askId) : null;
-  if (!raw) return { ok: false, error: 'expired' };
-  let ctx; try { ctx = JSON.parse(raw); } catch (e) { return { ok: false, error: 'expired' }; }
-  if (ctx.v && ctx.v !== v) return { ok: false, error: 'bad_request' };
-  cache.remove('ask:' + askId);
-  const base = { ok: true, askId: askId, concern: ctx.concern || '', topic: ctx.topic || '' };
-  /* the ask is written once, here, with how it ended (build 14); an older step one wrote its row already and is updated */
-  const fin = (outcome, ids) => ctx.rec
-    ? record_(new Date(ctx.rec.at), askId, ctx.q, ctx.rec.door, outcome, ctx.concern, ctx.topic, ids || (ctx.ids || []).slice(0, 3))
-    : record_(new Date(), askId, ctx.q, '', outcome, ctx.concern, ctx.topic, ids || (ctx.ids || []).slice(0, 3));
-  if (ctx.outcome === 'site') {
-    const sById = {}; site_().forEach(p => { sById[p.id] = p; });
-    const rows = (ctx.ids || []).map(id => sById[id]).filter(Boolean);
-    const sw = rows.length ? siteStep_(ctx.q, rows, v) : { kind: 'error', error: 'failed' };
-    if (sw.kind === 'error') { fin('error', null); return { ok: false, error: sw.error }; }
-    if (sw.kind === 'safety') { fin('safety', []); return Object.assign(base, { outcome: 'safety', pieces: [] }); }
-    fin('site', sw.shown.map(p => p.id));
-    return Object.assign(base, { outcome: 'site', answer: sw.answer, fork: ctx.fork || [], pieces: sw.shown.map(siteCard_) });
-  }
-  const byId = {}; pieces_().forEach(p => { byId[p.id] = p; });
-  const chosen = (ctx.ids || []).map(id => byId[id]).filter(Boolean);
-  if (!chosen.length) { fin('none', []); return Object.assign(base, { outcome: 'none', pieces: [] }); }
-  const w = windowStep_(ctx.q, chosen, ctx.outcome, v);
-  if (w.kind === 'error') { fin('error', null); return { ok: false, error: w.error }; }
-  if (w.kind === 'safety') { fin('safety', []); return Object.assign(base, { outcome: 'safety', pieces: [] }); }
-  if (w.kind === 'none') { fin('none', []); return Object.assign(base, { outcome: 'none', pieces: [] }); }
-  const sAll = {}; site_().forEach(p => { sAll[p.id] = p; });
-  const pages = (ctx.pages || []).map(id => sAll[id]).filter(Boolean);
-  fin(ctx.outcome, w.shown.map(p => p.id).concat(pages.map(p => p.id)));
-  return Object.assign(base, { outcome: ctx.outcome, answer: w.answer, fork: ctx.fork || [], pieces: w.shown.map(card_), pages: pages.map(siteCard_) });
-}
-
-/** Claude reads only the chosen pieces and answers under the Window. Returns { kind: answer | none | safety | error }. */
-function windowStep_(q, chosen, outcome, v) {
-  const read = relay_(windowInstruction_(q, chosen, outcome), v, !config_().answerFull, 1000);
-  if (!read.ok) return { kind: 'error', error: read.error || 'failed' };
+  // 3. Claude reads only those pieces and answers under the Window
+  const read = relay_(windowInstruction_(q, chosen, outcome), v);
+  if (!read.ok) { record_(at, askId, q, doorName, 'error', concern, topic, chosen.map(p => p.id)); return { ok: false, error: read.error || 'failed' }; }
   const a = read.data || {};
-  if (a.unsafe === true) return { kind: 'safety' };
-  const byId = {}; chosen.forEach(p => { byId[p.id] = p; });
+  if (a.unsafe === true) { record_(at, askId, q, doorName, 'safety', concern, topic, []); return { ok: true, askId: askId, outcome: 'safety', concern: concern, topic: topic, pieces: [] }; }
   const used = (Array.isArray(a.used) ? a.used : []).map(String).filter(id => byId[id]);
   const shown = (used.length ? used : chosen.map(p => p.id)).slice(0, 3).map(id => byId[id]);
   const answer = {
-    problem: oneLine_(a.problem, 400), scripture: verseLine_(a.verse, a.scripture, chosen), people: oneLine_(a.people, 500), decision: oneLine_(a.decision, 500),
+    problem: oneLine_(a.problem, 400), scripture: oneLine_(a.scripture, 700), people: oneLine_(a.people, 500), decision: oneLine_(a.decision, 500),
     close: String(a.close || '').toLowerCase() === 'begin' ? 'begin' : 'talk'
   };
-  if (answer.problem && sameWords_(answer.problem, q)) answer.problem = '';          // only his words back: nothing named, so nothing shown
-  if (!answer.problem && !answer.scripture && !answer.decision) return { kind: 'none' };
+  if (!answer.problem && !answer.scripture && !answer.decision) { record_(at, askId, q, doorName, 'none', concern, topic, chosen.map(p => p.id)); return { ok: true, askId: askId, outcome: 'none', concern: concern, topic: topic, pieces: [] }; }
   if (outcome === 'close') answer.closeNote = oneLine_(a.closeNote, 240) || 'This is close to what you asked, not the exact thing.';
-  return { kind: 'answer', answer: answer, shown: shown };
-}
-
-/** "What Scripture says", built here: the verse's words and reference must both be in the named piece (the reference within
- *  a short reach of the words), or the section is not shown. Returns '"words" Ref, from "Title." note' or ''. */
-function verseLine_(v, note, chosen) {
-  if (!v || typeof v !== 'object') return '';
-  const words = clean_(String(v.words || '')).replace(/^["“”']+|["“”']+$/g, ''), ref = clean_(String(v.ref || ''));
-  if (words.length < 12 || words.length > 420 || !/^(?:[1-3]\s?)?[A-Z][a-z]+\.?\s+\d{1,3}:\d{1,3}/.test(ref)) return '';
-  if (/(?:[1-3]\s?)?[A-Z][a-z]+\.?\s+\d{1,3}:\d{1,3}/.test(words)) return '';   // a reference inside the words: the piece's own sentence, not the verse
-  const norm = t => String(t || '').toLowerCase().replace(/[“”"‘’'`]/g, '').replace(/[—–]/g, '-').replace(/\s+/g, ' ');   // quote marks never decide a match
-  const piece = chosen.find(p => p.id === String(v.piece || '')) || chosen.find(p => norm(p.body).indexOf(norm(words)) >= 0);
-  if (!piece) return '';
-  const body = norm(piece.body), at = body.indexOf(norm(words));
-  if (at < 0) return '';
-  const nref = norm(ref).replace(/\.$/, ''), nw = norm(words);
-  let near = false;
-  for (let r = body.indexOf(nref); r >= 0 && !near; r = body.indexOf(nref, r + 1)) {
-    const after = r - (at + nw.length);
-    if (after >= 0 && after <= 40) near = true;   // the reference set right after the verse, the way every piece sets it
-  }
-  if (!near) return '';
-  let inner = words.replace(/"([^"]*)"/g, '‘$1’').replace(/“([^”]*)”/g, '‘$1’');   // a quote inside the verse: single marks
-  if (/["“]/.test(inner)) inner = inner.replace(/["“]/, '‘') + '’';   // one left open: it closes where the verse ends
-  inner = inner.replace(/["”]/g, '’');
-  return '“' + inner + '” ' + ref + ', from “' + piece.title + '.”' + (clean_(note) ? ' ' + oneLine_(note, 400) : '');
-}
-
-/** True when a line only gives his own words back (the same words, "I" turned to "you"). */
-function sameWords_(a, b) {
-  const skip = { i: 1, you: 1, me: 1, my: 1, your: 1, am: 1, are: 1, is: 1, the: 1, and: 1, a: 1, to: 1, of: 1, it: 1, that: 1, then: 1, for: 1, with: 1, in: 1, im: 1, youre: 1, myself: 1, yourself: 1 };
-  const words = s => String(s || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(x => x && !skip[x]);
-  const A = {}, B = {}; words(a).forEach(x => { A[x] = 1; }); words(b).forEach(x => { B[x] = 1; });
-  const ka = Object.keys(A), kb = Object.keys(B); if (!ka.length || !kb.length) return false;
-  const both = ka.filter(x => B[x]).length;
-  return both / Math.max(ka.length, kb.length) >= 0.7;
-}
-
-/** Step two's result written onto the row step one made: the outcome and the pieces shown (null leaves the pieces as they were). */
-function updateAsk_(row, askId, outcome, ids) {
-  try {
-    const sh = sheet_().getSheetByName('Asks'), H = asksHeader_(sh);
-    if (row > 1 && String(sh.getRange(row, H['ask id'] + 1).getValue()) === askId) {   // the row step one wrote: no search
-      sh.getRange(row, H['outcome'] + 1).setValue(outcome);
-      if (ids) sh.getRange(row, H['pieces shown'] + 1).setValue(ids.join(', '));
-      return;
-    }
-    const data = sh.getDataRange().getValues();
-    for (let i = data.length - 1; i >= 1; i--) {
-      if (String(data[i][H['ask id']]) !== askId) continue;
-      sh.getRange(i + 1, H['outcome'] + 1).setValue(outcome);
-      if (ids) sh.getRange(i + 1, H['pieces shown'] + 1).setValue(ids.join(', '));
-      return;
-    }
-  } catch (e) { log_('answer', 'row not updated: ' + e); }
+  record_(at, askId, q, doorName, outcome, concern, topic, shown.map(p => p.id));
+  return { ok: true, askId: askId, outcome: outcome, concern: concern, topic: topic, answer: answer, pieces: shown.map(card_) };
 }
 
 function card_(p) { return { id: p.id, source: p.source, kind: p.kind, title: p.title, who: p.who, line: p.description, address: p.address, concern: p.concern || '' }; }
 
 function record_(at, askId, q, door, outcome, concern, topic, ids) {
-  const sh = sheet_().getSheetByName('Asks'), H = asksHeader_(sh);
+  const sh = sheet_().getSheetByName('Asks'), H = headerIndex_(sh);
   const row = new Array(GUIDE.TABS.Asks.length).fill('');
   row[H['at']] = at; row[H['ask id']] = askId; row[H['question']] = q; row[H['door']] = door || ''; row[H['outcome']] = outcome; row[H['concern']] = concern || ''; row[H['topic']] = topic || '';
   row[H['pieces shown']] = (ids || []).join(', '); row[H['email given']] = 'no'; row[H['build']] = GUIDE.BUILD;
   sh.appendRow(row);
-  try { return sh.getLastRow(); } catch (e) { return 0; }
-}
-function asksHeader_(sh) {
-  const hit = bigGet_('H:Asks'); if (hit) return hit;
-  const H = headerIndex_(sh); bigPut_('H:Asks', H, 21600); return H;
 }
 
 /** The disclosure screen. A hit means the safeguarding line and Let's talk, nothing else. Kept wide on purpose. */
@@ -929,22 +642,21 @@ const HOUSE_RULES = [
   'Do not label anything with a person\'s first name. Do not ask for anyone\'s name or details. Do not invent a fact, a story or a feeling the man did not give.'
 ].join(' ');
 
-function pickInstruction_(q, list, concerns, door, site) {
-  site = site || [];
+function pickInstruction_(q, list, concerns, door) {
   const lines = list.map(p => p.id + ' | ' + p.kind + ' | ' + p.title + (p.who && p.source === 'story' ? ' (' + p.who + ')' : '') + (p.concern ? ' | ' + p.concern : '') + ' | ' + p.description.slice(0, 160));
-  return GUIDE.HOUSE_MARK + ' A man typed a question into the ask box on our Read page. Below is ' + (door ? 'every piece behind the door he is standing in, "' + door.name + '"' : 'every piece we have written') + ' (stories men wrote and offered, and short articles) and every page of ours (courses, paths, groups, how to begin). ' +
-    'Your job is only to judge fit. Read his words, then score how well each piece and each page fits what he asked: the thing he is carrying or asking for, not only the same family of feeling.\n\n' +
-    'Fit, 0 to 100: 85 to 100, written for this very situation; 60 to 84, touches it closely and is worth his reading or opening; 45 to 59, a near neighbour that helps only in part; under 45, leave it out. ' +
-    'For example: a man whose father died and who feels nothing, and a piece on bitterness, about 55; a man fighting pornography, and a piece on shame, about 60, and the Breaking Free course, about 90; a man whose job has ended, and a path built for endings, about 85.\n' +
-    'List in "fits" only what scores 45 or above, best first, at most six, pieces and pages together. For each one scoring 60 or above add "when": a short phrase to him, starting "if you", saying when this one is the right place to start (for example "if you want to walk through what has ended with other men" or "if the hardest part is the shame you carry about it"). When two fit about equally for different circumstances, the "when" lines are how he chooses, so make them plainly different.\n' +
-    'A page fits when he asks about our site or our work (how to begin, write his story, join, what it costs, who we are) or when the page is the very thing for what he carries (a course or path built for it). A question about us (what coaching or a course costs, how to reach our team, how to join or begin, who we are) is never "outside": the page that answers it (Investment, Contact, the course or path) fits at 85 or more. Contact is never a fit for something he carries; never list ' + SITE_TALK + '.\n' +
-    'A man\'s life before God is inside what we do: shame, anger, grief, fear, what people think, marriage and fatherhood as a man carries them, a habit or addiction he cannot stop, faith, calling, endings and new beginnings, the past that stays, story and testimony. When nothing we have fits it, give no fits: that is honest, and the page will say we have not written on it yet.\n' +
-    '"outcome": "fit" normally; "outside" when his concern is outside what we do (legal, medical, financial or technical advice; politics; doctrine debates; homework; anything not about a man carrying his own life), and then one plain sentence, "ack", naming what he brought without judging it; "safety" when he discloses harm to himself or to anyone, or danger now, and then no fits.\n\n' +
-    'On every outcome also name the one concern from our list his words belong to ("concern", exact words from the list, or "" if none fits), judged by what HE typed, never by the pieces: a man asking about pornography belongs to Pornography even when the nearest piece is on shame; a man whose father died belongs to Fathers and children or to Grief and lament by what he says most. And the topic in two or three plain lowercase words as he would say it ("topic", for example "temper with my kids").\n\n' +
+  return GUIDE.HOUSE_MARK + ' A man typed a question into the ask box on our Read page. Below is the list of ' + (door ? 'every piece behind the door he is standing in, "' + door.name + '"' : 'every piece we have written') + ': stories men wrote and offered, and short articles. ' +
+    'Your job is only to choose. Read his words, then pick the pieces that answer what he is carrying — three to five when we have it, fewer only if fewer truly fit.\n\n' +
+    'Decide the outcome:\n' +
+    '"answer" — we have a piece written for this very thing; it speaks to it directly.\n' +
+    '"close" — no piece was written for his concern, but the nearest one touches it and is worth his reading (a piece on why hurt stays, offered to a man who is grieving, is close, not an answer).\n' +
+    '"none" — his concern is inside what we do (a man\'s life before God: shame, anger, grief, fear, what people think, marriage and fatherhood as a man carries them, faith, calling, the past that stays, story and testimony) but we have not written on it' + (door ? ' behind this door' : '') + '.\n' +
+    '"outside" — his concern is outside what we do here (legal, medical, financial or technical advice; politics; doctrine debates; homework; anything not about a man carrying his own life). Then write one plain sentence, "ack", that names what he brought without judging it.\n' +
+    '"safety" — he discloses harm to himself or to anyone, or danger now. Pick nothing.\n' +
+    '"about" — he is asking about US: who we are, our team and the people named on our pages, how the work is carried, the paths, the courses, what it costs, how to begin or book. Pick one to three of the PAGES (kind "About us", "A path", "A course") that answer it. Pages are never picked for the other outcomes.\n\n' +
+    'Also name the one concern from our list his words belong to ("concern", exact words from the list, or "" if none fits), and the topic in two or three plain lowercase words as he would say it ("topic", for example "temper with my kids").\n\n' +
     'OUR CONCERNS:\n' + concerns.map(c => c.name).join('\n') + '\n\n' +
-    'Reply with only this JSON: {"outcome": "fit|outside|safety", "fits": [{"id": "", "fit": 0, "when": ""}], "concern": "one from the list or empty", "topic": "two or three words", "ack": "one sentence, only when outside"}\n\n' +
+    'Reply with only this JSON: {"outcome": "answer|close|none|outside|safety|about", "pieces": ["id", "id"], "concern": "one from the list or empty", "topic": "two or three words", "ack": "one sentence, only when outside"}\n\n' +
     'THE PIECES (id | kind | title | concern | one line):\n' + lines.join('\n') + '\n\n' +
-    'OUR PAGES (id | kind | title | one line):\n' + site.map(p => p.id + ' | ' + p.kind + ' | ' + p.title + ' | ' + String(p.line || '').slice(0, 160)).join('\n') + '\n\n' +
     'HIS WORDS:\n' + q;
 }
 
@@ -958,86 +670,44 @@ function windowInstruction_(q, chosen, outcome) {
   });
   return GUIDE.HOUSE_MARK + ' A man typed what he is carrying into the ask box on our Read page. You have read only the pieces below — stories men wrote and offered, and our short articles. ' +
     'They are the only source. Answer him in the shape of the Wisdom of the Window, in five short moves written as four parts:\n' +
-    '1. "problem": name what he is carrying underneath the sentence he typed — one plain sentence to him, the thing under his words. Never give his sentence back to him or reword it; add what it is. No diagnosis. If you cannot name more than he said, write "".\n' +
-    '2. "verse": one Bible verse that one of these pieces itself quotes, copied word for word from the piece ("words", without quotation marks), its reference exactly as the piece gives it ("ref", book chapter:verse), and the piece id ("piece"). An article or story speaking in its own words is never a verse. Then "scripture": one or two plain sentences on what that verse says to him. If the pieces quote no Bible verse, give verse {} and scripture "".\n' +
+    '1. "problem": name the problem in his own words — one or two sentences, his words kept, no diagnosis.\n' +
+    '2. "scripture": what Scripture says about it, drawn only from these pieces — quote the verse as the piece has it and name the piece; two to four sentences.\n' +
     '3. "people": people first — who this touches and what justice and mercy look like toward them today, from what the pieces say; one to three sentences.\n' +
     '4. "decision": one decision he can make today from a place of faith, God\'s rule over his own — concrete, small enough to do tonight, drawn from what the pieces ask of a man; one to three sentences.\n' +
     'Then "close": "begin" when the right next step is to write his own story on our site (the pieces are stories, or his concern is about his own past and naming it), or "talk" when the right next step is thirty minutes with one of our team (the concern is live, relational, or heavy).\n' +
     'And "used": the ids of the pieces your answer actually drew from, best first (two or three).\n' +
     (outcome === 'close' ? 'This is a CLOSE match, not exact: also write "closeNote", one plain sentence saying what he asked and what the piece is about instead, so he knows it is close and not the thing itself.\n' : '') +
     'If what he wrote discloses harm to himself or anyone, or danger now, reply only {"unsafe": true}.\n' +
-    'Anyone you name — a person in Scripture or in a piece — is introduced in a few words the first time (for example "Naomi, who lost her husband and both sons"); never name someone you have not introduced.\n' +
-    'Write to him, plainly, as "you". Short: the whole answer under 170 words. ' + HOUSE_RULES + '\n\n' +
-    'Reply with only this JSON: {"problem": "", "verse": {"words": "", "ref": "", "piece": "id"}, "scripture": "", "people": "", "decision": "", "close": "begin|talk", "used": ["id"]' + (outcome === 'close' ? ', "closeNote": ""' : '') + '}\n\n' +
+    'Write to him, plainly, as "you". Short. ' + HOUSE_RULES + '\n\n' +
+    'Reply with only this JSON: {"problem": "", "scripture": "", "people": "", "decision": "", "close": "begin|talk", "used": ["id"]' + (outcome === 'close' ? ', "closeNote": ""' : '') + '}\n\n' +
     'THE PIECES:\n' + blocks.join('\n\n') + '\n\n' +
     'HIS WORDS:\n' + q;
 }
 
+/** A question about us: answered plainly from our own pages, in the pages' own words where they have them. */
+function aboutInstruction_(q, pages) {
+  let budget = GUIDE.MAX_READ_CHARS, blocks = [];
+  pages.forEach(p => { const body = p.body.slice(0, Math.max(0, Math.min(GUIDE.MAX_PIECE_CHARS, budget))); if (!body) return; budget -= body.length; blocks.push('=== ' + p.id + ' · ' + p.kind + ' · "' + p.title + '" ===\n' + body); });
+  return GUIDE.HOUSE_MARK + ' A man typed a question about us into the ask box on our Read page. You have read only our own pages below; they are the only source. ' +
+    'Answer him plainly in two to five sentences as "we", using the pages\' own words and names where they have them (our team members are named on the About page with their full names; use a full name, never a first name alone). ' +
+    'Say only what the pages say; if the pages do not answer part of it, say that plainly and point him to a conversation with our team. No prices or numbers the pages do not state. ' + HOUSE_RULES + '\n' +
+    'Then "next": "begin" when his question is really about starting to write his own story on our site, otherwise "talk" (thirty minutes with one of our team). And "used": the ids of the pages you drew from, best first.\n' +
+    'If what he wrote discloses harm to himself or anyone, or danger now, reply only {"unsafe": true}.\n' +
+    'Reply with only this JSON: {"answer": "", "next": "talk|begin", "used": ["id"]}\n\n' +
+    'THE PAGES:\n' + blocks.join('\n\n') + '\n\nHIS WORDS:\n' + q;
+}
+
 // ───────────────────────────── the relay (the key never lives here) ─────────────────────────────
 
-function relay_(input, id, fast, maxTokens) {
-  const key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
-  if (key) {   // build 10: ask Claude here — no hand-off back from the relay
-    let d = direct_(key, input, fast, maxTokens);
-    if (!d.ok && fast && d.error === 'network') d = direct_(key, input, false, maxTokens);   // the faster model did not answer: the usual one does
-    if (d.ok || d.error === 'rate_limited' || d.error === 'refused') return d;
-    log_('claude', 'direct failed (' + d.error + '); trying the relay');
-  }
-  let r = relayOnce_(input, id, fast);
-  if (!r.ok && (r.error === 'network' || r.error === 'bad_request')) { Utilities.sleep(1200); r = relayOnce_(input, id, fast); }   // a dropped redirect or a cold start: once more
+function relay_(input, id) {
+  let r = relayOnce_(input, id);
+  if (!r.ok && (r.error === 'network' || r.error === 'bad_request')) { Utilities.sleep(1200); r = relayOnce_(input, id); }   // a dropped redirect or a cold start: once more
   return r;
 }
-function direct_(key, input, fast, maxTokens) {
-  const props = PropertiesService.getScriptProperties();
-  const model = fast ? (props.getProperty('FAST_MODEL') || GUIDE.FAST_MODEL) : (props.getProperty('MODEL') || GUIDE.FULL_MODEL);
-  const body = { model: model, max_tokens: maxTokens || 1500, system: 'Reply with only the JSON object the instructions ask for. No preface, no code fence, no words outside the JSON.', messages: [{ role: 'user', content: String(input).slice(0, 60000) }] };
+function relayOnce_(input, id) {
   let resp;
   try {
-    resp = UrlFetchApp.fetch(GUIDE.API_URL, { method: 'post', contentType: 'application/json', headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01' }, payload: JSON.stringify(body), muteHttpExceptions: true });
-  } catch (e) { return { ok: false, error: 'network' }; }
-  const status = resp.getResponseCode(), text = resp.getContentText() || '';
-  if (status === 429 || status === 529) return { ok: false, error: 'rate_limited' };
-  if (status < 200 || status >= 300) { log_('claude', 'api ' + status + ' ' + text.slice(0, 160)); return { ok: false, error: 'network' }; }
-  let msg; try { msg = JSON.parse(text); } catch (e) { return { ok: false, error: 'network' }; }
-  if (msg && msg.stop_reason === 'refusal') return { ok: false, error: 'refused' };
-  let reply = ''; ((msg && msg.content) || []).forEach(b => { if (b && b.type === 'text' && b.text) reply += b.text; });
-  const data = parseJSON_(reply.trim());
-  if (!data || typeof data !== 'object') return { ok: false, error: 'network' };
-  return { ok: true, data: data };
-}
-function parseJSON_(s) {
-  try { return JSON.parse(s); } catch (e) {}
-  const m = s.match(/```(?:json)?\s*([\s\S]*?)```/i); if (m) { try { return JSON.parse(m[1]); } catch (e) {} }
-  const a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a >= 0 && b > a) { try { return JSON.parse(s.slice(a, b + 1)); } catch (e) {} }
-  return null;
-}
-
-/** The cache holds 100 KB a key; a long list is kept in parts under one name. */
-function bigPut_(name, obj, secs) {
-  try {
-    const s = JSON.stringify(obj), size = 90000, parts = {};
-    const n = Math.ceil(s.length / size) || 1;
-    for (let i = 0; i < n; i++) parts[name + ':' + i] = s.slice(i * size, (i + 1) * size);
-    parts[name + ':n'] = String(n);
-    CacheService.getScriptCache().putAll(parts, secs);
-  } catch (e) {}
-}
-function bigGet_(name) {
-  try {
-    const c = CacheService.getScriptCache(), n = parseInt(c.get(name + ':n'), 10);
-    if (!n) return null;
-    const keys = []; for (let i = 0; i < n; i++) keys.push(name + ':' + i);
-    const got = c.getAll(keys); let s = '';
-    for (let i = 0; i < n; i++) { if (got[keys[i]] == null) return null; s += got[keys[i]]; }
-    return JSON.parse(s);
-  } catch (e) { return null; }
-}
-function bigDel_(name) { try { CacheService.getScriptCache().remove(name + ':n'); } catch (e) {} }
-
-function relayOnce_(input, id, fast) {
-  let resp;
-  try {
-    resp = UrlFetchApp.fetch(GUIDE.RELAY, { method: 'post', contentType: 'text/plain', payload: JSON.stringify(fast ? { input: input, id: id || '', fast: true } : { input: input, id: id || '' }), muteHttpExceptions: true, followRedirects: true });
+    resp = UrlFetchApp.fetch(GUIDE.RELAY, { method: 'post', contentType: 'text/plain', payload: JSON.stringify({ input: input, id: id || '' }), muteHttpExceptions: true, followRedirects: true });
   } catch (e) { log_('relay', 'fetch failed: ' + String(e).slice(0, 160)); return { ok: false, error: 'network' }; }
   const text = resp.getContentText() || '';
   let j; try { j = JSON.parse(text); } catch (e) { log_('relay', 'not json: ' + text.slice(0, 160)); return { ok: false, error: 'network' }; }
@@ -1118,9 +788,10 @@ function allow_(v, cfg) {
 /** Monthly. One count per concern from the ask log (asks, what they read, the choices men pressed) and the search phrases men
  *  typed (the Search profile sheet), the phrase men actually type beside it; a line in a man's words for the asking section;
  *  and ONE Front Desk action recommending open / retire / rename with the reason. Counts stay on the sheet; none reaches a page. */
-function reviewConcerns() {
+function reviewConcerns() { return triGuard_('Guide review', 'review', function () { return withRetry_(reviewConcerns_, 'Guide review'); }, true); }
+
+function reviewConcerns_() {
   const ss = sheet_(), cfg = config_(ss);
-  ensureTabs_(ss);   // adds the "group asks" column on a sheet made before build 5
   const sh = ss.getSheetByName('Concerns'), H = headerIndex_(sh);
   const list = concerns_(ss), pieces = pieces_();
   const since = new Date(Date.now() - 92 * 864e5);
@@ -1172,7 +843,7 @@ function reviewConcerns() {
     const t = tally[c.name], ph = phraseMap[c.name] || [];
     const searchN = phrases.filter(p => ph.indexOf(p.phrase) >= 0).reduce((s, p) => s + p.n, 0);
     const rec = recs.find(x => concernFor_(x.concern, list) && concernFor_(x.concern, list).name === c.name);
-    const vals = {}; vals['asks'] = t.asks; vals['reads'] = t.reads; vals['talk'] = t.talk; vals['write'] = t.write; vals['story'] = t.story; vals['group asks'] = t.group; vals['search'] = searchN;   // never 'group': that is John's tick
+    const vals = {}; vals['asks'] = t.asks; vals['reads'] = t.reads; vals['talk'] = t.talk; vals['write'] = t.write; vals['story'] = t.story; vals['group'] = t.group; vals['search'] = searchN;
     vals['phrase'] = ph.length ? ph[0] : (t.qs[0] || ''); vals['recommendation'] = rec ? (month + ': ' + rec.action + (rec.to ? ' to "' + rec.to + '"' : '') + ' — ' + oneLine_(rec.reason, 240)) : '';
     Object.keys(vals).forEach(k => { if (H[k] !== undefined) sh.getRange(c.row, H[k] + 1).setValue(vals[k]); });
     if (!c.line && lineMap[c.name]) sh.getRange(c.row, H['line'] + 1).setValue(lineMap[c.name]);
@@ -1207,7 +878,7 @@ function fdAction_(key, owner, doThis, forWhat, because, link) {
     row[H['key']] = key; row[H['first seen']] = new Date(); row[H['owner']] = owner; row[H['do this']] = doThis; row[H['for']] = forWhat;
     row[H['because']] = because; row[H['link']] = link; row[H['status']] = 'open'; row[H['mark done by hand']] = false; row[H['rule']] = 'GUIDE1';
     sh.appendRow(row);
-  } catch (e) { log_('review', 'front desk row failed: ' + e); }
+  } catch (e) { log_('review', 'front desk row failed: ' + e); triage_('Guide review: the desk row', e); }
 }
 
 // ───────────────────────────── helpers ─────────────────────────────
@@ -1245,22 +916,6 @@ function rows_(sh) {
 function json_(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
 function log_(what, detail) { try { sheet_().getSheetByName('Log').appendRow([new Date(), what, String(detail).slice(0, 900)]); } catch (e) {} }
 
-/** Run by hand in the editor (build 18): how Claude scores fit for a set of questions, and what the page would show. Writes nothing. */
-function tryFits() {
-  const qs = ['I lost my job last month and I don\'t know how to lead my family through it', 'I keep going back to porn and I hate it', 'how do I talk to my teenage son about his faith?',
-    'how do I stop drinking every night', 'my dad died and I feel nothing', 'I keep blowing up at my kids and I hate who I become', 'how much does coaching cost',
-    'how do I reach someone on your team', 'my wife wants a divorce', 'I feel like nobody really knows me', 'I am angry at God', 'how do I find my calling at 50'];
-  const concerns = concernsFast_(), list = pieces_(), site = site_(), out = [];
-  qs.forEach(q => {
-    const t0 = Date.now(), pick = relay_(pickInstruction_(q, list, concerns, null, site), '', true, 600), d = pick.data || {};
-    const c = concernFor_(d.concern, concerns), wg = weigh_(d, list, site, c ? c.name : '');
-    out.push(q + ' [' + (Date.now() - t0) + ' ms]\n  said ' + (d.outcome || pick.error || '') + ' · ' + (c ? c.name : '-') + ' · ' + (d.fits || []).map(f => f.id + ' ' + f.fit + (f.when ? ' (' + f.when + ')' : '')).join(' | ') +
-      '\n  shows ' + wg.outcome + (wg.pieces.length ? ' · pieces ' + wg.pieces.map(p => p.title).join(', ') : '') + (wg.pages.length ? ' · pages ' + wg.pages.map(p => p.title).join(', ') : '') + (wg.fork.length ? ' · this or that: ' + wg.fork.map(f => f.title + ' (' + f.when + ')').join(' / ') : ''));
-  });
-  Logger.log(out.join('\n'));
-  return out.join('\n');
-}
-
 /** Run by hand in the editor to see one whole ask without the page: Run → tryAsk, then View → Logs. */
 function tryAsk() {
   const r = ask_({ q: 'I lose my temper with my kids and then I hate myself for it', v: '' });
@@ -1269,4 +924,209 @@ function tryAsk() {
 
 // ───────────────────────────── guide.js — the box, the doors and the asking lines, served to any page that carries the loader ─────────────────────────────
 
-function GUIDE_JS() { return "/* AP-GUIDE guide.js build 6 (fit decides: when two ways in fit about evenly, both show as this or that, each with when it is the right start; our pages that fit show under the pieces; when nothing fits, the page says plainly that our library is growing) \u00b7 build 5 (the first look: the moment he presses Ask, the closest door and its pieces show under his words from what the page already holds, while Claude reads; Claude's answer takes its place) \u00b7 build 4 (the box reads \"What do you need help with? Ask in your own words.\"; a question about the site or the work gets a plain answer from our own pages, the pages as cards under \"Where to go\", then Let's talk) \u00b7 build 3 (the answer comes in two steps: the pieces first, then the answer; the Let's talk box fits the moment \u2014 its own words after an outside ask and after the safeguarding line; the answer reads left-aligned; the box the page already carries is kept, and an ask pressed before this script arrived is sent; a door with no stories and an answer that ends in Begin shows Begin once; the navy box fills its row; on a phone the doors fill their rows; \"Where we are\" names the piece) \u00b7 build 2 (the scroll to the answer sets the site's scroll box directly \u2014 on the live site the smooth scrollTo call was ignored) \u00b7 build 1 \u00b7 the Guide: the ask box (\"What are you carrying? Ask in your own words.\"), the row of concern doors,\n   the answer above the cards, the four choices and \"What men are asking\" \u00b7 served by the Guide script (?file=guide.js).\n   Any page carries it with one loader line; the script's address is read off that line. On /read: the box and the doors sit in\n   the band under the lede; a tapped door narrows both sections to it and the ask answers inside it; each section shows the\n   newest handful. Every piece's concern comes from the Guide's feed (one read on load). */\n(function () {\n  if (window.apGuide) return;\n  var S = document.currentScript, BASE = S && S.src ? S.src.split(\"?\")[0] : \"\";\n  var BUILD = 6;\n  var doc = document;\n  var host = doc.querySelector(\".apr\") || doc.body;\n  function $(sel, root) { return (root || doc).querySelector(sel); }\n  function el(tag, cls, html) { var e = doc.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }\n  function esc(s) { return (\"\" + (s == null ? \"\" : s)).replace(/&/g, \"&amp;\").replace(/</g, \"&lt;\").replace(/>/g, \"&gt;\").replace(/\"/g, \"&quot;\"); }\n  var NB = String.fromCharCode(160);\n  function noLonely(s) { s = \"\" + (s || \"\"); var k = s.lastIndexOf(\" \"); if (k > 0 && s.split(\" \").length > 2) s = s.slice(0, k) + NB + s.slice(k + 1); return s; }\n  function track(name, p) { try { if (window.gtag) window.gtag(\"event\", name, p || {}); } catch (e) {} }\n\n  /* ---- who is asking: a random id this browser keeps, never a name ---- */\n  function visitor() {\n    var k = \"apAskV\", v = \"\";\n    try { v = localStorage.getItem(k) || \"\"; } catch (e) {}\n    if (!/^[a-f0-9]{32}$/.test(v)) {\n      var a = new Uint8Array(16); try { crypto.getRandomValues(a); } catch (e) { for (var i = 0; i < 16; i++) a[i] = Math.floor(Math.random() * 256); }\n      v = \"\"; for (var j = 0; j < 16; j++) v += (a[j] < 16 ? \"0\" : \"\") + a[j].toString(16);\n      try { localStorage.setItem(k, v); } catch (e) {}\n    }\n    return v;\n  }\n\n  /* ---- styles: the page's own colors and type ---- */\n  var css = \"\" +\n    \".apa-box{max-width:720px;margin:28px auto 0;text-align:left}\" +\n    \".apa-row{display:flex;gap:10px;align-items:stretch}\" +\n    \".apa-q{flex:1;min-width:0;font-family:var(--apr-serif,Georgia,serif);font-size:18px;line-height:1.4;padding:13px 16px;border:1px solid #D9D2C3;border-radius:4px;background:#fff;color:#1F1D1A;outline:none}\" +\n    \".apa-q:focus{border-color:#B8945F;box-shadow:0 0 0 3px rgba(184,148,95,.25)}\" +\n    \".apa-q::placeholder{color:#8A8275;opacity:1}\" +\n    \".apa-go{font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-weight:600;font-size:16px;letter-spacing:.02em;padding:0 22px;border:0;border-radius:4px;background:#B8945F;color:#1F2A44;cursor:pointer;white-space:nowrap}\" +\n    \".apa-go:hover{background:#C9A66F}.apa-go[disabled]{opacity:.7;cursor:default}\" +\n    \".apa-doors{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 8px;max-width:820px;margin:22px auto 0}\" +\n    \".apa-doors a{font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-size:14px;font-weight:600;letter-spacing:.01em;line-height:1.2;padding:8px 14px;border:1px solid rgba(217,210,195,.55);border-radius:999px;color:#FBF9F5!important;text-decoration:none!important;cursor:pointer;white-space:nowrap}\" +\n    \".apa-doors a:hover{border-color:#B8945F}.apa-doors a.apa-on{background:#B8945F;border-color:#B8945F;color:#1F2A44!important}\" +\n    \".apa-inside{font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-size:14px;color:#D9D2C3;text-align:center;margin:12px 0 0}\" +\n    \".apa-sec-note{font-family:var(--apr-sans,sans-serif);font-size:15px;color:#6B6357;text-align:center;margin:18px 0 0}\" +\n    \".apa-help{font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-size:13.5px;line-height:1.5;color:#D9D2C3;margin:10px 2px 0;text-align:left}\" +\n    \".apa-note{font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-size:14px;color:#D9D2C3;margin:10px 2px 0;text-align:left;min-height:0}\" +\n    \".apa-out{padding:48px 0 0}.apa-out:empty{padding:0}\" +\n    \".apa-in{max-width:1120px;margin:0 auto;padding:0 24px}\" +\n    \".apa-ans{max-width:760px;margin:0 auto;background:#fff;border:1px solid #E4DCCB;border-left:4px solid #B8945F;padding:28px 32px 26px}\" +\n    \".apa-ans .apa-you{font-family:var(--apr-sans,sans-serif);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#B8945F;margin:0 0 6px}\" +\n    \".apa-ans .apa-asked{font-family:var(--apr-serif,Georgia,serif);font-size:19px;line-height:1.45;color:#1F2A44;margin:0 0 18px;font-style:italic}\" +\n    \".apa-ans .apa-k{font-family:var(--apr-sans,sans-serif);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:#8C6A3F;margin:16px 0 4px}\" +\n    \".apa-ans p.apa-p{font-family:var(--apr-serif,Georgia,serif);font-size:17.5px;line-height:1.6;color:#1F1D1A;margin:0}\" +\n    \".apa-ans .apa-close{font-family:var(--apr-sans,sans-serif);font-size:15px;line-height:1.5;color:#6B6357;margin:18px 0 0;padding-top:14px;border-top:1px solid #E4DCCB}\" +\n    \".apa-fork{margin:18px 0 0;padding-top:14px;border-top:1px solid #E4DCCB}\" +\n    \".apa-fork .apa-fl{font-family:var(--apr-sans,sans-serif);font-size:15px;line-height:1.5;color:#6B6357;margin:0 0 10px}\" +\n    \".apa-fork .apa-fr{margin:0 0 10px;font-family:var(--apr-serif,Georgia,serif);font-size:17px;line-height:1.5;color:#1F1D1A}\" +\n    \".apa-fork .apa-fr a{color:#8C6A3F!important;text-decoration:none!important;border-bottom:1px solid #B8945F;font-weight:600}\" +\n    \".apa-from{font-family:var(--apr-sans,sans-serif);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#B8945F;text-align:center;margin:36px 0 0}\" +\n    \".apa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:16px}\" +\n    \".apa-grid.apa-n2{grid-template-columns:repeat(2,1fr);max-width:760px;margin-left:auto;margin-right:auto}\" +\n    \".apa-grid.apa-n1{grid-template-columns:1fr;max-width:380px;margin-left:auto;margin-right:auto}\" +\n    \".apa-grid a.apr-card .apr-l::before,.apa-grid a.apr-card .apr-l::after{content:none}\" +\n    \".apa-grid a.apr-card[data-src=story] .apr-l::before{content:\\\"\\\\201C\\\";color:#B8945F}.apa-grid a.apr-card[data-src=story] .apr-l::after{content:\\\"\\\\201D\\\";color:#B8945F}\" +\n    \".apa-grid a.apr-card[data-src=article]{padding:0 0 20px;overflow:hidden}\" +\n    \".apa-grid a.apr-card[data-src=article] .apr-d,.apa-grid a.apr-card[data-src=article] .apr-t,.apa-grid a.apr-card[data-src=article] .apr-l,.apa-grid a.apr-card[data-src=article] .apr-go{margin-left:24px;margin-right:24px}\" +\n    \".apa-grid a.apr-card[data-src=article] .apr-d{font-family:var(--apr-sans,sans-serif);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#B8945F;margin-top:18px}\" +\n    \".apa-grid a.apr-card[data-src=article] .apr-l{color:#6B6357}\" +\n    \".apa-grid a.apr-card[data-src=article] .apr-pic{display:block;width:100%;aspect-ratio:16/9;background:#DED6C6 center/cover no-repeat}\" +\n    \".apa-navy{max-width:380px;margin:28px auto 0}.apa-navy a.apr-you{display:flex}\" +\n    \".apa-four{max-width:760px;margin:36px auto 0;background:#fff;border:1px solid #E4DCCB;padding:26px 32px 22px}\" +\n    \".apa-four .apa-lead{font-family:var(--apr-serif,Georgia,serif);font-size:19px;line-height:1.5;color:#1F2A44;margin:0 0 18px}\" +\n    \".apa-ch{display:grid;grid-template-columns:170px 1fr;gap:6px 18px;align-items:start;padding:12px 0;border-top:1px solid #E4DCCB}\" +\n    \".apa-ch a.apa-b{display:inline-block;font-family:var(--apr-sans,sans-serif);font-weight:600;font-size:15px;line-height:1.3;color:#1F2A44!important;background:#F6F2EA;border:1px solid #D9D2C3;border-radius:4px;padding:8px 12px;text-decoration:none!important;cursor:pointer;text-align:center}\" +\n    \".apa-ch a.apa-b:hover{border-color:#B8945F}.apa-ch.apa-on a.apa-b{background:#1F2A44;color:#fff!important;border-color:#1F2A44}\" +\n    \".apa-ch .apa-d{font-family:var(--apr-serif,Georgia,serif);font-size:16.5px;line-height:1.5;color:#1F1D1A;margin:7px 0 0}\" +\n    \".apa-ch .apa-more{grid-column:1/-1}\" +\n    \".apa-ask1,.apa-mail{margin-top:10px}\" +\n    \".apa-ask1 label,.apa-mail label{display:block;font-family:var(--apr-sans,sans-serif);font-size:14px;color:#6B6357;margin:0 0 6px}\" +\n    \".apa-ask1 input,.apa-mail input{width:100%;font-family:var(--apr-serif,Georgia,serif);font-size:16px;padding:10px 12px;border:1px solid #D9D2C3;border-radius:4px;background:#fff;color:#1F1D1A;outline:none}\" +\n    \".apa-ask1 input:focus,.apa-mail input:focus{border-color:#B8945F}\" +\n    \".apa-mail{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}.apa-mail div{flex:1;min-width:220px}\" +\n    \".apa-mail button{font-family:var(--apr-sans,sans-serif);font-weight:600;font-size:15px;padding:11px 18px;border:0;border-radius:4px;background:#B8945F;color:#1F2A44;cursor:pointer}\" +\n    \".apa-mail button:hover{background:#C9A66F}.apa-mail button[disabled]{opacity:.7;cursor:default}\" +\n    \".apa-ok{font-family:var(--apr-sans,sans-serif);font-size:15px;color:#1F2A44;margin:10px 0 0}\" +\n    \".apa-ask-line{max-width:760px;margin:0 auto;font-family:var(--apr-serif,Georgia,serif);font-size:19px;line-height:1.55;color:#1F1D1A;background:#fff;border:1px solid #E4DCCB;border-left:4px solid #B8945F;padding:24px 32px}\" +\n    \".apa-ask-line b{color:#1F2A44;font-weight:600}\" +\n    \".apa-ask-line .apa-small{display:block;font-family:var(--apr-sans,sans-serif);font-size:15px;line-height:1.5;color:#6B6357;margin-top:12px}\" +\n    \".apa-nomatch{font-family:var(--apr-sans,sans-serif);font-size:15px;color:#6B6357;text-align:center;margin:18px 0 0}\" +\n    \".apa-asking-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:30px;max-width:820px;margin-left:auto;margin-right:auto}\" +\n    \".apa-con{background:#fff;border:1px solid #E4DCCB;padding:22px 28px 18px}\" +\n    \".apa-con .apa-cq{font-family:var(--apr-serif,Georgia,serif);font-size:20px;line-height:1.45;color:#1F2A44;margin:0}\" +\n    \".apa-con .apa-cq::before{content:\\\"\\\\201C\\\";color:#B8945F}.apa-con .apa-cq::after{content:\\\"\\\\201D\\\";color:#B8945F}\" +\n    \".apa-con .apa-cw{font-family:var(--apr-sans,sans-serif);font-size:15px;line-height:1.5;color:#1F1D1A;margin:10px 0 0}\" +\n    \".apa-con .apa-cw b{color:#8C6A3F;font-weight:600;letter-spacing:.02em}\" +\n    \".apa-con .apa-cw a{color:#8C6A3F!important;text-decoration:none!important;border-bottom:1px solid #B8945F}\" +\n    \".apa-con .apa-cl{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0 0;padding-top:12px;border-top:1px solid #E4DCCB}\" +\n    \".apa-con .apa-cl a{font-family:var(--apr-sans,sans-serif);font-weight:600;font-size:14px;color:#1F2A44!important;text-decoration:none!important;cursor:pointer}\" +\n    \".apa-con .apa-cl a:hover{color:#8C6A3F!important}.apa-con .apa-cl a.apa-on{color:#8C6A3F!important;border-bottom:2px solid #B8945F}\" +\n    \".apa-con .apa-cx{margin-top:12px}\" +\n    \".apa-ans,.apa-four,.apa-ask-line,.apa-con{text-align:left}\" +\n    \".apa-ans .apa-wait{font-family:var(--apr-sans,sans-serif);font-size:15px;line-height:1.5;color:#6B6357;margin:4px 0 0}\" +\n    \".apr a.apr-you.apa-wide{align-items:center;text-align:center}.apr a.apr-you.apa-wide .apr-meta{justify-content:center}\" +\n    \".apa-sec-note a{color:#8C6A3F!important;text-decoration:none!important;border-bottom:1px solid #B8945F;font-weight:600}\" +\n    \"@media (max-width:1023px){.apa-grid{grid-template-columns:1fr 1fr}}\" +\n    \"@media (max-width:640px){.apa-doors a{flex:1 1 auto;text-align:center}.apa-row{flex-direction:column}.apa-q{font-size:15.5px;padding:12px 13px}.apa-go{padding:13px 22px}.apa-grid,.apa-grid.apa-n2{grid-template-columns:1fr;gap:14px}.apa-ans,.apa-four,.apa-ask-line{padding:22px 20px 20px}.apa-ch{grid-template-columns:1fr;gap:4px}.apa-in{padding:0 16px}.apa-out{padding-top:36px}}\";\n  var st = el(\"style\"); st.id = \"apAskCss\"; st.textContent = css; doc.head.appendChild(st);\n\n  /* ---- words: the fixed lines a man reads (do not reword on the page; the script and the page carry the same) ---- */\n  var W = {\n    placeholder: \"What do you need help with? Ask in your own words.\",\n    ask: \"Ask\", reading: \"Reading\\u2026\",\n    help: \"We keep the questions, not who asked them, unless you leave your email so we can tell you when it\\u2019s ready.\",\n    fromThese: \"From these pieces\",\n    whereToGo: \"Where to go\",\n    labels: { problem: \"What you are carrying\", scripture: \"What Scripture says\", people: \"People first\", decision: \"A decision today\" },\n    four: \"We don\\u2019t have anything on this yet. Our library of courses and articles is growing, and what you ask helps us choose what to write next. Here is what we can do.\",\n    forkLead: \"Where to start depends on where you are.\",\n    closeFour: \"Here is what we can do.\",\n    choices: [\n      { k: \"talk\", b: \"Let\\u2019s talk\", d: \"A conversation, not an article. Thirty minutes with one of our team.\" },\n      { k: \"write\", b: \"Write about it\", d: \"We\\u2019ll write a piece on this. One line on what you\\u2019d want it to answer, if you have it.\" },\n      { k: \"story\", b: \"A story to write\", d: \"We\\u2019ll build a Your Story piece around it, for you and other men to write your own.\" },\n      { k: \"group\", b: \"A group on this\", d: \"When enough men ask, we open a group. Count me in.\" }\n    ],\n    oneLine: \"One line on what you\\u2019d want it to answer, if you have it.\",\n    mail: \"Want to know when it\\u2019s ready? Leave your email.\",\n    mailGo: \"Tell me\", mailDone: \"We\\u2019ll tell you when it\\u2019s ready.\", mailBad: \"That doesn\\u2019t look like an email address. Check it and try again.\",\n    noted: \"Noted.\",\n    outsideAbout: \"What we do here is narrower: story work with men \\u2014 the things you carry, what Scripture says about them, and the next honest step. If you want to talk it through with one of our team, that door is open.\",\n    safety: \"Thank you for saying it here. What you wrote is more than a page should carry. If you or anyone is in danger right now, call 911. Any hour, call or text <b>988</b>, or text <b>HOME</b> to <b>741741</b>. And talk with one of our team \\u2014 that is what Let\\u2019s talk is for.\",\n    fail: \"The answer did not come back. Your words are still in the box \\u2014 try again in a moment, or go straight to Let\\u2019s talk.\",\n    capped: \"The box has answered all it can for today. Come back tomorrow, or go straight to Let\\u2019s talk.\",\n    nomatch: \"Nothing on this page matches those words yet. Press Ask and we will look properly.\",\n    whereWeAre: \"Where we are:\",\n    inside: \"Inside \", stepOut: \". Tap it again to step out.\",\n    noStory: \"No story behind this door yet. Yours could be the first.\",\n    noStoryLead: \"No story behind this door yet.\", noStoryGo: \"Yours could be the first \u2192\",\n    noArticle: \"No article behind this door yet.\",\n    waiting: \"Reading these pieces with your words\u2026\",\n    firstK: \"Closest to what you asked\", firstFrom: \"Where we would start\", firstWait: \"Reading what you wrote\u2026\",\n    waitingSite: \"Reading our pages for your answer\u2026\",\n    failSite: \"The answer did not come back. The pages below are where it would have come from \u2014 or go straight to Let\u2019s talk.\",\n    failAfter: \"The answer did not come back. The pieces below are where it would have come from \u2014 or go straight to Let\u2019s talk.\",\n    talkBox: { k: \"Let\u2019s talk\", t: \"Talk it through with us.\", l: \"Thirty minutes with one of our team, free. You tell us where you are and what you are carrying.\", go: \"Let\u2019s talk\" },\n    safeBox: { k: \"Let\u2019s talk\", t: \"You don\u2019t have to carry this alone.\", l: \"Talk with one of our team. Tell us where you are.\", go: \"Let\u2019s talk\" }\n  };\n\n  /* ---- the box ---- */\n  var bandSlot = $(\"[data-ap-ask=band]\"), outSlot = $(\"[data-ap-ask=out]\"), askingSlot = $(\"[data-ap-ask=asking]\");\n  if (!bandSlot) { bandSlot = el(\"div\"); bandSlot.setAttribute(\"data-ap-ask\", \"band\"); var lede = $(\".apr-lede\") || $(\".apr-band .apr-in\"); if (lede && lede.parentNode) lede.parentNode.insertBefore(bandSlot, lede.nextSibling); else host.insertBefore(bandSlot, host.firstChild); }\n  if (!outSlot) { outSlot = el(\"section\"); outSlot.setAttribute(\"data-ap-ask\", \"out\"); var band = $(\".apr-band\"); if (band && band.parentNode) band.parentNode.insertBefore(outSlot, band.nextSibling); else host.appendChild(outSlot); }\n  outSlot.className = (outSlot.className ? outSlot.className + \" \" : \"\") + \"apa-out\";\n\n  /* the page may already carry the box (so it is there from the first moment); keep it and what he has typed */\n  if (!bandSlot.querySelector(\"#apAskForm\")) bandSlot.innerHTML = '<form class=\"apa-box\" id=\"apAskForm\" autocomplete=\"off\"><div class=\"apa-row\"><input class=\"apa-q\" id=\"apAskQ\" type=\"text\" maxlength=\"600\" placeholder=\"' + esc(W.placeholder) + '\" aria-label=\"' + esc(W.placeholder) + '\"><button class=\"apa-go\" id=\"apAskGo\" type=\"submit\">' + esc(W.ask) + '</button></div><p class=\"apa-help\">' + esc(W.help) + '</p><p class=\"apa-note\" id=\"apAskNote\"></p></form>';\n  if (!bandSlot.querySelector(\"#apDoors\")) bandSlot.appendChild(el(\"nav\", \"apa-doors\")).id = \"apDoors\";\n  if (!bandSlot.querySelector(\"#apInside\")) bandSlot.appendChild(el(\"p\", \"apa-inside\")).id = \"apInside\";\n  $(\"#apDoors\").setAttribute(\"aria-label\", \"Doors\"); $(\"#apDoors\").hidden = true; $(\"#apInside\").hidden = true;\n  if (!$(\"#apAskNote\")) { var nt = el(\"p\", \"apa-note\"); nt.id = \"apAskNote\"; $(\"#apAskForm\").appendChild(nt); }\n  var form = $(\"#apAskForm\"), q = $(\"#apAskQ\"), go = $(\"#apAskGo\"), note = $(\"#apAskNote\"), doorsEl = $(\"#apDoors\"), insideEl = $(\"#apInside\");\n  var DOOR = \"\", FEED = null, HANDFUL = 6;\n\n  /* ---- narrowing: as he types, the page's cards narrow to the ones that carry his words ---- */\n  var STOP = { the: 1, and: 1, for: 1, with: 1, that: 1, this: 1, what: 1, how: 1, why: 1, when: 1, who: 1, can: 1, you: 1, your: 1, are: 1, was: 1, were: 1, have: 1, has: 1, had: 1, not: 1, but: 1, from: 1, about: 1, into: 1, out: 1, all: 1, any: 1, some: 1, just: 1, like: 1, feel: 1, feels: 1, feeling: 1, get: 1, got: 1, keep: 1, keeps: 1, want: 1, dont: 1, cant: 1, wont: 1, its: 1, \"i'm\": 1, ive: 1, \"i've\": 1, been: 1, being: 1, very: 1, really: 1, much: 1, more: 1, than: 1, then: 1, there: 1, here: 1, them: 1, they: 1, him: 1, her: 1, his: 1, she: 1, our: 1, one: 1, every: 1, always: 1, never: 1, still: 1, again: 1, over: 1, after: 1, before: 1, because: 1, does: 1, did: 1, doing: 1, done: 1, know: 1, think: 1, should: 1, would: 1, could: 1, will: 1, way: 1, thing: 1, things: 1, something: 1, someone: 1, make: 1, makes: 1, made: 1, time: 1, myself: 1, self: 1, own: 1, man: 1, men: 1, life: 1, god: 0 };\n  function stem(w) { w = w.toLowerCase().replace(/[^a-z']/g, \"\"); if (w.length > 5 && /ing$/.test(w)) w = w.slice(0, -3); else if (w.length > 4 && /(ed|es|ly)$/.test(w)) w = w.slice(0, -2); else if (w.length > 3 && /s$/.test(w) && !/ss$/.test(w)) w = w.slice(0, -1); return w; }\n  function tokens(s) { var out = [], seen = {}; (\"\" + s).split(/\\s+/).forEach(function (w) { var t = stem(w); if (t.length < 3 || STOP[w.toLowerCase()] || STOP[t]) return; if (!seen[t]) { seen[t] = 1; out.push(t); } }); return out; }\n  function cards() { return Array.prototype.slice.call(doc.querySelectorAll(\"#aprStories a.apr-card, #aprArticles a.apr-card\")); }\n  var cardIndex = null;\n  function indexCards() { cardIndex = cards().map(function (c) { return { el: c, text: \" \" + tokens(c.textContent).join(\" \") + \" \", raw: c.textContent.toLowerCase(), grid: c.parentNode }; }); }\n  var nomatchEl = null, lastText = \"\";\n  function inDoor(c) { return !DOOR || (c.el.getAttribute(\"data-concern\") || \"\") === DOOR; }\n  /* what shows: inside a door, every card behind it; otherwise the newest handful of each section; typing narrows within that */\n  function narrow(text) {\n    if (!cardIndex) indexCards();\n    lastText = text == null ? lastText : text;\n    var tk = tokens(lastText), need = tk.length >= 3 ? 2 : 1, any = false, i, perGrid = {};\n    cardIndex.forEach(function (c) {\n      var n = 0; for (i = 0; i < tk.length; i++) if (c.text.indexOf(\" \" + tk[i] + \" \") >= 0 || c.raw.indexOf(tk[i]) >= 0) n++;\n      c.hit = tk.length ? n >= need : true; if (tk.length && c.hit && inDoor(c)) any = true;\n    });\n    var typedMiss = tk.length && !any;\n    cardIndex.forEach(function (c) {\n      var show = inDoor(c) && (typedMiss || c.hit);\n      if (show && !DOOR && (!tk.length || typedMiss)) { var k = c.grid === $(\"#aprStories\") ? \"s\" : \"a\"; perGrid[k] = (perGrid[k] || 0) + 1; if (perGrid[k] > HANDFUL) show = false; }\n      c.el.style.display = show ? \"\" : \"none\";\n    });\n    if (!nomatchEl) { nomatchEl = el(\"p\", \"apa-nomatch\", esc(W.nomatch)); var g = $(\"#aprStories\"); if (g && g.parentNode) g.parentNode.insertBefore(nomatchEl, g); else nomatchEl = null; }\n    if (nomatchEl) nomatchEl.style.display = typedMiss ? \"\" : \"none\";\n    sectionNotes();\n  }\n  var BEGIN_SHOWN = false;   /* the answer on the page ends in Begin */\n  function sectionNotes() {\n    [[\"#aprStories\", W.noStory], [\"#aprArticles\", W.noArticle]].forEach(function (pair) {\n      var g = $(pair[0]); if (!g) return;\n      var noteEl = g.parentNode.querySelector(\".apa-sec-note\"); if (!noteEl) { noteEl = el(\"p\", \"apa-sec-note\", esc(pair[1])); g.parentNode.insertBefore(noteEl, g); }\n      var shown = 0; Array.prototype.forEach.call(g.querySelectorAll(\"a.apr-card\"), function (c) { if (c.style.display !== \"none\") shown++; });\n      noteEl.style.display = DOOR && !shown ? \"\" : \"none\";\n      if (pair[0] === \"#aprStories\") {\n        /* an empty door under an answer that already ends in Begin: Begin once \u2014 the note carries the way in, the box steps aside */\n        var you = g.querySelector(\"a.apr-you\"), once = DOOR && !shown && BEGIN_SHOWN;\n        if (you) you.style.display = once ? \"none\" : \"\";\n        noteEl.innerHTML = once ? esc(W.noStoryLead) + ' <a href=\"/your-story#write-your-story\">' + esc(W.noStoryGo) + '</a>' : esc(W.noStory);\n      }\n    });\n    fitBoxes();\n  }\n  /* the navy box at the end of a section never sits alone with empty places beside it: it fills the rest of its row */\n  function fitBoxes() {\n    [\"#aprStories\", \"#aprArticles\"].forEach(function (sel) {\n      var g = $(sel); if (!g) return;\n      var you = null, n = 0;\n      Array.prototype.forEach.call(g.children, function (c) { if (c.classList.contains(\"apr-you\")) you = c; else if (c.classList.contains(\"apr-card\") && c.style.display !== \"none\") n++; });\n      if (!you) return;\n      var cols = 1; try { cols = getComputedStyle(g).gridTemplateColumns.split(\" \").filter(Boolean).length || 1; } catch (e) {}\n      var rest = n % cols, span = cols > 1 ? (rest ? cols - rest : cols) : 1;\n      you.style.gridColumn = span > 1 ? \"span \" + span : \"\";\n      you.classList.toggle(\"apa-wide\", span > 1);\n    });\n  }\n  var fitT = null; window.addEventListener(\"resize\", function () { clearTimeout(fitT); fitT = setTimeout(fitBoxes, 120); });\n  /* the doors: tap one to step in, tap it again to step out; the sections follow and the ask answers inside it */\n  function drawDoors() {\n    var doors = (FEED && FEED.concerns || []).filter(function (c) { return c.state === \"door\"; });\n    doorsEl.innerHTML = \"\"; doorsEl.hidden = !doors.length;\n    doors.forEach(function (d) {\n      var a = el(\"a\", \"\", esc(d.name)); a.href = \"#\"; a.setAttribute(\"data-door\", d.name);\n      a.addEventListener(\"click\", function (ev) { ev.preventDefault(); setDoor(DOOR === d.name ? \"\" : d.name); });\n      doorsEl.appendChild(a);\n    });\n  }\n  function setDoor(name) {\n    DOOR = name || \"\";\n    Array.prototype.forEach.call(doorsEl.querySelectorAll(\"a\"), function (a) { a.classList.toggle(\"apa-on\", a.getAttribute(\"data-door\") === DOOR); });\n    insideEl.hidden = !DOOR; insideEl.textContent = DOOR ? W.inside + DOOR + W.stepOut : \"\";\n    narrow(null);\n    track(\"door\", { door: DOOR || \"(none)\" });\n  }\n  /* each card learns its concern from the Guide's feed, matched by address */\n  function tagCards() {\n    if (!FEED || !FEED.pieces) return;\n    var byPath = {}; FEED.pieces.forEach(function (p) { byPath[pathOf(p.address)] = p; });\n    cards().forEach(function (c) { var p = byPath[pathOf(c.getAttribute(\"href\"))]; if (p && p.concern) c.setAttribute(\"data-concern\", p.concern); });\n    cardIndex = null;\n  }\n  window.apGuideFeed = function (data) {\n    try {\n      if (!data || !data.ok) return;\n      FEED = data; HANDFUL = Math.max(3, Number(data.handful) || 6);\n      tagCards(); drawDoors(); narrow(null);\n      if (data.asking && data.asking.length) window.apAskAsking({ rows: data.asking });\n    } catch (e) {}\n  };\n  var typing = null;\n  q.addEventListener(\"input\", function () { clearTimeout(typing); typing = setTimeout(function () { narrow(q.value); }, 220); });\n\n  /* ---- the first look (build 5): the closest door and its pieces, from what the page holds, before Claude has read ---- */\n  var CUES = {\n    \"shame\": [\"shame\", \"ashamed\", \"worthless\", \"not enough\", \"disgust\", \"hiding\", \"guilt\", \"guilty\", \"failure\", \"i am the problem\"],\n    \"pornography\": [\"porn\", \"pornography\", \"lust\", \"masturbat\"],\n    \"what people think of me\": [\"what people think\", \"what others think\", \"approval\", \"people pleas\", \"judged\", \"judge me\", \"reputation\", \"embarrass\", \"impress\"],\n    \"anger\": [\"anger\", \"angry\", \"rage\", \"temper\", \"blow up\", \"blowing up\", \"blew up\", \"yell\", \"yelling\", \"mad at\", \"furious\", \"resent\", \"snap at\", \"lose it\", \"lost it\"],\n    \"where i'm from\": [\"where i'm from\", \"where i am from\", \"childhood\", \"hometown\", \"grew up\", \"growing up\", \"my parents\", \"my mother\", \"my mom\", \"roots\"],\n    \"endings and new beginnings\": [\"ending\", \"divorc\", \"retire\", \"lost my job\", \"laid off\", \"start over\", \"new beginning\", \"transition\", \"empty nest\", \"separat\"],\n    \"grief and lament\": [\"grief\", \"grieve\", \"grieving\", \"died\", \"death\", \"loss\", \"mourn\", \"funeral\", \"lament\", \"miss him\", \"miss her\"],\n    \"fathers and children\": [\"father\", \"dad\", \"my son\", \"daughter\", \"my kids\", \"my children\", \"my boy\", \"my girl\", \"parenting\", \"fatherhood\"],\n    \"writing my story\": [\"my story\", \"testimony\", \"journal\"],\n    \"how to be known in community\": [\"lonely\", \"alone\", \"friends\", \"friendship\", \"community\", \"known\", \"isolat\", \"nobody knows\", \"no one knows\", \"knows me\", \"know me\", \"connection\"]\n  };\n  var HARM = /suicid|kill|\\bdie\\b|\\bdead\\b|end it|hurt (myself|me|him|her|them|my)|abus|rape|molest|assault|overdos|\\bgun\\b|danger|beat (me|my|her|him)|hit (me|my|her|him)|touch(ed|ing)? (me|my|a child)/i;\n  var SITE = /\\b(cost|price|pay|fee|how much|sign ?in|log ?in|password|account|course|cohort|join|enrol|register|coaching|coach|talk to|contact|book|schedule|where (do|can|is)|how (do|can) i)\\b|help (me )?(with )?writ/i;\n  function nameKey(s) { return (\"\" + s).toLowerCase().replace(/[\u2018\u2019`]/g, \"'\").trim(); }\n  function firstLook(text) {\n    if (!FEED || !FEED.pieces || !FEED.concerns) return null;\n    var t = \" \" + nameKey(text).replace(/[^a-z' ]+/g, \" \").replace(/\\s+/g, \" \") + \" \";\n    if (HARM.test(t) || SITE.test(t)) return null;\n    var doors = FEED.concerns.filter(function (c) { return c.state === \"door\"; }), best = null, bestN = 0;\n    if (DOOR) best = DOOR;\n    else doors.forEach(function (c) {\n      var cues = (CUES[nameKey(c.name)] || []).concat([nameKey(c.name)]), n = 0;\n      cues.forEach(function (w) { if (w.indexOf(\" \") >= 0 || w.length > 6 ? t.indexOf(w) >= 0 : new RegExp(\"\\\\b\" + w).test(t)) n++; });\n      if (n > bestN) { bestN = n; best = c.name; }\n    });\n    if (!best) return null;\n    var ps = FEED.pieces.filter(function (p) { return p.concern === best; }).slice(0, 3);\n    return ps.length ? { concern: best, pieces: ps } : null;\n  }\n  function renderFirst(fl, asked) {\n    outSlot.innerHTML = \"\";\n    var wrap = el(\"div\", \"apa-in\"), ans = el(\"div\", \"apa-ans\");\n    ans.innerHTML = '<p class=\"apa-you\">You asked</p><p class=\"apa-asked\">' + esc(asked) + '</p>' +\n      '<p class=\"apa-k\">' + esc(W.firstK) + '</p><p class=\"apa-p\">' + esc(fl.concern) + '</p>' +\n      '<p class=\"apa-wait\">' + esc(W.firstWait) + '</p>';\n    wrap.appendChild(ans);\n    wrap.appendChild(el(\"p\", \"apa-from\", esc(W.firstFrom)));\n    var g = el(\"div\", \"apa-grid\" + (fl.pieces.length === 1 ? \" apa-n1\" : fl.pieces.length === 2 ? \" apa-n2\" : \"\"));\n    fl.pieces.forEach(function (p) { g.appendChild(pieceCard(p)); });\n    wrap.appendChild(g);\n    outSlot.appendChild(wrap);\n    goTo(outSlot);\n  }\n\n  /* ---- the ask ---- */\n  var V = visitor(), busy = false, last = null;\n  function post(body) {\n    return fetch(BASE, { method: \"POST\", headers: { \"Content-Type\": \"text/plain\" }, body: JSON.stringify(body), credentials: \"omit\" }).then(function (r) { return r.text(); }).then(function (t) { try { return JSON.parse(t); } catch (e) { return { ok: false, error: \"network\" }; } }).catch(function () { return { ok: false, error: \"network\" }; });\n  }\n  function done() { busy = false; go.disabled = false; go.textContent = W.ask; }\n  function send(ev) {\n    if (ev) ev.preventDefault();\n    window.apAskEarly = 0;\n    var text = (q.value || \"\").replace(/\\s+/g, \" \").trim();\n    if (text.length < 3 || busy) return;\n    busy = true; go.disabled = true; go.textContent = W.reading; note.textContent = \"\";\n    clearTimeout(typing); narrow(\"\");\n    track(\"ask_sent\", { build: BUILD });\n    var fl = null; try { fl = firstLook(text); } catch (e) {}\n    if (fl) { renderFirst(fl, text); track(\"ask_first_look\", { concern: fl.concern, build: BUILD }); }\n    /* step one: the outcome and the pieces (a few seconds); step two: the answer from those pieces */\n    post({ op: \"ask\", q: text, v: V, door: DOOR, two: true }).then(function (r) {\n      if (!r || !r.ok) { done(); render({ outcome: \"error\", error: (r && r.error) || \"network\" }, text, { still: !!fl }); return; }\n      last = r;\n      if (!r.pending) { done(); render(r, text, { still: !!fl }); track(\"ask_answered\", { outcome: r.outcome || \"\", build: BUILD }); return; }\n      render(r, text, { waiting: true, still: !!fl });\n      post({ op: \"answer\", askId: r.askId, v: V }).then(function (r2) {\n        done();\n        if (!r2 || !r2.ok) { render(r, text, { failed: true, still: true }); track(\"ask_answered\", { outcome: \"error\", build: BUILD }); return; }\n        last = r2; render(r2, text, { still: true });\n        track(\"ask_answered\", { outcome: r2.outcome || \"\", build: BUILD });\n      });\n    });\n  }\n  form.addEventListener(\"submit\", send);\n\n  /* ---- what the page draws back ---- */\n  /* the box under an answer: Begin is the page's own; Let's talk carries its own words for the moment\n     (the Articles box asks \"Read something that landed?\" \\u2014 right under the articles, wrong under an answer or the safeguarding line) */\n  function navyBox(kind) {\n    var a, src = kind === \"begin\" ? $(\"#aprStories a.apr-you\") : null;\n    if (src) { a = src.cloneNode(true); a.removeAttribute(\"id\"); a.style.display = \"\"; a.style.gridColumn = \"\"; a.classList.remove(\"apa-wide\"); }\n    else if (kind === \"begin\") { a = el(\"a\", \"apr-you\", '<span class=\"apr-meta\"><span class=\"apr-k\">Your story</span></span><span class=\"apr-t\">It belongs here.</span><span class=\"apr-l\">One hour. Your own words. Start with Where I\\u2019m From.</span><span class=\"apr-go\">Begin<i>\\u2192</i></span>'); a.href = \"/your-story#write-your-story\"; }\n    else {\n      var w0 = kind === \"safety\" ? W.safeBox : W.talkBox;\n      a = el(\"a\", \"apr-you\", '<span class=\"apr-meta\"><span class=\"apr-k\">' + esc(w0.k) + '</span></span><span class=\"apr-t\">' + esc(noLonely(w0.t)) + '</span><span class=\"apr-l\">' + esc(noLonely(w0.l)) + '</span><span class=\"apr-go\">' + esc(w0.go) + '<i>\\u2192</i></span>'); a.href = \"/begin\";\n    }\n    var w = el(\"div\", \"apa-navy\"); w.appendChild(a); return w;\n  }\n  function pathOf(href) { try { var u = new URL(href, location.href); return u.pathname.replace(/\\/$/, \"\") + u.search; } catch (e) { return href; } }\n  function pieceCard(p) {\n    var want = pathOf(p.address), found = null;\n    cards().forEach(function (c) { if (!found && pathOf(c.getAttribute(\"href\")) === want) found = c; });\n    var a;\n    if (p.source === \"site\") {\n      a = el(\"a\", \"apr-card\"); a.href = p.address;\n      a.innerHTML = '<span class=\"apr-meta\"><span class=\"apr-k\">' + esc(p.kind) + '</span></span><span class=\"apr-t\">' + esc(noLonely(p.title)) + '</span>' + (p.line ? '<span class=\"apr-l\">' + esc(noLonely(p.line)) + '</span>' : '') + '<span class=\"apr-go\">' + esc(p.go || \"Open it\") + '<i>\\u2192</i></span>';\n      a.setAttribute(\"data-src\", \"site\");\n      return a;\n    }\n    if (found) { a = found.cloneNode(true); a.style.display = \"\"; }\n    else {\n      a = el(\"a\", \"apr-card\"); a.href = p.address;\n      a.innerHTML = '<span class=\"apr-meta\"><span class=\"apr-k\">' + esc(p.kind) + '</span>' + (p.source === \"story\" ? '<span class=\"apr-w\">' + esc(p.who) + '</span>' : '') + '</span><span class=\"apr-t\">' + esc(noLonely(p.title)) + '</span>' + (p.line ? '<span class=\"apr-l\">' + esc(noLonely(p.line)) + '</span>' : '') + '<span class=\"apr-go\">' + (p.source === \"story\" ? \"Read his story\" : \"Read it\") + '<i>\\u2192</i></span>';\n    }\n    a.setAttribute(\"data-src\", p.source === \"story\" ? \"story\" : \"article\");\n    return a;\n  }\n  function forkBox(fk) {\n    var box = el(\"div\", \"apa-fork\"); box.innerHTML = '<p class=\"apa-fl\">' + esc(W.forkLead) + '</p>';\n    fk.forEach(function (f) {\n      var w = String(f.when || \"\").replace(/^\\s+/, \"\"); w = w.charAt(0).toUpperCase() + w.slice(1); if (w && !/[.!?]$/.test(w)) w += \".\";\n      var row = el(\"p\", \"apa-fr\"); row.innerHTML = '<a href=\"' + esc(f.address) + '\">' + esc(noLonely(f.title)) + '</a> \\u2014 ' + esc(noLonely(w));\n      box.appendChild(row);\n    });\n    return box;\n  }\n  function fourChoices(ctx, lead) {\n    var box = el(\"div\", \"apa-four\");\n    box.innerHTML = '<p class=\"apa-lead\">' + esc(lead) + '</p>';\n    W.choices.forEach(function (c) {\n      var row = el(\"div\", \"apa-ch\"); row.setAttribute(\"data-k\", c.k);\n      row.innerHTML = '<a class=\"apa-b\" href=\"' + (c.k === \"talk\" ? \"/begin\" : \"#\") + '\">' + esc(c.b) + '</a><p class=\"apa-d\">' + esc(c.d) + '</p>';\n      row.querySelector(\"a.apa-b\").addEventListener(\"click\", function (ev) { choose(ev, row, c.k, ctx, box); });\n      box.appendChild(row);\n    });\n    return box;\n  }\n  function choose(ev, row, k, ctx, box) {\n    if (k === \"talk\") { try { post({ op: \"choice\", askId: ctx.askId, choice: \"talk\", concern: ctx.concern, concernLine: ctx.concernLine }); } catch (e) {} track(\"ask_choice\", { choice: \"talk\" }); return; }   /* the link goes on to /begin */\n    ev.preventDefault();\n    if (row.classList.contains(\"apa-on\")) return;\n    Array.prototype.forEach.call(box.querySelectorAll(\".apa-ch\"), function (r) { r.classList.remove(\"apa-on\"); var m = r.querySelector(\".apa-more\"); if (m) m.parentNode.removeChild(m); });\n    row.classList.add(\"apa-on\");\n    track(\"ask_choice\", { choice: k });\n    var more = el(\"div\", \"apa-more\");\n    var html = '';\n    if (k === \"write\") html += '<div class=\"apa-ask1\"><input id=\"apAskL' + k + '\" type=\"text\" maxlength=\"300\" aria-label=\"' + esc(W.oneLine) + '\"></div>';\n    html += '<div class=\"apa-mail\"><div><label for=\"apAskM' + k + '\">' + esc(W.mail) + '</label><input id=\"apAskM' + k + '\" type=\"email\" maxlength=\"120\" autocomplete=\"email\"></div><button type=\"button\">' + esc(W.mailGo) + '</button></div><p class=\"apa-ok\"></p>';\n    more.innerHTML = html;\n    row.appendChild(more);\n    var lineIn = more.querySelector(\".apa-ask1 input\"), mailIn = more.querySelector(\".apa-mail input\"), btn = more.querySelector(\".apa-mail button\"), ok = more.querySelector(\".apa-ok\");\n    post({ op: \"choice\", askId: ctx.askId, choice: k, concern: ctx.concern, concernLine: ctx.concernLine });   /* the choice itself is kept at once, with no email */\n    ok.textContent = W.noted;\n    function send() {\n      var email = (mailIn.value || \"\").trim(), line = lineIn ? (lineIn.value || \"\").trim() : \"\";\n      if (!email && !line) return;\n      if (email && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) { ok.textContent = W.mailBad; return; }\n      btn.disabled = true;\n      post({ op: \"choice\", askId: ctx.askId, choice: k, concern: ctx.concern, concernLine: ctx.concernLine, line: line, email: email }).then(function (r) {\n        btn.disabled = false;\n        if (r && r.ok) { ok.textContent = email ? W.mailDone : W.noted; if (email) { mailIn.value = \"\"; btn.disabled = true; } }\n        else ok.textContent = (r && r.error === \"bad_email\") ? W.mailBad : W.fail;\n      });\n    }\n    btn.addEventListener(\"click\", send);\n    [lineIn, mailIn].forEach(function (inp) { if (inp) inp.addEventListener(\"keydown\", function (e) { if (e.key === \"Enter\") { e.preventDefault(); send(); } }); });\n    if (lineIn) lineIn.focus(); else mailIn.focus();\n  }\n  function render(r, asked, opt) {\n    opt = opt || {};\n    outSlot.innerHTML = \"\";\n    var wrap = el(\"div\", \"apa-in\"), ctx = { askId: r.askId || \"\", concern: r.concern || \"\" };\n    var o = r.outcome;\n    BEGIN_SHOWN = false;\n    if (o === \"answer\" || o === \"close\") {\n      var a = r.answer || {}, ans = el(\"div\", \"apa-ans\"), waiting = opt.waiting || opt.failed;\n      ans.innerHTML = '<p class=\"apa-you\">You asked</p><p class=\"apa-asked\">' + esc(asked) + '</p>' +\n        (waiting ? '<p class=\"apa-wait\">' + esc(opt.failed ? W.failAfter : W.waiting) + '</p>' : '') +\n        (a.problem ? '<p class=\"apa-k\">' + esc(W.labels.problem) + '</p><p class=\"apa-p\">' + esc(noLonely(a.problem)) + '</p>' : '') +\n        (a.scripture ? '<p class=\"apa-k\">' + esc(W.labels.scripture) + '</p><p class=\"apa-p\">' + esc(noLonely(a.scripture)) + '</p>' : '') +\n        (a.people ? '<p class=\"apa-k\">' + esc(W.labels.people) + '</p><p class=\"apa-p\">' + esc(noLonely(a.people)) + '</p>' : '') +\n        (a.decision ? '<p class=\"apa-k\">' + esc(W.labels.decision) + '</p><p class=\"apa-p\">' + esc(noLonely(a.decision)) + '</p>' : '') +\n        (o === \"close\" && a.closeNote ? '<p class=\"apa-close\">' + esc(noLonely(a.closeNote)) + '</p>' : '');\n      if (r.fork && r.fork.length > 1) ans.appendChild(forkBox(r.fork));\n      wrap.appendChild(ans);\n      var ps = r.pieces || [];\n      if (ps.length) {\n        wrap.appendChild(el(\"p\", \"apa-from\", esc(W.fromThese)));\n        var g = el(\"div\", \"apa-grid\" + (ps.length === 1 ? \" apa-n1\" : ps.length === 2 ? \" apa-n2\" : \"\"));\n        ps.forEach(function (p) { g.appendChild(pieceCard(p)); });\n        wrap.appendChild(g);\n      }\n      var pg = r.pages || [];\n      if (pg.length) {\n        wrap.appendChild(el(\"p\", \"apa-from\", esc(W.whereToGo)));\n        var gg = el(\"div\", \"apa-grid\" + (pg.length === 1 ? \" apa-n1\" : pg.length === 2 ? \" apa-n2\" : \"\"));\n        pg.forEach(function (p) { gg.appendChild(pieceCard(p)); });\n        wrap.appendChild(gg);\n      }\n      if (opt.waiting) { /* the choices and the closing box come with the answer */ }\n      else if (o === \"close\" || opt.failed) wrap.appendChild(fourChoices(ctx, W.closeFour));\n      else { BEGIN_SHOWN = a.close === \"begin\"; wrap.appendChild(navyBox(BEGIN_SHOWN ? \"begin\" : \"talk\")); }\n    } else if (o === \"site\") {\n      var sa = r.answer || {}, sb = el(\"div\", \"apa-ans\"), swait = opt.waiting || opt.failed;\n      sb.innerHTML = '<p class=\"apa-you\">You asked</p><p class=\"apa-asked\">' + esc(asked) + '</p>' +\n        (swait ? '<p class=\"apa-wait\">' + esc(opt.failed ? W.failSite : W.waitingSite) + '</p>' : '') +\n        (sa.text ? '<p class=\"apa-p\">' + esc(noLonely(sa.text)) + '</p>' : '');\n      if (r.fork && r.fork.length > 1) sb.appendChild(forkBox(r.fork));\n      wrap.appendChild(sb);\n      var sp = r.pieces || [];\n      if (sp.length) {\n        wrap.appendChild(el(\"p\", \"apa-from\", esc(W.whereToGo)));\n        var sg = el(\"div\", \"apa-grid\" + (sp.length === 1 ? \" apa-n1\" : sp.length === 2 ? \" apa-n2\" : \"\"));\n        sp.forEach(function (p) { sg.appendChild(pieceCard(p)); });\n        wrap.appendChild(sg);\n      }\n      if (!opt.waiting) wrap.appendChild(navyBox(\"talk\"));\n    } else if (o === \"none\") {\n      wrap.appendChild(fourChoices(ctx, W.four));\n    } else if (o === \"outside\") {\n      var line = el(\"div\", \"apa-ask-line\");\n      line.innerHTML = (r.ack ? esc(noLonely(r.ack)) + \" \" : \"\") + '<span class=\"apa-small\">' + esc(W.outsideAbout) + '</span>';\n      wrap.appendChild(line); wrap.appendChild(navyBox(\"talk\"));\n    } else if (o === \"safety\") {\n      var s = el(\"div\", \"apa-ask-line\"); s.innerHTML = W.safety; wrap.appendChild(s); wrap.appendChild(navyBox(\"safety\"));\n    } else {\n      var f = el(\"div\", \"apa-ask-line\"); f.innerHTML = esc(r.error === \"rate_limited\" ? W.capped : W.fail); wrap.appendChild(f); wrap.appendChild(navyBox(\"talk\"));\n    }\n    outSlot.appendChild(wrap);\n    sectionNotes();\n    if (!opt.still) goTo(outSlot);\n  }\n  /* the site scrolls inside its own box (proven on the Front Desk): find that box and stop below the sticky top bar */\n  function scroller() { var e = outSlot.parentElement; while (e && e !== doc.body && e !== doc.documentElement) { var o = getComputedStyle(e).overflowY; if (o === \"auto\" || o === \"scroll\") return e; e = e.parentElement; } return doc.documentElement; }\n  function topBarBottom() { var bar = $(\"section.lw-topbar, header.lw-topbar, .lw-topbar\"); if (!bar) return 0; var pos = getComputedStyle(bar).position; if (pos !== \"sticky\" && pos !== \"fixed\") return 0; return Math.max(0, bar.getBoundingClientRect().bottom); }\n  function goTo(target) {\n    try {\n      var sc = scroller(), page = sc === doc.documentElement, scTop = page ? 0 : sc.getBoundingClientRect().top;\n      var visibleTop = Math.max(scTop, topBarBottom());\n      var y = target.getBoundingClientRect().top - visibleTop + (page ? (window.pageYOffset || doc.documentElement.scrollTop) : sc.scrollTop) - 12;\n      var to = Math.max(0, Math.round(y));\n      if (page) window.scrollTo(0, to); else sc.scrollTop = to;   /* a plain jump: the live site ignores the smooth form */\n    } catch (e) {}\n  }\n\n  /* ---- What men are asking: the published rows ---- */\n  window.apAskAsking = function (data) {\n    try {\n      var rows = (data && data.rows) || [];\n      if (!askingSlot || !rows.length) return;\n      var grid = askingSlot.querySelector(\"[data-ap-ask-rows]\") || el(\"div\");\n      grid.className = \"apa-asking-grid\"; grid.innerHTML = \"\";\n      rows.forEach(function (row) {\n        var c = el(\"div\", \"apa-con\");\n        /* \"Where we are: We have a piece on this: <the piece>\" \u2014 the piece chosen for this line, named once */\n        var where = '<b>' + esc(W.whereWeAre) + '</b> ' + esc(row.where) + (row.address && row.title ? ' <a href=\"' + esc(row.address) + '\">' + esc(noLonely(row.title)) + '</a>' : '');\n        c.innerHTML = '<p class=\"apa-cq\">' + esc(noLonely(row.line)) + '</p><p class=\"apa-cw\">' + where + '</p><p class=\"apa-cl\"></p><div class=\"apa-cx\"></div>';\n        var links = c.querySelector(\".apa-cl\"), x = c.querySelector(\".apa-cx\"), ctx = { askId: row.id, concern: row.concern, concernLine: row.line };\n        W.choices.forEach(function (ch) {\n          var a = el(\"a\", \"\", esc(ch.b)); a.href = ch.k === \"talk\" ? \"/begin\" : \"#\";\n          a.addEventListener(\"click\", function (ev) {\n            if (ch.k === \"talk\") { try { post({ op: \"choice\", askId: ctx.askId, choice: \"talk\", concern: ctx.concern, concernLine: ctx.concernLine }); } catch (e) {} return; }\n            ev.preventDefault();\n            Array.prototype.forEach.call(links.querySelectorAll(\"a\"), function (l) { l.classList.remove(\"apa-on\"); }); a.classList.add(\"apa-on\");\n            x.innerHTML = \"\"; var box = el(\"div\", \"apa-four\"); box.style.margin = \"0\"; box.style.border = \"0\"; box.style.padding = \"0\";\n            var rowEl = el(\"div\", \"apa-ch\"); rowEl.style.border = \"0\"; rowEl.style.padding = \"0\"; rowEl.style.gridTemplateColumns = \"1fr\";\n            rowEl.innerHTML = '<p class=\"apa-d\" style=\"margin:0\">' + esc(ch.d) + '</p>';\n            box.appendChild(rowEl); x.appendChild(box);\n            choose({ preventDefault: function () {} }, rowEl, ch.k, ctx, box);\n          });\n          links.appendChild(a);\n        });\n        grid.appendChild(c);\n      });\n      if (!grid.parentNode) askingSlot.appendChild(grid);\n      askingSlot.hidden = false; askingSlot.style.display = \"\";\n    } catch (e) {}\n  };\n  /* the page's own feeds add cards after load (the Published feed, the blog list): follow them */\n  (function () {\n    var pending = null, grids = [$(\"#aprStories\"), $(\"#aprArticles\")].filter(Boolean);\n    if (!grids.length || !window.MutationObserver) return;\n    var mo = new MutationObserver(function () { clearTimeout(pending); pending = setTimeout(function () { tagCards(); narrow(null); }, 60); });\n    grids.forEach(function (g) { mo.observe(g, { childList: true }); });\n  })();\n  if (BASE) { var sj = doc.createElement(\"script\"); sj.src = BASE + \"?feed=guide&callback=apGuideFeed&t=\" + Math.floor(Date.now() / 600000); sj.async = true; sj.onerror = function () {}; doc.head.appendChild(sj); }\n  narrow(\"\");\n  /* an ask pressed before this script arrived (the page carries the box from the first moment) is sent now */\n  if (window.apAskEarly && (q.value || \"\").trim().length >= 3) send();\n\n  window.apGuide = { build: BUILD, narrow: narrow, door: setDoor, last: function () { return last; }, feed: function () { return FEED; } };\n})();\n"; }
+function GUIDE_JS() { return "/* AP-GUIDE guide.js build 4 (6 Nov 2026: Read on our own platform — the page draws the doors and the cards itself, the script adopts them; ?door= addresses; the cards are the new Read's (the old /read cards still work); articles show whole, stories a handful) · build 3 (12 Oct: the about outcome — a question about us answered from our own pages, the page as a card, Let's talk) · build 2 (the scroll to the answer sets the site's scroll box directly — on the live site the smooth scrollTo call was ignored) · build 1 · the Guide: the ask box (\"What are you carrying? Ask in your own words.\"), the row of concern doors,\n   the answer above the cards, the four choices and \"What men are asking\" · served by the Guide script (?file=guide.js).\n   Any page carries it with one loader line; the script's address is read off that line. On /read: the box and the doors sit in\n   the band under the lede; a tapped door narrows both sections to it and the ask answers inside it; each section shows the\n   newest handful. Every piece's concern comes from the Guide's feed (one read on load). */\n(function () {\n  if (window.apGuide) return;\n  var S = document.currentScript, BASE = S && S.src ? S.src.split(\"?\")[0] : \"\";\n  var BUILD = 4;\n  var doc = document;\n  var host = doc.querySelector(\".apr\") || doc.body;\n  function $(sel, root) { return (root || doc).querySelector(sel); }\n  function el(tag, cls, html) { var e = doc.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }\n  function esc(s) { return (\"\" + (s == null ? \"\" : s)).replace(/&/g, \"&amp;\").replace(/</g, \"&lt;\").replace(/>/g, \"&gt;\").replace(/\"/g, \"&quot;\"); }\n  var NB = String.fromCharCode(160);\n  function noLonely(s) { s = \"\" + (s || \"\"); var k = s.lastIndexOf(\" \"); if (k > 0 && s.split(\" \").length > 2) s = s.slice(0, k) + NB + s.slice(k + 1); return s; }\n  function track(name, p) { try { if (window.gtag) window.gtag(\"event\", name, p || {}); } catch (e) {} }\n\n  /* ---- who is asking: a random id this browser keeps, never a name ---- */\n  function visitor() {\n    var k = \"apAskV\", v = \"\";\n    try { v = localStorage.getItem(k) || \"\"; } catch (e) {}\n    if (!/^[a-f0-9]{32}$/.test(v)) {\n      var a = new Uint8Array(16); try { crypto.getRandomValues(a); } catch (e) { for (var i = 0; i < 16; i++) a[i] = Math.floor(Math.random() * 256); }\n      v = \"\"; for (var j = 0; j < 16; j++) v += (a[j] < 16 ? \"0\" : \"\") + a[j].toString(16);\n      try { localStorage.setItem(k, v); } catch (e) {}\n    }\n    return v;\n  }\n\n  /* ---- styles: the page's own colors and type ---- */\n  var css = \"\" +\n    \".apa-box{max-width:720px;margin:28px auto 0;text-align:left}\" +\n    \".apa-row{display:flex;gap:10px;align-items:stretch}\" +\n    \".apa-q{flex:1;min-width:0;font-family:var(--apr-serif,Georgia,serif);font-size:18px;line-height:1.4;padding:13px 16px;border:1px solid #D9D2C3;border-radius:4px;background:#fff;color:#1F1D1A;outline:none}\" +\n    \".apa-q:focus{border-color:#B8945F;box-shadow:0 0 0 3px rgba(184,148,95,.25)}\" +\n    \".apa-q::placeholder{color:#8A8275;opacity:1}\" +\n    \".apa-go{font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-weight:600;font-size:16px;letter-spacing:.02em;padding:0 22px;border:0;border-radius:4px;background:#B8945F;color:#1F2A44;cursor:pointer;white-space:nowrap}\" +\n    \".apa-go:hover{background:#C9A66F}.apa-go[disabled]{opacity:.7;cursor:default}\" +\n    \".apa-doors{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 8px;max-width:820px;margin:22px auto 0}\" +\n    \".apa-doors a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-size:14px;font-weight:600;letter-spacing:.01em;line-height:1.2;padding:0 16px;border:1px solid rgba(217,210,195,.55);border-radius:999px;color:#FBF9F5!important;text-decoration:none!important;cursor:pointer;white-space:nowrap}\" +\n    \".apa-doors a:hover{border-color:#B8945F}.apa-doors a.apa-on{background:#B8945F;border-color:#B8945F;color:#1F2A44!important}\" +\n    \".apa-inside{font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-size:14px;color:#D9D2C3;text-align:center;margin:12px 0 0}\" +\n    \".apa-sec-note{font-family:var(--apr-sans,sans-serif);font-size:15px;color:#6B6357;text-align:center;margin:18px 0 0}\" +\n    \".apa-help{font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-size:13.5px;line-height:1.5;color:#D9D2C3;margin:10px 2px 0;text-align:left}\" +\n    \".apa-note{font-family:var(--apr-sans,'Segoe UI',Helvetica,Arial,sans-serif);font-size:14px;color:#D9D2C3;margin:10px 2px 0;text-align:left;min-height:0}\" +\n    \".apa-out{padding:48px 0 0}.apa-out:empty{padding:0}\" +\n    \".apa-in{max-width:1120px;margin:0 auto;padding:0 24px}\" +\n    \".apa-ans{max-width:760px;margin:0 auto;background:#fff;border:1px solid #E4DCCB;border-left:4px solid #B8945F;padding:28px 32px 26px}\" +\n    \".apa-ans .apa-you{font-family:var(--apr-sans,sans-serif);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#B8945F;margin:0 0 6px}\" +\n    \".apa-ans .apa-asked{font-family:var(--apr-serif,Georgia,serif);font-size:19px;line-height:1.45;color:#1F2A44;margin:0 0 18px;font-style:italic}\" +\n    \".apa-ans .apa-k{font-family:var(--apr-sans,sans-serif);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:#8C6A3F;margin:16px 0 4px}\" +\n    \".apa-ans p.apa-p{font-family:var(--apr-serif,Georgia,serif);font-size:17.5px;line-height:1.6;color:#1F1D1A;margin:0}\" +\n    \".apa-ans .apa-close{font-family:var(--apr-sans,sans-serif);font-size:15px;line-height:1.5;color:#6B6357;margin:18px 0 0;padding-top:14px;border-top:1px solid #E4DCCB}\" +\n    \".apa-from{font-family:var(--apr-sans,sans-serif);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#B8945F;text-align:center;margin:36px 0 0}\" +\n    \".apa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:16px}\" +\n    \".apa-grid.apa-n2{grid-template-columns:repeat(2,1fr);max-width:760px;margin-left:auto;margin-right:auto}\" +\n    \".apa-grid.apa-n1{grid-template-columns:1fr;max-width:380px;margin-left:auto;margin-right:auto}\" +\n    \".apa-grid a.apr-card .apr-l::before,.apa-grid a.apr-card .apr-l::after{content:none}\" +\n    \".apa-grid a.sc{height:100%}\" +\n    \".apa-grid a.apr-card[data-src=story] .apr-l::before{content:\\\"\\\\201C\\\";color:#B8945F}.apa-grid a.apr-card[data-src=story] .apr-l::after{content:\\\"\\\\201D\\\";color:#B8945F}\" +\n    \".apa-grid a.apr-card[data-src=article]{padding:0 0 20px;overflow:hidden}\" +\n    \".apa-grid a.apr-card[data-src=article] .apr-d,.apa-grid a.apr-card[data-src=article] .apr-t,.apa-grid a.apr-card[data-src=article] .apr-l,.apa-grid a.apr-card[data-src=article] .apr-go{margin-left:24px;margin-right:24px}\" +\n    \".apa-grid a.apr-card[data-src=article] .apr-d{font-family:var(--apr-sans,sans-serif);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#B8945F;margin-top:18px}\" +\n    \".apa-grid a.apr-card[data-src=article] .apr-l{color:#6B6357}\" +\n    \".apa-grid a.apr-card[data-src=article] .apr-pic{display:block;width:100%;aspect-ratio:16/9;background:#DED6C6 center/cover no-repeat}\" +\n    \".apa-navy{max-width:380px;margin:28px auto 0}.apa-navy a.apr-you{display:flex}\" +\n    \".apa-four{max-width:760px;margin:36px auto 0;background:#fff;border:1px solid #E4DCCB;padding:26px 32px 22px}\" +\n    \".apa-four .apa-lead{font-family:var(--apr-serif,Georgia,serif);font-size:19px;line-height:1.5;color:#1F2A44;margin:0 0 18px}\" +\n    \".apa-ch{display:grid;grid-template-columns:170px 1fr;gap:6px 18px;align-items:start;padding:12px 0;border-top:1px solid #E4DCCB}\" +\n    \".apa-ch a.apa-b{display:inline-block;font-family:var(--apr-sans,sans-serif);font-weight:600;font-size:15px;line-height:1.3;color:#1F2A44!important;background:#F6F2EA;border:1px solid #D9D2C3;border-radius:4px;padding:8px 12px;text-decoration:none!important;cursor:pointer;text-align:center}\" +\n    \".apa-ch a.apa-b:hover{border-color:#B8945F}.apa-ch.apa-on a.apa-b{background:#1F2A44;color:#fff!important;border-color:#1F2A44}\" +\n    \".apa-ch .apa-d{font-family:var(--apr-serif,Georgia,serif);font-size:16.5px;line-height:1.5;color:#1F1D1A;margin:7px 0 0}\" +\n    \".apa-ch .apa-more{grid-column:1/-1}\" +\n    \".apa-ask1,.apa-mail{margin-top:10px}\" +\n    \".apa-ask1 label,.apa-mail label{display:block;font-family:var(--apr-sans,sans-serif);font-size:14px;color:#6B6357;margin:0 0 6px}\" +\n    \".apa-ask1 input,.apa-mail input{width:100%;font-family:var(--apr-serif,Georgia,serif);font-size:16px;padding:10px 12px;border:1px solid #D9D2C3;border-radius:4px;background:#fff;color:#1F1D1A;outline:none}\" +\n    \".apa-ask1 input:focus,.apa-mail input:focus{border-color:#B8945F}\" +\n    \".apa-mail{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}.apa-mail div{flex:1;min-width:220px}\" +\n    \".apa-mail button{font-family:var(--apr-sans,sans-serif);font-weight:600;font-size:15px;padding:11px 18px;border:0;border-radius:4px;background:#B8945F;color:#1F2A44;cursor:pointer}\" +\n    \".apa-mail button:hover{background:#C9A66F}.apa-mail button[disabled]{opacity:.7;cursor:default}\" +\n    \".apa-ok{font-family:var(--apr-sans,sans-serif);font-size:15px;color:#1F2A44;margin:10px 0 0}\" +\n    \".apa-ask-line{max-width:760px;margin:0 auto;font-family:var(--apr-serif,Georgia,serif);font-size:19px;line-height:1.55;color:#1F1D1A;background:#fff;border:1px solid #E4DCCB;border-left:4px solid #B8945F;padding:24px 32px}\" +\n    \".apa-ask-line b{color:#1F2A44;font-weight:600}\" +\n    \".apa-ask-line .apa-small{display:block;font-family:var(--apr-sans,sans-serif);font-size:15px;line-height:1.5;color:#6B6357;margin-top:12px}\" +\n    \".apa-nomatch{font-family:var(--apr-sans,sans-serif);font-size:15px;color:#6B6357;text-align:center;margin:18px 0 0}\" +\n    \".apa-asking-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:30px;max-width:820px;margin-left:auto;margin-right:auto}\" +\n    \".apa-con{background:#fff;border:1px solid #E4DCCB;padding:22px 28px 18px}\" +\n    \".apa-con .apa-cq{font-family:var(--apr-serif,Georgia,serif);font-size:20px;line-height:1.45;color:#1F2A44;margin:0}\" +\n    \".apa-con .apa-cq::before{content:\\\"\\\\201C\\\";color:#B8945F}.apa-con .apa-cq::after{content:\\\"\\\\201D\\\";color:#B8945F}\" +\n    \".apa-con .apa-cw{font-family:var(--apr-sans,sans-serif);font-size:15px;line-height:1.5;color:#1F1D1A;margin:10px 0 0}\" +\n    \".apa-con .apa-cw b{color:#8C6A3F;font-weight:600;letter-spacing:.02em}\" +\n    \".apa-con .apa-cw a{color:#8C6A3F!important;text-decoration:none!important;border-bottom:1px solid #B8945F}\" +\n    \".apa-con .apa-cl{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0 0;padding-top:12px;border-top:1px solid #E4DCCB}\" +\n    \".apa-con .apa-cl a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--apr-sans,sans-serif);font-weight:600;font-size:14px;color:#1F2A44!important;text-decoration:none!important;cursor:pointer}\" +\n    \".apa-con .apa-cl a:hover{color:#8C6A3F!important}.apa-con .apa-cl a.apa-on{color:#8C6A3F!important;border-bottom:2px solid #B8945F}\" +\n    \".apa-con .apa-cx{margin-top:12px}\" +\n    \"@media (max-width:1023px){.apa-grid{grid-template-columns:1fr 1fr}}\" +\n    \"@media (max-width:640px){.apa-row{flex-direction:column}.apa-q{font-size:15.5px;padding:12px 13px}.apa-go{padding:13px 22px}.apa-grid,.apa-grid.apa-n2{grid-template-columns:1fr;gap:14px}.apa-ans,.apa-four,.apa-ask-line{padding:22px 20px 20px}.apa-ch{grid-template-columns:1fr;gap:4px}.apa-in{padding:0 16px}.apa-out{padding-top:36px}}\";\n  var st = el(\"style\"); st.id = \"apAskCss\"; st.textContent = css; doc.head.appendChild(st);\n\n  /* ---- words: the fixed lines a man reads (do not reword on the page; the script and the page carry the same) ---- */\n  var W = {\n    placeholder: \"What are you carrying? Ask in your own words.\",\n    ask: \"Ask\", reading: \"Reading\\u2026\",\n    help: \"We keep the questions, not who asked them, unless you leave your email so we can tell you when it\\u2019s ready.\",\n    fromThese: \"From these pieces\", fromPages: \"From our pages\", aboutUs: \"About us\",\n    labels: { problem: \"What you are carrying\", scripture: \"What Scripture says\", people: \"People first\", decision: \"A decision today\" },\n    four: \"We haven\\u2019t written on that yet. We write what we have walked, and there is more to write. Here is what we can do.\",\n    closeFour: \"Here is what we can do.\",\n    choices: [\n      { k: \"talk\", b: \"Let\\u2019s talk\", d: \"A conversation, not an article. Thirty minutes with one of our team.\" },\n      { k: \"write\", b: \"Write about it\", d: \"We\\u2019ll write a piece on this. One line on what you\\u2019d want it to answer, if you have it.\" },\n      { k: \"story\", b: \"A story to write\", d: \"We\\u2019ll build a Your Story piece around it, for you and other men to write your own.\" },\n      { k: \"group\", b: \"A group on this\", d: \"When enough men ask, we open a group. Count me in.\" }\n    ],\n    oneLine: \"One line on what you\\u2019d want it to answer, if you have it.\",\n    mail: \"Want to know when it\\u2019s ready? Leave your email.\",\n    mailGo: \"Tell me\", mailDone: \"We\\u2019ll tell you when it\\u2019s ready.\", mailBad: \"That doesn\\u2019t look like an email address. Check it and try again.\",\n    noted: \"Noted.\",\n    outsideAbout: \"What we do here is narrower: story work with men \\u2014 the things you carry, what Scripture says about them, and the next honest step. If you want to talk it through with one of our team, that door is open.\",\n    safety: \"Thank you for saying it here. What you wrote is more than a page should carry. If you or anyone is in danger right now, call 911. Any hour, call or text <b>988</b>, or text <b>HOME</b> to <b>741741</b>. And talk with one of our team \\u2014 that is what Let\\u2019s talk is for.\",\n    fail: \"The answer did not come back. Your words are still in the box \\u2014 try again in a moment, or go straight to Let\\u2019s talk.\",\n    capped: \"The box has answered all it can for today. Come back tomorrow, or go straight to Let\\u2019s talk.\",\n    nomatch: \"Nothing on this page matches those words yet. Press Ask and we will look properly.\",\n    whereWeAre: \"Where we are:\",\n    inside: \"Inside \", stepOut: \". Tap it again to step out.\",\n    noStory: \"No story behind this door yet. Yours could be the first.\",\n    noArticle: \"No article behind this door yet.\"\n  };\n\n  /* ---- the box ---- */\n  var bandSlot = $(\"[data-ap-ask=band]\"), outSlot = $(\"[data-ap-ask=out]\"), askingSlot = $(\"[data-ap-ask=asking]\");\n  if (!bandSlot) { bandSlot = el(\"div\"); bandSlot.setAttribute(\"data-ap-ask\", \"band\"); var lede = $(\".apr-lede\") || $(\".apr-band .apr-in\"); if (lede && lede.parentNode) lede.parentNode.insertBefore(bandSlot, lede.nextSibling); else host.insertBefore(bandSlot, host.firstChild); }\n  if (!outSlot) { outSlot = el(\"section\"); outSlot.setAttribute(\"data-ap-ask\", \"out\"); var band = $(\".apr-band\"); if (band && band.parentNode) band.parentNode.insertBefore(outSlot, band.nextSibling); else host.appendChild(outSlot); }\n  outSlot.className = (outSlot.className ? outSlot.className + \" \" : \"\") + \"apa-out\";\n\n  var keepDoors = bandSlot.querySelector(\"#apDoors\");\n  if (keepDoors) bandSlot.removeChild(keepDoors);\n  var PH = bandSlot.getAttribute(\"data-placeholder\") || W.placeholder;   /* the school's own line, drawn by the page from its row */\n  bandSlot.innerHTML = '<form class=\"apa-box\" id=\"apAskForm\" autocomplete=\"off\"><div class=\"apa-row\"><input class=\"apa-q\" id=\"apAskQ\" type=\"text\" maxlength=\"600\" placeholder=\"' + esc(PH) + '\" aria-label=\"' + esc(PH) + '\"><button class=\"apa-go\" id=\"apAskGo\" type=\"submit\">' + esc(W.ask) + '</button></div><p class=\"apa-help\">' + esc(W.help) + '</p><p class=\"apa-note\" id=\"apAskNote\"></p></form><nav class=\"apa-doors\" id=\"apDoors\" aria-label=\"Doors\" hidden></nav><p class=\"apa-inside\" id=\"apInside\" hidden></p>';\n  if (keepDoors) { var blank = bandSlot.querySelector(\"#apDoors\"); bandSlot.replaceChild(keepDoors, blank); }   /* the page drew the doors; they stay; the script makes them narrow the page */\n  var NEWREAD = !!doc.querySelector(\".sc-grid\");   /* the new Read draws cards as a.sc / a.pc / a.mr; the old /read drew a.apr-card */\n  var form = $(\"#apAskForm\"), q = $(\"#apAskQ\"), go = $(\"#apAskGo\"), note = $(\"#apAskNote\"), doorsEl = $(\"#apDoors\"), insideEl = $(\"#apInside\");\n  function pageHandful() { var g = document.getElementById(\"aprStories\"); return g ? Number(g.getAttribute(\"data-handful\")) || 0 : 0; }   /* the school's own number, drawn by the page from its row */\n  var DOOR = \"\", FEED = null, HANDFUL = pageHandful() || 6;\n\n  /* ---- narrowing: as he types, the page's cards narrow to the ones that carry his words ---- */\n  var STOP = { the: 1, and: 1, for: 1, with: 1, that: 1, this: 1, what: 1, how: 1, why: 1, when: 1, who: 1, can: 1, you: 1, your: 1, are: 1, was: 1, were: 1, have: 1, has: 1, had: 1, not: 1, but: 1, from: 1, about: 1, into: 1, out: 1, all: 1, any: 1, some: 1, just: 1, like: 1, feel: 1, feels: 1, feeling: 1, get: 1, got: 1, keep: 1, keeps: 1, want: 1, dont: 1, cant: 1, wont: 1, its: 1, \"i'm\": 1, ive: 1, \"i've\": 1, been: 1, being: 1, very: 1, really: 1, much: 1, more: 1, than: 1, then: 1, there: 1, here: 1, them: 1, they: 1, him: 1, her: 1, his: 1, she: 1, our: 1, one: 1, every: 1, always: 1, never: 1, still: 1, again: 1, over: 1, after: 1, before: 1, because: 1, does: 1, did: 1, doing: 1, done: 1, know: 1, think: 1, should: 1, would: 1, could: 1, will: 1, way: 1, thing: 1, things: 1, something: 1, someone: 1, make: 1, makes: 1, made: 1, time: 1, myself: 1, self: 1, own: 1, man: 1, men: 1, life: 1, god: 0 };\n  function stem(w) { w = w.toLowerCase().replace(/[^a-z']/g, \"\"); if (w.length > 5 && /ing$/.test(w)) w = w.slice(0, -3); else if (w.length > 4 && /(ed|es|ly)$/.test(w)) w = w.slice(0, -2); else if (w.length > 3 && /s$/.test(w) && !/ss$/.test(w)) w = w.slice(0, -1); return w; }\n  function tokens(s) { var out = [], seen = {}; (\"\" + s).split(/\\s+/).forEach(function (w) { var t = stem(w); if (t.length < 3 || STOP[w.toLowerCase()] || STOP[t]) return; if (!seen[t]) { seen[t] = 1; out.push(t); } }); return out; }\n  function cards() { return Array.prototype.slice.call(doc.querySelectorAll(\"#aprStories a.apr-card, #aprStories a.sc:not(.yc), #aprArticles a.apr-card, #aprArticles a.pc, #aprArticles a.mr\")); }\n  function slugOf(name) { return (\"\" + (name || \"\")).toLowerCase().replace(/[\\u2019']/g, \"\").replace(/[^a-z0-9]+/g, \"-\").replace(/^-+|-+$/g, \"\"); }\n  function talkHref() { var b = $(\".foot-ask .btn\"); return b ? b.getAttribute(\"href\") : \"/begin\"; }\n  var cardIndex = null;\n  function indexCards() { cardIndex = cards().map(function (c) { return { el: c, text: \" \" + tokens(c.textContent).join(\" \") + \" \", raw: c.textContent.toLowerCase(), story: !!(c.closest && c.closest(\"#aprStories\")) }; }); }\n  var nomatchEl = null, lastText = \"\";\n  function inDoor(c) { return !DOOR || (c.el.getAttribute(\"data-concern\") || \"\") === DOOR; }\n  /* what shows: inside a door, every card behind it; otherwise the newest handful of each section; typing narrows within that */\n  function narrow(text) {\n    if (!cardIndex) indexCards();\n    lastText = text == null ? lastText : text;\n    var tk = tokens(lastText), need = tk.length >= 3 ? 2 : 1, any = false, i, perGrid = {};\n    cardIndex.forEach(function (c) {\n      var n = 0; for (i = 0; i < tk.length; i++) if (c.text.indexOf(\" \" + tk[i] + \" \") >= 0 || c.raw.indexOf(tk[i]) >= 0) n++;\n      c.hit = tk.length ? n >= need : true; if (tk.length && c.hit && inDoor(c)) any = true;\n    });\n    var typedMiss = tk.length && !any;\n    cardIndex.forEach(function (c) {\n      var show = inDoor(c) && (typedMiss || c.hit);\n      if (show && !DOOR && (!tk.length || typedMiss) && (c.story || !NEWREAD)) { var k = c.story ? \"s\" : \"a\"; perGrid[k] = (perGrid[k] || 0) + 1; if (perGrid[k] > HANDFUL) show = false; }   /* stories show a handful; the new Read's articles show whole */\n      c.el.style.display = show ? \"\" : \"none\";\n    });\n    if (!nomatchEl) { nomatchEl = el(\"p\", \"apa-nomatch\", esc(W.nomatch)); var g = $(\"#aprStories\"); if (g && g.parentNode) g.parentNode.insertBefore(nomatchEl, g); else nomatchEl = null; }\n    if (nomatchEl) nomatchEl.style.display = typedMiss ? \"\" : \"none\";\n    sectionNotes();\n    var more = $(\"#aprArticles .more\");\n    if (more) more.style.display = Array.prototype.some.call(more.querySelectorAll(\"a.mr\"), function (r) { return r.style.display !== \"none\"; }) ? \"\" : \"none\";\n  }\n  function sectionNotes() {\n    [[\"#aprStories\", W.noStory], [\"#aprArticles\", W.noArticle]].forEach(function (pair) {\n      var g = $(pair[0]); if (!g) return;\n      var noteEl = g.parentNode.querySelector(\".apa-sec-note\"); if (!noteEl) { noteEl = el(\"p\", \"apa-sec-note\", esc(pair[1])); g.parentNode.insertBefore(noteEl, g); }\n      var shown = 0; Array.prototype.forEach.call(g.querySelectorAll(\"a.apr-card, a.sc:not(.yc), a.pc, a.mr\"), function (c) { if (c.style.display !== \"none\") shown++; });\n      noteEl.style.display = DOOR && !shown ? \"\" : \"none\";\n    });\n  }\n  /* the doors: tap one to step in, tap it again to step out; the sections follow and the ask answers inside it */\n  function drawDoors() {\n    var doors = (FEED && FEED.concerns || []).filter(function (c) { return c.state === \"door\"; });\n    doorsEl.innerHTML = \"\"; doorsEl.hidden = !doors.length;\n    doors.forEach(function (d) {\n      var a = el(\"a\", \"\", esc(d.name)); a.href = \"/?door=\" + slugOf(d.name); a.setAttribute(\"data-door\", d.name);\n      a.addEventListener(\"click\", function (ev) { ev.preventDefault(); setDoor(DOOR === d.name ? \"\" : d.name); });\n      doorsEl.appendChild(a);\n    });\n  }\n  function setDoor(name) {\n    DOOR = name || \"\";\n    Array.prototype.forEach.call(doorsEl.querySelectorAll(\"a\"), function (a) { a.classList.toggle(\"apa-on\", a.getAttribute(\"data-door\") === DOOR); });\n    insideEl.hidden = !DOOR; insideEl.textContent = DOOR ? W.inside + DOOR + W.stepOut : \"\";\n    narrow(null);\n    try { var u = new URL(location.href); if (DOOR) u.searchParams.set(\"door\", slugOf(DOOR)); else u.searchParams.delete(\"door\"); history.replaceState(null, \"\", u.pathname + u.search + u.hash); } catch (e) {}\n    track(\"door\", { door: DOOR || \"(none)\" });\n  }\n  /* a door named in the address (?door=shame) is stepped into on load, from the doors the page drew */\n  function doorFromAddress() {\n    try {\n      var want = new URL(location.href).searchParams.get(\"door\"); if (!want) return;\n      var links = doorsEl.querySelectorAll(\"a[data-door]\"), i;\n      for (i = 0; i < links.length; i++) if (slugOf(links[i].getAttribute(\"data-door\")) === slugOf(want)) { setDoor(links[i].getAttribute(\"data-door\")); return; }\n    } catch (e) {}\n  }\n  /* each card learns its concern from the Guide's feed, matched by address */\n  function tagCards() {\n    if (!FEED || !FEED.pieces) return;\n    var byPath = {}; FEED.pieces.forEach(function (p) { byPath[pathOf(p.address)] = p; });\n    cards().forEach(function (c) { var p = byPath[pathOf(c.getAttribute(\"href\"))]; if (p && p.concern) c.setAttribute(\"data-concern\", p.concern); });\n    cardIndex = null;\n  }\n  Array.prototype.forEach.call(doorsEl.querySelectorAll(\"a[data-door]\"), function (a) {\n    a.addEventListener(\"click\", function (ev) { ev.preventDefault(); var n = a.getAttribute(\"data-door\"); setDoor(DOOR === n ? \"\" : n); });\n  });\n  window.apGuideFeed = function (data) {\n    try {\n      if (!data || !data.ok) return;\n      FEED = data; HANDFUL = pageHandful() || Math.max(3, Number(data.handful) || 6);\n      tagCards(); drawDoors(); if (DOOR) setDoor(DOOR); else doorFromAddress(); narrow(null);\n      if (data.asking && data.asking.length) window.apAskAsking({ rows: data.asking });\n    } catch (e) {}\n  };\n  var typing = null;\n  q.addEventListener(\"input\", function () { clearTimeout(typing); typing = setTimeout(function () { narrow(q.value); }, 220); });\n\n  /* ---- the ask ---- */\n  var V = visitor(), busy = false, last = null;\n  function post(body) {\n    return fetch(BASE, { method: \"POST\", headers: { \"Content-Type\": \"text/plain\" }, body: JSON.stringify(body), credentials: \"omit\" }).then(function (r) { return r.text(); }).then(function (t) { try { return JSON.parse(t); } catch (e) { return { ok: false, error: \"network\" }; } }).catch(function () { return { ok: false, error: \"network\" }; });\n  }\n  form.addEventListener(\"submit\", function (ev) {\n    ev.preventDefault();\n    var text = (q.value || \"\").replace(/\\s+/g, \" \").trim();\n    if (text.length < 3 || busy) return;\n    busy = true; go.disabled = true; go.textContent = W.reading; note.textContent = \"\";\n    clearTimeout(typing); narrow(\"\");\n    track(\"ask_sent\", { build: BUILD });\n    post({ op: \"ask\", q: text, v: V, door: DOOR }).then(function (r) {\n      busy = false; go.disabled = false; go.textContent = W.ask;\n      if (!r || !r.ok) { render({ outcome: \"error\", error: (r && r.error) || \"network\" }, text); return; }\n      last = r; render(r, text);\n      track(\"ask_answered\", { outcome: r.outcome || \"\", build: BUILD });\n    });\n  });\n\n  /* ---- what the page draws back ---- */\n  function navyBox(kind) {\n    var src = kind === \"begin\" ? $(\"#aprStories a.apr-you, #aprStories a.yc\") : ($(\"#aprTalk\") || $(\"#aprArticles a.apr-you\"));\n    var a;\n    if (src) { a = src.cloneNode(true); a.removeAttribute(\"id\"); }\n    else if (NEWREAD) {   /* the new Read: the same navy card the stories carry, the talk address from the page's own invitation */\n      a = el(\"a\", \"sc yc\", kind === \"begin\" ? '<span class=\"sc-m\"><span class=\"sc-k\">Your Story</span></span><span class=\"sc-t\">It belongs here.</span><span class=\"sc-l\">One hour. Your own words. Start with Where I\\u2019m From.</span><div class=\"way\"><span>Begin</span></div>'\n        : '<span class=\"sc-m\"><span class=\"sc-k\">Let\\u2019s Talk</span></span><span class=\"sc-t\">Read something that landed?</span><span class=\"sc-l\">Thirty minutes with one of us, free. You tell us where you are and what you are carrying.</span><div class=\"way\"><span>Let\\u2019s Talk</span></div>');\n      a.href = kind === \"begin\" ? ($(\"#aprStories a.yc\") ? $(\"#aprStories a.yc\").getAttribute(\"href\") : \"/your-story#write-your-story\") : talkHref();\n    }\n    else if (kind === \"begin\") { a = el(\"a\", \"apr-you\", '<span class=\"apr-meta\"><span class=\"apr-k\">Your story</span></span><span class=\"apr-t\">It belongs here.</span><span class=\"apr-l\">One hour. Your own words. Start with Where I\\u2019m From.</span><span class=\"apr-go\">Begin<i>\\u2192</i></span>'); a.href = \"/your-story#write-your-story\"; }\n    else { a = el(\"a\", \"apr-you\", '<span class=\"apr-meta\"><span class=\"apr-k\">Let\\u2019s talk</span></span><span class=\"apr-t\">Read something that landed?</span><span class=\"apr-l\">Thirty minutes with one of us, free. You tell us where you are and what you are carrying.</span><span class=\"apr-go\">Let\\u2019s talk<i>\\u2192</i></span>'); a.href = \"/begin\"; }\n    var w = el(\"div\", \"apa-navy\"); w.appendChild(a); return w;\n  }\n  function pathOf(href) { try { var u = new URL(href, location.href); return u.pathname.replace(/\\/$/, \"\") + u.search; } catch (e) { return href; } }\n  function pieceCard(p) {\n    var a;\n    if (NEWREAD) {   /* one small card for every piece an answer points to */\n      a = el(\"a\", \"sc\" + (p.source === \"story\" ? \" sc-q\" : \"\")); a.href = p.address;\n      a.innerHTML = '<span class=\"sc-m\"><span class=\"sc-k\">' + esc(p.kind) + '</span>' + (p.source === \"story\" ? '<span class=\"sc-w\">' + esc(p.who) + '</span>' : '') + '</span><span class=\"sc-t\">' + esc(noLonely(p.title)) + '</span>' + (p.line ? '<span class=\"sc-l\">' + esc(noLonely(p.line)) + '</span>' : '') + '<div class=\"way\"><span>' + (p.source === \"story\" ? \"Read his story\" : \"Read it\") + '</span></div>';\n      a.setAttribute(\"data-src\", p.source === \"story\" ? \"story\" : (p.source === \"page\" ? \"page\" : \"article\"));\n      return a;\n    }\n    var want = pathOf(p.address), found = null;\n    cards().forEach(function (c) { if (!found && pathOf(c.getAttribute(\"href\")) === want) found = c; });\n    if (found) { a = found.cloneNode(true); a.style.display = \"\"; }\n    else {\n      a = el(\"a\", \"apr-card\"); a.href = p.address;\n      a.innerHTML = '<span class=\"apr-meta\"><span class=\"apr-k\">' + esc(p.kind) + '</span>' + (p.source === \"story\" ? '<span class=\"apr-w\">' + esc(p.who) + '</span>' : '') + '</span><span class=\"apr-t\">' + esc(noLonely(p.title)) + '</span>' + (p.line ? '<span class=\"apr-l\">' + esc(noLonely(p.line)) + '</span>' : '') + '<span class=\"apr-go\">' + (p.source === \"story\" ? \"Read his story\" : \"Read it\") + '<i>\\u2192</i></span>';\n    }\n    a.setAttribute(\"data-src\", p.source === \"story\" ? \"story\" : (p.source === \"page\" ? \"page\" : \"article\"));\n    return a;\n  }\n  function fourChoices(ctx, lead) {\n    var box = el(\"div\", \"apa-four\");\n    box.innerHTML = '<p class=\"apa-lead\">' + esc(lead) + '</p>';\n    W.choices.forEach(function (c) {\n      var row = el(\"div\", \"apa-ch\"); row.setAttribute(\"data-k\", c.k);\n      row.innerHTML = '<a class=\"apa-b\" href=\"' + (c.k === \"talk\" ? talkHref() : \"#\") + '\">' + esc(c.b) + '</a><p class=\"apa-d\">' + esc(c.d) + '</p>';\n      row.querySelector(\"a.apa-b\").addEventListener(\"click\", function (ev) { choose(ev, row, c.k, ctx, box); });\n      box.appendChild(row);\n    });\n    return box;\n  }\n  function choose(ev, row, k, ctx, box) {\n    if (k === \"talk\") { try { post({ op: \"choice\", askId: ctx.askId, choice: \"talk\", concern: ctx.concern, concernLine: ctx.concernLine }); } catch (e) {} track(\"ask_choice\", { choice: \"talk\" }); return; }   /* the link goes on to /begin */\n    ev.preventDefault();\n    if (row.classList.contains(\"apa-on\")) return;\n    Array.prototype.forEach.call(box.querySelectorAll(\".apa-ch\"), function (r) { r.classList.remove(\"apa-on\"); var m = r.querySelector(\".apa-more\"); if (m) m.parentNode.removeChild(m); });\n    row.classList.add(\"apa-on\");\n    track(\"ask_choice\", { choice: k });\n    var more = el(\"div\", \"apa-more\");\n    var html = '';\n    if (k === \"write\") html += '<div class=\"apa-ask1\"><input id=\"apAskL' + k + '\" type=\"text\" maxlength=\"300\" aria-label=\"' + esc(W.oneLine) + '\"></div>';\n    html += '<div class=\"apa-mail\"><div><label for=\"apAskM' + k + '\">' + esc(W.mail) + '</label><input id=\"apAskM' + k + '\" type=\"email\" maxlength=\"120\" autocomplete=\"email\"></div><button type=\"button\">' + esc(W.mailGo) + '</button></div><p class=\"apa-ok\"></p>';\n    more.innerHTML = html;\n    row.appendChild(more);\n    var lineIn = more.querySelector(\".apa-ask1 input\"), mailIn = more.querySelector(\".apa-mail input\"), btn = more.querySelector(\".apa-mail button\"), ok = more.querySelector(\".apa-ok\");\n    post({ op: \"choice\", askId: ctx.askId, choice: k, concern: ctx.concern, concernLine: ctx.concernLine });   /* the choice itself is kept at once, with no email */\n    ok.textContent = W.noted;\n    function send() {\n      var email = (mailIn.value || \"\").trim(), line = lineIn ? (lineIn.value || \"\").trim() : \"\";\n      if (!email && !line) return;\n      if (email && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) { ok.textContent = W.mailBad; return; }\n      btn.disabled = true;\n      post({ op: \"choice\", askId: ctx.askId, choice: k, concern: ctx.concern, concernLine: ctx.concernLine, line: line, email: email }).then(function (r) {\n        btn.disabled = false;\n        if (r && r.ok) { ok.textContent = email ? W.mailDone : W.noted; if (email) { mailIn.value = \"\"; btn.disabled = true; } }\n        else ok.textContent = (r && r.error === \"bad_email\") ? W.mailBad : W.fail;\n      });\n    }\n    btn.addEventListener(\"click\", send);\n    [lineIn, mailIn].forEach(function (inp) { if (inp) inp.addEventListener(\"keydown\", function (e) { if (e.key === \"Enter\") { e.preventDefault(); send(); } }); });\n    if (lineIn) lineIn.focus(); else mailIn.focus();\n  }\n  function render(r, asked) {\n    outSlot.innerHTML = \"\";\n    var wrap = el(\"div\", \"apa-in\"), ctx = { askId: r.askId || \"\", concern: r.concern || \"\" };\n    var o = r.outcome;\n    if (o === \"answer\" || o === \"close\") {\n      var a = r.answer || {}, ans = el(\"div\", \"apa-ans\");\n      ans.innerHTML = '<p class=\"apa-you\">You asked</p><p class=\"apa-asked\">' + esc(asked) + '</p>' +\n        (a.problem ? '<p class=\"apa-k\">' + esc(W.labels.problem) + '</p><p class=\"apa-p\">' + esc(noLonely(a.problem)) + '</p>' : '') +\n        (a.scripture ? '<p class=\"apa-k\">' + esc(W.labels.scripture) + '</p><p class=\"apa-p\">' + esc(noLonely(a.scripture)) + '</p>' : '') +\n        (a.people ? '<p class=\"apa-k\">' + esc(W.labels.people) + '</p><p class=\"apa-p\">' + esc(noLonely(a.people)) + '</p>' : '') +\n        (a.decision ? '<p class=\"apa-k\">' + esc(W.labels.decision) + '</p><p class=\"apa-p\">' + esc(noLonely(a.decision)) + '</p>' : '') +\n        (o === \"close\" && a.closeNote ? '<p class=\"apa-close\">' + esc(noLonely(a.closeNote)) + '</p>' : '');\n      wrap.appendChild(ans);\n      var ps = r.pieces || [];\n      if (ps.length) {\n        wrap.appendChild(el(\"p\", \"apa-from\", esc(W.fromThese)));\n        var g = el(\"div\", \"apa-grid\" + (ps.length === 1 ? \" apa-n1\" : ps.length === 2 ? \" apa-n2\" : \"\"));\n        ps.forEach(function (p) { g.appendChild(pieceCard(p)); });\n        wrap.appendChild(g);\n      }\n      if (o === \"close\") wrap.appendChild(fourChoices(ctx, W.closeFour));\n      else wrap.appendChild(navyBox(a.close === \"begin\" ? \"begin\" : \"talk\"));\n    } else if (o === \"about\") {\n      var ab = el(\"div\", \"apa-ans\");\n      ab.innerHTML = '<p class=\"apa-you\">You asked</p><p class=\"apa-asked\">' + esc(asked) + '</p><p class=\"apa-k\">' + esc(W.aboutUs) + '</p><p class=\"apa-p\">' + esc(noLonely(r.about || \"\")) + '</p>';\n      wrap.appendChild(ab);\n      var pg = r.pieces || [];\n      if (pg.length) { wrap.appendChild(el(\"p\", \"apa-from\", esc(W.fromPages))); var gp = el(\"div\", \"apa-grid\" + (pg.length === 1 ? \" apa-n1\" : pg.length === 2 ? \" apa-n2\" : \"\")); pg.forEach(function (p) { gp.appendChild(pieceCard(p)); }); wrap.appendChild(gp); }\n      wrap.appendChild(navyBox(r.next === \"begin\" ? \"begin\" : \"talk\"));\n    } else if (o === \"none\") {\n      wrap.appendChild(fourChoices(ctx, W.four));\n    } else if (o === \"outside\") {\n      var line = el(\"div\", \"apa-ask-line\");\n      line.innerHTML = (r.ack ? esc(noLonely(r.ack)) + \" \" : \"\") + '<span class=\"apa-small\">' + esc(W.outsideAbout) + '</span>';\n      wrap.appendChild(line); wrap.appendChild(navyBox(\"talk\"));\n    } else if (o === \"safety\") {\n      var s = el(\"div\", \"apa-ask-line\"); s.innerHTML = W.safety; wrap.appendChild(s); wrap.appendChild(navyBox(\"talk\"));\n    } else {\n      var f = el(\"div\", \"apa-ask-line\"); f.innerHTML = esc(r.error === \"rate_limited\" ? W.capped : W.fail); wrap.appendChild(f); wrap.appendChild(navyBox(\"talk\"));\n    }\n    outSlot.appendChild(wrap);\n    goTo(outSlot);\n  }\n  /* the site scrolls inside its own box (proven on the Front Desk): find that box and stop below the sticky top bar */\n  function scroller() { var e = outSlot.parentElement; while (e && e !== doc.body && e !== doc.documentElement) { var o = getComputedStyle(e).overflowY; if (o === \"auto\" || o === \"scroll\") return e; e = e.parentElement; } return doc.documentElement; }\n  function topBarBottom() { var bar = $(\"section.lw-topbar, header.lw-topbar, .lw-topbar\"); if (!bar) return 0; var pos = getComputedStyle(bar).position; if (pos !== \"sticky\" && pos !== \"fixed\") return 0; return Math.max(0, bar.getBoundingClientRect().bottom); }\n  function goTo(target) {\n    try {\n      var sc = scroller(), page = sc === doc.documentElement, scTop = page ? 0 : sc.getBoundingClientRect().top;\n      var visibleTop = Math.max(scTop, topBarBottom());\n      var y = target.getBoundingClientRect().top - visibleTop + (page ? (window.pageYOffset || doc.documentElement.scrollTop) : sc.scrollTop) - 12;\n      var to = Math.max(0, Math.round(y));\n      if (page) window.scrollTo(0, to); else sc.scrollTop = to;   /* a plain jump: the live site ignores the smooth form */\n    } catch (e) {}\n  }\n\n  /* ---- What men are asking: the published rows ---- */\n  window.apAskAsking = function (data) {\n    try {\n      var rows = (data && data.rows) || [];\n      if (!askingSlot || !rows.length) return;\n      var grid = askingSlot.querySelector(\"[data-ap-ask-rows]\") || el(\"div\");\n      grid.className = \"apa-asking-grid\"; grid.innerHTML = \"\";\n      rows.forEach(function (row) {\n        var c = el(\"div\", \"apa-con\");\n        var where = esc(W.whereWeAre) + \" \" + (row.address ? '<a href=\"' + esc(row.address) + '\">' + esc(row.where) + '</a>' : esc(row.where));\n        c.innerHTML = '<p class=\"apa-cq\">' + esc(noLonely(row.line)) + '</p><p class=\"apa-cw\"><b>' + where + '</b></p><p class=\"apa-cl\"></p><div class=\"apa-cx\"></div>';\n        var links = c.querySelector(\".apa-cl\"), x = c.querySelector(\".apa-cx\"), ctx = { askId: row.id, concern: row.concern, concernLine: row.line };\n        W.choices.forEach(function (ch) {\n          var a = el(\"a\", \"\", esc(ch.b)); a.href = ch.k === \"talk\" ? talkHref() : \"#\";\n          a.addEventListener(\"click\", function (ev) {\n            if (ch.k === \"talk\") { try { post({ op: \"choice\", askId: ctx.askId, choice: \"talk\", concern: ctx.concern, concernLine: ctx.concernLine }); } catch (e) {} return; }\n            ev.preventDefault();\n            Array.prototype.forEach.call(links.querySelectorAll(\"a\"), function (l) { l.classList.remove(\"apa-on\"); }); a.classList.add(\"apa-on\");\n            x.innerHTML = \"\"; var box = el(\"div\", \"apa-four\"); box.style.margin = \"0\"; box.style.border = \"0\"; box.style.padding = \"0\";\n            var rowEl = el(\"div\", \"apa-ch\"); rowEl.style.border = \"0\"; rowEl.style.padding = \"0\"; rowEl.style.gridTemplateColumns = \"1fr\";\n            rowEl.innerHTML = '<p class=\"apa-d\" style=\"margin:0\">' + esc(ch.d) + '</p>';\n            box.appendChild(rowEl); x.appendChild(box);\n            choose({ preventDefault: function () {} }, rowEl, ch.k, ctx, box);\n          });\n          links.appendChild(a);\n        });\n        grid.appendChild(c);\n      });\n      if (!grid.parentNode) askingSlot.appendChild(grid);\n      askingSlot.hidden = false; askingSlot.style.display = \"\";\n    } catch (e) {}\n  };\n  /* the page's own feeds add cards after load (the Published feed, the blog list): follow them */\n  (function () {\n    var pending = null, grids = [$(\"#aprStories\"), $(\"#aprArticles\")].filter(Boolean);\n    if (!grids.length || !window.MutationObserver) return;\n    var mo = new MutationObserver(function () { clearTimeout(pending); pending = setTimeout(function () { tagCards(); narrow(null); }, 60); });\n    grids.forEach(function (g) { mo.observe(g, { childList: true }); });\n  })();\n  if (BASE) { var sj = doc.createElement(\"script\"); sj.src = BASE + \"?feed=guide&callback=apGuideFeed&t=\" + Math.floor(Date.now() / 600000); sj.async = true; sj.onerror = function () {}; doc.head.appendChild(sj); }\n  narrow(\"\");\n  doorFromAddress();\n\n  window.apGuide = { build: BUILD, narrow: narrow, door: setDoor, last: function () { return last; }, feed: function () { return FEED; } };\n})();\n"; }
+
+// ───────────────────────────── AP-TRIAGE 1 · Guide · Triage 1 ─────────────────────────────
+// John Sherrod, Nov 17, 2026: a failure is sorted, handled and, only when it needs us, put in front of him in plain words with the repair under
+// way. He never gets a raw error. Wait (a passing hiccup: retried at once and on the next run, silent, a card only after 30 minutes), Repair (a
+// known cause the script fixes), Needs us (one card on the Front Desk Actions tab, key fix:<script>:<signature>, closed by this script as Proven
+// after the job has run clean for 30 minutes; only S1 sends one plain email). Every event goes to the one event log with its school (Script
+// Properties tri:school and tri:secret live in the Front Desk only: this script queues each event on the Triage queue tab of the Front Desk sheet and the Front Desk sends it). The block is the Front Desk's own (build 44), built from one source: only TRI_ and the three
+// rule tables differ, so a new school is a row and a new script is the same block.
+const TRI_ = {
+  SCRIPT: 'guide', LABEL: 'Guide', FILE: 'scripts/Guide.gs', BUILD: 'Triage 1',
+  URL: 'https://eyiqlyaridagclnbxhzy.supabase.co/rest/v1/rpc/event_ingest',
+  KEY: 'sb_publishable_qB3WnlYvdl6cO4f0CsrjTQ_zcaLaeYq', // the platform's publishable key: it opens one door, and the door wants the secret
+  DESK: 'https://www.ancientpathcoaching.com/front-desk', DESK_SHEET: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
+  WAIT_MIN: 30, CLEAN_MIN: 30, MAX: 20, PAUSES: [1000, 4000, 10000]
+};
+const TRI_LIMIT_ = /too many times (for one day|per day|in a day)|daily limit|quota|Limit Exceeded: (Email|Urlfetch|Properties|Document|Trigger)|credit balance|billing/i;
+const TRI_ACCESS_ = /permission|authorization is required|access denied|invalid_grant|unauthori[sz]ed|forbidden|\b(401|403)\b|api key|x-api-key|authentication_error|oauth/i;
+const TRI_CODE_ = /\b(TypeError|ReferenceError|SyntaxError|RangeError)\b|is not a function|is not defined|Cannot (read|set) propert|is not iterable|Cannot destructure|before initialization|is not a constructor/i;
+const TRI_WAIT_ = /timed out|timeout|Service [A-Za-z ]+ failed|Server error|Internal error|Bad Gateway|Gateway Time|Service Unavailable|unavailable|temporar|try again|backend error|Could not obtain lock|Lock timeout|maximum execution time|too many times in a short time|ECONNRESET|socket|DNS error|Address unavailable|rate limit|\b(429|500|502|503|504)\b|Unexpected error while getting the method or property/i;
+/** Which outside service a passing failure names; every job that hits the same outage shares one signature, so one outage is one card. */
+const TRI_SERVICES_ = [[/claude|anthropic|relay/i, 'Claude', 'claude'], [/spreadsheet|sheet/i, 'Google Sheets', 'google-sheets'], [/drive/i, 'Google Drive', 'google-drive'], [/gmail|mail/i, 'Gmail', 'gmail'], [/calendar/i, 'Google Calendar', 'google-calendar'],
+  [/lock/i, 'the script lock', 'script-lock'], [/maximum execution time/i, 'the time limit', 'time-limit'], [/urlfetch|fetch|http|address unavailable|dns|socket|econn/i, 'an outside service', 'outside-service']];
+/** Who a failure touches, and how serious it is (S1: a person's words are at risk or people cannot get in; S2: a feature is broken; S3: a rough edge). */
+const TRI_WHO_ = [[/review/i, 'our team'], [/./, 'the men']];
+const TRI_SEV_ = [[/call/i, 'S2'], [/./, 'S3']];
+const TRI_SEV_WORDS_ = { S1: 'S1: a person’s words are at risk, or people can’t get in.', S2: 'S2: a feature is broken.', S3: 'S3: a rough edge.' };
+const TRI_SRC_ = [[/refresh/i, 'refresh'], [/review/i, 'review'], [/call/i, 'web']];
+let TRI_ONCE_ = {}; // jobs that run rarely (triGuard_ 4th argument): a failure that outlasts the retries is a card at once, and the first clean run closes it
+let TRI_RUN_ = {}; // signatures that failed in this execution: a clean run clears only the others
+
+function triMsg_(e) { return e == null ? '' : (e.message !== undefined ? String(e.message) : (typeof e === 'object' ? JSON.stringify(e) : String(e))); }
+/** The job's own name in plain words, no ids, no names: "Room reminder NOT sent for Dan" is "Room reminder not sent". */
+function triJob_(s) {
+  let j = String(s || '').split('\n')[0].replace(/:\s*$/, '').replace(/ for .*$/, '').replace(/\bNOT\b/g, 'not').replace(/[A-Za-z0-9_-]{25,}/g, '…').trim();
+  if (!j) j = TRI_.LABEL + ' stopped';
+  return j.charAt(0).toUpperCase() + j.slice(1, 90);
+}
+function triSlug_(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48); }
+/** Sorts one failure: { kind: wait|limit|access|code|unknown, way: wait|needs_us, job, sig, sev, who, src, fn, line, msg }. */
+function triClass_(where, e) {
+  let job, msg, stack = '';
+  if (e === null || e === undefined) {
+    const text = String(where || ''), at = text.indexOf(': ');
+    job = at > 0 && at < 120 ? text.slice(0, at) : text.split('\n')[0];
+    msg = (at > 0 && at < 120 ? text.slice(at + 2) : text).split('\n')[0];
+    stack = text;
+  } else { job = String(where || ''); msg = triMsg_(e); stack = String(e.stack || ''); }
+  job = triJob_(job);
+  const kind = TRI_LIMIT_.test(msg) ? 'limit' : TRI_ACCESS_.test(msg) ? 'access' : TRI_CODE_.test(msg) ? 'code' : TRI_WAIT_.test(msg) ? 'wait' : 'unknown';
+  const sevHit = TRI_SEV_.find(r => r[0].test(job)), who = (TRI_WHO_.find(r => r[0].test(job)) || [0, 'our team'])[1];
+  const c = { kind: kind, way: (kind === 'wait' || kind === 'unknown') ? 'wait' : 'needs_us', job: job, sev: sevHit ? sevHit[1] : 'S2', who: who, src: (TRI_SRC_.find(r => r[0].test(job)) || [0, 'run'])[1] };
+  if (c.way === 'wait') {
+    const sv = TRI_SERVICES_.find(r => r[0].test(msg)) || [0, 'Google', 'google'];
+    c.job = kind === 'unknown' ? job : sv[1] + ' is not answering'; c.sig = kind === 'unknown' ? triSlug_(job) + '-unknown' : sv[2] + '-wait';
+    if (kind === 'wait') c.who = 'the men and our team';
+  } else c.sig = triSlug_(job) + '-' + kind;
+  const m = /at ([A-Za-z0-9_$.]+) \(([A-Za-z0-9_.]+):(\d+)/.exec(stack);
+  c.fn = m ? m[1] : ''; c.line = m ? m[3] : '';
+  c.msg = msg.replace(/[A-Za-z0-9_-]{25,}/g, '…').replace(/\s+/g, ' ').trim().slice(0, 140);
+  return c;
+}
+/** Retries what only a passing outside hiccup could fail: now, then after about 1, 4 and 10 seconds. Anything else is thrown at once. */
+function withRetry_(fn, label) {
+  for (let i = 0; ; i++) {
+    try { return fn(); } catch (e) {
+      const c = triClass_(label || '', e);
+      if (i >= TRI_.PAUSES.length || c.way !== 'wait' || c.kind === 'unknown') throw e;
+      Utilities.sleep(TRI_.PAUSES[i]);
+    }
+  }
+}
+function triState_() { try { return JSON.parse(PropertiesService.getScriptProperties().getProperty('tri:idx') || '{}') || {}; } catch (e) { return {}; } }
+function triSave_(st) {
+  const keys = Object.keys(st);
+  if (keys.length > TRI_.MAX) keys.sort((a, b) => ((st[b].e || 0) - (st[a].e || 0)) || (String(st[b].l) < String(st[a].l) ? -1 : 1)).slice(TRI_.MAX).forEach(k => { delete st[k]; });
+  try { PropertiesService.getScriptProperties().setProperty('tri:idx', JSON.stringify(st)); } catch (e) {}
+}
+function triKey_(sig) { return 'fix:' + TRI_.SCRIPT + ':' + sig; }
+/** The Triage queue tab of the Front Desk sheet: this script holds no log secret. Each event is one row (at, source, job, way, severity, signature, proof, note, school); the Front Desk reads the rows on its 5-minute run, sends them to the event log and clears them. */
+function triQueue_() {
+  const ss = SpreadsheetApp.openById(TRI_.DESK_SHEET); let sh = ss.getSheetByName('Triage queue');
+  if (!sh) { sh = ss.insertSheet('Triage queue'); sh.appendRow(['at', 'source', 'job', 'way', 'severity', 'signature', 'proof', 'note', 'school']); try { sh.setFrozenRows(1); sh.hideSheet(); } catch (e) {} }
+  return sh;
+}
+/** One event to the log, through the queue. Never throws. null: queued (or skipped as a repeat inside 5 minutes), so the counts in Script Properties carry the work; false: the queue could not be written. */
+function triLog_(way, x, proof, note) {
+  try {
+    const cache = CacheService.getScriptCache(), ck = 'tri:q:' + TRI_.SCRIPT + ':' + way + ':' + String(x.sig).slice(0, 60);
+    if (way !== 'repair' && cache.get(ck)) return null;
+    triQueue_().appendRow([new Date(), TRI_.SCRIPT, x.j, way, way === 'clean' ? '' : (x.s || ''), x.sig, proof || '', note || '', x.school || '']);
+    if (way !== 'repair') cache.put(ck, '1', 300);
+    return null;
+  } catch (e) { return false; }
+}
+/** The card's words in one place: the row's "do this" and "because" (lines split by a new line). */
+function triWords_(x) {
+  const lines = ['What stopped: ' + x.j + '. It touches ' + x.who + '.', TRI_SEV_WORDS_[x.s] || TRI_SEV_WORDS_.S2];
+  const mins = Math.max(0, Math.round((new Date(x.l) - new Date(x.f)) / 60000));
+  if (x.k === 'wait') lines.push('Tried: it tried again at once and on every run for ' + mins + ' minutes (' + x.n + ' times). The cause is outside our code.', 'Repair: it keeps trying on its own. The card closes when the job has run clean for ' + TRI_.CLEAN_MIN + ' minutes.');
+  else if (x.k === 'unknown') lines.push('Tried: it tried again on every run for ' + mins + ' minutes (' + x.n + ' times). We do not recognize this failure yet.', 'Repair: it goes to Claude first, to name the cause and add it to the rule table. The card closes when the job has run clean for ' + TRI_.CLEAN_MIN + ' minutes.');
+  else if (x.k === 'limit') lines.push('Tried: it stopped at once, because a daily limit is used up. The count resets on its own.', 'Repair: it goes to Claude first, to see why the limit was reached and to keep it from coming back.');
+  else if (x.k === 'access') lines.push('Tried: it stopped at once, because a permission or key was refused.', 'Repair: it goes to Claude first, to find which permission or key was refused and renew it. If only a sign-in will do, the one step comes here.');
+  else lines.push('Tried: it stopped at once, because a retry would fail the same way. It has happened ' + x.n + ' time' + (x.n === 1 ? '' : 's') + ' since ' + Utilities.formatDate(new Date(x.f), 'America/Chicago', 'MMM d, h:mm a') + '.',
+    'Repair plan: ' + TRI_.LABEL + ' (' + TRI_.FILE + '), ' + (x.fn ? 'the function ' + x.fn + (x.ln ? ' near line ' + x.ln : '') : 'the job named above') + ' says “' + (x.m || 'no message') + '”. Build running when it stopped: ' + x.b + '. It becomes the day’s first build, on Sonnet.',
+    'First message for that build: “Repair ' + TRI_.LABEL + ' build ' + x.b + ': ' + (x.fn || x.j) + ' fails with ‘' + (x.m || 'no message') + '’. Read the live script through the Drive connector, fix the cause, prove it with a forced test, install and commit it per ap-ship-standard, then check that ' + triKey_(x.sig) + ' closes as Proven.”');
+  return { do: x.j, because: lines.join('\n') };
+}
+/** Writes (or updates) the one Actions row for a signature on the Front Desk sheet. Never throws. This script closes its own card (the Front Desk never closes a foreign fix: key). */
+function triCard_(x) {
+  try {
+    const sh = SpreadsheetApp.openById(TRI_.DESK_SHEET).getSheetByName('Actions');
+    const hdr = sh.getRange(1, 1, 1, Math.max(1, sh.getLastColumn())).getValues()[0], H = {};
+    hdr.forEach((h, i) => { if (h) H[String(h)] = i; });
+    const key = triKey_(x.sig), data = sh.getDataRange().getValues(), w = triWords_(x);
+    let at = 0;
+    for (let i = 1; i < data.length; i++) if (String(data[i][H['key']] || '').trim() === key) { at = i; break; }
+    if (at) {
+      const row = data[at], handDone = row[H['mark done by hand']] === true;
+      sh.getRange(at + 1, H['because'] + 1).setValue(w.because);
+      if (!handDone && String(row[H['status']]) === 'done') {
+        sh.getRange(at + 1, H['status'] + 1).setValue('open'); sh.getRange(at + 1, H['first seen'] + 1).setValue(new Date()); sh.getRange(at + 1, H['done at'] + 1).setValue('');
+        if (H['closed how'] !== undefined) sh.getRange(at + 1, H['closed how'] + 1).setValue('');
+      }
+      return true;
+    }
+    const row = new Array(Math.max(sh.getLastColumn(), 11)).fill('');
+    row[H['key']] = key; row[H['first seen']] = new Date(); row[H['owner']] = 'John'; row[H['do this']] = w.do; row[H['for']] = TRI_.LABEL;
+    row[H['because']] = w.because; row[H['link']] = TRI_.DESK; row[H['status']] = 'open'; row[H['mark done by hand']] = false; row[H['rule']] = 'R26';
+    sh.appendRow(row);
+    return true;
+  } catch (e) { return false; }
+}
+/** The job has run clean for 30 minutes: this script closes its card as Proven. Never throws. */
+function triClose_(sig) {
+  try {
+    const sh = SpreadsheetApp.openById(TRI_.DESK_SHEET).getSheetByName('Actions');
+    const H = {}; sh.getRange(1, 1, 1, Math.max(1, sh.getLastColumn())).getValues()[0].forEach((h, i) => { if (h) H[String(h)] = i; });
+    const key = triKey_(sig), data = sh.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][H['key']] || '').trim() !== key || String(data[i][H['status']]) !== 'open') continue;
+      sh.getRange(i + 1, H['status'] + 1).setValue('done'); sh.getRange(i + 1, H['done at'] + 1).setValue(new Date());
+      if (H['done by'] !== undefined) sh.getRange(i + 1, H['done by'] + 1).setValue(TRI_.LABEL);
+      if (H['closed how'] !== undefined) sh.getRange(i + 1, H['closed how'] + 1).setValue('Proven');
+    }
+    return true;
+  } catch (e) { return false; }
+}
+/** This script has no S1 job, so it sends no email and asks for no mail permission: an S1 here would be a card only. */
+function triMail_(x) { return false; }
+/**
+ * The one door every failure goes through (alert_ is a one-line call to it). Handled where it happens and never rethrown.
+ * where: the job's words (or a whole alert text, with e left out). Returns { way: wait|repair|needs_us, sev, card } and never throws.
+ */
+function triage_(where, e) {
+  const out = { way: 'wait', sev: '', card: 'none' };
+  try {
+    const c = triClass_(where, e), now = new Date(), iso = now.toISOString(), st = triState_();
+    TRI_RUN_[c.sig] = 1;
+    const x = st[c.sig] || { f: iso, n: 0, e: 0, ml: 0 };
+    x.l = iso; x.n = (x.n || 0) + 1; x.k = c.kind; x.j = c.job; if (!x.s || c.sev < x.s) x.s = c.sev; x.who = c.who; x.src = c.src; x.fn = c.fn; x.ln = c.line; x.m = c.msg; x.b = TRI_.BUILD; x.cl = '';
+    const r = triLog_(c.way, { j: c.job, s: c.sev, sig: c.sig }, '', c.kind + (c.fn ? ' in ' + c.fn : ''));
+    const minutes = (now - new Date(x.f)) / 60000;
+    let needs = c.way === 'needs_us';
+    if (!needs) needs = r ? (r.way === 'needs_us') : minutes >= (TRI_ONCE_[c.src] ? 0 : TRI_.WAIT_MIN); // the log is the count when it answers; the Script Properties are the count when it cannot
+    if (needs) { x.w = 'needs_us'; x.e = 1; if (r && r.severity) x.s = r.severity; } else x.w = 'wait';
+    x.sig = c.sig; st[c.sig] = x; triSave_(st);
+    out.way = needs ? 'needs_us' : 'wait'; out.sev = x.s;
+    if (needs) {
+      out.card = x.cd ? 'update' : 'new';
+      if (triCard_(x)) { if (!x.cd) { x.cd = 1; st[c.sig] = x; triSave_(st); } }
+      if (x.s === 'S1' && !x.ml) { if (triMail_(x)) { x.ml = 1; st[c.sig] = x; triSave_(st); } }
+    }
+  } catch (err) { /* triage never throws */ }
+  return out;
+}
+/** A job ran clean. A passing failure that recovered closes at once; a card stays until the job has run clean for 30 minutes, then closes itself as Proven. */
+function cleanRun_(src) {
+  try {
+    const st = triState_(), now = new Date(); let dirty = false;
+    Object.keys(st).forEach(sig => {
+      const x = st[sig];
+      if (x.src !== src || TRI_RUN_[sig]) return;
+      dirty = true; x.sig = sig;
+      if (!x.e) { if (triLog_('clean', x, 'recovered on its own', '') !== false) delete st[sig]; return; }
+      if (!x.cl) x.cl = now.toISOString();
+      const r = triLog_('clean', x, '', '');
+      const quiet = now - new Date(x.cl);
+      if (quiet >= (TRI_ONCE_[src] ? 0 : TRI_.CLEAN_MIN) * 60000 && (r !== false || quiet >= 4 * 36e5)) { if (x.cd) triClose_(sig); delete st[sig]; } // this script closes its own card as Proven
+    });
+    if (dirty) triSave_(st);
+  } catch (e) {}
+}
+/** A timer's own job, handled where it happens: a failure goes to triage_, a clean pass to cleanRun_, and nothing is rethrown. */
+function triGuard_(job, src, fn, once) {
+  if (once) TRI_ONCE_[src] = 1;
+  try { const r = fn(); cleanRun_(src); return r; } catch (e) { triage_(job, e); }
+}
+/** Run by hand once after an install (Run → triProof), never on a timer: forces one passing hiccup and one defect through the real block, then closes its own test card as Proven. */
+function triProof() {
+  const a = triage_('Triage proof: forced hiccup', new Error('Service Spreadsheets timed out (forced test)'));
+  const b = triage_('Triage proof: forced defect', new TypeError('x is not a function (forced test)'));
+  const sig = 'triage-proof-forced-defect-code', st = triState_(), had = !!st[sig];
+  const closed = triClose_(sig); delete st[sig]; delete st['google-sheets-wait']; triSave_(st);
+  Logger.log('hiccup: ' + a.way + ' (card ' + a.card + ') · defect: ' + b.way + ' (card ' + b.card + ', S ' + b.sev + ') · test card closed as Proven: ' + closed + ' · queue rows: ' + (triQueue_().getLastRow() - 1) + ' · index entry made: ' + had);
+}
