@@ -1,4 +1,35 @@
 /**
+ * Ancient Path — Front Desk · Notices.gs · build N12 · Replies Go Out By API (Nov 16, 2026; with Research reader 13.16 unchanged; John's second test text, 11:45 AM, reached the desk but got no answer; built on the live N11, so everything in N11 is kept).
+ * What was wrong: an Apps Script web app answers a POST with a redirect. Twilio follows it with a second POST that the redirect's address refuses (405 Method Not Allowed, Twilio error 11200), so Twilio never read the answer we wrote for it: the reply row and the card were written, and no text went back. The status calls got the same 405 and still reached us.
+ * 1. A reply to a text now goes out through Twilio's own sending call (noticeReply_), at once and at any hour, from the notices Messaging Service: the HELP text, and the once-a-day answer to anything else. The doc's answer to Twilio is empty. The sent text's id is logged on the Texts tab, so its delivery shows there like every other text; a send that fails is logged and does not use up the day's one answer.
+ * 2. noticeTwiml_ is retired. No registered word is changed.
+ * Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged; no new key. Retires: noticeTwiml_ and every answer written as TwiML. When it breaks: a reply text is logged as not sent and the card for our team still lands. Twilio's alert list keeps showing 11200 for each call it cannot read the answer to; those carry no harm. Next school: nothing more.
+ * Moves to the platform as it is: all of it. Rebuilt there: the Twilio calls only.
+ */
+/**
+ * Ancient Path — Front Desk · Notices.gs · build N11 · Replies Reach Us (Nov 16, 2026; with Research reader 13.16 unchanged; John's test text at 11:36 AM got no answer; built on the live N10 read through the Google Drive connector, so everything in N10 is kept).
+ * What was wrong: noticeSenderCheck was run from the editor, where ScriptApp.getService().getUrl() is the /dev test address, which asks for a Google sign-in. It saved that address in Twilio, and Twilio's alert log shows our address answering 401 (error 11200) to the reply. The text status address was built the same way.
+ * 1. noticeBase_() (one constant, the deployed web app address) is the only address given to Twilio: the reply address in noticeSenderCheck and the status address on every text. 2. No registered word is changed.
+ * Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged; no new key. Retires: ScriptApp.getService().getUrl() in three places. When it breaks: the constant goes stale only if the web app is deployed as a new deployment (an ordinary new version keeps it); noticeSenderCheck then reads the service back and says the address is not ours. Next school: one constant.
+ * Moves to the platform as it is: all of it. Rebuilt there: the Twilio calls only.
+ */
+/**
+ * Ancient Path — Front Desk · Notices.gs · build N10 · Text Notices Build 2 (Nov 16, 2026; with Research reader 13.16 and road.js 11.15; John's "go on both", Nov 16, 2026; built on the live N9 read through the Google Drive connector, so everything in N9 is kept).
+ *   1. Replies. noticeSenderCheck now posts UseInboundWebhookOnNumber = false together with InboundRequestUrl to the notices Messaging Service, then reads the service back, and says "already" only when the service itself shows both (the address is ours and the number's own address is off). Before this, a reply to a text went to the number's own default address and got Twilio's demo answer (Nov 16, 2026).
+ *   2. The link. A notice can carry the key of the card that landed (op send takes card; sendNotice takes opts.card). The registered words stay word for word; the link in them becomes https://www.ancientpathcoaching.com/start?new=<card>. A held notice keeps its card on the Texts row (note "notice|<card>") so the 8:00 AM send carries the same link. A key that is not 1 to 12 letters, digits, hyphens or underscores is dropped and the link is the plain /start, as before.
+ *   Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged; no new desk action and no new key. Retires: the plain /start link in a notice that has a card. When it breaks: no card key, or a key the page does not know, opens Your Page as usual. Next school: nothing more.
+ *   Moves to the platform as it is: all of it. Rebuilt there: the Twilio calls only.
+ *   Counts taken: the file parses (new Function over the whole file); the diff from N9 is the lines named in patch_notices.py only; every registered text but the notice link is unchanged; the notice with a card is 156 characters or fewer in the plain GSM alphabet (one segment); noticeSenderCheck was run against a stand-in Twilio (set, read back, "already", and a refusal).
+ */
+/**
+ * Ancient Path — Front Desk · Notices.gs · build N9 · Text Him 2.1, Speed (Nov 12, 2026; with Front Desk 39.2 in the same project, Research reader 13.15 and desk.js 38; built on the live N8 read through the Google Drive connector, so everything in N8 is kept).
+ *   1. The reader's key is kept six hours (it was five minutes, so most presses opened the Research Engine sheet and read its whole Config tab for one cell). If the reader refuses a kept key (no_key: the Config row was changed), the kept copy is dropped, the key is read once from the sheet and the call is made once more: one retry, never a loop; a key just read from the sheet that is refused is not retried.
+ *   2. text_him and text_plan open the sheet through fdSS_ (the one open whoIs_ made) and answer wms, fms, kms and ums beside ms and rms; text_plan also answers ms.
+ *   Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged; no new desk action, no new key (the same Config "week lines key"). Retires: the five-minute re-read of the Research Engine's Config in a press. When it breaks: a reader that cannot be reached answers fail exactly as before; the stage clocks read 0 and nothing else changes. Next school: nothing more.
+ *   Moves to the platform as it is: all of it. Rebuilt there: the UrlFetch to the Research reader (unchanged).
+ *   Counts taken: the file parses (new Function over the whole file); the diff from N8 is the lines named in patch_fd39_2.py only; a rotated key was run on stand-in sheets (the stale kept key is refused, the key is read once, the press lands on the second call, the new key is kept; refused twice it stops after two calls; a fresh key that is refused makes one call); the key is put in the cache for 21,600 seconds (300 before); no text is added or changed (ap-text-standard word for word).
+ */
+/**
  * Ancient Path — Front Desk · Notices.gs · build N8 · Text Him 2.1 (Nov 11, 2026; with Front Desk 39, Research reader 13.15 and desk.js 38; built on the live N7 read through the Google Drive connector, so everything in N7 is kept).
  *   1. text_him and text_plan now answer rms, the milliseconds the Research reader spent (its own ms), beside the ms this desk spent, so a slow press can be placed (the browser, this desk, or the reader). An older reader answers none and rms is 0.
  *   2. textMail_ greets our own addresses by first name (ownAddress_, Code.gs 39), so Email him instead on John Sherrod · yours opens "John," and not "Hello,".
@@ -61,8 +92,8 @@
  */
 
 const NOTICE = {
-  BUILD: 'N8',
-  LABEL: 'Text Him 2.1',
+  BUILD: 'N12',
+  LABEL: 'Text Notices Build 2',
   SENDER: '+14695575502',
   SENDER_SHOWN: '(469) 557-5502',
   SERVICE: 'MGa52ac58544f99799e55cf4788c7906e9',
@@ -97,6 +128,9 @@ const NOTICE = {
 const NOTICE_CARD_MAX = 600; // the words on the card (the Research reader refuses more)
 const NOTICE_POST_LINE = "if (e && e.parameter && e.parameter.notice) return noticeHook_(e); // Text Notices Build 1: Twilio status and inbound posts, and Your Page's keyed call";
 const NOTICE_GET_LINE = "if (e && e.parameter && e.parameter.file === 'ancient-path.vcf') return noticeCard_(); // Text Notices Build 1: Save our number";
+// N11: the address Twilio posts to is always the deployed web app, never ScriptApp.getService().getUrl(): run from the editor that returns the sign-in-only /dev address (Twilio got 401 on John's test text, Nov 16, 2026), and from a trigger it can return the domain form.
+const NOTICE_EXEC = 'https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec';
+function noticeBase_() { return NOTICE_EXEC; }
 
 /** The clock, so a test can set it. Production: now. */
 function noticeNow_() { return new Date(); }
@@ -128,9 +162,10 @@ function noticeRun_(email, opts, heldRow) {
     const kind = NOTICE.KINDS.indexOf(opts.kind) >= 0 ? opts.kind : 'notice';
     const isConfirm = kind === 'confirm' || kind === 'wconfirm';   // goes at once, any hour, never counts toward a day
     const link = kind === 'wweekly' ? noticeWitnessLink_(opts.link) : '';
+    const card = kind === 'notice' ? noticeCardKey_(opts.card) : '';   // N10: the card this notice is about
     const stampNow = Utilities.formatDate(now, FD.TZ, 'yyyy-MM-dd h:mm a');
     const log = (status, detail, sid, err, last4) => {
-      const note = kind === 'wweekly' ? 'witness weekly|' + link + (detail ? ' · ' + detail : '') : (kind === 'confirm' ? 'confirmation' : kind === 'wconfirm' ? 'witness confirmation' : 'notice') + (detail ? ' · ' + detail : '');
+      const note = kind === 'wweekly' ? 'witness weekly|' + link + (detail ? ' · ' + detail : '') : (kind === 'confirm' ? 'confirmation' : kind === 'wconfirm' ? 'witness confirmation' : 'notice' + (card ? '|' + card : '')) + (detail ? ' · ' + detail : '');
       noticeLog_(tx, heldRow, [stampNow, email, last4 || '', sid || '', status, err || '', note, today]);
     };
     const no = (detail, last4, fallback) => { log('not sent', detail, '', '', last4); return { ok: false, status: 'not sent', note: detail, fallback: !!fallback }; };
@@ -165,11 +200,11 @@ function noticeRun_(email, opts, heldRow) {
     const need = ['TWILIO_ACCOUNT_SID', 'TWILIO_SERVICE_SID', 'TWILIO_KEY_SID', 'TWILIO_KEY_SECRET', 'NOTICE_HOOK_SECRET'].filter(k => !p[k]);
     if (need.length) return no('Twilio not set up: missing ' + need.join(', '), last4, true);
 
-    const body = kind === 'confirm' ? NOTICE.TEXTS.confirm : kind === 'wconfirm' ? NOTICE.TEXTS.wconfirm : kind === 'wweekly' ? NOTICE.TEXTS.wweekly.replace('{link}', link) : NOTICE.TEXTS.notice;
+    const body = kind === 'confirm' ? NOTICE.TEXTS.confirm : kind === 'wconfirm' ? NOTICE.TEXTS.wconfirm : kind === 'wweekly' ? NOTICE.TEXTS.wweekly.replace('{link}', link) : noticeText_(card);
     const res = UrlFetchApp.fetch('https://api.twilio.com/2010-04-01/Accounts/' + p.TWILIO_ACCOUNT_SID + '/Messages.json', {
       method: 'post',
       headers: { Authorization: 'Basic ' + Utilities.base64Encode(p.TWILIO_KEY_SID + ':' + p.TWILIO_KEY_SECRET) },
-      payload: { To: to, MessagingServiceSid: p.TWILIO_SERVICE_SID, Body: body, StatusCallback: ScriptApp.getService().getUrl() + '?notice=status&k=' + encodeURIComponent(p.NOTICE_HOOK_SECRET) },
+      payload: { To: to, MessagingServiceSid: p.TWILIO_SERVICE_SID, Body: body, StatusCallback: noticeBase_() + '?notice=status&k=' + encodeURIComponent(p.NOTICE_HOOK_SECRET) },
       muteHttpExceptions: true
     });
     let j = {};
@@ -189,6 +224,15 @@ function noticeRun_(email, opts, heldRow) {
 
 /** The address a witness's weekly text may carry: the site's /witness page with his own token, nothing else (ap-text-standard: a full ancientpathcoaching.com address, never a shortener or a script address). */
 function noticeWitnessLink_(l) { const s = String(l == null ? '' : l).trim(); return NOTICE.WITNESS_LINK.test(s) ? s : ''; }
+
+/** N10: the key of the card a notice is about: 1 to 12 letters, digits, hyphens or underscores, else ''. */
+function noticeCardKey_(c) { const s = String(c == null ? '' : c).trim(); return /^[A-Za-z0-9_-]{1,12}$/.test(s) ? s : ''; }
+
+/** N10: the registered notice, word for word, with the card's key in its link. No card, or a key that does not pass, leaves the registered link as it was. */
+function noticeText_(card) {
+  const k = noticeCardKey_(card);
+  return k ? NOTICE.TEXTS.notice.replace(NOTICE.SITE + '/start', NOTICE.SITE + '/start?new=' + k) : NOTICE.TEXTS.notice;
+}
 
 function noticeKindOf_(note) {
   const n = String(note || '').toLowerCase();
@@ -249,17 +293,40 @@ function noticeInbound_(ss, tx, op, p, stamp, today) {
   const sid = String(p.MessageSid || p.SmsSid || '');
   if (kind === 'STOP') { if (email) noticeSetOpt_(op, email, 'no', 'reply STOP', true); tx.appendRow([stamp, email, last10.slice(-4), sid, 'STOP', '', 'he texted STOP; texts are off at once', today]); return ''; }
   if (kind === 'START') { if (email) noticeSetOpt_(op, email, 'yes', 'reply START', false); tx.appendRow([stamp, email, last10.slice(-4), sid, 'START', '', 'he texted START', today]); return ''; }
-  if (kind === 'HELP') { tx.appendRow([stamp, email, last10.slice(-4), sid, 'HELP', '', 'he texted HELP; the registered HELP text went back', today]); return noticeTwiml_(NOTICE.TEXTS.help); }
+  if (kind === 'HELP') {
+    const helpSid = noticeReply_(from, NOTICE.TEXTS.help);
+    tx.appendRow([stamp, email, last10.slice(-4), sid, 'HELP', '', helpSid ? 'he texted HELP; the registered HELP text went back' : 'he texted HELP; the registered HELP text could not be sent', today]);
+    if (helpSid) tx.appendRow([stamp, email, last10.slice(-4), helpSid, 'queued', '', 'help answer', today]);
+    return '';
+  }
   // any other reply: a card for our team, and one automatic answer a day
   tx.appendRow([stamp, email, last10.slice(-4), sid, 'reply', '', 'he replied; the card is on the Actions tab', today]);
   noticeReplyCard_(ss, email, last10, raw, stamp, today);
   const had = noticeRows_(tx).some(r => noticeDay_(r[7]) === today && noticeKindOf_(r[6]) === 'auto' && String(r[2]) === last10.slice(-4));
   if (had) return '';
-  tx.appendRow([stamp, email, last10.slice(-4), '', 'sent', '', 'auto answer (once a day)', today]);
-  return noticeTwiml_(NOTICE.TEXTS.other);
+  const autoSid = noticeReply_(from, NOTICE.TEXTS.other);
+  if (autoSid) tx.appendRow([stamp, email, last10.slice(-4), autoSid, 'queued', '', 'auto answer (once a day)', today]);
+  else tx.appendRow([stamp, email, last10.slice(-4), '', 'failed', '', 'answer could not be sent', today]);   // not an "auto" note, so the next reply tries again
+  return '';
 }
 
-function noticeTwiml_(s) { return '<Response><Message>' + String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</Message></Response>'; }
+/** N12: a reply to his text goes out through Twilio's sending call, never as the answer to Twilio's call (a web app's redirect is refused with a 405, so that answer is never read). Returns the new text's id, or '' when it did not go. Takes no lock: the caller holds it. */
+function noticeReply_(to, body) {
+  try {
+    const p = PropertiesService.getScriptProperties().getProperties();
+    if (!to || !p.TWILIO_ACCOUNT_SID || !p.TWILIO_SERVICE_SID || !p.TWILIO_KEY_SID || !p.TWILIO_KEY_SECRET || !p.NOTICE_HOOK_SECRET) return '';
+    const res = UrlFetchApp.fetch('https://api.twilio.com/2010-04-01/Accounts/' + p.TWILIO_ACCOUNT_SID + '/Messages.json', {
+      method: 'post',
+      headers: { Authorization: 'Basic ' + Utilities.base64Encode(p.TWILIO_KEY_SID + ':' + p.TWILIO_KEY_SECRET) },
+      payload: { To: to, MessagingServiceSid: p.TWILIO_SERVICE_SID, Body: body, StatusCallback: noticeBase_() + '?notice=status&k=' + encodeURIComponent(p.NOTICE_HOOK_SECRET) },
+      muteHttpExceptions: true
+    });
+    let j = {};
+    try { j = JSON.parse(res.getContentText()); } catch (x) { j = {}; }
+    const code = res.getResponseCode();
+    return (code >= 200 && code < 300 && j.sid) ? String(j.sid) : '';
+  } catch (x) { return ''; }
+}
 
 /** A card for our team: what he said, and who. Key textreply:<who>:<day> (not script-owned, so it stays until someone closes it; safeguarding protocol governs what our team does next). */
 function noticeReplyCard_(ss, email, last10, raw, stamp, today) {
@@ -287,7 +354,7 @@ function noticeApi_(e) {
   try {
     if (b.op === 'state') return out(Object.assign({ ok: true }, noticeState_(SpreadsheetApp.openById(FD.SHEET_ID), email)));
     if (b.op === 'off') { noticeOptWrite_(email, null, 'no', b.by === 'witness' ? 'Witness page' : 'Settings', false); return out({ ok: true }); }
-    if (b.op === 'send') { const r = sendNotice(email, { kind: 'notice' }); return out(r); }
+    if (b.op === 'send') { const r = sendNotice(email, { kind: 'notice', card: b.card }); return out(r); }   // N10: card = the key of the card that landed
     if (b.op === 'start') return out(noticeStart_(email, b.phone));
     if (b.op === 'wstart') return out(noticeStart_(email, b.phone, 'wconfirm'));
     if (b.op === 'wsend') return out(sendNotice(email, { kind: 'wweekly', link: b.link }));
@@ -379,8 +446,9 @@ function noticeCard_() {
 function textHim_(who, b) {
   psAdmin_(who);
   const t0 = Date.now(), email = String(b.email || '').trim().toLowerCase();
-  const ss = SpreadsheetApp.openById(FD.SHEET_ID);
-  if (!noticeFlag_(ss, 'text him')) return { ok: true, sent: false, why: 'off' };
+  const ss = fdSS_(); // build N9: the sheet whoIs_ already opened
+  const tf = Date.now(), on = noticeFlag_(ss, 'text him'); FD_T.flag = Date.now() - tf;
+  if (!on) return { ok: true, sent: false, why: 'off' };
   if (!email || email.indexOf('@') < 0) return { ok: true, sent: false, why: 'no_email' };
   const words = String(b.words == null ? '' : b.words).replace(/\r/g, '').trim();
   if (!words || words.length > NOTICE_CARD_MAX) return { ok: true, sent: false, why: 'bad_words' };
@@ -390,7 +458,7 @@ function textHim_(who, b) {
     return { ok: true, sent: false, why: (err === 'no_page' || err === 'bad_words' || err === 'no_email') ? err : 'fail' };
   }
   const legacy = j.plan === undefined && j.notice !== undefined;   // a Research reader before 13.13 already sent the notice inside team_card
-  return { ok: true, sent: true, plan: String(legacy ? j.notice : j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, owed: legacy ? false : !!j.owed, cid: String(j.cid || ''), words: j.words === undefined ? '' : String(j.words), at: String(j.at || new Date().toISOString()), day: String(j.day || ''), legacy: legacy, ms: Date.now() - t0, rms: Number(j.ms) || 0 };
+  return { ok: true, sent: true, plan: String(legacy ? j.notice : j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, owed: legacy ? false : !!j.owed, cid: String(j.cid || ''), words: j.words === undefined ? '' : String(j.words), at: String(j.at || new Date().toISOString()), day: String(j.day || ''), legacy: legacy, ms: Date.now() - t0, rms: Number(j.ms) || 0, wms: FD_T.who || 0, fms: FD_T.flag || 0, kms: FD_T.key || 0, ums: FD_T.fetch || 0 };
 }
 
 /** desk action text_plan (admins only): how he will be told, read when the Text him sheet opens. Read only.
@@ -399,11 +467,11 @@ function textPlan_(who, b) {
   psAdmin_(who);
   const email = String(b.email || '').trim().toLowerCase();
   if (!email || email.indexOf('@') < 0) return { ok: true, plan: '', on: true };
-  const on = noticeFlag_(SpreadsheetApp.openById(FD.SHEET_ID), 'text him');
+  const t0 = Date.now(), tf = Date.now(), on = noticeFlag_(fdSS_(), 'text him'); FD_T.flag = Date.now() - tf; // build N9: the sheet whoIs_ already opened
   const j = noticeReaderCall_({ action: 'team_plan', email: email });
   if (!j) return { ok: true, plan: '', on: on };
   if (!j.ok) return { ok: true, plan: j.error === 'no_page' ? 'nopage' : '', on: on };
-  return { ok: true, plan: String(j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, on: on, rms: Number(j.ms) || 0 };
+  return { ok: true, plan: String(j.plan || ''), capAt: String(j.capAt || ''), opened: !!j.opened, on: on, ms: Date.now() - t0, rms: Number(j.ms) || 0, wms: FD_T.who || 0, fms: FD_T.flag || 0, kms: FD_T.key || 0, ums: FD_T.fetch || 0 };
 }
 
 /** desk action text_notice (admins only): the owed notice goes now. The desk asks right after the card and does not wait; a call that never arrives leaves the notice owed and the daily run or the 6:00 PM catch sends it.
@@ -481,32 +549,47 @@ function textMail_(who, b) {
   return { ok: true, sent: true, at: now.toISOString() };
 }
 
-/** One keyed call to the Research reader (the key is the Research Engine Config row "week lines key", the one team_card has always used; kept five minutes in the script cache, so a press does not read the sheet for it). null when the reader cannot be reached. */
+/** One keyed call to the Research reader (the key is the Research Engine Config row "week lines key", the one team_card has always used). null when the reader cannot be reached.
+ *  Build N9: the key is kept six hours in the script cache (it was five minutes, so most presses opened the Research Engine sheet and read its whole Config tab for one cell). If the reader refuses a kept key (no_key: the row was changed), the kept copy is dropped, the key is read once from the sheet and the call is made once more. The time spent on the key and on the call is clocked into FD_T. */
 function noticeReaderCall_(payload) {
-  const key = noticeReaderKey_();
+  const key = noticeReaderKey_(false), kept = !!FD_T.keyHit;
   if (key.length < 24) return null;
-  try {
-    const res = UrlFetchApp.fetch(RR_EXEC_, { method: 'post', contentType: 'application/json', payload: JSON.stringify(Object.assign({ key: key }, payload)), muteHttpExceptions: true, followRedirects: true });
-    const j = JSON.parse(res.getContentText());
-    return j && typeof j === 'object' ? j : null;
-  } catch (x) { return null; }
+  const go = k => {
+    const t1 = Date.now();
+    try {
+      const res = UrlFetchApp.fetch(RR_EXEC_, { method: 'post', contentType: 'application/json', payload: JSON.stringify(Object.assign({ key: k }, payload)), muteHttpExceptions: true, followRedirects: true });
+      const j = JSON.parse(res.getContentText());
+      return j && typeof j === 'object' ? j : null;
+    } catch (x) { return null; } finally { FD_T.fetch = (FD_T.fetch || 0) + (Date.now() - t1); }
+  };
+  let j = go(key);
+  if (kept && j && j.ok === false && j.error === 'no_key') {
+    CacheService.getScriptCache().remove('fd:rrkey');
+    const fresh = noticeReaderKey_(true);
+    if (fresh.length >= 24 && fresh !== key) j = go(fresh);
+  }
+  return j;
 }
 
-/** The key the Research reader checks on team_card: the Research Engine Config row "week lines key" (the row personalLines_ reads too). */
-function noticeReaderKey_() {
-  const cache = CacheService.getScriptCache(), hit = cache.get('fd:rrkey');
-  if (hit) return hit;
+/** The key the Research reader checks on team_card: the Research Engine Config row "week lines key" (the row personalLines_ reads too). Kept six hours (the longest the script cache allows); fresh = true skips the kept copy. FD_T.keyHit says whether the kept copy was used. */
+function noticeReaderKey_(fresh) {
+  const t0 = Date.now(), cache = CacheService.getScriptCache();
+  FD_T.keyHit = false;
   try {
-    const d = SpreadsheetApp.openById(RESEARCH_SHEET_ID_).getSheetByName('Config').getDataRange().getValues();
-    for (let i = 1; i < d.length; i++) if (String(d[i][0]).trim() === 'week lines key') { const k = String(d[i][1] || '').trim(); if (k.length >= 24) cache.put('fd:rrkey', k, 300); return k; }
-  } catch (x) {}
-  return '';
+    if (!fresh) { const hit = cache.get('fd:rrkey'); if (hit) { FD_T.keyHit = true; return hit; } }
+    try {
+      const d = SpreadsheetApp.openById(RESEARCH_SHEET_ID_).getSheetByName('Config').getDataRange().getValues();
+      for (let i = 1; i < d.length; i++) if (String(d[i][0]).trim() === 'week lines key') { const k = String(d[i][1] || '').trim(); if (k.length >= 24) cache.put('fd:rrkey', k, 21600); return k; }
+    } catch (x) {}
+    return '';
+  } finally { FD_T.key = (FD_T.key || 0) + (Date.now() - t0); }
 }
 
 // ───────────────────────────── the sweep: held texts go at 8:00 AM ─────────────────────────────
 
 /** Every 10 minutes. Sends each held text once quiet hours are over, and only if he still wants texts and is under the day's caps. */
-function noticeSweep() {
+function noticeSweep() { triGuard_('The held texts sweep failed', 'notices', noticeSweep_); } // Triage 1: handled where it happens
+function noticeSweep_() {
   const hour = Number(Utilities.formatDate(noticeNow_(), FD.TZ, 'H'));
   if (hour >= NOTICE.QUIET_FROM || hour < NOTICE.QUIET_TO) return;
   const ss = SpreadsheetApp.openById(FD.SHEET_ID);
@@ -518,7 +601,7 @@ function noticeSweep() {
     const note = String(all[i][6]), k = noticeKindOf_(note);
     if (k === 'note') { tx.getRange(i + 1, 5, 1, 2).setValues([['not sent', 'retired: our team\'s words go as a card on his page (N5)']]); continue; }   // the old free-written text is never sent
     if (k === 'wweekly') { const m = /^witness weekly\|(\S+)/.exec(note); noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'wweekly', link: m ? m[1] : '' }, i + 1); }
-    else noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'notice' }, i + 1);
+    else { const mc = /^notice\|([A-Za-z0-9_-]{1,12})/.exec(note); noticeRun_(String(all[i][1]).toLowerCase(), { kind: 'notice', card: mc ? mc[1] : '' }, i + 1); }   // N10: the held text keeps its card
   }
 }
 
@@ -576,7 +659,7 @@ function noticeSetup() {
   return check;
 }
 
-function noticeDaily() { noticePrune(); try { noticeSenderCheck(); } catch (x) {} }
+function noticeDaily() { triGuard_('The daily texts check failed', 'notices', () => { noticePrune(); try { noticeSenderCheck(); } catch (x) {} }); } // Triage 1
 
 /**
  * Is (469) 557-5502 in the notices Messaging Service's sender pool? If not, add it through the API and read it back. Also points the service's incoming-message address at this script,
@@ -608,23 +691,30 @@ function noticeSenderCheck() {
     if (!inPool()) return done(false, NOTICE.SENDER_SHOWN + ' was added but is not showing in the pool yet.');
     said = NOTICE.SENDER_SHOWN + ' was not in the notices sender pool; it was added through the API and read back.';
   }
-  // incoming messages come here (STOP, START, HELP and every other reply)
+  // incoming messages come here (STOP, START, HELP and every other reply). N10: two settings, both read back; "already" only when the service itself shows both.
+  let ok = true;
   const secret = p.NOTICE_HOOK_SECRET || PropertiesService.getScriptProperties().getProperty('NOTICE_HOOK_SECRET');
   if (secret) {
-    const want = ScriptApp.getService().getUrl() + '?notice=inbound&k=' + secret;
-    if (sv.j.inbound_request_url !== want) { const u = post(svc, { InboundRequestUrl: want, InboundMethod: 'POST' }); said += u.code < 300 ? ' Incoming replies now come to this script.' : ' Twilio would not set the incoming-message address (' + (u.j.code || 'HTTP ' + u.code) + ').'; }
-    else said += ' Incoming replies already come to this script.';
+    const want = noticeBase_() + '?notice=inbound&k=' + secret;
+    const both = (j) => j.inbound_request_url === want && j.use_inbound_webhook_on_number === false;
+    if (both(sv.j)) said += ' Incoming replies already come to this script (the service address is set and the number\'s own address is off).';
+    else {
+      const u = post(svc, { InboundRequestUrl: want, InboundMethod: 'POST', UseInboundWebhookOnNumber: 'false' });
+      const back = get(svc);
+      if (u.code < 300 && back.code === 200 && both(back.j)) said += ' Incoming replies now come to this script (service address set, number address off), read back.';
+      else { ok = false; said += ' Twilio does not show both incoming-reply settings yet (' + (u.code < 300 ? 'set, but the read-back shows address ' + (back.j && back.j.inbound_request_url === want ? 'ours' : 'not ours') + ', number address ' + (back.j && back.j.use_inbound_webhook_on_number === false ? 'off' : 'on') : (u.j.code || 'HTTP ' + u.code)) + ').'; }
+    }
   }
   // the campaign, read only
   try { const c = get(svc + '/Compliance/Usa2p'); const rec = c.code === 200 && (c.j.compliance || []).filter(x => x.campaign_id === NOTICE.CAMPAIGN)[0]; if (rec && rec.campaign_status) said += ' Campaign: ' + rec.campaign_status + '.'; } catch (x) {}
-  return done(true, said);
+  return done(ok, said);
 }
 
 /** Logs the two Twilio addresses (they carry the secret, so they appear only in this log). Kept for the record; noticeSetup points Twilio at this script by itself. */
 function noticeShowHooks() {
   const s = PropertiesService.getScriptProperties().getProperty('NOTICE_HOOK_SECRET');
   if (!s) { Logger.log('Run noticeSetup first.'); return; }
-  Logger.log('INCOMING MESSAGES: ' + ScriptApp.getService().getUrl() + '?notice=inbound&k=' + s);
+  Logger.log('INCOMING MESSAGES: ' + noticeBase_() + '?notice=inbound&k=' + s);
   Logger.log('Delivery status is attached to each text by the script itself.');
 }
 
