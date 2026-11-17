@@ -10,7 +10,7 @@ def rep(old, new, count=1):
         print("NEEDLE x%d (want %d): %s" % (n, count, old[:100].replace("\n", "\\n"))); sys.exit(1)
     s = s.replace(old, new)
 rep("<!-- AP-HOME-v37.15 (v37.15, Nov 14, 2026,",
-    "<!-- AP-HOME-v37.16 (v37.16, Nov 17, 2026, with Ending Well v5 and the Your Story page: one record, either way in — Ending Well has its own public page at /ending-well, and the card here opens the piece at the door he came in by (the saved meta carries door: course or public): Pick up where you left off, Your words and Write another go to /ending-well for a man who wrote it there and to the Breaking Free player for a man who wrote it in Week 12; the card's kind line reads Endings for the public door and Breaking Free for the course; the piece's step count is eight, as the piece is; an offered story from the public door is attributed to Ancient Path, never to a course he did not take. Nothing else changed; the stylesheets are untouched, so the stamped rule counts stand) (v37.15, Nov 14, 2026,")
+    "<!-- AP-HOME-v37.16 (v37.16, Nov 17, 2026, with Ending Well v5 and the Your Story page: one record, either way in — Ending Well has its own public page at /ending-well, and the card here opens the piece at the door he came in by (the saved meta carries door: course or public): Pick up where you left off, Your words and Write another go to /ending-well for a man who wrote it there and to the Breaking Free player for a man who wrote it in Week 12; the card's kind line reads Endings for the public door and Breaking Free for the course; the piece's step count is eight, as the piece is; an offered story from the public door is attributed to Ancient Path, never to a course he did not take. The live page was read first and already carried story.js 20.4 (8f1abcc), so this build keeps that pin. Nothing else changed; the stylesheets are untouched, so the stamped rule counts stand) (v37.15, Nov 14, 2026,")
 rep('Your Page · AP-HOME-v37.15</p>', 'Your Page · AP-HOME-v37.16</p>')
 rep('var BUILD = "AP-HOME-v37.15";', 'var BUILD = "AP-HOME-v37.16";')
 rep('                    parts: 6,\n                    partWord: "part",\n                    page: "/ebook/ebook6ac01a803708b7aebd0eef32-6ac01a80a3155",',
@@ -31,6 +31,9 @@ rep('                    l.href = SURFACES[inProg.key].page + (SURFACES[inProg.k
     '                    l.href = pb + (pb.indexOf("?") >= 0 ? "&open=1" : "?open=1");')
 rep('                                from: s.from,\n                                email: a.email || "",',
     '                                from: (DOORS[key] === "public" ? "Ancient Path" : s.from),\n                                email: a.email || "",')
+# the live page already carries story.js 20.4 (the repo copy of v37.15 still named 20.2): v37.16 is built on the live page, so the pin is the live one
+rep('@5bab47d57efc66add5190da9157e519d6ed2875a/story.js', '@8f1abcc5e2cd47b36d27087bd7f85bd9b97b6ce7/story.js')
+rep('sha384-QEvus4BjWm7yg8cm3JZVqwOgZCooLWZXyZfxj+Efb1dsPmkNaoHp1HaPVpj1DlmG', 'sha384-5/Nz29bFGCTC933nXWFbIcnImlxfJ9SRAiy4ydf2IodROl/AcxOFVmYg0Lgxe8eT')
 open("pages/start-v37.16.html", "w", encoding="utf-8").write(s)
 b = open("pages/start-v37.16.html", "rb").read()
 print("pages/start-v37.16.html", len(b), "bytes, sha256", hashlib.sha256(b.rstrip(b"\n")).hexdigest())
