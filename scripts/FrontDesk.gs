@@ -1,4 +1,11 @@
 /**
+ * Ancient Path — Front Desk · build 46 · Triage 1, the platform and the nightly path check (Nov 17, 2026; John: "Every Needs us failure is one Front Desk card", "A nightly per-school path check", "a per-school line on the Friday scorecard"). Built on build 45.
+ *   1. triPull_ (on the 5-minute run, at most every 25 minutes) reads the platform's open failures from the event log (public.event_open) and keeps one Actions card for each (key fix:platform:<school>:<signature>, rule R26). It closes a card as Proven when its failure is gone from the log. S1 sends one plain email, once. If the log does not answer, nothing is opened or closed.
+ *   2. pathCheck_ (a daily timer near 2 AM Central, made again by triTimers_ if lost) asks the path-check function on the platform to walk the five paths (sign in, open the week, keep words, pay, invite a witness) for every school row, one school at a time, then pulls at once. A pass closes a failure; a failed path is one card.
+ *   3. The week's line for each school (failures by way, repairs, proven, open and how old, repeats, and last night's paths passed) is read from public.event_week into one Script Property, fd:health, and carried in the feed as schoolHealth for the Friday scorecard.
+ *   4. FD.BUILD 46. Simplicity check: count: one daily timer, one Script Property (fd:health); no page, tab or connector; retires the platform's silent failures; when it breaks, pathCheck_ goes through triage_ like every job; next school: a row in public.school, nothing more.
+ */
+/**
  * Ancient Path — Front Desk · build 45 · Triage 1 for every script (Nov 17, 2026; John: "Every script gets the triage", "Every Needs us failure is one Front Desk card"). Built on build 44.
  *   1. A fix: card written by another Ancient Path script (key fix:<script>:<signature>, for the reader relay, the save service, the ActiveCampaign bridge and the Research Engine) is that script's own: rebuildActions_ keeps it open (FOREIGN_FIX_) and the script closes it as Proven when its job has run clean for 30 minutes. Cards the Front Desk writes (fix:front-desk:) are unchanged.
  *   2. Those scripts hold no log secret. They write their events as rows on a new Triage queue tab of this sheet (triDrain_ reads it on the 5-minute run, sends each row to the event log with its school and clears the rows the log took). The secret stays in this one script.
@@ -579,7 +586,7 @@
  */
 
 const FD = {
-  BUILD: '45',
+  BUILD: '46',
   OWN: [{ email: 'john@ancientpathcoaching.com', name: 'John Sherrod' }, { email: 'johnsherrodtest@gmail.com', name: 'John Sherrod' }], // build 39: our own addresses, which an admin may press Text him on (isOurs_ keeps them off the Roster and out of every count)
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SIGNALS_SHEET_ID: '1s79xljKjt-sYCZin0-oRFp5swxcETS0a4gzr126_Dns',
@@ -2875,6 +2882,7 @@ function writeFeed_(ss, cfg, captured, cal, search, themes) {
     })),
     doneThisWeek: actions.filter(a => a['status'] === 'done' && a['done at'] && toDate_(a['done at']) >= d7 && closedHowOf_(a) !== CLOSED_WATCHED_).length,
     refresh: refreshRow_(actions), // build 36.1: the search refresh, read by the Through Search row
+    schoolHealth: schoolHealth_(), // build 46: one line per school for the Friday scorecard (event log + last night's paths)
     closedHow: closedCounts_(actions, d7), // build 33: the week's cards by how they closed (Proven · Said done · Changed · Dropped · Lapsed), read by the Friday scorecard
     inbound: {
       last7: theirs.filter(r => toDate_(r['received']) >= d7).length,
@@ -4857,7 +4865,7 @@ const TRI_WHO_ = [[/facilitator|leader/i, 'the leaders'], [/room reminder|weekly
 const TRI_SEV_ = [[/Kept presses|web call|desk code|sign.?in|keep|words he/i, 'S1'],
   [/setup failed|card words|Room Signals|search story|search signals|segments|pieces written|morning read|words suggestion|sweep|moves could not|road move|road could not|could not be counted/i, 'S3']];
 const TRI_SEV_WORDS_ = { S1: 'S1: a person’s words are at risk, or people can’t get in.', S2: 'S2: a feature is broken.', S3: 'S3: a rough edge.' };
-const TRI_SRC_ = [[/room reminder/i, 'reminder'], [/backup/i, 'backup'], [/held text|text sweep|notice/i, 'notices']];
+const TRI_SRC_ = [[/room reminder/i, 'reminder'], [/backup/i, 'backup'], [/held text|text sweep|notice/i, 'notices'], [/path check/i, 'pathcheck']];
 let TRI_RUN_ = {}; // signatures that failed in this execution: a clean run clears only the others
 
 function triMsg_(e) { return e == null ? '' : (e.message !== undefined ? String(e.message) : (typeof e === 'object' ? JSON.stringify(e) : String(e))); }
@@ -4927,6 +4935,9 @@ function triLog_(way, x, proof, note) {
 }
 /** The card's words in one place: the row's "do this" and "because" (lines split by a new line). */
 function triWords_(x) {
+  if (x.k === 'platform') return { do: x.j, because: ['What stopped: ' + x.j + '. It touches ' + x.who + '.', TRI_SEV_WORDS_[x.s] || TRI_SEV_WORDS_.S2, x.note ? 'What it said: ' + x.note : 'It has not said more.',
+    'Tried: ' + (x.src === 'path-check' ? 'the nightly check tried three times, one second and four seconds apart.' : 'it has failed ' + x.n + ' time' + (x.n === 1 ? '' : 's') + ', most recently ' + fmtC_(x.l, 'MMM d, h:mm a') + '.'),
+    'Repair: it goes to Claude first, to name the cause and fix it. ' + (x.src === 'path-check' ? 'The card closes itself when the nightly check passes.' : 'The card closes itself when it has not failed again for 12 hours.')].join('\n') };
   const lines = ['What stopped: ' + x.j + '. It touches ' + x.who + '.', TRI_SEV_WORDS_[x.s] || TRI_SEV_WORDS_.S2];
   const mins = Math.max(0, Math.round((new Date(x.l) - new Date(x.f)) / 60000));
   if (x.k === 'wait') lines.push('Tried: it tried again at once and on every run for ' + mins + ' minutes (' + x.n + ' times). The cause is outside our code.', 'Repair: it keeps trying on its own. The card closes when the job has run clean for ' + TRI_.CLEAN_MIN + ' minutes.');
@@ -4942,7 +4953,7 @@ function triWords_(x) {
 function triCard_(x) {
   try {
     const sh = SpreadsheetApp.openById(FD.SHEET_ID).getSheetByName('Actions');
-    const H = headerIndex_(sh), key = triKey_(x.sig), data = sh.getDataRange().getValues(), w = triWords_(x);
+    const H = headerIndex_(sh), key = x.key || triKey_(x.sig), data = sh.getDataRange().getValues(), w = triWords_(x);
     let at = 0;
     for (let i = 1; i < data.length; i++) if (String(data[i][H['key']] || '').trim() === key) { at = i; break; }
     if (at) {
@@ -4958,7 +4969,7 @@ function triCard_(x) {
     row[H['key']] = key; row[H['first seen']] = new Date(); row[H['owner']] = 'John'; row[H['do this']] = w.do; row[H['for']] = TRI_.LABEL;
     row[H['because']] = w.because; row[H['link']] = TRI_.DESK; row[H['status']] = 'open'; row[H['mark done by hand']] = false; row[H['rule']] = 'R26';
     sh.appendRow(row);
-    return true;
+    return 'new';
   } catch (e) { return false; }
 }
 /** The cards the index says are open, for rebuildActions_: they stay open until the job has run clean for 30 minutes and its entry is gone. */
@@ -5036,7 +5047,7 @@ function cleanRun_(src) {
       if (quiet >= TRI_.CLEAN_MIN * 60000 && (r !== false || quiet >= 4 * 36e5)) delete st[sig]; // gone from the index: the next rebuild closes its card as Proven
     });
     if (dirty) triSave_(st);
-    if (src === 'run') { triTimers_(); triDrain_(); }
+    if (src === 'run') { triTimers_(); triDrain_(); triPull_(false); }
   } catch (e) {}
 }
 /** Repair: a lost timer. Once an hour, the daily timers are checked and a missing one is made again, with one line in the log. */
@@ -5047,6 +5058,7 @@ function triTimers_() {
     cache.put('fd:tri:timers', '1', 3600);
     const have = ScriptApp.getProjectTriggers().map(t => t.getHandlerFunction()), made = [];
     if (have.indexOf('sendRoomReminder') < 0) { ScriptApp.newTrigger('sendRoomReminder').timeBased().everyDays(1).atHour(REMINDER_HOUR_).nearMinute(0).inTimezone(FD.TZ).create(); made.push('the room reminder timer'); }
+    if (have.indexOf('pathCheck_') < 0) { ScriptApp.newTrigger('pathCheck_').timeBased().everyDays(1).atHour(2).inTimezone(FD.TZ).create(); made.push('the nightly path check timer'); }
     if (have.indexOf('backupNightly') < 0) { ScriptApp.newTrigger('backupNightly').timeBased().everyDays(1).atHour(3).inTimezone(FD.TZ).create(); made.push('the nightly backup timer'); }
     if (made.length) triLog_('repair', { j: 'A timer was lost', s: 'S2', sig: 'timer-lost' }, 'made ' + made.join(' and ') + ' again', 'repaired');
   } catch (e) {}
@@ -5079,6 +5091,93 @@ function triDrain_() {
     if (took) sh.deleteRows(2, took);
     if (sh.getLastRow() > 201) sh.deleteRows(2, sh.getLastRow() - 201);
   } catch (e) {}
+}
+
+// ───────────────────────────── build 46 · the platform's failures and the nightly path check ─────────────────────────────
+const TRI_RPC_ = 'https://eyiqlyaridagclnbxhzy.supabase.co/rest/v1/rpc/', TRI_PATH_ = 'https://eyiqlyaridagclnbxhzy.supabase.co/functions/v1/path-check';
+/** Who a platform failure touches, from its job's own words. */
+const TRI_PWHO_ = [[/keep|story|words/i, 'the men writing and keeping their words'], [/sign|auth/i, 'everyone signing in'], [/week|player|chapter/i, 'the men opening a week'],
+  [/pay|checkout|stripe|charge/i, 'the people paying'], [/witness|invite|walk/i, 'a man inviting his witness'], [/release/i, 'our team']];
+/** One call to the log's read doors (event_open, event_week). null when the log is not set, did not answer or refused. */
+function triRpc_(name) {
+  try {
+    const c = triCfg_(); if (!c) return null;
+    const r = UrlFetchApp.fetch(TRI_RPC_ + name, { method: 'post', contentType: 'application/json', headers: { apikey: TRI_.KEY }, muteHttpExceptions: true, payload: JSON.stringify({ p_secret: c.secret }) });
+    if (r.getResponseCode() !== 200) return null;
+    const j = JSON.parse(r.getContentText());
+    return j && j.ok === true ? j : null;
+  } catch (e) { return null; }
+}
+function triHealth_() { try { return JSON.parse(PropertiesService.getScriptProperties().getProperty('fd:health') || '{}') || {}; } catch (e) { return {}; } }
+function triHealthSave_(h) { try { PropertiesService.getScriptProperties().setProperty('fd:health', JSON.stringify(h)); } catch (e) {} }
+/**
+ * The platform's open failures become Front Desk cards, one each (key fix:platform:<school>:<signature>), and a card whose failure has left the log closes as Proven.
+ * Runs on the 5-minute run at most every 25 minutes (force: now). If the log does not answer, nothing is opened or closed. Never throws.
+ */
+function triPull_(force) {
+  try {
+    const cache = CacheService.getScriptCache();
+    if (!force && cache.get('fd:tri:pull')) return;
+    cache.put('fd:tri:pull', '1', 1500);
+    const open = triRpc_('event_open'); if (!open) return;
+    const h = triHealth_(); h.mailed = h.mailed || {};
+    const live = {};
+    (open.rows || []).forEach(r => {
+      const sig = r.school + ':' + r.signature, key = 'fix:platform:' + sig; live[key] = 1;
+      const who = (TRI_PWHO_.find(t => t[0].test(r.job)) || [0, 'our team'])[1];
+      const x = { key: key, k: 'platform', j: r.job.replace(/^Path: /, 'Path check: '), who: who, s: r.severity || 'S2', note: String(r.note || '').slice(0, 300), n: r.count, l: r.last_at, f: r.at, src: /^path-check/.test(String(r.source).replace('platform:', '')) ? 'path-check' : 'platform', sig: sig };
+      const made = triCard_(x);
+      if (made === 'new' && x.s === 'S1' && !h.mailed[key]) { if (triMail_(x)) h.mailed[key] = new Date().toISOString(); }
+    });
+    // close what has left the log
+    const sh = SpreadsheetApp.openById(FD.SHEET_ID).getSheetByName('Actions'), H = headerIndex_(sh), data = sh.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      const k = String(data[i][H['key']] || '').trim();
+      if (k.indexOf('fix:platform:') !== 0 || String(data[i][H['status']]) !== 'open' || live[k]) continue;
+      sh.getRange(i + 1, H['status'] + 1).setValue('done'); sh.getRange(i + 1, H['done at'] + 1).setValue(new Date());
+      if (H['done by'] !== undefined) sh.getRange(i + 1, H['done by'] + 1).setValue(TRI_.LABEL);
+      if (H['closed how'] !== undefined) sh.getRange(i + 1, H['closed how'] + 1).setValue('Proven');
+      delete h.mailed[k];
+    }
+    const wk = triRpc_('event_week');
+    if (wk && wk.schools) { h.week = wk.schools; h.weekAt = new Date().toISOString(); }
+    triHealthSave_(h);
+  } catch (e) {}
+}
+/**
+ * The nightly walk of the five paths for every school row, one school at a time (the platform's path-check function writes each result to the log).
+ * A failure of this job itself goes through triage_ like any other. Then the cards are pulled at once. Run by hand any time.
+ */
+function pathCheck_() {
+  triGuard_('Nightly path check', 'pathcheck', function () {
+    const c = triCfg_(); if (!c) return;
+    const wk = triRpc_('event_week'); if (!wk || !wk.schools || !wk.schools.length) throw new Error('The school list could not be read: Service unavailable');
+    const h = triHealth_(); h.paths = { at: new Date().toISOString(), schools: {} };
+    wk.schools.forEach(s => {
+      const res = withRetry_(function () {
+        const r = UrlFetchApp.fetch(TRI_PATH_, { method: 'post', contentType: 'application/json', headers: { 'x-ap-secret': c.secret }, muteHttpExceptions: true, payload: JSON.stringify({ school: s.school }) });
+        if (r.getResponseCode() !== 200) throw new Error('The path check answered ' + r.getResponseCode() + ': Service unavailable');
+        return JSON.parse(r.getContentText());
+      }, 'Nightly path check');
+      const rows = (res && res.results) || [];
+      h.paths.schools[s.school] = [rows.filter(r => r.ok).length, rows.length];
+    });
+    triHealthSave_(h);
+    triPull_(true);
+  });
+}
+/** The Friday scorecard's line for each school: this week's failures by way, repairs, what was proven, what is open and how old, repeats, and last night's paths. Plain words, one line each. */
+function schoolHealth_() {
+  try {
+    const h = triHealth_(), paths = (h.paths && h.paths.schools) || {};
+    return (h.week || []).map(s => {
+      const p = paths[s.school];
+      return { school: s.school,
+        line: s.school + ': ' + (p ? p[0] + ' of ' + p[1] + ' paths passed last night' : 'paths not yet checked') + '; this week ' + s.waits + ' passing hiccup' + (s.waits === 1 ? '' : 's') + ' (silent), ' + s.repairs + ' repaired by itself, ' + s.needs_us + ' needed us, ' + s.proven + ' proven; '
+          + (s.open ? s.open + ' open' + (s.oldest_open_days >= 1 ? ', the oldest ' + s.oldest_open_days + ' day' + (s.oldest_open_days === 1 ? '' : 's') : '') : 'none open') + (s.repeat && s.repeat.length ? '; coming back: ' + s.repeat.join(', ') : ''),
+        pathsPassed: p ? p[0] : null, pathsChecked: p ? p[1] : null, waits: s.waits, repairs: s.repairs, needsUs: s.needs_us, proven: s.proven, open: s.open, oldestOpenDays: s.oldest_open_days, repeat: s.repeat || [] };
+    });
+  } catch (e) { return []; }
 }
 
 // ───────────────────────────── build 5 · the desk on the site ─────────────────────────────
