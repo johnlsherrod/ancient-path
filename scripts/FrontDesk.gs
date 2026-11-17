@@ -1,9 +1,9 @@
 /**
  * Ancient Path — Front Desk · build 46 · Triage 1, the platform and the nightly path check (Nov 17, 2026; John: "Every Needs us failure is one Front Desk card", "A nightly per-school path check", "a per-school line on the Friday scorecard"). Built on build 45.
  *   1. triPull_ (on the 5-minute run, at most every 25 minutes) reads the platform's open failures from the event log (public.event_open) and keeps one Actions card for each (key fix:platform:<school>:<signature>, rule R26). It closes a card as Proven when its failure is gone from the log. S1 sends one plain email, once. If the log does not answer, nothing is opened or closed.
- *   2. pathCheck_ (a daily timer near 2 AM Central, made again by triTimers_ if lost) asks the path-check function on the platform to walk the five paths (sign in, open the week, keep words, pay, invite a witness) for every school row, one school at a time, then pulls at once. A pass closes a failure; a failed path is one card.
+ *   2. pathCheck (a daily timer near 2 AM Central, made again by triTimers_ if lost) asks the path-check function on the platform to walk the five paths (sign in, open the week, keep words, pay, invite a witness) for every school row, one school at a time, then pulls at once. A pass closes a failure; a failed path is one card.
  *   3. The week's line for each school (failures by way, repairs, proven, open and how old, repeats, and last night's paths passed) is read from public.event_week into one Script Property, fd:health, and carried in the feed as schoolHealth for the Friday scorecard.
- *   4. FD.BUILD 46. Simplicity check: count: one daily timer, one Script Property (fd:health); no page, tab or connector; retires the platform's silent failures; when it breaks, pathCheck_ goes through triage_ like every job; next school: a row in public.school, nothing more.
+ *   4. FD.BUILD 46. Simplicity check: count: one daily timer, one Script Property (fd:health); no page, tab or connector; retires the platform's silent failures; when it breaks, pathCheck goes through triage_ like every job; next school: a row in public.school, nothing more.
  */
 /**
  * Ancient Path — Front Desk · build 45 · Triage 1 for every script (Nov 17, 2026; John: "Every script gets the triage", "Every Needs us failure is one Front Desk card"). Built on build 44.
@@ -5058,7 +5058,7 @@ function triTimers_() {
     cache.put('fd:tri:timers', '1', 3600);
     const have = ScriptApp.getProjectTriggers().map(t => t.getHandlerFunction()), made = [];
     if (have.indexOf('sendRoomReminder') < 0) { ScriptApp.newTrigger('sendRoomReminder').timeBased().everyDays(1).atHour(REMINDER_HOUR_).nearMinute(0).inTimezone(FD.TZ).create(); made.push('the room reminder timer'); }
-    if (have.indexOf('pathCheck_') < 0) { ScriptApp.newTrigger('pathCheck_').timeBased().everyDays(1).atHour(2).inTimezone(FD.TZ).create(); made.push('the nightly path check timer'); }
+    if (have.indexOf('pathCheck') < 0) { ScriptApp.newTrigger('pathCheck').timeBased().everyDays(1).atHour(2).inTimezone(FD.TZ).create(); made.push('the nightly path check timer'); }
     if (have.indexOf('backupNightly') < 0) { ScriptApp.newTrigger('backupNightly').timeBased().everyDays(1).atHour(3).inTimezone(FD.TZ).create(); made.push('the nightly backup timer'); }
     if (made.length) triLog_('repair', { j: 'A timer was lost', s: 'S2', sig: 'timer-lost' }, 'made ' + made.join(' and ') + ' again', 'repaired');
   } catch (e) {}
@@ -5148,7 +5148,7 @@ function triPull_(force) {
  * The nightly walk of the five paths for every school row, one school at a time (the platform's path-check function writes each result to the log).
  * A failure of this job itself goes through triage_ like any other. Then the cards are pulled at once. Run by hand any time.
  */
-function pathCheck_() {
+function pathCheck() {
   triGuard_('Nightly path check', 'pathcheck', function () {
     const c = triCfg_(); if (!c) return;
     const wk = triRpc_('event_week'); if (!wk || !wk.schools || !wk.schools.length) throw new Error('The school list could not be read: Service unavailable');
