@@ -2,7 +2,7 @@
  * Ancient Path — Front Desk · build 48 · The One-Press Card and a fast desk (Nov 18, 2026; board 38, ruled Nov 18). Built on the live build 47, so everything in 47 is kept.
  *   A. Every open card draws a press: Release now · Hold it (hold cards), Send (wait-list welcome), Have Claude do it (a writing box to the To Claude tab; the card waits, closes on proof; the fallback for unknown kinds), Check it now with numbered steps (Google permission and Publisher cards); Off the site keeps Kept · Drop. A waiting row is never closed as Said done by the rebuild. pressCheck_ fails when a kind has no press.
  *   B. The voices card is titled with the names; Ask the Desk shows a card (Card 9 of 27) when words match a title, name or key (desk.js 41).
- *   C. desk.js is served with no sheet read; stampDeployed_ checks once per build per six hours; the desk answer is kept 60 seconds per person (gzip, chunked; a press or feed write starts a new generation); answers carry t (cached, ms); Actions rows closed over 30 days ago move to the Actions archive tab.
+ *   C. desk.js is served with no sheet read; stampDeployed_ checks once per build per six hours; the desk answer is kept per person for up to ten minutes (gzip, chunked; a press or feed write starts a new generation, so it is never older than the 5-minute feed, and the 5-minute run builds it ahead so the first open is a warm one); answers carry t (cached, ms); Actions rows closed over 30 days ago move to the Actions archive tab.
  *   FD.BUILD 48, DESK_BUILD 41, CSS_RULES 514. Simplicity: count +1 tab (Actions archive), To Claude tab created, no timer, page or connector; retires Kept · Drop as the catch-all and the per-call Config read; when it breaks a cache that fails is read fresh and a press that cannot write says so; next school: nothing more. Preflight: open rows read from the sheet, every kind has a press, the code parses.
  *
  * Ancient Path — Front Desk · build 47 · The Story Integrity line and the Service line (Nov 17, 2026; The Plan: integrity-6 "Story Integrity as the first line on the Front Desk" and health-4 "The Service line at the top of the Front Desk: one sentence per engine"; John: "go"). Built on build 46, the live script read through the Google Drive connector (byte for byte scripts/FrontDesk.gs).
@@ -716,6 +716,7 @@ function runBody_() {
   writeFeed_(ss, cfg, captured, cal, search, themes);
   claudeWatch_();
   PropertiesService.getScriptProperties().setProperty('lastRun', new Date().toISOString());
+  prewarmDesk_(); // build 48
 }
 
 /**
@@ -5664,9 +5665,16 @@ function dayStamp_() { return Utilities.formatDate(new Date(), FD.TZ, 'yyyy-MM-d
 // ---- the desk, by role ----
 // ---- build 48: the desk answer is kept for 60 seconds per person; any press (anything but a read) and every feed write starts a new generation, so a press is never shown stale ----
 const DESK_READ_ACTIONS_ = { desk: 1, ping: 1, ask: 1, answers: 1, notes_page: 1, text_plan: 1, ask_text: 1 };
-const DESK_CACHE_S_ = 60, DESK_CHUNK_ = 60000;
+const DESK_CACHE_S_ = 600, DESK_CHUNK_ = 60000;
 function deskGen_() { try { return CacheService.getScriptCache().get('fd:gen') || '0'; } catch (e) { return '0'; } }
 function deskGenBump_() { try { CacheService.getScriptCache().put('fd:gen', String(Date.now()), 21600); } catch (e) {} }
+/** build 48: after the feed is written, the run builds each admin's desk answer ahead (the same function a page call uses), so the first open is a warm one. Stops after 150 seconds; a failure here is silent, a page call then reads fresh. */
+function prewarmDesk_() {
+  const t0 = Date.now();
+  try {
+    people_().filter(p => p.role === 'admin').forEach(p => { if (Date.now() - t0 < 150000) { try { deskFor_(p); } catch (e) {} } });
+  } catch (e) {}
+}
 function cacheBigGet_(key) {
   try {
     const cc = CacheService.getScriptCache(), head = cc.get(key + ':n'); if (!head) return null;
