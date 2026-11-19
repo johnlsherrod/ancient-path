@@ -1,4 +1,13 @@
 /**
+ * 13.17.0 (Nov 19, 2026): Your Page, instant load. Sonnet build; John's measures of Nov 19 (the platform answers in 0.1-0.3 s, our calls set the speed).
+ *   1. One call. action "start" answers what Your Page used to ask for in four calls to two web apps: the road (what "road" answers), Our Group (what "road_ours" answers, only for a man in a group), where each of his offered pieces stands (what the Testimony script's ?status= answers, read here from the same sheet, never the text or an email) and the band pictures. One round trip, one sign-in check, one sheet open. A part that fails comes back as its own empty part; the others still answer, so the page is never left blank by one failure.
+ *   2. Keep warm. keepWarm_ runs every 10 minutes (a time trigger this build installs once, by itself, on the first call: ensureBuild1317_). It opens the sheet and Config, reads the Testimony sheet, rebuilds any ready copy that has run out (the same copy "road" serves), and pings this web app's own address with ?warm=1, which answers at once. A time trigger cannot hold a Google web-app instance open; what it keeps ready is the data (a ready copy answers "road" without reading the sheet), and the ping asks Google to keep an instance near. The after-measure on a cold start says how much that bought.
+ *   3. road.js and row.js now come from the repo through jsDelivr (scripts/hisroad.js, scripts/row.js) and Your Page loads them with async. ?file=road.js and ?file=row.js stay here, unchanged, as the way back.
+ *   Stamps: SCRIPT_BUILD 13.17.0; ROAD_BUILD 11.15.2 (the data's build: the kept copies in men's browsers stay good); GROWTH_BUILD 4.5.2 and SCRIPT_LABEL unchanged. One Log line, "build 13.17", written once (ensureBuild1317_). Triage: keepWarm runs inside triGuard_ (AP-TRIAGE 1); a hiccup waits for the next run and stays silent.
+ *   Simplicity check. Scheduled tasks +1 (keep warm, 10 minutes; it replaces nothing), connectors, pages, docs, sheet tabs and Config rows unchanged. Moves to the platform as it is: startCall_ (one call for a page's whole first draw) and the ready copy. Rebuilt there: the Testimony read (it becomes a table read) and the self-ping (not needed once the platform serves from its own database).
+ *   Built for many schools: nothing here names a school; the Testimony sheet id is one constant beside the sheet it reads, and moves to the school's record when the platform replaces both.
+ */
+/**
  * 13.16.1 (Nov 16, 2026): a patch to road.js only, now 11.15.1: the Readings margins (John's finding on the live Readings page). Declarations only, no rule added or removed; nothing else in this script changed.
  * Ancient Path — Research reader · build 13.16 · Text Notices Build 2 (Nov 16, 2026; with Notices.gs N10 and road.js 11.15; John's "go on both", Nov 16, 2026: after a real notice text he found /start "generic and a little helpful", "Name it, direct me to it, focus the effort." Built on the live 13.15.5 read through the Google Drive connector, not on the repo copy.)
  *   1. Every notice names its card. Whatever lands a card and asks for the notice passes the card's key: a card from our team (its cid), a reading given this morning (g + a short hash of its entry id) and a word for the road (w + the same hash), twelve characters at most. roadNoticeGo_ takes the key (team_notice passes the earliest card still owed; the morning run uses the first card that landed today), sends it to Notices.gs op send as card, and puts it in the email's link: https://www.ancientpathcoaching.com/start?new=<card>. The notice's words are unchanged (a text word for word as registered; the reading email and the plain email as ap-notice-standard has them, with the link changed). The key is kept on the notice's own Road row (its entry id column) so the page can show the card he was told about.
@@ -1275,6 +1284,7 @@ var DESK_WEB_DEFAULT = 'https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3
 var EC = { id: 1, written: 2, source: 3, kind: 4, link: 5, claim: 6, question: 7, construct: 8, place: 9, audience: 10, text: 11, ours: 12, cost: 13, cut: 14, move: 15, status: 16, relBy: 17, relOn: 18, desk: 19, build: 20, quotes: 21, transcript: 22, deepened: 23, keywords: 24, road: 25, todo: 26, question2: 27, week: 28, act: 29, pick: 30, gp: 31 };
 
 function doGet(e) {
+  if (e && e.parameter && e.parameter.warm) return jsonOut_({ ok: true, warm: true }); // build 13.17: the keep-warm ping answers at once, before anything is read
   stampDeployed_(); // build 13.1: every web-app call; writes only when the Config row is missing or differs
   var p = (e && e.parameter) || {};
   if (p.file === 'growth.js') return ContentService.createTextOutput(GROWTH_JS).setMimeType(ContentService.MimeType.JAVASCRIPT);
@@ -1317,17 +1327,118 @@ function doPost(e) {
   return jsonOut_(growthCall_(body));
 }
 
+/* ═══════════ build 13.17 · Your Page, instant load ═══════════
+ * One call for the first draw (start), a ten-minute keep-warm, and the Testimony status read from here. See the header note. */
+var TESTIMONY_SHEET_ID = '1zCPZWvigUFXM4jda6UufCBdud39tGnPy0HunEnlEHUA'; // "Testimony Offered (Responses)", the sheet the Testimony script's ?status= reads
+var TESTIMONY_COL = { ts: 1, title: 4, from: 5, rid: 10, decision: 11, who: 14, unit: 15 }; // the same columns as review-code.gs COL (1-based)
+var WARM_BUDGET_MS = 70000, WARM_MAX = 40;
+/** The hash the page makes from a man's site id (sha-256 of "ap:" + id, lowercase hex): the same string Your Page and the Testimony script use. */
+function whoHash_(lwid) {
+  var id = String(lwid || '').trim(); if (!id) return '';
+  var d = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, 'ap:' + id, Utilities.Charset.UTF_8), h = '';
+  for (var i = 0; i < d.length; i++) h += ('0' + (d[i] & 0xff).toString(16)).slice(-2);
+  return h;
+}
+function testimonyState_(decision) {
+  var d = String(decision || '').toLowerCase();
+  if (!d || d === 'held') return 'offered';
+  if (d === 'approved') return 'published';
+  if (d === 'taken down') return 'taken down';
+  return 'kept';
+}
+/** Where each of one man's pieces stands: {pieces:[{rid, unit, title, from, state, read, at}]}, newest row per unit. Never the text, never an email. Kept 45 seconds so a double ask reads the sheet once. */
+function testimonyStatus_(who) {
+  who = String(who || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 80);
+  if (who.length < 8) return { ok: true, pieces: [] };
+  var cache = CacheService.getScriptCache(), ck = 'tst:' + who, hit = cache.get(ck);
+  if (hit) { try { return JSON.parse(hit); } catch (e) {} }
+  var sh = SpreadsheetApp.openById(TESTIMONY_SHEET_ID).getSheets()[0], n = sh.getLastRow(), byUnit = {}, order = [];
+  var C = TESTIMONY_COL, data = n > 1 ? sh.getRange(2, 1, n - 1, C.unit).getValues() : [];
+  for (var i = 0; i < data.length; i++) {
+    var r = data[i];
+    if (String(r[C.who - 1]) !== who) continue;
+    var unit = String(r[C.unit - 1] || ''); if (!unit) continue;
+    var dec = String(r[C.decision - 1] || '');
+    var at = ''; try { at = r[C.ts - 1] ? new Date(r[C.ts - 1]).toISOString() : ''; } catch (xd) {}
+    if (!byUnit[unit]) order.push(unit);
+    byUnit[unit] = { rid: String(r[C.rid - 1] || ''), unit: unit, title: String(r[C.title - 1] || ''), from: String(r[C.from - 1] || ''), state: testimonyState_(dec), read: dec.toLowerCase() === 'declined', at: at };
+  }
+  var out = { ok: true, pieces: order.map(function (u) { return byUnit[u]; }) };
+  try { cache.put(ck, JSON.stringify(out), 45); } catch (xc) {}
+  return out;
+}
+/** The band pictures (Config "band picture page" / "band picture desk"), cached five minutes with row.js's own cache. */
+function rowPics_() {
+  var pics = null;
+  try { var c = CacheService.getScriptCache().get('bandpics'); if (c) pics = JSON.parse(c); } catch (e) {}
+  if (!pics) {
+    pics = { page: '', desk: '' };
+    try { var cfg = readConfig_(SpreadsheetApp.openById(RE_SHEET_ID)); pics = { page: String(cfg['band picture page'] || '').trim(), desk: String(cfg['band picture desk'] || '').trim() }; } catch (e2) {}
+    try { CacheService.getScriptCache().put('bandpics', JSON.stringify(pics), 300); } catch (e3) {}
+  }
+  return pics;
+}
+/** The one call for Your Page's first draw. Each part answers or comes back empty on its own; ok is always true so the page never blanks on one part. */
+function startCall_(b) {
+  var t0 = Date.now(), base = { email: b.email, lwid: b.lwid, name: b.name }, out = { ok: true, build: SCRIPT_BUILD, road: null, ours: null, status: null, pics: null, ms: {} };
+  function part(k, fn) { var t = Date.now(); try { out[k] = fn(); } catch (e) { out[k] = null; if (e instanceof Error) { try { triage_('Your Page start: ' + k, e); } catch (xt) {} } } out.ms[k] = Date.now() - t; }
+  part('road', function () { return roadCall_(Object.assign({}, base, { action: 'road' })); });
+  part('ours', function () {
+    var r = out.road, inGroup = !!(r && r.ok && r.v11 && r.v11.inGroup);
+    return inGroup ? roadCall_(Object.assign({}, base, { action: 'road_ours' })) : null;
+  });
+  part('status', function () { return testimonyStatus_(String(b.who || '').trim() || whoHash_(b.lwid)); });
+  part('pics', rowPics_);
+  out.ms.all = Date.now() - t0;
+  return out;
+}
+/** Every ten minutes: the sheet and Config stay hot, the Testimony sheet is read, a ready copy that ran out is rebuilt, and this web app's own address is pinged. */
+function keepWarm() { return triGuard_('Keep warm', 'warm', keepWarm_); }
+function keepWarm_() {
+  var started = Date.now(), ss = SpreadsheetApp.openById(RE_SHEET_ID), cfg = readConfig_(ss), nR = 0, nSeen = 0;
+  try { SpreadsheetApp.openById(TESTIMONY_SHEET_ID).getSheets()[0].getLastRow(); } catch (e1) {}
+  try { rowPics_(); } catch (e2) {}
+  try {
+    var props = PropertiesService.getScriptProperties(), all = learners_(ss).filter(function (L) { return L.status === 'open' || L.status === 'complete'; });
+    var from = Number(props.getProperty('warmAt')) || 0, i, L;
+    if (from >= all.length) from = 0;
+    for (i = 0; i < all.length && nSeen < WARM_MAX; i++) {
+      if (Date.now() - started > WARM_BUDGET_MS) break;
+      L = all[(from + i) % all.length]; nSeen++;
+      if (!L.lwid || readyGet_(roadReadyKey_({ email: L.email }))) continue; // a man with no bound id never gets a ready copy; one still good is left alone
+      try { var out = roadFor_(ss, cfg, L, false); L.seenBefore = L.lastSeen; if (out && out.ok) { out.pics = coursePics_(cfg); roadReadyPut_({ email: L.email, lwid: L.lwid }, L, out); nR++; } } catch (e3) {}
+    }
+    props.setProperty('warmAt', String((from + nSeen) % Math.max(all.length, 1)));
+  } catch (e4) {}
+  try { var u = ScriptApp.getService().getUrl(); if (u) UrlFetchApp.fetch(u + '?warm=1', { muteHttpExceptions: true, followRedirects: true }); } catch (e5) {}
+  return { copies: nR, looked: nSeen, ms: Date.now() - started };
+}
+/** Installs the ten-minute timer once; a second call finds it and does nothing. */
+function installKeepWarm_() {
+  var have = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'keepWarm'; });
+  if (!have) ScriptApp.newTrigger('keepWarm').timeBased().everyMinutes(10).create();
+  return !have;
+}
+function ensureBuild1317_(ss) {
+  var props = PropertiesService.getScriptProperties();
+  if (props.getProperty('b1317') === '1') return;
+  var made = installKeepWarm_();
+  log_(ss, 'build 13.17', SCRIPT_LABEL + ' · Research reader 13.17 + hisroad.js 11.16 + row.js 3.2 · Your Page, instant load: one start call for the road, Our Group, his pieces and the band pictures; the scripts come from the repo; keep-warm every 10 minutes (' + (made ? 'timer made' : 'timer already there') + ').');
+  props.setProperty('b1317', '1');
+}
+
 function jsonOut_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
 function growthCall_(b) {
   try {
     var action = String(b.action || '');
-    if (action === 'ping') { try { ensureBuild12_(SpreadsheetApp.openById(RE_SHEET_ID)); } catch (xb) {} var pk = claudeKey_(); return { ok: true, build: RE_BUILD, script: SCRIPT_BUILD, label: SCRIPT_LABEL, growth: GROWTH_BUILD, road: ROAD_BUILD, keySet: !!pk, keyKind: pk ? pk.split('-').slice(0, 3).join('-') : '' }; }
+    if (action === 'ping') { try { ensureBuild12_(SpreadsheetApp.openById(RE_SHEET_ID)); } catch (xb) {} try { ensureBuild1317_(SpreadsheetApp.openById(RE_SHEET_ID)); } catch (xw) {} var kw = false; try { kw = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'keepWarm'; }); } catch (xk) {} var pk = claudeKey_(); return { ok: true, build: RE_BUILD, script: SCRIPT_BUILD, label: SCRIPT_LABEL, growth: GROWTH_BUILD, road: ROAD_BUILD, keepWarm: kw, keySet: !!pk, keyKind: pk ? pk.split('-').slice(0, 3).join('-') : '' }; }
     if (action === 'week_lines') return weekLines_(b); // build 12.6: read only, keyed
     if (action === 'team_card') return teamCard_(b); // build 13.9, 13.13 (Text Him 2.0): lands the card and answers with the plan at once; keyed
     if (action === 'team_plan') return teamPlan_(b); // build 13.13: how he will be told, read only; keyed
     if (action === 'team_notice') return teamNotice_(b); // build 13.13: the owed notice, sent on its own call; keyed
     if (action === 'team_undo') return teamUndo_(b); // build 13.13: the card comes off for ten minutes; keyed
+    if (action === 'start') return startCall_(b); // build 13.17: the road, Our Group, his pieces' standing and the band pictures in one call
     if (action.indexOf('road') === 0) return roadCall_(b);
     var base = whoIs_(b.key, b.site), who = teamRoom_(base); who.own = !!base.room; // 4.0.3: the key opens only for the person the site shows; 12.2: own = a room of his own on People
     if (action === 'growth') return growthCached_(who);
@@ -2457,6 +2568,7 @@ function roadCallInner_(b) {
   try { ensureBuild13154_(ss); } catch (xe13154) {} // build 13.15.4: one Log line, once
   try { ensureBuild13155_(ss); } catch (xe13155) {} // build 13.15.5: one Log line, once
   try { ensureBuild1316_(ss); } catch (xe1316) {} // build 13.16: one Log line, once
+  try { ensureBuild1317_(ss); } catch (xe1317) {} // build 13.17: the keep-warm timer, one Log line, once
   try { ensureBuild111_(ss); } catch (xe7) {} // build 11.1: the Witness pages and Notes tabs, the Config email: lines, the hourly trigger, one Log line, once
   var L;
   try { L = learnerFor_(ss, cfg, b); }
@@ -5373,7 +5485,7 @@ var ROAD_JS = "/* AP-HISROAD road.js build 11.15.2 (Nov 16, 2026; John: the Read
  * what the room carried, The Shelf, Who We Read, his Craft and his lanes. New Answers kinds: after, less, voice, setaside, team, notice (Answers columns: when, who, entry id, kind, text, answer, room, build).
  * A Lanes tab (the twelve lanes of the mockup) and the Config lines are made once by ensureBuild12_. The 6:00 PM release (releaseTick) is switched by Config "auto release" (off until the hold is proven on the Front Desk).
  * Hold cards: research:hold:<entry id> on the Front Desk's Actions tab (rule RE15); a card marked done by hand is a hold. */
-var SCRIPT_BUILD = '13.16.2';
+var SCRIPT_BUILD = '13.17.0';
 var SCRIPT_LABEL = 'Text Notices Build 2'; // the one label stamped in every file of the build (Notices.gs N8, Front Desk 39, this script, desk.js 38; road.js stays 11.14), in the Log and in the repo commit
 var LANES_HEAD_12 = ['lane', 'what it covers', 'voices', 'Sources disciplines folded in', 'added'];
 var LANES_12 = [
