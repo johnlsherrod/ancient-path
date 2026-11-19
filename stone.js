@@ -1,5 +1,7 @@
 /* ==========================================================================
-   AP-STONE-v2.9 (5 Oct 2026) — the stone, kept whole.
+   AP-STONE-v2.9.1 (19 Nov 2026) — the stone, kept whole.
+
+   v2.9.1 — Your Page, instant load: the standing of a man's stones is read from Your Page's one start call when the page holds it (window.apStartStatus), so the Testimony sheet is asked once, not twice. With no such call (any other page, or the call failed) it asks as before. Nothing else changed.
 
    v2.9 — nothing added to the biblical text (John, Oct 5: "we don't know the stones stood in a ring"). The return's
      ground line said the LORD "stood in the midst of them"; Joshua 4 does not say it. It now says "the LORD was with
@@ -363,17 +365,23 @@
       .then(function () { return update(st.id, function (s) { s.rid = ""; s.shown = ""; return s; }); });
   }
   /* where each of his stones stands with the sheet: { "<stone id>": "offered" | "published" | "taken down" | "kept" } */
+  function stoneStates(j) {
+    var m = {};
+    ((j && j.pieces) || []).forEach(function (p) { if (p && p.unit && /^stone/.test(p.unit)) { m[p.unit] = { state: p.state || "kept", rid: p.rid || "" }; } });
+    return m;
+  }
   function status() {
     if (!CFG || !CFG.script) { return window.Promise.resolve({}); }
-    return whoAmI().then(function (who) {
-      if (!who) { return {}; }
-      return window.fetch(CFG.script + "?status=" + encodeURIComponent(who), { credentials: "omit", cache: "no-store" })
-        .then(function (r) { return r.json(); })
-        .then(function (j) {
-          var m = {};
-          ((j && j.pieces) || []).forEach(function (p) { if (p && p.unit && /^stone/.test(p.unit)) { m[p.unit] = { state: p.state || "kept", rid: p.rid || "" }; } });
-          return m;
-        }).catch(function () { return {}; });
+    /* v2.9.1: Your Page asks once for everything (window.apStartStatus, the answer's status part, or null); when it holds the answer this does not ask again */
+    var shared = window.apStartStatus && typeof window.apStartStatus.then === "function" ? window.apStartStatus : null;
+    return (shared ? shared.then(function (j) { return j && j.pieces ? j : null; }, function () { return null; }) : window.Promise.resolve(null)).then(function (j) {
+      if (j) { return stoneStates(j); }
+      return whoAmI().then(function (who) {
+        if (!who) { return {}; }
+        return window.fetch(CFG.script + "?status=" + encodeURIComponent(who), { credentials: "omit", cache: "no-store" })
+          .then(function (r) { return r.json(); })
+          .then(stoneStates).catch(function () { return {}; });
+      });
     });
   }
 
@@ -582,7 +590,7 @@
   }
 
   window.APStone = {
-    version: "2.9",
+    version: "2.9.1",
     config: function (c) { CFG = c || null; return cfgOk(); },
     configured: cfgOk,
     set: set,
