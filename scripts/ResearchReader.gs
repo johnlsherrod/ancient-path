@@ -1,4 +1,7 @@
 /**
+ * 13.17.1 (Nov 19, 2026): the one start call no longer reads Our Group. Measured on the live 13.17.0 as the test learner (a group man): the road read 60-160 ms, the Testimony status 30 ms, the pictures 20 ms, and Our Group 6.8-7.5 s, so the one call took 10-12 s and the page waited for it. Now: the call carries Our Group only from a copy kept ready (at most 25 minutes old) and otherwise leaves it out, and the page asks for it alone after the first draw (hisroad.js did that already for a call without it); a road_ours call on its own stores the copy; keepWarm_ keeps it ready every ten minutes for every man in a group (the entries are read once for all of them). SCRIPT_BUILD 13.17.1; everything else is 13.17.0.
+ */
+/**
  * 13.17.0 (Nov 19, 2026): Your Page, instant load. Sonnet build; John's measures of Nov 19 (the platform answers in 0.1-0.3 s, our calls set the speed).
  *   1. One call. action "start" answers what Your Page used to ask for in four calls to two web apps: the road (what "road" answers), Our Group (what "road_ours" answers, only for a man in a group), where each of his offered pieces stands (what the Testimony script's ?status= answers, read here from the same sheet, never the text or an email) and the band pictures. One round trip, one sign-in check, one sheet open. A part that fails comes back as its own empty part; the others still answer, so the page is never left blank by one failure.
  *   2. Keep warm. keepWarm_ runs every 10 minutes (a time trigger this build installs once, by itself, on the first call: ensureBuild1317_). It opens the sheet and Config, reads the Testimony sheet, rebuilds any ready copy that has run out (the same copy "road" serves), and pings this web app's own address with ?warm=1, which answers at once. A time trigger cannot hold a Google web-app instance open; what it keeps ready is the data (a ready copy answers "road" without reading the sheet), and the ping asks Google to keep an instance near. The after-measure on a cold start says how much that bought.
@@ -1378,14 +1381,23 @@ function rowPics_() {
   }
   return pics;
 }
+/** 13.17.1: Our Group (what his group did, saw and know) kept ready per man with the time it was read. The one start call serves it while it is fresh; the ten-minute keep-warm refreshes it for every man in a group; a road_ours call on its own refreshes it too. */
+var OURS_FRESH_MS = 25 * 60 * 1000, OURS_REFRESH_MS = 8 * 60 * 1000;
+function oursReadyKey_(email) { return readyKey_('o', email); }
+function oursReadyGet_(email, maxAgeMs) {
+  var h = readyGet_(oursReadyKey_(email));
+  return h && h.at && h.ours && (Date.now() - h.at) < maxAgeMs ? h.ours : null;
+}
+function oursReadyPut_(email, ours) { if (ours) readyPut_(oursReadyKey_(email), { at: Date.now(), ours: ours }); }
 /** The one call for Your Page's first draw. Each part answers or comes back empty on its own; ok is always true so the page never blanks on one part. */
 function startCall_(b) {
   var t0 = Date.now(), base = { email: b.email, lwid: b.lwid, name: b.name }, out = { ok: true, build: SCRIPT_BUILD, road: null, ours: null, status: null, pics: null, ms: {} };
   function part(k, fn) { var t = Date.now(); try { out[k] = fn(); } catch (e) { out[k] = null; if (e instanceof Error) { try { triage_('Your Page start: ' + k, e); } catch (xt) {} } } out.ms[k] = Date.now() - t; }
   part('road', function () { return roadCall_(Object.assign({}, base, { action: 'road' })); });
-  part('ours', function () {
+  part('ours', function () { // 13.17.1: Our Group takes about seven seconds to read, so the one call never reads it; it carries the copy kept warm (at most 25 minutes old) or nothing, and the page then asks for it alone without holding the first draw
     var r = out.road, inGroup = !!(r && r.ok && r.v11 && r.v11.inGroup);
-    return inGroup ? roadCall_(Object.assign({}, base, { action: 'road_ours' })) : null;
+    var c = inGroup ? oursReadyGet_(b.email, OURS_FRESH_MS) : null;
+    return c ? { ok: true, ours: c, kept: true } : null;
   });
   part('status', function () { return testimonyStatus_(String(b.who || '').trim() || whoHash_(b.lwid)); });
   part('pics', rowPics_);
@@ -1409,6 +1421,18 @@ function keepWarm_() {
       try { var out = roadFor_(ss, cfg, L, false); L.seenBefore = L.lastSeen; if (out && out.ok) { out.pics = coursePics_(cfg); roadReadyPut_({ email: L.email, lwid: L.lwid }, L, out); nR++; } } catch (e3) {}
     }
     props.setProperty('warmAt', String((from + nSeen) % Math.max(all.length, 1)));
+    // 13.17.1: Our Group is kept ready for every man in a group, every run, before the rotation above could reach him; the shared read of the entries is made once
+    var oBy = null, nO = 0;
+    for (i = 0; i < all.length; i++) {
+      L = all[i];
+      if (!L.room || !L.lwid || oursReadyGet_(L.email, OURS_REFRESH_MS)) continue;
+      if (Date.now() - started > WARM_BUDGET_MS - 15000) break;
+      try {
+        if (!oBy) { oBy = {}; entries_(ss).forEach(function (x) { oBy[x.id] = x; }); }
+        oursReadyPut_(L.email, ourHouseOut_(ss, cfg, L, roadWeek_(cfg, L), oBy)); nO++;
+      } catch (e6) {}
+    }
+    props.setProperty('warmOurs', String(nO));
   } catch (e4) {}
   try { var u = ScriptApp.getService().getUrl(); if (u) UrlFetchApp.fetch(u + '?warm=1', { muteHttpExceptions: true, followRedirects: true }); } catch (e5) {}
   return { copies: nR, looked: nSeen, ms: Date.now() - started };
@@ -2697,7 +2721,9 @@ function roadCallInner_(b) {
   }
   if (action === 'road_ours') { // build 11.0: Our House, read only (loaded when he opens it)
     var oWeek = roadWeek_(cfg, L), oAll = entries_(ss), oBy = {}; oAll.forEach(function (x) { oBy[x.id] = x; });
-    return { ok: true, ours: ourHouseOut_(ss, cfg, L, oWeek, oBy) };
+    var oOut = ourHouseOut_(ss, cfg, L, oWeek, oBy);
+    try { if (L.room) oursReadyPut_(L.email, oOut); } catch (xo) {} // 13.17.1: the next start call finds it ready
+    return { ok: true, ours: oOut };
   }
   if (action === 'road_newseen') { // build 13.16: the card a notice named has been shown to him; one row, and his ready copy is dropped so the next draw does not open it again
     var nsKey = cardKeyClean_(b.key); if (!nsKey) throw { code: 'ui' };
@@ -5485,7 +5511,7 @@ var ROAD_JS = "/* AP-HISROAD road.js build 11.15.2 (Nov 16, 2026; John: the Read
  * what the room carried, The Shelf, Who We Read, his Craft and his lanes. New Answers kinds: after, less, voice, setaside, team, notice (Answers columns: when, who, entry id, kind, text, answer, room, build).
  * A Lanes tab (the twelve lanes of the mockup) and the Config lines are made once by ensureBuild12_. The 6:00 PM release (releaseTick) is switched by Config "auto release" (off until the hold is proven on the Front Desk).
  * Hold cards: research:hold:<entry id> on the Front Desk's Actions tab (rule RE15); a card marked done by hand is a hold. */
-var SCRIPT_BUILD = '13.17.0';
+var SCRIPT_BUILD = '13.17.1';
 var SCRIPT_LABEL = 'Text Notices Build 2'; // the one label stamped in every file of the build (Notices.gs N8, Front Desk 39, this script, desk.js 38; road.js stays 11.14), in the Log and in the repo commit
 var LANES_HEAD_12 = ['lane', 'what it covers', 'voices', 'Sources disciplines folded in', 'added'];
 var LANES_12 = [
