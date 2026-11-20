@@ -1,4 +1,23 @@
 /**
+ * Ancient Path — Front Desk · CareNow.gs · build 52 (Nov 20, 2026, the morning build). Two things, on the same one-minute timer:
+ *   1. A Care · Now card stays on the desk. Build 51's sweep sends every card whose kind CHOICES_ does not know to Claude, and care: was not in
+ *      the table, so a Care · Now card would have left the desk as "Moved to Claude" within five minutes of going up. Code.gs 52 adds
+ *      care: CH_OWN_ (a person waiting is our team's work, never Claude's); this file is unchanged for Care · Now.
+ *   2. A raised hand reaches our team as a waiting person (support-7 H1.1). The platform no longer writes a hand to the event log as a
+ *      failure (it became a "fix" card, "S2: a feature is broken", swept to Claude). Every minute, careHands_ reads open hands through
+ *      public.help_hands_open (the same secret), puts one card at the top of the Actions tab (key care:hand:<hand>, rule R32, owner John):
+ *      "Join <first name and last initial> on a call", with the page it came from and the link to Our Team on that school's address; no text
+ *      goes. The card comes down by itself (status done, closed how Proven or Lapsed) when the hand is answered, lowered, or two hours old,
+ *      and the platform is told each time (help_hand_carded), so a hand is never carded twice.
+ *   Install: open the Front Desk project, CareNow.gs, select all, paste this file, save. No setup run and no new deployment: the timer runs
+ *   the saved code. Code.gs 52 is pasted the same sitting (its one change is the care: line in CHOICES_).
+ *   Preflight: both new doors proven on the live database Nov 20 (checks/who-sees-help-desk.sql, 18 of 18 in a trial that kept nothing);
+ *   careNowPull_ run against stand-ins (checks/frontdesk/care-now.test.js), and every key this file writes read through Code.gs's own
+ *   claudeOwn_ (never swept) and choicesFor_ (a known kind).
+ *   Simplicity: no timer, tab, page or connector added; retires the hand's "fix" card. Next school: nothing more (the link is the hand's
+ *   own school's address).
+ */
+/**
  * Ancient Path — Front Desk · CareNow.gs · build 50 (desk-6, Nov 19, 2026). John, Nov 19: "text to jason and john for now. we want to be able to set a call tree like
  * function for care now." One file beside Code.gs and Notices.gs in the Front Desk project; Code.gs is not changed.
  *   Every minute, careNow reads the platform's Care · Now taps (public.care_now_open, behind the event log's secret this project already holds as tri:secret).
@@ -68,6 +87,7 @@ function careNowPull1_(c) {
     if (r.getResponseCode() !== 200) return null;
     const j = JSON.parse(r.getContentText()); return j && j.ok === true ? j : null;
   };
+  try { careHands_(call); } catch (e) { try { alert_('Raised hands could not be read from the platform: ' + e + '\n' + (e.stack || '')); } catch (x) {} }
   const open = call('care_now_open'); if (!open || !(open.rows || []).length) return;
   const nums = careNumbers_();
   const sh = SpreadsheetApp.openById(FD.SHEET_ID).getSheetByName('Actions'), H = headerIndex_(sh);
@@ -88,4 +108,50 @@ function careNowPull1_(c) {
     }
     call('care_now_done', { p_id: t.id, p_texted: sent, p_note: has ? 'card already up' : ('card up; ' + sent + ' of ' + nums.length + ' texts') });
   });
+}
+
+/** A page a hand was raised from, in plain words: "menu" → "the menu", "this-week" → "This Week". */
+function careHandPlace_(p) {
+  const w = String(p || 'page').replace(/-/g, ' ').trim();
+  const named = { menu: 'the menu', room: 'the room', page: 'a page', lesson: 'the lesson', 'this week': 'This Week', story: 'Story', settings: 'Settings' };
+  return named[w] || w;
+}
+/**
+ * Every raised hand the platform holds: an open hand gets one card at the top of the Actions tab for our team; a hand that was answered, lowered
+ * or is two hours old has its card taken down. The platform is told each time (help_hand_carded), and a card the sheet would not take is tried
+ * again the next minute (nothing is marked). No text goes: a hand asks for a call when our team can, Care · Now is the line that texts.
+ */
+function careHands_(call) {
+  const got = call('help_hands_open'); if (!got) return;
+  const up = got.up || [], down = got.down || [];
+  if (!up.length && !down.length) return;
+  const sh = SpreadsheetApp.openById(FD.SHEET_ID).getSheetByName('Actions'), H = headerIndex_(sh);
+  up.forEach(x => {
+    const key = 'care:hand:' + x.id, data = sh.getDataRange().getValues();
+    let has = false; for (let i = 1; i < data.length; i++) if (String(data[i][H['key']] || '').trim() === key) { has = true; break; }
+    if (!has) {
+      const row = actionsBlankRow_(sh), who = String(x.who || 'A person');
+      row[H['key']] = key; row[H['first seen']] = new Date(); row[H['owner']] = 'John';
+      row[H['do this']] = 'Join ' + who + ' on a call: they raised a hand for help at ' + careWhen_(x.at) + ' Central, from ' + careHandPlace_(x.place) + '. Open Our Team and press Join them.';
+      row[H['for']] = 'Help Together';
+      row[H['because']] = 'A person asked our team for help on a call (I need a hand' + (x.school ? ', ' + x.school : '') + '). Nothing is recorded and the hand holds no words. This card comes down by itself when someone joins them, when they lower the hand, or after two hours.';
+      row[H['link']] = String(x.link || TRI_.DESK); row[H['status']] = 'open'; row[H['mark done by hand']] = false; row[H['rule']] = 'R32';
+      sh.insertRowBefore(2); sh.getRange(2, 1, 1, row.length).setValues([row]);
+    }
+    call('help_hand_carded', { p_id: x.id, p_state: 'up' });
+  });
+  if (down.length) {
+    const data = sh.getDataRange().getValues();
+    down.forEach(x => {
+      const key = 'care:hand:' + x.id;
+      for (let i = 1; i < data.length; i++) {
+        if (String(data[i][H['key']] || '').trim() !== key || String(data[i][H['status']]) !== 'open') continue;
+        sh.getRange(i + 1, H['status'] + 1).setValue('done');
+        sh.getRange(i + 1, H['done at'] + 1).setValue(new Date());
+        if (H['done by'] !== undefined) sh.getRange(i + 1, H['done by'] + 1).setValue(x.how === 'answered' ? String(x.by || 'our team') : 'The desk');
+        if (H['closed how'] !== undefined) sh.getRange(i + 1, H['closed how'] + 1).setValue(x.how === 'lapsed' ? 'Lapsed' : 'Proven');
+      }
+      call('help_hand_carded', { p_id: x.id, p_state: x.how });
+    });
+  }
 }

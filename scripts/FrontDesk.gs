@@ -1,4 +1,11 @@
 /**
+ * Ancient Path — Front Desk · build 52 · A person waiting stays on the desk (Nov 20, 2026, the morning build). Built on the live build 51 read through the Google Drive connector (project saved Nov 19, 5:24 PM Central), so everything in 51 is kept.
+ *   1. care: is a kind CHOICES_ knows (CH_OWN_). Build 51's sweep sends a card whose kind the table does not know to Claude ("A kind of card the desk does not know"), and care: was missing, so a Care · Now card (care:now:<tap>, CareNow.gs) would have left the desk as Moved to Claude on the next 5-minute run. No Care · Now card had gone up yet, so none was lost. The same kind carries a raised hand (care:hand:<hand>, CareNow.gs 52).
+ *   FD.BUILD 52, DESK_BUILD 44 (desk.js unchanged), CSS_RULES 523 (no stylesheet rule added). The one line is the only change to this file.
+ *   Simplicity check: count: no tab, timer, page, connector or Script Property added; retires nothing; when it breaks, a card of an unknown kind still goes to Claude to sort, and checks/frontdesk/care-now.test.js now fails any key CareNow.gs writes that the table does not know; next school: nothing more.
+ *   Preflight: the live project was read (Code.gs build 51, CareNow.gs 50); the file parses; every key CareNow.gs writes was run through this file's claudeOwn_ and choicesFor_.
+ */
+/**
  * Ancient Path — Front Desk · build 51 · Every Card Carries Its Choices (Nov 19, 2026; John: "This isn't working."). Built on the live build 50.1 (project last saved 1:05 PM Central; the repo copy committed 4:00 PM is the same build), so everything in 50.1 is kept.
  *   1. One table, CHOICES_, read through choicesFor_(kind, key), says how every kind of card gets its buttons: "own" (the desk carries the work itself: Send, Approve, Publish, File, Reach out, Match, Bring it, Kept · Set aside), "ruling" (Ruled · Change it · Not now), "pick" (one press for each option) or "claude" (Claude's own work, never on a desk). Every writer of an Actions row writes the table's cell into the choices column (rebuild, styling, triage, call, move, team note), and every 5-minute run fills the cell on any open row that has none (fillChoices_), so no open row is left without one. A kind with no entry fails the build: checkChoices51_ (run from the editor; it also runs every 5 minutes and alerts) names the kind, and a card of a kind the table does not know goes to Claude to sort, never to a person with a button.
  *   2. The desk sweep (Nov 18 rule, only John's judgment or authority earns a card): every fix: card except a permission only a person can allow, every bug:, every styling:, the retired post: and refresh: kinds and the note:john:answers-stick test card go to the To Claude tab once and close as Moved to Claude. The sweep now runs before the feed is written, so a swept card is gone on the same run.
@@ -627,7 +634,7 @@
  */
 
 const FD = {
-  BUILD: '51',
+  BUILD: '52',
   OWN: [{ email: 'john@ancientpathcoaching.com', name: 'John Sherrod' }, { email: 'johnsherrodtest@gmail.com', name: 'John Sherrod' }], // build 39: our own addresses, which an admin may press Text him on (isOurs_ keeps them off the Roster and out of every count)
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SIGNALS_SHEET_ID: '1s79xljKjt-sYCZin0-oRFp5swxcETS0a4gzr126_Dns',
@@ -10065,6 +10072,8 @@ const CHOICES_ = {
   hisroad: CH_OWN_, textreply: CH_OWN_,
   // work a person does off the site, which the desk cannot see: Kept · Set aside
   fu: CH_OWN_, prom: CH_OWN_, call: CH_OWN_, hand: CH_OWN_, school: CH_OWN_, witness: CH_OWN_, keys: CH_OWN_,
+  // build 52: a person waiting on our team right now (care:now:<tap> from Care · Now, care:hand:<hand> from Help Together, both written by CareNow.gs): never Claude's
+  care: CH_OWN_,
   // a decision with no act of its own on the desk: the choice buttons
   wil: CH_RULING_, design: CH_RULING_, triage: CH_RULING_,
   // Claude's own work: never a card. A permission only a person can allow stays; a plan date is a decision (Move · Keep); the rest of a plan is Claude's.
