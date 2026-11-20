@@ -1,5 +1,5 @@
 /**
- * Ancient Path — Front Desk · CareNow.gs · build 50 (desk-6, Nov 19, 2026). John, Nov 19: "text to jason and john for now. we want to be able to set a call tree like
+ * Ancient Path — Front Desk · CareNow.gs · build 50.1 (Witness 6, Nov 20, 2026; built on the live build 50 read through the Google Drive connector, so everything in 50 is kept). The one change: careNow also calls platformTexts() (PlatformTexts.gs PT1) each minute, after Care · Now, in its own try, so the platform's text outbox rides this one timer and neither can stop the other. Build 50 (desk-6, Nov 19, 2026). John, Nov 19: "text to jason and john for now. we want to be able to set a call tree like
  * function for care now." One file beside Code.gs and Notices.gs in the Front Desk project; Code.gs is not changed.
  *   Every minute, careNow reads the platform's Care · Now taps (public.care_now_open, behind the event log's secret this project already holds as tri:secret).
  *   For each: one card at the top of the Actions tab (key care:now:<tap>, rule R31, owner John; it stays open until marked done by hand), a text to each number
@@ -22,6 +22,7 @@ function careNowSetup() {
 /** The timer's job. Never throws: a failure reaches John through the Front Desk's own alert. */
 function careNow() {
   try { careNowPull_(); } catch (e) { try { alert_('Care · Now could not be read from the platform: ' + e + '\n' + (e.stack || '')); } catch (x) {} }
+  try { if (typeof platformTexts === 'function') platformTexts(); } catch (e) {}   // 50.1: the platform's text outbox (PlatformTexts.gs); it alerts for itself
 }
 
 /** The numbers in the Config row "care now numbers", as +1XXXXXXXXXX (a US number of ten digits, or eleven starting with 1). */
