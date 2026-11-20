@@ -1,4 +1,11 @@
 /**
+ * Ancient Path — Front Desk · Notices.gs · build N13 · Witness 6 (Nov 20, 2026; built on the live N12 (Replies Go Out By API), read through the Google Drive connector, so everything in N12 is kept).
+ * One line changes: the address a witness's weekly text may carry is his page on the platform, https://app.ancientpathcoaching.com/#/desk (or #/desk/<id>), and nothing else.
+ * The old tokened /witness?k= address retires with the Research reader's witness page. No new text, no new kind, no new tab: the registered witness texts are unchanged word for word.
+ * Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged. Retires: the tokened witness address. When it breaks: a weekly text with any other address is refused ('no usable page address') and the platform sends that one page by email.
+ * Moves to the platform as it is: the rule. Counts taken: the file parses (new Function over the whole file); the diff from N12 is BUILD, the WITNESS_LINK pattern and the doc line of noticeWitnessLink_ only.
+ */
+/**
  * Ancient Path — Front Desk · Notices.gs · build N12 · Replies Go Out By API (Nov 16, 2026; with Research reader 13.16 unchanged; John's second test text, 11:45 AM, reached the desk but got no answer; built on the live N11, so everything in N11 is kept).
  * What was wrong: an Apps Script web app answers a POST with a redirect. Twilio follows it with a second POST that the redirect's address refuses (405 Method Not Allowed, Twilio error 11200), so Twilio never read the answer we wrote for it: the reply row and the card were written, and no text went back. The status calls got the same 405 and still reached us.
  * 1. A reply to a text now goes out through Twilio's own sending call (noticeReply_), at once and at any hour, from the notices Messaging Service: the HELP text, and the once-a-day answer to anything else. The doc's answer to Twilio is empty. The sent text's id is logged on the Texts tab, so its delivery shows there like every other text; a send that fails is logged and does not use up the day's one answer.
@@ -92,7 +99,7 @@
  */
 
 const NOTICE = {
-  BUILD: 'N12',
+  BUILD: 'N13',
   LABEL: 'Text Notices Build 2',
   SENDER: '+14695575502',
   SENDER_SHOWN: '(469) 557-5502',
@@ -117,7 +124,7 @@ const NOTICE = {
     TextOptIn: ['email', 'phone', 'text me', 'changed', 'by', 'stopped by reply']
   },
   KINDS: ['confirm', 'wconfirm', 'wweekly'],  // anything else is a notice
-  WITNESS_LINK: /^https:\/\/www\.ancientpathcoaching\.com\/witness\?k=[A-Za-z0-9]{32,128}$/,
+  WITNESS_LINK: /^https:\/\/app\.ancientpathcoaching\.com\/#\/desk(\/[A-Za-z0-9-]{1,64})?$/,
   COUNTS: ['queued', 'accepted', 'sending', 'sent', 'delivered', 'undelivered'],  // a text that left us counts toward the day
   FAILED: ['failed', 'undelivered'],
   RANK: { held: 0, queued: 1, accepted: 1, sending: 2, sent: 3, delivered: 4, undelivered: 4, failed: 4 },
@@ -222,7 +229,7 @@ function noticeRun_(email, opts, heldRow) {
   } finally { lock.releaseLock(); }
 }
 
-/** The address a witness's weekly text may carry: the site's /witness page with his own token, nothing else (ap-text-standard: a full ancientpathcoaching.com address, never a shortener or a script address). */
+/** The address a witness's weekly text may carry: his Your Desk page on the platform (app.ancientpathcoaching.com/#/desk), nothing else (ap-text-standard: a full ancientpathcoaching.com address, never a shortener or a script address). */
 function noticeWitnessLink_(l) { const s = String(l == null ? '' : l).trim(); return NOTICE.WITNESS_LINK.test(s) ? s : ''; }
 
 /** N10: the key of the card a notice is about: 1 to 12 letters, digits, hyphens or underscores, else ''. */

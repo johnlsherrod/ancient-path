@@ -1,5 +1,6 @@
 /**
- * Ancient Path — Front Desk · CareNow.gs · build 52 (Nov 20, 2026, the morning build). Two things, on the same one-minute timer:
+ * Ancient Path — Front Desk · CareNow.gs · build 52 (Nov 20, 2026, the morning build). Built on the live build 50.1 read through the Google Drive connector (the
+ *   platform's text outbox, platformTexts, still rides this timer after Care · Now). Two things, on the same one-minute timer:
  *   1. A Care · Now card stays on the desk. Build 51's sweep sends every card whose kind CHOICES_ does not know to Claude, and care: was not in
  *      the table, so a Care · Now card would have left the desk as "Moved to Claude" within five minutes of going up. Code.gs 52 adds
  *      care: CH_OWN_ (a person waiting is our team's work, never Claude's); this file is unchanged for Care · Now.
@@ -19,7 +20,7 @@
  *   own school's address).
  */
 /**
- * Ancient Path — Front Desk · CareNow.gs · build 50 (desk-6, Nov 19, 2026). John, Nov 19: "text to jason and john for now. we want to be able to set a call tree like
+ * Ancient Path — Front Desk · CareNow.gs · build 50.1 (Witness 6, Nov 20, 2026; built on the live build 50 read through the Google Drive connector, so everything in 50 is kept). The one change: careNow also calls platformTexts() (PlatformTexts.gs PT1) each minute, after Care · Now, in its own try, so the platform's text outbox rides this one timer and neither can stop the other. Build 50 (desk-6, Nov 19, 2026). John, Nov 19: "text to jason and john for now. we want to be able to set a call tree like
  * function for care now." One file beside Code.gs and Notices.gs in the Front Desk project; Code.gs is not changed.
  *   Every minute, careNow reads the platform's Care · Now taps (public.care_now_open, behind the event log's secret this project already holds as tri:secret).
  *   For each: one card at the top of the Actions tab (key care:now:<tap>, rule R31, owner John; it stays open until marked done by hand), a text to each number
@@ -42,6 +43,7 @@ function careNowSetup() {
 /** The timer's job. Never throws: a failure reaches John through the Front Desk's own alert. */
 function careNow() {
   try { careNowPull_(); } catch (e) { try { alert_('Care · Now could not be read from the platform: ' + e + '\n' + (e.stack || '')); } catch (x) {} }
+  try { if (typeof platformTexts === 'function') platformTexts(); } catch (e) {}   // 50.1: the platform's text outbox (PlatformTexts.gs); it alerts for itself
 }
 
 /** The numbers in the Config row "care now numbers", as +1XXXXXXXXXX (a US number of ten digits, or eleven starting with 1). */
