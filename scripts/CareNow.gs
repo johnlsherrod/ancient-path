@@ -7,7 +7,8 @@
  *      failure (it became a "fix" card, "S2: a feature is broken", swept to Claude). Every minute, careHands_ reads open hands through
  *      public.help_hands_open (the same secret), puts one card at the top of the Actions tab (key care:hand:<hand>, rule R32, owner John):
  *      "Join <first name and last initial> on a call", with the page it came from and the link to Our Team on that school's address; no text
- *      goes. The card comes down by itself (status done, closed how Proven or Lapsed) when the hand is answered, lowered, or two hours old,
+ *      goes. The card arrives with the account already read (support-7 H2: which sign-in, last visit, the course and week, how many pieces are
+ *      kept and when the last was; never a word). The card comes down by itself (status done, closed how Proven or Lapsed) when the hand is answered, lowered, or two hours old,
  *      and the platform is told each time (help_hand_carded), so a hand is never carded twice.
  *   Install: open the Front Desk project, CareNow.gs, select all, paste this file, save. No setup run and no new deployment: the timer runs
  *   the saved code. Code.gs 52 is pasted the same sitting (its one change is the care: line in CHOICES_).
@@ -110,6 +111,19 @@ function careNowPull1_(c) {
   });
 }
 
+/** support-7 H2: the account, already read (which sign-in, last visit, where they are, what is kept), in one line; '' when nothing was read. Never a word anyone wrote. */
+function careAccount_(a) {
+  if (!a) return '';
+  const day = (iso) => { try { return Utilities.formatDate(new Date(iso), 'America/Chicago', 'MMM d, h:mm a'); } catch (e) { return ''; } };
+  const parts = [];
+  if (a.sign_in) parts.push('signed in as ' + a.sign_in + (Number(a.sign_ins) > 1 ? ' (' + a.sign_ins + ' sign-ins joined as theirs)' : ''));
+  else parts.push('no sign-in on record');
+  parts.push(a.last_visit ? 'last here ' + day(a.last_visit) : 'no visit on record');
+  if (a.course) parts.push(a.course + (a.week ? ', ' + (a.unit_word || 'Week') + ' ' + a.week : ''));
+  const n = Number(a.kept || 0);
+  parts.push(n ? n + ' piece' + (n === 1 ? '' : 's') + ' kept' + (a.last_kept ? ', the last ' + day(a.last_kept) : '') : 'nothing kept yet');
+  return 'Their account, read for you: ' + parts.join(' · ') + '. ';
+}
 /** A page a hand was raised from, in plain words: "menu" → "the menu", "this-week" → "This Week". */
 function careHandPlace_(p) {
   const w = String(p || 'page').replace(/-/g, ' ').trim();
@@ -134,7 +148,7 @@ function careHands_(call) {
       row[H['key']] = key; row[H['first seen']] = new Date(); row[H['owner']] = 'John';
       row[H['do this']] = 'Join ' + who + ' on a call: they raised a hand for help at ' + careWhen_(x.at) + ' Central, from ' + careHandPlace_(x.place) + '. Open Our Team and press Join them.';
       row[H['for']] = 'Help Together';
-      row[H['because']] = 'A person asked our team for help on a call (I need a hand' + (x.school ? ', ' + x.school : '') + '). Nothing is recorded and the hand holds no words. This card comes down by itself when someone joins them, when they lower the hand, or after two hours.';
+      row[H['because']] = 'A person asked our team for help on a call (I need a hand' + (x.school ? ', ' + x.school : '') + '). ' + careAccount_(x.account) + 'Nothing is recorded and the hand holds no words. This card comes down by itself when someone joins them, when they lower the hand, or after two hours.';
       row[H['link']] = String(x.link || TRI_.DESK); row[H['status']] = 'open'; row[H['mark done by hand']] = false; row[H['rule']] = 'R32';
       sh.insertRowBefore(2); sh.getRange(2, 1, 1, row.length).setValues([row]);
     }
