@@ -1,4 +1,11 @@
 /**
+ * Ancient Path — Front Desk · build 53 · The Friday review's cards carry their choices (Nov 21, 2026, the morning build). Built on build 52, read back from the live project on Nov 20 (identical to this repository's copy, commit 739f650; the project has not been saved since), so everything in 52 is kept.
+ *   1. review: is a kind CHOICES_ knows (CH_RULING_: Ruled · Change it · Not now). The Friday review writes its cards as review:<area>:<date>:<slug> (Nov 20: SE1 search, PA2 partners, TR1 health), each one an Approve for John. The table did not know the kind, so build 51's sweep carried all five to Claude as "A kind of card the desk does not know" (To Claude, Nov 20, 6:24 AM), after John had answered them. Each is a ruling: Approve is Ruled, and the review carries out what was approved.
+ *   FD.BUILD 53, DESK_BUILD 44 (desk.js unchanged), CSS_RULES 523 (no stylesheet rule added). The one line in CHOICES_ and the build number are the only changes to this file.
+ *   Simplicity check: count: no tab, timer, page, connector or Script Property added; retires nothing; when it breaks, a card of an unknown kind still goes to Claude to sort; next school: nothing more.
+ *   Preflight: the file parses; choicesFor_('review', 'review:SE1:2026-11-20:bitter') returns the ruling entry; checkChoices51_'s missing list is empty for the five Nov 20 review keys.
+ */
+/**
  * Ancient Path — Front Desk · build 52 · A person waiting stays on the desk (Nov 20, 2026, the morning build). Built on the live build 51 read through the Google Drive connector (project saved Nov 19, 5:24 PM Central), so everything in 51 is kept.
  *   1. care: is a kind CHOICES_ knows (CH_OWN_). Build 51's sweep sends a card whose kind the table does not know to Claude ("A kind of card the desk does not know"), and care: was missing, so a Care · Now card (care:now:<tap>, CareNow.gs) would have left the desk as Moved to Claude on the next 5-minute run. No Care · Now card had gone up yet, so none was lost. The same kind carries a raised hand (care:hand:<hand>, CareNow.gs 52).
  *   FD.BUILD 52, DESK_BUILD 44 (desk.js unchanged), CSS_RULES 523 (no stylesheet rule added). The one line is the only change to this file.
@@ -634,7 +641,7 @@
  */
 
 const FD = {
-  BUILD: '52',
+  BUILD: '53',
   OWN: [{ email: 'john@ancientpathcoaching.com', name: 'John Sherrod' }, { email: 'johnsherrodtest@gmail.com', name: 'John Sherrod' }], // build 39: our own addresses, which an admin may press Text him on (isOurs_ keeps them off the Roster and out of every count)
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SIGNALS_SHEET_ID: '1s79xljKjt-sYCZin0-oRFp5swxcETS0a4gzr126_Dns',
@@ -10076,6 +10083,8 @@ const CHOICES_ = {
   care: CH_OWN_,
   // a decision with no act of its own on the desk: the choice buttons
   wil: CH_RULING_, design: CH_RULING_, triage: CH_RULING_,
+  // build 53: the Friday review's cards (review:<area>:<date>:<slug>), each an Approve for John
+  review: CH_RULING_,
   // Claude's own work: never a card. A permission only a person can allow stays; a plan date is a decision (Move · Keep); the rest of a plan is Claude's.
   fix: (key) => (FIX_PERMISSION_.test(String(key || '')) ? CH_OWN_ : CH_CLAUDE_),
   plan: (key) => (/^plan:dates:/.test(String(key || '')) ? CH_OWN_ : CH_CLAUDE_),
