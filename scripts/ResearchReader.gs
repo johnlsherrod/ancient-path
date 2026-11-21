@@ -3,6 +3,7 @@
  *   1. A leader's page (Witness pages, kind leader) never carries a man's own words, even when he shared them with his witness: witnessManData_ blanks f.words for every kind but invited. Today no group man shares his words, so nothing a leader sees changes.
  *   2. The leader's page is headed Your Group (tab, kicker and title "This week: <names>" / "Your Group This Week"), never Your Witness Page. The leader's weekly email already says "your men's weeks are ready" and is unchanged.
  *   3. road_witness: a man may ask someone in his own group (rule 2, ruled Nov 14), and never his group's leader: asking the leader's address is handled like the limit (nothing sent, no one told why, one Log line). The second-half gate stays.
+ *   4. An invited witness begins at his yes (rule 3a, ruled Nov 14), in a group too: deskBefore_ returns null, so Your Desk shows the man's week from the yes, the weekly email starts the weekday of the yes, and the yes screen no longer says his first week comes after the course ends.
  *   Stamps: SCRIPT_BUILD 13.18; ROAD_BUILD 11.15.2 and SCRIPT_LABEL unchanged; ROAD_JS (the way back if jsDelivr fails) unchanged. Install: paste, Save, Deploy > Manage deployments > the pencil > New version > Deploy. No setup run.
  */
 /**
@@ -4983,6 +4984,7 @@ function deskCut_(t) { return String(t || '').replace(/\s+/g, ' ').trim().replac
 
 /** While the man is still in his room's course, his witness has not begun: the leader walks with him until the last night (ap-witness rule 3a). Returns the last night and the first weekday of his week after it, or null. */
 function deskBefore_(cfg, L, yesDay) {
+  return null; // build 13.18 (ap-witness 3a, ruled Nov 14, 2026): the witness begins at his yes, during the course or after it; a group's leader is never his witness, so there is no time before. The old rule is kept below, unreached, for the record.
   try {
     var r = L.room ? roomRow_({ room: L.room }) : null; if (!r) return null;
     var last = lastNightOf_(r); if (!last || today_() > last) return null;

@@ -1834,7 +1834,7 @@
     W.forEach(function (w) {
       var a = weekAsk(w);
       if (w.half) L.push({ k: "w" + w.n, lab: "Week " + w.n, nm: "Witness", when: "Week " + w.n + " · " + esc(w.day), t: WKASK.half.line + " A mentor, a coach, a close friend, a pastor or a relative.", way: a.way });
-      else if (w.last) L.push({ k: "w" + w.n, lab: "Week " + w.n, nm: w.piece || "The Last Night", when: "Week " + w.n + " · " + esc(w.day), t: (w.piece ? esc(w.piece) + " opens " + esc(w.opens) + ". " : "") + "Your group’s last night." + (y ? " " + esc(y.name) + " walks with you from " + shortDay(dayAfter(w.date)) + "." : ""), way: a.way });
+      else if (w.last) L.push({ k: "w" + w.n, lab: "Week " + w.n, nm: w.piece || "The Last Night", when: "Week " + w.n + " · " + esc(w.day), t: (w.piece ? esc(w.piece) + " opens " + esc(w.opens) + ". " : "") + "Your group’s last night." + (y ? " " + esc(y.name) + ", your witness, keeps walking with you." : ""), way: a.way });
       else if (w.piece) L.push({ k: "w" + w.n, lab: "Week " + w.n, nm: esc(w.piece), when: "Week " + w.n + " · " + esc(w.day), t: isWif(w.piece) ? WKASK.wif.t : esc(w.piece) + ", in the week your course asks for it.", way: a.way });
     });
     L.push(jan);
