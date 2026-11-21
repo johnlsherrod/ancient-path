@@ -1,3 +1,4 @@
+/* AP-HISROAD hisroad.js build 11.16.1 (Nov 20, 2026; John: "Fix the Jason issue". ap-witness rule 1, ruled Nov 18, 2026: in a group the leader is never a witness, and no page shows him as one. Your Page for a man in a group now names his group's leader as the leader, never as his witness: the band reads "Your group's leader: <name>" (and "Your witness: <name>" once someone he invited says yes); Walking With You says "Leads your group" and, under Your Witness, either the person who said yes, or "You have no witness yet" with the invitation (open from the second half), or the week it opens; Who Sees What names the leader as "Leads your group. He is not your witness, and he never sees your own words."; What a Witness Does, the second-half ask and the invitation's replies say the witness walks with him from their yes, through the course and after it (rule 3a), never "after the course"; the check-in sheet is headed Check In; a letter names whoever signed it. The leader still reads the check-in before the group meets and still gets I need a hand: those are the leader's, not a witness's. Research reader 13.18 makes the server match: a leader's page never carries a man's own words, a man may ask someone in his own group (rule 2), and never his group's leader. A man outside a group is unchanged. Stamps: BUILD 11.16.1; DATA_BUILD 11.15.2 unchanged; no stylesheet touched (170 + 471). */
 /* AP-HISROAD hisroad.js build 11.16.0 (Nov 19, 2026; Your Page, instant load, with Research reader 13.17 and Your Page v37.17; John's measures of Nov 19: the road's script took 3-4 s of blank page because it came from an Apps Script web app with a plain script tag).
    1. This is road.js 11.15.2 moved into the repo (scripts/hisroad.js) and served from jsDelivr at a pinned commit, loaded by Your Page with async and an integrity hash. The Research reader's address is a constant here (ROAD_URL); it no longer reads it from the tag that loaded the file. The Research reader's ?file=road.js stays, unchanged, as the way back.
    2. The first draw does not wait for any call. A kept copy (this browser's last answer, ap_hisroad_v4) is drawn as soon as the file runs; the fresh answer replaces it when it comes. If every call fails, the kept copy stays; with no kept copy the page draws its own plain road. The page is never left blank by a call.
@@ -26,8 +27,8 @@
   "use strict";
   var host = document.getElementById("apRoad4");
   if (!host || host.getAttribute("data-hisroad")) return;
-  host.setAttribute("data-hisroad", "11.16.0");
-  var BUILD = "11.16.0", DATA_BUILD = "11.15.2";
+  host.setAttribute("data-hisroad", "11.16.1");
+  var BUILD = "11.16.1", DATA_BUILD = "11.15.2";
   /* the stamped rule count of this script's stylesheet, taken before the file card (AP-SHIP 1); the page counts what the browser accepted against it */
   var RULES = { hisroad: 170, apg: 471 };
   var DESK_URL = "https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec";
@@ -788,6 +789,8 @@
   function coachW() { var c = data && data.coach; return !group() && !walkYes() && c && c.name ? c : null; } /* 11.13: a one-on-one man's coach, only when the server hands one over */
   function groupTitle() { return data && data.group && data.group.title ? String(data.group.title) : "your group’s leader"; }
   function witnessName() { var y = walkYes(); return y ? y.name : group() && leaderKnown() ? (leaderName() || groupTitle()) : coachW() ? coachW().name : "our team"; } /* 11.13: his full name wherever it is known */
+  function myWit() { var y = data && data.witness && data.witness.yes; return y && y.name ? y : null; } /* 11.16.1: the person he invited who said yes, in a group too (ap-witness 3a: the witness begins at his yes) */
+  function leadLine() { return "<b>" + esc(witnessName()) + "</b>, " + esc(groupTitle()); } /* 11.16.1: a group's leader is named as the leader, never as a witness (ap-witness rule 1) */
   function witTitle() { var y = walkYes(); return y ? "your " + (y.role || "witness") : group() && leaderKnown() ? groupTitle() : coachW() ? "your coach" : "our team"; }
   function meetDay() { var m = V().meet; return m && m.day ? m.day : ""; }
   function piece() { return data && data.piece ? data.piece : null; }
@@ -1210,7 +1213,7 @@
   function isPicked(t) { var p = UI.ck.practice || ""; return !!p && (t === p || (p.length >= 200 && t.indexOf(p) === 0)); }
   function ckHtml() {
     var c = UI.ck, st = c.step, p = piece(), card = cardD() || {}, v = V();
-    var head = '<div class="av-ohead"><span class="av-lk">' + (c.mode === "choose" ? "Choose a Practice" : "Check In With the Witness") + '</span><button type="button" class="av-close" data-act="close-ck">Close</button></div>';
+    var head = '<div class="av-ohead"><span class="av-lk">' + (c.mode === "choose" ? "Choose a Practice" : group() ? "Check In" : "Check In With the Witness") + '</span><button type="button" class="av-close" data-act="close-ck">Close</button></div>';
     if (st === 5) return head + '<div class="av-obody">' + ckBar(st) + doneHtml() + '</div><div class="av-ofoot"><button type="button" class="av-btn" style="margin-top:0" data-act="ck-finish">Back to This Week</button><div class="av-links"><button type="button" class="av-walk" data-act="ck-house"><span class="av-u">See it in Story</span> <span class="av-ar">→</span></button></div></div>';
     var b = "";
     if (st === 1) {
@@ -1408,8 +1411,8 @@
     inviteBusy = true; s("Sending.");
     post({ action: "road_witness", role: UI.wf.role, theirName: name, theirEmail: email }).then(function (r) {
       inviteBusy = false;
-      if (ok(r) && r.limited) { UI.wf.sent = false; UI.wf.open = false; if (data) data.witness = { waiting: false }; cache(); renderMain(true); toast("Kept. " + uc1(witnessName()) + " walks with you."); return; }
-      if (ok(r)) { UI.wf.sent = true; UI.wf.open = false; if (data) data.witness = { waiting: true }; cache(); renderMain(true); toast("Kept. Until they say yes, our team walks with you."); return; }
+      if (ok(r) && r.limited) { UI.wf.sent = false; UI.wf.open = false; if (data) data.witness = { waiting: false }; cache(); renderMain(true); toast(group() ? "Kept." : "Kept. " + uc1(witnessName()) + " walks with you."); return; }
+      if (ok(r)) { UI.wf.sent = true; UI.wf.open = false; if (data) data.witness = { waiting: true }; cache(); renderMain(true); toast(group() ? "Kept. They walk with you from their yes." : "Kept. Until they say yes, our team walks with you."); return; }
       s(r && r.error === "bad_email" ? "That email does not look right. Check it and send again." : "It did not go through. Your words are still here; tap Send the invitation again.");
     });
   }
@@ -1502,8 +1505,10 @@
   function bandWit() {
     var v = V(); if (v.bare) return "";
     var tw = teamOnly8(), n = unreadNote();
-    var who = tw ? "our team, " + nw("until you invite your own witness") : "<b>" + esc(witnessName()) + "</b>, " + nw(coachW() ? "your coach" : group() && !v.ended && leaderKnown() ? esc(groupTitle()) : v.ended ? "your witness now" : "your witness through " + esc(v.course || "your course"));
-    return '<div class="bwit"><p>Walking with you: ' + who + '</p><div class="walks">' + (n ? walk8("letter", "Read his letter") : "") + walk8("wwrite", "Write to " + him()) + "</div></div>";
+    var mw = myWit(), gl = group() && leaderKnown();
+    var who = gl ? "" : tw ? "our team, " + nw("until you invite your own witness") : "<b>" + esc(witnessName()) + "</b>, " + nw(coachW() ? "your coach" : "your witness");
+    var line = gl ? "Your group’s leader: <b>" + esc(witnessName()) + "</b>" + (mw ? " · Your witness: <b>" + esc(mw.name) + "</b>" : "") : "Walking with you: " + who;
+    return '<div class="bwit"><p>' + line + '</p><div class="walks">' + (n ? walk8("letter", "Read his letter") : "") + walk8("wwrite", "Write to " + him()) + "</div></div>";
   }
   function helpItem8() {
     var tw = teamOnly8(), sent = UI.handSent;
@@ -1578,7 +1583,7 @@
 
   /* ───────────── This Week ───────────── */
   var WKASK = {
-    half: { line: "The second half begins. You choose one person from your own life to walk with you after the course.", src: "ap-witness rule 3a" },
+    half: { line: "The second half begins. You choose one person from your own life to be your witness, from their yes.", src: "ap-witness rule 3a" },
     wif: { line: "Where I’m From, about ten minutes, after the reading.", t: "Twenty-six small questions, and a poem builds itself out of what you already know. About ten minutes." }
   };
   function isWif(n) { return /^where i.?m from$/i.test(String(n || "").replace(/’/g, "'").trim()); }
@@ -1594,10 +1599,10 @@
     return h;
   }
   function inviteSent() { return !!(inviteYes() || inviteWaiting()); }
-  function waitsLine() { return teamOnly8() ? "Until then, our team walks with you" : uc1(witnessName()) + " walks with you" + (V().ended ? "" : " until the course ends"); }
+  function waitsLine() { return group() ? "They walk with you from their yes" : teamOnly8() ? "Until then, our team walks with you" : uc1(witnessName()) + " walks with you until then"; }
   function inviteStatus() {
     var y = inviteYes(), v = V();
-    if (y) { var last = lastNightIso(), from = v.ended ? "now" : (last ? "from " + shortDay(dayAfter(last)) : "after " + esc(v.course || "your course")); return '<p class="kept" id="wik" tabindex="-1"><b>Accepted.</b> ' + esc(y.name) + ", your " + esc(y.role) + ", walks with you " + from + "." + (v.ended ? "" : " " + (walkYes() ? "" : esc(uc1(witnessName())) + " walks with you until the course ends.")) + "</p>"; }
+    if (y) { return '<p class="kept" id="wik" tabindex="-1"><b>Accepted.</b> ' + esc(y.name) + ", your " + esc(y.role) + ", walks with you now, as your witness.</p>"; }
     return '<p class="kept" id="wik" tabindex="-1"><b>Invited.</b> ' + esc(WITNESS_SENT.replace(/^Kept\. /, "").replace(/ Until then, our team walks with you\.$/, "")) + " " + esc(waitsLine()) + '.</p><div class="walks" style="margin-top:0">' + walk8("wchange", "Change who you asked") + "</div>";
   }
   function unreadView() {
@@ -1631,7 +1636,8 @@
     var v = V(), nk = nextKind(), wk = wkN(), W = wCap(), body = "", nt = ctxNote(), day = meetDay(), p = piece(), d = doneNow();
     var bef = group() ? "before " + (day || "your group’s night") : "this week";
     if (nk === "letter") {
-      nt = "From " + W; body = '<p class="t">' + (!teamOnly8() ? esc(uc1(witnessName())) + " wrote to you." : "Your witness wrote to you.") + '</p><p class="s">A letter from your witness, kept here to read whenever you want.</p><button type="button" class="btn" data-act="letter">Read it</button>';
+      var ln8 = unreadNote(), sg = ln8 && ln8.witness ? String(ln8.witness) : (!teamOnly8() ? uc1(witnessName()) : "");
+      nt = "From " + (sg || W); body = '<p class="t">' + (sg ? esc(sg) + " wrote to you." : "Your witness wrote to you.") + '</p><p class="s">A letter, kept here to read whenever you want.</p><button type="button" class="btn" data-act="letter">Read it</button>';
     } else if (nk === "ended") {
       var y = walkYes(), n = newestNote();
       nt = esc(v.course || "Your course") + " · finished";
@@ -1649,7 +1655,7 @@
     } else if (nk === "invite") {
       nt = esc(v.course) + " · " + esc(ctxLabel()) + " · the second half";
       var ln = lastNightIso();
-      body = '<p class="t">Who will walk with you after ' + esc(v.course) + '?</p><p class="s">Now, in the second half, choose one person from your own life to walk your road with you when the course ends: a mentor, a coach, a close friend, a pastor or a relative. ' + esc(teamOnly8() ? "Our team" : uc1(witnessName())) + " walks with you" + (ln ? " until " + shortDay(ln) : " until the course ends") + ".</p>" + inviteForm(true);
+      body = '<p class="t">Who will walk with you?</p><p class="s">Now, in the second half, choose one person from your own life to be your witness: a mentor, a coach, a close friend, a pastor or a relative. They walk with you from their yes, through the course and after it.</p>' + inviteForm(true);
     } else if (nk === "checkin") {
       nt = courseCtx() + " · " + bef;
       body = '<p class="t">Check in for ' + (group() ? esc(ctxLabel() || "this week") : "this week") + '.</p><p class="s">About a minute: the path you marked, a word for it, how your practice went, and your practice for this week. ' + (group() ? esc(W) + " reads your check-in, and what you choose to share, before your group meets." : "Our team reads it this week.") + '</p><button type="button" class="btn" data-act="checkin">Check in</button>';
@@ -1902,15 +1908,18 @@
   }
   function witBrief(full) {
     var tw = teamOnly8(), n = unreadNote(), W = witnessName(), v = V(), y = walkYes(), co = coachW(), ln = lastNightIso();
-    var role = tw ? "Walks with you until you invite your own" : co ? "Your coach, and your witness" : v.ended ? uc1(witTitle()) + ", and your witness now" : uc1(witTitle()) + ", and your witness through " + esc(v.course || "your course");
+    var gl = group() && leaderKnown(), mw = myWit();
+    var role = tw ? "Walks with you until you invite your own" : co ? "Your coach, and your witness" : gl ? (v.ended ? "Led your group" : "Leads your group") : uc1(witTitle()) + ", and your witness";
     var h = '<div class="person"><span class="pav" aria-hidden="true">' + (tw ? "A" : "W") + '</span><div><p class="t" style="font-size:18px">' + (tw ? "Our team" : esc(uc1(W))) + '</p><p class="help" style="margin-top:0">' + (tw ? role : esc(role)) + '</p></div></div>';
-    if (full) h += '<p class="s">' + (tw ? "Our team sees what God is doing in your story, so it is remembered and spoken back to you, until you invite your own witness." : "He sees what God is doing in your story, so it is remembered and spoken back to you.") + "</p>";
+    if (full) h += '<p class="s">' + (gl ? (v.ended ? "He led your group." : "He leads your group and reads your check-in before you meet.") + " He is not your witness: your witness is one person from your own life, who walks with you from their yes." : tw ? "Our team sees what God is doing in your story, so it is remembered and spoken back to you, until you invite your own witness." : "He sees what God is doing in your story, so it is remembered and spoken back to you.") + "</p>";
     h += '<div class="walks">' + (n ? walk8("letter", "Read his letter") : "") + walk8("wwrite", "Write to " + him()) + (full ? walk8("wisees", "Who sees what") : "") + "</div>";
     if (full && co && co.offer) h += '<div class="part"><p class="lk">Someone from your own life</p><p class="s" style="margin-top:4px">' + esc(co.offer) + "</p>" + (inviteSent() ? inviteStatus() : inviteForm(false)) + "</div>";
-    else if (full && !v.ended && group() && !secondHalf() && halfN()) h += '<div class="part"><p class="lk">After ' + esc(v.course || "the Course") + '</p><p class="s" style="margin-top:4px">' + esc(uc1(W)) + " walks with you until the course ends. Week " + halfN() + " asks who walks with you after.</p></div>";
+    else if (full && group() && mw) h += '<div class="part"><p class="lk">Your Witness</p><p class="s" style="margin-top:4px">' + esc(mw.name) + ", your " + esc(mw.role || "witness") + ", walks with you.</p></div>";
+    else if (full && group() && (secondHalf() || v.ended)) h += '<div class="part"><p class="lk">Your Witness</p><p class="s" style="margin-top:4px">You have no witness yet. Invite someone from your own life to walk this with you.</p>' + (inviteSent() ? inviteStatus() : inviteForm(false)) + "</div>";
+    else if (full && !v.ended && group() && halfN()) h += '<div class="part"><p class="lk">Your Witness</p><p class="s" style="margin-top:4px">You have no witness yet. Week ' + halfN() + " opens the invitation: one person from your own life, who walks with you from their yes.</p></div>";
     var ho = data && data.handoff;
     if (full && ho && ho.line) h += '<div class="part"><p class="s" style="margin-top:0">' + esc(ho.line) + '</p><label class="tick"><input type="checkbox" id="hocarry"> <span>Carry my notes too.</span></label><div class="choices two">' + '<button type="button" class="choice" data-act="ho-yes">Yes</button><button type="button" class="choice" data-act="ho-no">Not now</button>' + '</div><p class="kept" id="hok" aria-live="polite">' + esc(UI.say.ho || "") + "</p></div>";
-    return secHtml("witb", "Walking With You", tw ? "Our team" : esc(uc1(W)) + " · " + (co ? "your coach" : v.ended ? "your witness now" : "your witness through " + esc(v.course || "your course")), h);
+    return secHtml("witb", "Walking With You", tw ? "Our team" : esc(uc1(W)) + " · " + (co ? "your coach" : gl ? esc(groupTitle()) : "your witness"), h);
   }
   function pathDoors() {
     return secHtml("doors", "Doors", "Talk with us · the writing", '<div class="walks" style="flex-direction:column;margin-top:0">' + sameWalk(PAGES.team, "Talk With Our Team") + linkWalk(CAL, "Book a free 30-minute conversation") + sameWalk("/your-story?from=start&view=path", "Every piece you can write") + sameWalk(PAGES.profile, "Profile") + walk8("welcome", "What This Page Is For") + "</div>");
@@ -2107,7 +2116,8 @@
     function J(k, a, b, c) { return wswCell(who, sh[k] ? "<b>Sees it.</b> " + a : "<b>Not unless you share it.</b> " + b, wswSeg(k)); }
     function G(sees) { return g ? wswCell("Your group", sees) : ""; }
     var NEVER = "<b>Never.</b>";
-    var role = tw ? "Walks with you until you invite your own." : co ? "Your coach, and your witness." : v.ended ? uc1(witTitle()) + ", and your witness now." : uc1(witTitle()) + ", and your witness through " + (v.course || "your course") + "." + (g && ln ? " After " + shortDay(ln) + ", the person you invite sees just what " + W + " sees now." : "");
+    var gl = g && leaderKnown(), mw = myWit();
+    var role = tw ? "Walks with you until you invite your own." : co ? "Your coach, and your witness." : gl ? "Leads your group. He is not your witness, and he never sees your own words." + (mw ? " " + mw.name + ", your witness, sees what you share here too, and your own words only if you share them." : " The witness you invite sees what you share here.") : uc1(witTitle()) + ", and your witness.";
     var h = '<h2 class="st-h2" id="apgSheetH" tabindex="-1">Who Sees What</h2><p class="help">' + (courseCtx() ? courseCtx() + " · " : "") + nw("piece by piece") + "</p>";
     h += '<div class="wsw-who"><div class="wsw-card"><span class="pav" aria-hidden="true">' + esc(tw ? "A" : W.charAt(0).toUpperCase()) + '</span><div><p class="t">' + esc(who) + '</p><p class="help">' + esc(role) + "</p></div></div>" +
       (g ? '<div class="wsw-card"><span class="pav" aria-hidden="true">G</span><div><p class="t">Your group</p><p class="help">' + esc(meetDay() ? "The men you meet with on " + meetDay() + "s. They never see your words." : "The men you meet with. They never see your words.") + "</p></div></div>" : "") + "</div>";
@@ -2119,7 +2129,7 @@
     h += '<p class="wsw-grp">Readings</p>';
     h += wswRow("Each reading", "Whether a reading helped", J("piece", "Helped, or not this one.", "It stays with you."), G(NEVER));
     h += wswRow("When you mark one", "The guidepost you mark", J("guidepost", "The guidepost you said you’re at.", "It stays with you."), G(NEVER));
-    h += wswRow("When you answer", "Your own words: answers and the lines you write", J("words", "Your last three, as you wrote them.", (tw ? "Our team doesn’t" : "He doesn’t") + " see them."), G(NEVER), "<b>Our team reads every answer you send,</b> so a person hears it.");
+    h += wswRow("When you answer", "Your own words: answers and the lines you write", gl && !mw ? wswCell(who, NEVER) : gl ? wswCell(mw.name, sh.words ? "<b>Sees it.</b> Your last three, as you wrote them." : "<b>Not unless you share it.</b> They don’t see them.", wswSeg("words")) : J("words", "Your last three, as you wrote them.", (tw ? "Our team doesn’t" : "He doesn’t") + " see them."), G(NEVER), "<b>Our team reads every answer you send,</b> so a person hears it." + (gl ? " Your group’s leader never sees them." : ""));
     h += '<p class="wsw-grp">Story</p>';
     h += wswRow("In Story", "The pieces you write", wswCell(who, NEVER), G(NEVER), "Only you can open what you save. Nobody at Ancient Path reads it.");
     h += wswRow("In Story", "Your chapters, week by week", wswCell(who, "<b>Never.</b> " + (tw ? "Our team sees" : "He sees") + " the week’s taps above, not the chapter."), G(NEVER), "Only you.");
@@ -2169,7 +2179,7 @@
   }
   function witWhatHtml() {
     var v = V(), g = group();
-    return '<p class="lk">The Witness</p><p class="ckq">What a Witness Does</p><p class="s">A witness is someone who sees what God is doing in your story, so it is remembered and spoken back to you. Your witness walks your road with you: one person, who reads what you choose to share and writes to you.</p><p class="s">' + (g ? "Through " + esc(v.course || "your course") + ", " + (teamOnly8() ? "our team" : esc(witnessName())) + " is your witness. " : "Until you invite your own, our team walks with you. ") + (halfN() ? "From Week " + halfN() : "From the second half") + " you choose one person from your own life to walk with you after the course: a mentor, a coach, a close friend, a pastor or a relative from outside your group. They say yes before they see anything of yours, and you choose what they see.</p>" + (g && aheadWeeks().length ? '<div class="walks">' + walk8("calnights", "Add your Wednesday nights") + "</div>" : "") + '<p class="verse" style="margin-top:14px">“Two are better than one, because they have a good reward for their toil. For if they fall, one will lift up his fellow.”<span>Ecclesiastes 4:9–10 (ESV)</span></p>';
+    return '<p class="lk">The Witness</p><p class="ckq">What a Witness Does</p><p class="s">A witness is someone who sees what God is doing in your story, so it is remembered and spoken back to you. Your witness walks your road with you: one person, who reads what you choose to share and writes to you.</p><p class="s">' + (g ? (leaderKnown() ? esc(witnessName()) + " leads your group; a group’s leader is never a witness. " : "") + (halfN() ? "From Week " + halfN() : "From the second half") + " you choose one person from your own life to be your witness: a mentor, a coach, a close friend, a pastor or a relative. They walk with you from their yes, through the course and after it." : "Until you invite your own, our team walks with you. You choose one person from your own life to walk with you: a mentor, a coach, a close friend, a pastor or a relative.") + " They say yes before they see anything of yours, and you choose what they see.</p>" + (g && aheadWeeks().length ? '<div class="walks">' + walk8("calnights", "Add your Wednesday nights") + "</div>" : "") + '<p class="verse" style="margin-top:14px">“Two are better than one, because they have a good reward for their toil. For if they fall, one will lift up his fellow.”<span>Ecclesiastes 4:9–10 (ESV)</span></p>';
   }
   /* the calendar file the page builds itself: every night of his room from this week to the last (floating nothing; Central time, as the room is held) */
   function icsEsc(s) { return String(s || "").replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n"); }

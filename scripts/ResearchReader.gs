@@ -1,4 +1,11 @@
 /**
+ * 13.18 (Nov 20, 2026; John: "Fix the Jason issue"; ap-witness rule 1, ruled Nov 18, 2026: in a group the leader is never a witness, and no page shows him as one). Three server changes, with Your Page hisroad.js 11.16.1 (which names the leader as the leader on a group man's page):
+ *   1. A leader's page (Witness pages, kind leader) never carries a man's own words, even when he shared them with his witness: witnessManData_ blanks f.words for every kind but invited. Today no group man shares his words, so nothing a leader sees changes.
+ *   2. The leader's page is headed Your Group (tab, kicker and title "This week: <names>" / "Your Group This Week"), never Your Witness Page. The leader's weekly email already says "your men's weeks are ready" and is unchanged.
+ *   3. road_witness: a man may ask someone in his own group (rule 2, ruled Nov 14), and never his group's leader: asking the leader's address is handled like the limit (nothing sent, no one told why, one Log line). The second-half gate stays.
+ *   Stamps: SCRIPT_BUILD 13.18; ROAD_BUILD 11.15.2 and SCRIPT_LABEL unchanged; ROAD_JS (the way back if jsDelivr fails) unchanged. Install: paste, Save, Deploy > Manage deployments > the pencil > New version > Deploy. No setup run.
+ */
+/**
  * 13.17.1 (Nov 19, 2026): the one start call no longer reads Our Group. Measured on the live 13.17.0 as the test learner (a group man): the road read 60-160 ms, the Testimony status 30 ms, the pictures 20 ms, and Our Group 6.8-7.5 s, so the one call took 10-12 s and the page waited for it. Now: the call carries Our Group only from a copy kept ready (at most 25 minutes old) and otherwise leaves it out, and the page asks for it alone after the first draw (hisroad.js did that already for a call without it); a road_ours call on its own stores the copy; keepWarm_ keeps it ready every ten minutes for every man in a group (the entries are read once for all of them). SCRIPT_BUILD 13.17.1; everything else is 13.17.0.
  */
 /**
@@ -4410,6 +4417,7 @@ function weeklyPageFor_(ss, L, rows, week) {
 function witnessHelp_(man, week) { return null; }
 function witnessManData_(ss, cfg, wit, L, map) {
   var rows = roadRows_(ss, L.email), week = roadWeek_(cfg, L, map), f = witnessFields_(L, rows, week), meet = null;
+  if (wit.kind !== 'invited') { f.words = null; if (f.shared) f.shared.words = false; } // build 13.18 (ap-witness rule 1; Oct 30, 2026): a group's leader sees his marks and taps, never his own words
   try { meet = meetOut_(cfg, L, nowMs_()); } catch (e) { meet = null; }
   var lead = week.courses && week.courses.lead, course = week.course || L.course || '', unitN = (lead && lead.shown) || week.weekNum || (meet ? (meet.lastWeek || meet.nextWeek || 0) : 0);
   var row = (map && map.rows || []).filter(function (q) { return sameCourse_(q.course, course) && String(q.unit) === String(unitN); })[0] || null;
@@ -4447,12 +4455,12 @@ function witnessManHtml_(m) {
 function witnessHtml_(d) {
   var men = d.men, n = men.length, names = men.map(function (m) { return m.first; });
   var joined = n <= 1 ? names.join('') : n <= 3 ? names.slice(0, -1).join(', ') + ' and ' + names[n - 1] : '';
-  var title = n === 0 ? 'Your Witness Page' : n <= 3 ? 'Walking with ' + joined : 'Walking with Your Group';
+  var title = n === 0 ? 'Your Group' : n <= 3 ? 'This week: ' + joined : 'Your Group This Week'; // build 13.18: a group's leader is never a witness (ap-witness rule 1)
   var where = n === 0 ? 'Nothing is waiting for you right now.' : 'Their weeks are ready. About five minutes each.';
-  var h = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Your Witness Page</title>' +
+  var h = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Your Group</title>' +
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Source+Sans+3:wght@400;600&display=swap"><style>' + WIT_CSS_ + WIT_PANEL_CSS_ + '</style></head><body><div class="ap-home" id="app">';
-  h += '<header class="band"><div class="bw"><div class="top"><span class="k">Your Witness Page</span></div><h1>' + witEsc_(title) + '</h1><p class="where">' + witEsc_(where) + '</p>';
-  if (n >= 2 && n <= 3) h += '<div class="tabs" role="tablist" aria-label="The men you walk with">' + men.map(function (m, i) { return '<button type="button" class="tab" role="tab" data-tab="' + i + '" aria-selected="' + (i === 0) + '">' + witEsc_(m.first) + '</button>'; }).join('') + '</div>';
+  h += '<header class="band"><div class="bw"><div class="top"><span class="k">Your Group</span></div><h1>' + witEsc_(title) + '</h1><p class="where">' + witEsc_(where) + '</p>';
+  if (n >= 2 && n <= 3) h += '<div class="tabs" role="tablist" aria-label="The men in your group">' + men.map(function (m, i) { return '<button type="button" class="tab" role="tab" data-tab="' + i + '" aria-selected="' + (i === 0) + '">' + witEsc_(m.first) + '</button>'; }).join('') + '</div>';
   else h += '<div style="height:16px"></div>';
   h += '</div></header><main class="view"><p class="vlead">Listen deeply. Speak truth with compassion. Help him grow.</p>';
   if (n >= 4) men.forEach(function (m, i) {
@@ -4496,7 +4504,7 @@ function witnessPage_(token) {
     try { ensureBuild111_(ss); } catch (xe) {}
     var wit = witnessLookup_(ss, token); if (!wit) return witnessClosedHtml_();
     if (wit.kind === 'invited') return deskPage_(ss, cfg, wit); // build 13.4: Your Desk
-    return HtmlService.createHtmlOutput(witnessHtml_(witnessPageData_(ss, cfg, wit))).setTitle('Your Witness Page').addMetaTag('viewport', 'width=device-width, initial-scale=1');
+    return HtmlService.createHtmlOutput(witnessHtml_(witnessPageData_(ss, cfg, wit))).setTitle('Your Group').addMetaTag('viewport', 'width=device-width, initial-scale=1');
   } catch (err) {
     try { log_(SpreadsheetApp.openById(RE_SHEET_ID), 'witness page', 'failed', String(err && err.stack || err).slice(0, 400)); } catch (e2) {}
     return witnessClosedHtml_();
@@ -4682,13 +4690,15 @@ function witnessYesOf_(ss, email) {
 function witnessYesUrl_(cfg, token) { return witnessUrl_(cfg, token).replace(/([?&])w=/, '$1y='); }
 /** road_witness: the invitation. Returns { ok: true } and the email goes; { ok: true, limited: true } and nothing goes (no one is told why). */
 function roadWitness_(ss, cfg, L, b) {
-  if (L.room && !inSecondHalf_(cfg, L)) throw { code: 'in_group' }; // build 12.4: a man in a room is asked from the second half on; before it, his leader is his witness
+  if (L.room && !inSecondHalf_(cfg, L)) throw { code: 'in_group' }; // build 12.4, kept in 13.18: a man in a group is asked from the second half on (ap-witness 3a: halfway when the course names no witness week); his leader is never his witness
   var role = String(b.role || '').toLowerCase().trim(); if (!WITNESS_ROLES[role]) throw { code: 'bad_role' };
   var name = String(b.theirName || '').replace(/\s+/g, ' ').trim().slice(0, 80); if (!name) throw { code: 'empty' };
   var email = String(b.theirEmail || '').toLowerCase().trim().slice(0, 120);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email === L.email) throw { code: 'bad_email' };
-  // build 13.15.2 (ap-witness rule 2): members of the same group never ask each other; the group itself witnesses a member's moments. Handled like the limit: nothing is sent and no one is told why.
-  var mate = L.room ? learnerOne_(ss, email) : null, sameRoom = !!(mate && mate.room && String(mate.room).toLowerCase() === String(L.room).toLowerCase());
+  // build 13.18 (ap-witness rules 1 to 3, ruled Nov 14 and Nov 18, 2026): a man may ask someone in his own group, and never his group's leader. Asking the leader is handled like the limit: nothing is sent and no one is told why. (13.15.2's same-group refusal is retired.)
+  var leadMail = '';
+  try { leadMail = L.room ? String(handLeader_(L) || '').toLowerCase().trim() : ''; } catch (xl) { leadMail = ''; }
+  var sameRoom = !!(leadMail && leadMail === email);
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(10000)) throw { code: 'busy' };
   var token = '', at = 0, sent = false;
@@ -4701,7 +4711,7 @@ function roadWitness_(ss, cfg, L, b) {
     var waiting = mine.filter(function (r) { return r.status === 'waiting'; })[0];
     if (hasYes || full || sameRoom) {
       if (waiting) sh.getRange(waiting.row, 6).setValue('declined');
-      log_(ss, 'witness invite', 'not sent for ' + L.email, hasYes ? 'he already has his witness' : sameRoom ? 'that address is in his own group' : 'that address is at its limit');
+      log_(ss, 'witness invite', 'not sent for ' + L.email, hasYes ? 'he already has his witness' : sameRoom ? 'that address is his group’s leader' : 'that address is at its limit');
       return { ok: true, limited: true };
     }
     token = witToken_();
@@ -5511,7 +5521,7 @@ var ROAD_JS = "/* AP-HISROAD road.js build 11.15.2 (Nov 16, 2026; John: the Read
  * what the room carried, The Shelf, Who We Read, his Craft and his lanes. New Answers kinds: after, less, voice, setaside, team, notice (Answers columns: when, who, entry id, kind, text, answer, room, build).
  * A Lanes tab (the twelve lanes of the mockup) and the Config lines are made once by ensureBuild12_. The 6:00 PM release (releaseTick) is switched by Config "auto release" (off until the hold is proven on the Front Desk).
  * Hold cards: research:hold:<entry id> on the Front Desk's Actions tab (rule RE15); a card marked done by hand is a hold. */
-var SCRIPT_BUILD = '13.17.1';
+var SCRIPT_BUILD = '13.18';
 var SCRIPT_LABEL = 'Text Notices Build 2'; // the one label stamped in every file of the build (Notices.gs N8, Front Desk 39, this script, desk.js 38; road.js stays 11.14), in the Log and in the repo commit
 var LANES_HEAD_12 = ['lane', 'what it covers', 'voices', 'Sources disciplines folded in', 'added'];
 var LANES_12 = [
