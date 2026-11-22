@@ -1,3 +1,4 @@
+/* AP-HISROAD hisroad.js build 11.16.2 (Nov 21, 2026; brand-7, Brand Book 1.1, Our tools walk the same road, item 1: one feeling vocabulary; John: "this is really important"). The only change: the check-in's More words now offers the rest of The Word for It, so the eight first words and More words are the same 21 words, heavy to light, that the platform's chapter, session page and doors offer (public.word_guide). Out: lonely, overwhelmed, guilty and anxious; in: stuck, restless, convicted and sorry. A word a person kept before is still shown as they chose it (What You Saw, Story); nothing kept is changed. Nothing else moves. */
 /* AP-HISROAD hisroad.js build 11.16.1 (Nov 20, 2026; John: "Fix the Jason issue". ap-witness rule 1, ruled Nov 18, 2026: in a group the leader is never a witness, and no page shows him as one. Your Page for a man in a group now names his group's leader as the leader, never as his witness: the band reads "Your group's leader: <name>" (and "Your witness: <name>" once someone he invited says yes); Walking With You says "Leads your group" and, under Your Witness, either the person who said yes, or "You have no witness yet" with the invitation (open from the second half), or the week it opens; Who Sees What names the leader as "Leads your group. He is not your witness, and he never sees your own words."; What a Witness Does, the second-half ask and the invitation's replies say the witness walks with him from their yes, through the course and after it (rule 3a), never "after the course"; the check-in sheet is headed Check In; a letter names whoever signed it. The leader still reads the check-in before the group meets and still gets I need a hand: those are the leader's, not a witness's. Research reader 13.18 makes the server match: a leader's page never carries a man's own words, a man may ask someone in his own group (rule 2), and never his group's leader. A man outside a group is unchanged. Stamps: BUILD 11.16.1; DATA_BUILD 11.15.2 unchanged; no stylesheet touched (170 + 471). */
 /* AP-HISROAD hisroad.js build 11.16.0 (Nov 19, 2026; Your Page, instant load, with Research reader 13.17 and Your Page v37.17; John's measures of Nov 19: the road's script took 3-4 s of blank page because it came from an Apps Script web app with a plain script tag).
    1. This is road.js 11.15.2 moved into the repo (scripts/hisroad.js) and served from jsDelivr at a pinned commit, loaded by Your Page with async and an integrity hash. The Research reader's address is a constant here (ROAD_URL); it no longer reads it from the tag that loaded the file. The Research reader's ?file=road.js stays, unchanged, as the way back.
@@ -27,8 +28,8 @@
   "use strict";
   var host = document.getElementById("apRoad4");
   if (!host || host.getAttribute("data-hisroad")) return;
-  host.setAttribute("data-hisroad", "11.16.1");
-  var BUILD = "11.16.1", DATA_BUILD = "11.15.2";
+  host.setAttribute("data-hisroad", "11.16.2");
+  var BUILD = "11.16.2", DATA_BUILD = "11.15.2";
   /* the stamped rule count of this script's stylesheet, taken before the file card (AP-SHIP 1); the page counts what the browser accepted against it */
   var RULES = { hisroad: 170, apg: 471 };
   var DESK_URL = "https://script.google.com/macros/s/AKfycbytkn-t_6Adw4Mv3QbUdmG8KYsGUL2zvrgdwn-dciB4yYxN7D4AVlZtgqG5pLk_sHb4cw/exec";
@@ -734,7 +735,8 @@
 
   /* ───────────── words lifted from the ruled prototype (Oct 31); nothing here is invented ───────────── */
   var WORDS = ["ashamed", "exposed", "afraid", "angry", "sad", "hurt", "alone", "numb"];
-  var MORE_WORDS = ["lonely", "overwhelmed", "guilty", "anxious", "tired", "tender", "relieved", "seen", "hopeful", "grateful", "steady", "free", "glad"];
+  /* 11.16.2 (brand-7): More words is the rest of The Word for It, heavy to light, so the check-in offers the same 21 as every page (word_guide) */
+  var MORE_WORDS = ["tired", "stuck", "restless", "convicted", "sorry", "tender", "relieved", "seen", "hopeful", "grateful", "steady", "free", "glad"];
   var NEED_FB = {
     afraid: "Afraid often asks for safety. Think of one safe person, and let him know where you are this week.",
     ashamed: "Ashamed often asks to be known and still welcomed. Tell one man one true thing this week.",
