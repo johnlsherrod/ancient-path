@@ -37,4 +37,21 @@ ok(thr(()=>X.whoPlatform_('short','card_act'))==='no_key','a short sign-in is re
 authAnswer={code:401,body:{}}; ok(thr(()=>X.whoPlatform_('u'.repeat(40),'card_act'))==='bad_key','a sign-in the platform does not know is refused');
 authAnswer={code:200,body:{email:'stranger@example.com'}}; ok(thr(()=>X.whoPlatform_('v'.repeat(40),'card_act'))==='not_on_list','an email off the People tab is refused');
 authAnswer={code:200,body:{email:'lead@example.com'}}; ok(thr(()=>X.whoPlatform_('w'.repeat(40),'card_act'))==='not_yours','a leader on the People tab cannot press our team\'s cards from the platform');
+
+// desk.js 45: an address that names a card opens the desk on that card
+{
+  const js = JSON.parse(src.match(/^const DESK_JS = (".*");$/m)[1]);
+  ok(/^\/\* AP-DESK desk\.js build 45 /.test(js) && /const DESK_BUILD = '45';/.test(src), 'desk.js is build 45, and the script says so');
+  const a = js.slice(js.indexOf('function cardAsked()'), js.indexOf('function openDesk()'));
+  ok(js.indexOf('if (!S.loaded) cardFromAddress();') > -1 && js.indexOf('if (!S.loaded) cardFromAddress();') < js.indexOf('S.loaded = true; S.gate = "open";'), 'the card is looked for once, on the first read of the record');
+  const run = (search, where) => { const S = { view: { team: 'today' }, role: 'team', shut: { lane: true }, res: { lane: { x: 1 } }, idx: { lane: 3 }, front: 'x', owner: 'John', goto: null };
+    new Function('S', 'location', 'cardWhere', 'URLSearchParams', a + '; cardFromAddress();')(S, { search }, where, URLSearchParams); return S; };
+  let S = run('?card=review:SE1:2026-11-20:bitter', (k) => k === 'review:SE1:2026-11-20:bitter' ? ['today', 'lane'] : null);
+  ok(S.goto && S.goto.l === 'lane' && S.goto.id === 'review:SE1:2026-11-20:bitter' && S.view.team === 'today' && S.shut.lane === false && S.res.lane === null && S.idx.lane === 0 && S.front === '' && S.owner === 'all', 'a card the desk holds opens in its view and lane, that card showing');
+  S = run('?card=move:abc', (k) => k === 'move:abc' ? ['growing', 'gcards'] : null);
+  ok(S.view.team === 'growing' && S.goto.l === 'gcards', 'a How We\'re Growing card opens on How We\'re Growing');
+  S = run('?card=note:gone', () => null); ok(S.goto === null && S.view.team === 'today' && S.idx.lane === 3, 'a key the desk does not hold opens the desk as it would');
+  S = run('?card=' + encodeURIComponent('<script>'), () => ['today', 'lane']); ok(S.goto === null, 'an address that is not a card key is ignored');
+  S = run('', () => ['today', 'lane']); ok(S.goto === null, 'no card in the address: nothing changes');
+}
 console.log(pass+' passed, '+fail+' failed'); process.exit(fail?1:0);
