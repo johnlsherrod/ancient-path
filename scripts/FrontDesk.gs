@@ -1,5 +1,12 @@
 /**
- * Ancient Path — Front Desk · build 53 · The Friday review's cards carry their choices (Nov 21, 2026, the morning build). Built on build 52, read back from the live project on Nov 20 (identical to this repository's copy, commit 739f650; the project has not been saved since), so everything in 52 is kept.
+ * Ancient Path — Front Desk · build 54 · The cards on the platform, for our team (health-6 H6.1, Nov 23, 2026, the morning build). Built on build 53, read back from the live project on Nov 23 through the Drive connector (Code.gs identical to this repository's copy, commit bb40014), so everything in 53 is kept.
+ *   1. Every time the feed is written (the 5-minute run, and at once after a press moves a card), its open cards go to the platform record too (desk_feed_push, behind the event log's own secret, tri:secret and tri:school), so our team's console on app.ancientpathcoaching.com opens its first card in one call instead of the Apps Script's 2.1 seconds. The platform keeps only each card's own words and its presses; the roster, what came in, payments, a person's message and every link stay here. A push that fails is sorted by triage like any other failure (a passing outage is silent; a refusal is one card); the feed write itself never waits on it or fails with it.
+ *   2. A press from our team's console on the platform carries the person's platform sign-in instead of a desk key (b.platform). The script asks the platform who it is (auth/v1/user, the platform's publishable key), and the email must be an admin row on the People tab, as a desk key's is. Only card_act and undo take it. The sign-in is never kept: a press held for a busy lock drops it with the desk key.
+ *   FD.BUILD 54, DESK_BUILD 44 (desk.js unchanged), CSS_RULES 523 (no stylesheet rule added).
+ *   Moves to the platform as it is: the card fields the platform keeps. Rebuilt there: the cards themselves, when the Front Desk moves.
+ *   Simplicity check: count: no tab, timer, page, connector or Script Property added (it uses tri:secret and tri:school, already set); retires nothing yet (the platform's copy retires the Apps Script read for our team once the console is walked); when it breaks, the Front Desk itself is unchanged and the console says how old its copy is; next school: its own tri:school.
+ *   Preflight: the file parses; deskFeedPush_ sends only the cards list and three counts; the platform door was trialled on the live database inside a rolled-back transaction (checks/who-sees-desk-feed.sql, 17 of 17); whoPlatform_ refuses a token the platform does not know, an email off the People tab and a non-admin.
+ * Front Desk · build 53 · The Friday review's cards carry their choices (Nov 21, 2026, the morning build). Built on build 52, read back from the live project on Nov 20 (identical to this repository's copy, commit 739f650; the project has not been saved since), so everything in 52 is kept.
  *   1. review: is a kind CHOICES_ knows (CH_RULING_: Ruled · Change it · Not now). The Friday review writes its cards as review:<area>:<date>:<slug> (Nov 20: SE1 search, PA2 partners, TR1 health), each one an Approve for John. The table did not know the kind, so build 51's sweep carried all five to Claude as "A kind of card the desk does not know" (To Claude, Nov 20, 6:24 AM), after John had answered them. Each is a ruling: Approve is Ruled, and the review carries out what was approved.
  *   FD.BUILD 53, DESK_BUILD 44 (desk.js unchanged), CSS_RULES 523 (no stylesheet rule added). The one line in CHOICES_ and the build number are the only changes to this file.
  *   Simplicity check: count: no tab, timer, page, connector or Script Property added; retires nothing; when it breaks, a card of an unknown kind still goes to Claude to sort; next school: nothing more.
@@ -641,7 +648,7 @@
  */
 
 const FD = {
-  BUILD: '53',
+  BUILD: '54',
   OWN: [{ email: 'john@ancientpathcoaching.com', name: 'John Sherrod' }, { email: 'johnsherrodtest@gmail.com', name: 'John Sherrod' }], // build 39: our own addresses, which an admin may press Text him on (isOurs_ keeps them off the Roster and out of every count)
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SIGNALS_SHEET_ID: '1s79xljKjt-sYCZin0-oRFp5swxcETS0a4gzr126_Dns',
@@ -3026,6 +3033,51 @@ function writeFeed_(ss, cfg, captured, cal, search, themes) {
 }
 
 /**
+ * build 54 (health-6 H6.1): the open cards of the feed just written, sent to the platform record (desk_feed_push), so our team's console
+ * opens its first card in one call. Only the cards list and three counts are sent; the platform keeps each card's own words and its presses
+ * and drops everything else. Never throws, and the feed write never waits on an answer it cannot get: a failure goes to triage.
+ */
+const DESK_FEED_PUSH_ = 'https://eyiqlyaridagclnbxhzy.supabase.co/rest/v1/rpc/desk_feed_push'; // written out: TRI_RPC_ is declared further down the file
+function deskFeedPush_(s) {
+  try {
+    const c = triCfg_(); if (!c || !s) return;
+    const f = JSON.parse(s);
+    if (!f || !Array.isArray(f.actions)) return;
+    const body = { generated: f.generated || null, build: FD.BUILD, actions: f.actions, carrying: Array.isArray(f.carrying) ? f.carrying.map(a => ({ key: a && a.key })) : [], doneThisWeek: Number(f.doneThisWeek || 0) };
+    const r = UrlFetchApp.fetch(DESK_FEED_PUSH_, { method: 'post', contentType: 'application/json', headers: { apikey: TRI_.KEY }, muteHttpExceptions: true,
+      payload: JSON.stringify({ p_secret: c.secret, p_school: c.school, p_feed: body }) });
+    const code = r.getResponseCode();
+    let j = null; try { j = JSON.parse(r.getContentText()); } catch (e) { j = null; }
+    if (code !== 200 || !j || j.ok !== true) alert_('The desk feed could not reach the platform: ' + (code !== 200 ? 'Server error ' + code : 'refused (' + ((j && j.error) || 'no answer') + ')'));
+  } catch (e) { alert_('The desk feed could not reach the platform: ' + triMsg_(e)); }
+}
+/**
+ * build 54 (health-6 H6.1): who is pressing from our team's console on the platform. The platform answers who holds the sign-in
+ * (auth/v1/user, with the platform's publishable key); the email must be an admin on the People tab, as a desk key's is. The answer is
+ * kept for five minutes under the sign-in's hash, never the sign-in itself. Only card_act and undo come this way.
+ */
+const PLATFORM_AUTH_ = 'https://eyiqlyaridagclnbxhzy.supabase.co/auth/v1/user', PLATFORM_ACTIONS_ = { card_act: 1, undo: 1 };
+function whoPlatform_(token, action) {
+  const t = String(token || '');
+  if (!PLATFORM_ACTIONS_[action]) throw { code: 'bad_action' };
+  if (t.length < 32 || t.length > 4096) throw { code: 'no_key' };
+  const cache = CacheService.getScriptCache(), ck = 'fd:pf:' + sha256_(t).slice(0, 40);
+  let email = cache.get(ck);
+  if (!email) {
+    const r = UrlFetchApp.fetch(PLATFORM_AUTH_, { method: 'get', headers: { apikey: TRI_.KEY, Authorization: 'Bearer ' + t }, muteHttpExceptions: true });
+    if (r.getResponseCode() !== 200) throw { code: 'bad_key' };
+    let u = null; try { u = JSON.parse(r.getContentText()); } catch (e) { u = null; }
+    email = String((u && u.email) || '').toLowerCase().trim();
+    if (!email) throw { code: 'bad_key' };
+    try { cache.put(ck, email, 300); } catch (e) {}
+  }
+  const person = personByEmail_(email);
+  if (!person) throw { code: 'not_on_list' };
+  if (person.role !== 'admin') throw { code: 'not_yours' };
+  return person;
+}
+
+/**
  * build 24.1: the feed outgrew one cell (Sheets holds 50,000 characters in a cell; the feed passed it on Oct 15, 2026). It is written across
  * row 1 of the feed tab in pieces of 45,000 characters, A1 then B1 then C1, and read back by joining them left to right until an empty cell.
  * Every reader and writer goes through this one pair of calls, so the rest of the script is unchanged.
@@ -3043,6 +3095,7 @@ function feedCell_(ss) {
     },
     setValue: function (v) {
       const s = String(v == null ? '' : v);
+      deskFeedPush_(s); // build 54 (health-6): the open cards go to the platform record too; never throws
       const parts = [];
       let i = 0;
       while (i < s.length) {
@@ -5541,7 +5594,7 @@ function deskRun_(b) {
     if (action === 'waitlist_join') return waitlistJoin_(b); // build 43: public, from the wait-list form; no key
     if (action === 'page_check') return pageCheck_(b); // build 28.2: public, a page's own self-check (AP-SHIP 1, line 7); no key
     if (action === 'road') return roadFeed_(); // build 28.3: public, from Your Page; no key, no names
-    const who = whoIs_(b.key, b.site); // build 27: the key opens only for the person the site shows
+    const who = b.platform ? whoPlatform_(b.platform, action) : whoIs_(b.key, b.site); // build 27: the key opens only for the person the site shows; build 54: or our team's platform sign-in, for a press
     if (action === 'desk') return deskFor_(who);
     if (action === 'ask') return askDesk_(who, b);
     if (action === 'answers') return bwmRecord_(who, b);
@@ -7633,7 +7686,7 @@ function pressDrain_() {
 }
 function pressKeep_(op, who, b, kept) {
   const body = JSON.parse(JSON.stringify(b || {}));
-  delete body.key; // the desk key is never kept (the press is replayed as the person who pressed it); the build stays: page_check reads it
+  delete body.key; delete body.platform; // build 54: nor the platform sign-in; the desk key is never kept (the press is replayed as the person who pressed it); the build stays: page_check reads it
   const rec = JSON.stringify({ op: op, who: who || null, b: body, at: Date.now() });
   const id = PRESS_PREFIX_ + String(Date.now()).padStart(13, '0') + '-' + ('00' + (PRESS_SEQ_++ % 1000)).slice(-3) + '-' + Utilities.getUuid().slice(0, 8);
   const props = {};
