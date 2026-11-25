@@ -1,4 +1,14 @@
 /**
+ * 13.19 (Nov 25, 2026; John: the reading notice email shows the bare address; AP-LINK 1 (ruled Nov 20) says the link lives in a few words; "One record for the notice choice"). Built on the live 13.18, read back through the Google Drive connector. The class is fixed in one pass, with Front Desk 56 and Notices.gs N14 (the Front Desk's own emails).
+ *   1. One function sends every email that carries a link: apSend_ (AP-LINK 1; the same source, word for word, sits in the Front Desk's Code.gs). The plain-text copy keeps the address alone on its own line; the html body holds it in a few words. Marked [words](address) or a bare address (it gets the words for its place).
+ *   2. roadNoticeGo_: the reading notice reads "Open your readings"; the plain notice reads "Open Your Page" and now carries "Our team at Ancient Path" and the why line (ap-notice-standard rules 4 and 5). The words of both are one pure function, roadNoticeMail_.
+ *   3. The Your Growth notice ("Something new on Your Growth") holds its link in "Open Your Growth", signed and with its why line.
+ *   4. witnessSend_ (note, weekly, invite, said-yes, invited weekly, reminder, practice) fills {link} with its words: Open Your Page, Open Your Group This Week, Read what it asks of you, Open Your Witness Page, I did it today. A Config "email: <key> body" line keeps working; its {link} is held in the same words.
+ *   5. Our team's emails carry the Front Desk in words ("Open the Front Desk"): read this now, A hand raised on the road, A witness asked us to look in on, A witness asked our team a question, a new witness's letter, and the triage mail. A man's or a witness's own words in them are kept exactly as written (apLit_), never turned into a link.
+ *   6. One record for how he is told: when Settings turns "text me" off on TextOptIn (Notices.gs N14, in the same write) his choice here moves from Text to Email. If a notice still finds a Text choice with "text me" off or no text setting (the old split, john@'s on Nov 20), the choice moves to Email then and the email says nothing of text. "This one came by email because we could not text you" shows only when a text truly failed (stopped, a failing number, Twilio or the Front Desk down), never when "text me" is off.
+ *   Stamps: SCRIPT_BUILD 13.19; ROAD_BUILD 11.15.2, GROWTH_BUILD 4.5.2 and SCRIPT_LABEL unchanged; road.js, row.js, hisroad.js unchanged. One Log line, "build 13.19", written once (ensureBuild1319_). Install: paste, Save, Deploy > Manage deployments > the pencil > New version > Deploy. No setup run. test1319 (Run, once) sends one test of each changed email to john@ and nothing to a man.
+ */
+/**
  * 13.18 (Nov 20, 2026; John: "Fix the Jason issue"; ap-witness rule 1, ruled Nov 18, 2026: in a group the leader is never a witness, and no page shows him as one). Three server changes, with Your Page hisroad.js 11.16.1 (which names the leader as the leader on a group man's page):
  *   1. A leader's page (Witness pages, kind leader) never carries a man's own words, even when he shared them with his witness: witnessManData_ blanks f.words for every kind but invited. Today no group man shares his words, so nothing a leader sees changes.
  *   2. The leader's page is headed Your Group (tab, kicker and title "This week: <names>" / "Your Group This Week"), never Your Witness Page. The leader's weekly email already says "your men's weeks are ready" and is unchanged.
@@ -1459,6 +1469,36 @@ function ensureBuild1317_(ss) {
   props.setProperty('b1317', '1');
 }
 
+/** Build 13.19: one Log line, once. */
+function ensureBuild1319_(ss) {
+  var props = PropertiesService.getScriptProperties();
+  if (props.getProperty('b1319') === '1') return;
+  log_(ss, 'build 13.19', SCRIPT_LABEL + ' · Research reader 13.19 · links in words in every email (apSend_, AP-LINK 1): the reading and plain notices, Your Growth, the witness emails, our team\'s alerts · one record for how he is told: "text me" off moves his choice to Email, and the could-not-text footer shows only when a text truly failed.');
+  props.setProperty('b1319', '1');
+}
+/** Build 13.19: Run once after deploying. Sends one test of each changed email to john@ only (never to a man), subject marked [TEST], with the live words and the live pieces; reports what it sent in the Log. */
+function test1319() {
+  var me = HAND_TEAM, ss = SpreadsheetApp.openById(RE_SHEET_ID), cfg = readConfig_(ss), sent = [];
+  function t(label, to, subject, text, opts, words) { var p = apSend_(to, '[TEST] ' + subject, text, opts || { name: 'Ancient Path' }, words); sent.push(label + (p.bare.length ? ' (NO WORDS FOR ' + p.bare.join(' ') + ')' : '')); }
+  var key = 'g1pw8ljk', link = 'https://www.ancientpathcoaching.com/start?new=' + key;
+  var a = roadNoticeMail_({ link: link, reading: true, head: 'Test reading headline', day: 'Wednesday' }); t('reading notice', me, a.subject, a.text);
+  var b = roadNoticeMail_({ link: link }); t('plain notice', me, b.subject, b.text);
+  var c = roadNoticeMail_({ link: link, failed: true }); t('plain notice, text failed', me, c.subject, c.text);
+  t('Your Growth notice', me, 'Something new on Your Growth', growthNoticeText_(String(cfg['growth page link'] || 'https://www.ancientpathcoaching.com/your-growth').trim()));
+  Object.keys(WIT_LINK_WORDS_).forEach(function (k) {
+    var v = { first: 'Test', name: 'Test Witness', wfirst: 'Test', group: 'Test Group', names: 'Test', link: (k === 'note' || k === 'yes') ? witnessPageLink_(cfg) : k === 'invite' ? witnessYesUrl_(cfg, 'TESTTOKEN') : k === 'practice' ? witnessDidUrl_(cfg, 'TESTTOKEN') : witnessUrl_(cfg, 'TESTTOKEN') };
+    var sub = witnessFill_(witnessText_(cfg, k + ' subject'), v), body = witnessFill_(witnessText_(cfg, k + ' body'), { first: 'Test', name: 'Test Witness', wfirst: 'Test', group: 'Test Group', names: 'Test', link: '[' + WIT_LINK_WORDS_[k] + '](' + v.link + ')' });
+    if (sub != null && body != null) t('witness ' + k, me, sub, body.replace(/\s+$/, '') + '\n');
+  });
+  t('read this now', me, 'Ancient Path — read this now', 'An answer on For his road reads at the "now" level.\n\n[Open the Front Desk](' + DESK_LINK_ + ')\n\nTest Man · Test Room\n\n' + apLit_('“A test answer.”') + '\n');
+  t('hand raised', me, 'A hand raised on the road', ['Test raised a hand on the road.', '', 'Test · test@example.org', '', 'He has been told our team has his note.', '', '[Open the Front Desk](' + DESK_LINK_ + ')'].join('\n') + '\n');
+  t('witness asked us to look in', me, 'A witness asked us to look in on Test', ['A witness asked our team to look in on Test the same day.', '', 'Witness: Test Witness · w@example.org', 'Man: Test Man · m@example.org', '', 'The witness added: ' + apLit_('A test line.'), '', '[Open the Front Desk](' + DESK_LINK_ + ')'].join('\n') + '\n');
+  t('witness asked a question', me, 'A witness asked our team a question', 'Test, who walks with Test, asks:\n' + apLit_('“A test question.”') + '\nTest Witness · w@example.org\n\n[Open the Front Desk](' + DESK_LINK_ + ')\n');
+  t('new witness letter', me, 'A new witness’s letter to Test (1 of 2)', ['A witness walking with Test wrote to him. Our team reads their first two letters.', '', 'The letter:', apLit_('A test letter.'), '', '[Open the Front Desk](' + DESK_LINK_ + ')'].join('\n') + '\n');
+  t('triage mail', me, TRI_.LABEL + ': test', ['What stopped: a test.', 'It touches nothing.', TRI_SEV_WORDS_.S1, 'The repair is under way. The card on the Front Desk shows where it stands.', '', '[Open the Front Desk](' + TRI_.DESK + ')'].join('\n'), {});
+  log_(ss, 'build 13.19', 'test1319 sent ' + sent.length + ' to ' + me + ': ' + sent.join(' · '));
+  return sent;
+}
 function jsonOut_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
 function growthCall_(b) {
@@ -2601,6 +2641,7 @@ function roadCallInner_(b) {
   try { ensureBuild13155_(ss); } catch (xe13155) {} // build 13.15.5: one Log line, once
   try { ensureBuild1316_(ss); } catch (xe1316) {} // build 13.16: one Log line, once
   try { ensureBuild1317_(ss); } catch (xe1317) {} // build 13.17: the keep-warm timer, one Log line, once
+  try { ensureBuild1319_(ss); } catch (xe1319) {} // build 13.19: one Log line, once
   try { ensureBuild111_(ss); } catch (xe7) {} // build 11.1: the Witness pages and Notes tabs, the Config email: lines, the hourly trigger, one Log line, once
   var L;
   try { L = learnerFor_(ss, cfg, b); }
@@ -3311,7 +3352,7 @@ function landNow_(ss, cfg, L, e, text) {
   } catch (x) {}
   try {
     var to = Session.getEffectiveUser().getEmail();
-    GmailApp.sendEmail(to, 'Ancient Path — read this now', 'An answer on For his road reads at the "now" level. Open the Front Desk:\n\nhttps://www.ancientpathcoaching.com/front-desk\n\n' + (L.name || L.email) + (L.room ? ' · ' + L.room : '') + '\n\n“' + text + '”\n', { name: 'Ancient Path' });
+    apSend_(to, 'Ancient Path — read this now', 'An answer on For his road reads at the "now" level.\n\n[Open the Front Desk](' + DESK_LINK_ + ')\n\n' + (L.name || L.email) + (L.room ? ' · ' + L.room : '') + '\n\n' + apLit_('“' + text + '”') + '\n', { name: 'Ancient Path' }); // build 13.19: the desk in words; his own words kept exactly
   } catch (x2) { log_(ss, 'road', 'now-level mail not sent for ' + L.email, String(x2).slice(0, 160)); }
 }
 /** The word for the road: for every answer without one, a verse, one question, one step, from his words, the week's own sentences and the text. Run by the morning. */
@@ -3457,6 +3498,13 @@ function roadNotice_(ss, cfg, L) {
   var r = roadNoticeGo_(ss, cfg, L, false);
   return r === 'text' || r === 'held' || r === 'email';
 }
+/** Build 13.19: the words of one notice email, pure. o = { link, failed, reading, head, sensitive, day }. ap-notice-standard (one line, the link in a few words, signed by our team, why he gets it last) and AP-LINK 1.
+ *  failed = a text truly failed (stopped, a failing number, Twilio or the Front Desk down): only then does the last line say it came by email because we could not text him. Never when "text me" is off. */
+function roadNoticeMail_(o) {
+  var why = o.failed ? 'You chose Text for notices in Settings. This one came by email because we could not text you.' : 'You get this because you chose email for notices in Settings.';
+  if (o.reading) return { subject: (o.sensitive || !o.head) ? "This week's reading is ready" : o.head, text: "This week's reading is on your page, with one thing to do and a question to carry " + (o.day ? 'into ' + o.day + ' night.' : 'through your week.') + '\n\n[Open your readings](' + o.link + ')\n\nOur team at Ancient Path\n\n' + why + '\n' };
+  return { subject: 'Ancient Path', text: 'There is something new on your page.\n\n[Open Your Page](' + o.link + ')\n\nOur team at Ancient Path\n\n' + why + '\n' };
+}
 /** Build 13.9: how one notice goes to one man, and how it went. 'text' (sent through Notices.gs) · 'held' (a text kept for 8:00 AM Central) · 'email' · 'page' (his own choice: only on this page, so nothing goes) · 'cap' (a notice already went today, either channel) · 'off' (Config "road notice" is not email) · 'failed' (the email could not be sent).
  *  team = true: a card from our team landed (Text him on the Front Desk). The email is then the plain one and never carries a reading's headline; every other rule is the same. */
 function roadNoticeGo_(ss, cfg, L, team, card) {
@@ -3467,24 +3515,26 @@ function roadNoticeGo_(ss, cfg, L, team, card) {
   var rows = roadRows_(ss, L.email), today = today_();
   var key = cardKeyClean_(card) || cardFirstToday_(rows), link = 'https://www.ancientpathcoaching.com/start' + (key ? '?new=' + key : ''); // build 13.16: the card this notice is about
   if (rows.some(function (r) { return r.what === 'notice' && dayOf_(r.when) === today; })) return 'cap'; // one a day at most
-  var byText = L.notice === 'text'; // build 13.8 (Text Notices Build 1): his own choice in Settings, after Start Texts
+  var byText = L.notice === 'text', textFailed = false; // build 13.8 (Text Notices Build 1): his own choice in Settings, after Start Texts
   if (byText) {
     var tr = textApi_(cfg, L.email, 'send', '', { card: key }); // Notices.gs sendNotice: quiet hours, one a day and his yes are kept there; the words never say what is waiting
     if (tr && tr.ok) { roadRow_(ss, L.email, key, 'notice', 'text', ''); return tr.status === 'held' ? 'held' : 'text'; }
     if (tr && tr.fallback === false) return 'cap'; // a notice already went today; never a second channel
-    // a number that cannot be texted right now (stopped, failing, not on file, or the Front Desk cannot be reached): this one notice goes by email, below
+    if (tr && tr.ok === false && /text me is off|no text setting on file/.test(String(tr.note || ''))) { // build 13.19, one record: "text me" is off, so Text is no longer his choice; it moves to Email now and this email says nothing of text
+      try { learnersSheet_(ss).getRange(L.row, LC.notice).setValue(NOTICES.email); L.notice = 'email'; roadRow_(ss, L.email, '', 'setup', 'notice: email (text me was off)', roadWeek_(cfg, L).start); } catch (xm) {}
+    } else textFailed = true; // a number that cannot be texted right now (stopped, failing, Twilio not set up, or the Front Desk cannot be reached): this one notice goes by email, below, and says so
   }
   var g = team ? null : rows.filter(function (r) { return r.what === 'given' && dayOf_(r.when) === today; })[0], e = null;
   if (g) { try { e = findEntry_(ss, g.id); } catch (xe) { e = null; } }
-  var subject = 'Ancient Path', body = 'There is something new on your page.\n\n' + link + '\n' + (byText ? '\nYou chose Text for notices in Settings. This one came by email because we could not text you.\n' : '');
+  var mail = { link: link, failed: textFailed };
   if (e && e.road) { // ap-notice-standard (ruled Nov 5, 2026): the subject is the headline; the headline stays off a lock screen when the reading names temptation, addiction or abuse
-    var head = headOf_(e), sensitive = NOTICE_SENSITIVE_.test(e.keywords + ' ' + e.road), rr = L.room ? roomRow_({ room: L.room }) : null;
-    var day = rr ? Utilities.formatDate(new Date(Date.UTC(2026, 0, 4 + roomWeekday_(rr), 12)), 'GMT', 'EEEE') : '';
-    subject = (sensitive || !head) ? "This week's reading is ready" : head;
-    body = "This week's reading is on your page, with one thing to do and a question to carry " + (day ? 'into ' + day + ' night.' : 'through your week.') + '\n\n' + link + '\n\nOur team at Ancient Path\n\n' + (byText ? 'You chose Text for notices in Settings. This one came by email because we could not text you.' : 'You get this because you chose email for notices in Settings.') + '\n';
+    var rr = L.room ? roomRow_({ room: L.room }) : null;
+    mail.reading = true; mail.head = headOf_(e); mail.sensitive = NOTICE_SENSITIVE_.test(e.keywords + ' ' + e.road);
+    mail.day = rr ? Utilities.formatDate(new Date(Date.UTC(2026, 0, 4 + roomWeekday_(rr), 12)), 'GMT', 'EEEE') : '';
   }
+  var nm = roadNoticeMail_(mail);
   try {
-    GmailApp.sendEmail(L.email, subject, body, { name: 'Ancient Path' });
+    apSend_(L.email, nm.subject, nm.text, { name: 'Ancient Path' }); // build 13.19 (AP-LINK 1): the address is held in words in the html; the plain copy keeps it alone on its line
     roadRow_(ss, L.email, key, 'notice', ch, '');
     return 'email';
   } catch (e2) { log_(ss, 'road', 'notice not sent to ' + L.email, String(e2).slice(0, 160)); return 'failed'; }
@@ -4338,6 +4388,89 @@ function witTab_(ss, name, head) {
   if (!sh) { sh = ss.insertSheet(name); sh.getRange(1, 1, 1, head.length).setValues([head]); sh.setFrozenRows(1); }
   return sh;
 }
+/* ═══════════ build 13.19 · AP-LINK 1 in every email (ruled Nov 20, 2026; one source, carried word for word by the Research reader and by the Front Desk's Code.gs) ═══════════
+ * A link in an email lives in a few words, never the pasted address. apSend_ takes the plain text of an email and sends it with an htmlBody, and keeps the plain copy
+ * (the address alone on its own line, because plain text cannot hold words). Two ways to say where the words go:
+ *   marked: [Open Your Page](https://www.ancientpathcoaching.com/start) anywhere in the text. Alone in a paragraph, the plain copy shows the address alone on its line;
+ *           inside a sentence, the plain copy keeps the words and puts the address alone on a line under that paragraph.
+ *   bare:   an address already in the text (a Config line, words our team wrote, a card's preview). It gets the words for its place (apLinkWords_, or the map the sender passes).
+ *           When a line ends with a colon and only an address follows ("Join the wait list:"), the html carries the words in that sentence and drops the colon (no setup lines).
+ * An address with no words known gets "Open the page" and is the one thing the tests below list, so it is named and fixed, never shipped by accident. */
+var AP_LINK_WORDS_ = [
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/front-desk\b/i, 'Open the Front Desk'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/start#readings\b/i, 'Open your readings'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/start\b/i, 'Open Your Page'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/your-growth\b/i, 'Open Your Growth'],
+  [/^https?:\/\/(?:www\.)?(?:ancientpathcoaching\.com)\/before-we-meet\b/i, 'Open Before We Meet'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/payment\?/i, 'Confirm your seat'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/your-answers\b/i, 'Open your questions'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/path-player\b/i, 'Open your course'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/course\/student-course\b/i, 'Open Breaking Free'],
+  [/^https?:\/\/app\.ancientpathcoaching\.com\/y\//i, 'Read what it asks of you'],
+  [/^https?:\/\/app\.ancientpathcoaching\.com\/#\/desk/i, 'Open Your Desk'],
+  [/^https?:\/\/docs\.google\.com\/document\//i, 'Open the notes']
+];
+function apLinkWords_(url, words) {
+  var u = String(url || '');
+  if (words) { if (typeof words === 'string') return words; if (words[u]) return String(words[u]); }
+  for (var i = 0; i < AP_LINK_WORDS_.length; i++) if (AP_LINK_WORDS_[i][0].test(u)) return AP_LINK_WORDS_[i][1];
+  return 'Open the page';
+}
+function apEsc_(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+/** A person's own words inside an email text (a man's answer, a witness's letter): kept exactly as he wrote them, never turned into a link, never changed. */
+function apLit_(s) { return '\u0003' + String(s == null ? '' : s).replace(/[\u0001-\u0006]/g, '') + '\u0004'; }
+/** The plain copy and the html of one email text. Pure. words = { address: 'words' } for bare addresses (optional). Returns { plain, html, bare: [addresses given the fallback words] }. */
+function apMailParts_(text, words) {
+  var src = String(text == null ? '' : text).replace(/\r\n?/g, '\n'), links = [], bare = [], lits = [];
+  src = src.replace(/\u0003([\s\S]*?)\u0004/g, function (m, s) { lits.push(s); return '\u0005' + (lits.length - 1) + '\u0006'; });
+  function back(t) { return t.replace(/\u0005(\d+)\u0006/g, function (m, n) { return lits[Number(n)]; }); }
+  // 1. marked links, then bare addresses, each become one placeholder
+  var marked = src.replace(/\[([^\]\n]{2,90})\]\((https?:\/\/[^\s)]+)\)/g, function (m, w, u) { links.push({ w: w, u: u, bare: false }); return '\u0001' + (links.length - 1) + '\u0002'; });
+  marked = marked.replace(/https?:\/\/[^\s<>"'\u0001\u0002]+/g, function (m) {
+    var tail = (m.match(/[.,;:!?)]+$/) || [''])[0], u = tail ? m.slice(0, m.length - tail.length) : m, w = apLinkWords_(u, words);
+    if (w === 'Open the page') bare.push(u);
+    links.push({ w: w, u: u, bare: true }); return '\u0001' + (links.length - 1) + '\u0002' + tail;
+  });
+  var paras = marked.replace(/^\n+|\n+$/g, '').split(/\n{2,}/), plain = [], html = [];
+  function ph(i) { return '\u0001' + i + '\u0002'; }
+  var onlyLink = /^\u0001(\d+)\u0002$/;
+  for (var k = 0; k < paras.length; k++) {
+    var p = paras[k], t = p.trim(), m1 = onlyLink.exec(t), here = [];
+    p.replace(/\u0001(\d+)\u0002/g, function (m, n) { here.push(Number(n)); return m; });
+    // plain copy: the address alone on its line; inside a sentence the words stay and the address follows under the paragraph
+    if (m1) plain.push(links[Number(m1[1])].u);
+    else {
+      var body = p.replace(/\u0001(\d+)\u0002/g, function (m, n) { return links[Number(n)].bare ? links[Number(n)].u : links[Number(n)].w; });
+      plain.push(back(body));
+      here.forEach(function (n) { if (!links[n].bare) plain.push(links[n].u); });
+    }
+    // html: a setup line ("...:" then only an address) is one sentence with the words in it
+    var nextT = k + 1 < paras.length ? paras[k + 1].trim() : '', m2 = onlyLink.exec(nextT);
+    if (!m1 && m2 && /:\s*$/.test(t)) {
+      var L2 = links[Number(m2[1])];
+      html.push('<p style="margin:0 0 16px">' + apHtmlLine_(t.replace(/:\s*$/, '.'), links, lits) + ' <a href="' + apEsc_(L2.u) + '">' + apEsc_(L2.w) + '</a></p>');
+      plain.push(L2.u); k++; continue;
+    }
+    if (m1) html.push('<p style="margin:0 0 16px"><a href="' + apEsc_(links[Number(m1[1])].u) + '">' + apEsc_(links[Number(m1[1])].w) + '</a></p>');
+    else html.push('<p style="margin:0 0 16px">' + apHtmlLine_(p, links, lits) + '</p>');
+  }
+  return { plain: plain.join('\n\n') + '\n', html: '<div style="font:16px/1.5 Arial,Helvetica,sans-serif;color:#222">' + html.join('') + '</div>', bare: bare };
+}
+function apHtmlLine_(p, links, lits) {
+  return apEsc_(p).replace(/\u0005(\d+)\u0006/g, function (m, n) { return apEsc_(lits[Number(n)]); }).replace(/\n/g, '<br>').replace(/\u0001(\d+)\u0002/g, function (m, n) { var l = links[Number(n)]; return '<a href="' + apEsc_(l.u) + '">' + apEsc_(l.w) + '</a>'; });
+}
+/** Send one email in words. svc = MailApp for the alerts that always used it; the default is GmailApp. opts as GmailApp's (name, cc, bcc, replyTo). Never sends the address in the html. */
+function apSend_(to, subject, text, opts, words, svc) {
+  var parts = apMailParts_(text, words), o = {}, k;
+  for (k in (opts || {})) if (Object.prototype.hasOwnProperty.call(opts, k)) o[k] = opts[k];
+  o.htmlBody = parts.html;
+  (svc || GmailApp).sendEmail(to, subject, parts.plain, o);
+  if (parts.bare.length) { try { apBareNote_(parts.bare, subject); } catch (x) {} } // an address with no words known went as "Open the page": named, so it is fixed
+  return parts;
+}
+var DESK_LINK_ = 'https://www.ancientpathcoaching.com/front-desk';
+/** The one place an address with no known words is named: one Log line, so it is fixed and never shipped by accident. */
+function apBareNote_(list, subject) { try { log_(SpreadsheetApp.openById(RE_SHEET_ID), 'link words', String(subject).slice(0, 80), 'no words for ' + list.join(' ')); } catch (e) {} }
 /** The Config line for a sent email, "email: <key>", falling back to the default seeded with this build. */
 function witnessText_(cfg, key) { var v = cfg && cfg['email: ' + key]; return v && String(v).trim() ? String(v) : WIT_MAIL[key] || ''; }
 /** Fills {words} in a sent line; returns null (and sends nothing) when any {placeholder} is left, so no sent text ever carries one. */
@@ -4345,10 +4478,14 @@ function witnessFill_(text, vars) {
   var out = String(text || '').replace(/\{([a-z]+)\}/g, function (m, k) { return vars && vars[k] != null && String(vars[k]) !== '' ? String(vars[k]) : m; });
   return /\{[a-z]+\}/.test(out) ? null : out;
 }
+/** Build 13.19 (AP-LINK 1): the words that hold {link} in each witness email. One name for one place, in every email. */
+var WIT_LINK_WORDS_ = { 'note': 'Open Your Page', 'weekly': 'Open Your Group This Week', 'invite': 'Read what it asks of you', 'yes': 'Open Your Page', 'invited weekly': 'Open Your Witness Page', 'invited reminder': 'Open Your Witness Page', 'practice': 'I did it today' };
 function witnessSend_(ss, cfg, to, key, vars) {
-  var subject = witnessFill_(witnessText_(cfg, key + ' subject'), vars), body = witnessFill_(witnessText_(cfg, key + ' body'), vars);
+  var v = {}, k; for (k in (vars || {})) if (Object.prototype.hasOwnProperty.call(vars, k)) v[k] = vars[k];
+  if (v.link) v.link = '[' + (WIT_LINK_WORDS_[key] || 'Open Your Page') + '](' + v.link + ')'; // the address is held in words; the plain copy keeps it alone on its line
+  var subject = witnessFill_(witnessText_(cfg, key + ' subject'), vars), body = witnessFill_(witnessText_(cfg, key + ' body'), v);
   if (!to || subject == null || body == null) { try { log_(ss, 'witness mail', 'not sent: ' + key, 'a placeholder had no value'); } catch (e) {} return false; }
-  GmailApp.sendEmail(to, subject, body.replace(/\s+$/, '') + '\n', { name: 'Ancient Path' });
+  apSend_(to, subject, body.replace(/\s+$/, '') + '\n', { name: 'Ancient Path' });
   return true;
 }
 function witnessPageLink_(cfg) { return String(cfg['your page link'] || 'https://www.ancientpathcoaching.com/start').trim(); }
@@ -4561,8 +4698,9 @@ function witnessDanger(token, key, line) {
   try {
     var ss = SpreadsheetApp.openById(RE_SHEET_ID), cfg = readConfig_(ss), m = witnessMan_(ss, cfg, token, key), first = firstOf_(m.L.name) || 'a man';
     var body = ['A witness asked our team to look in on ' + first + ' the same day.', '', 'Witness: ' + (m.wit.name || m.wit.email) + ' · ' + m.wit.email, 'Man: ' + (m.L.name || first) + ' · ' + m.L.email];
-    var extra = String(line || '').replace(/\s+/g, ' ').trim().slice(0, 1500); if (extra) body.push('', 'The witness added: ' + extra);
-    GmailApp.sendEmail(HAND_TEAM, 'A witness asked us to look in on ' + first, body.join('\n') + '\n', { name: 'Ancient Path' });
+    var extra = String(line || '').replace(/\s+/g, ' ').trim().slice(0, 1500); if (extra) body.push('', 'The witness added: ' + apLit_(extra));
+    body.push('', '[Open the Front Desk](' + DESK_LINK_ + ')'); // build 13.19: the desk, in words; the witness's own words kept exactly
+    apSend_(HAND_TEAM, 'A witness asked us to look in on ' + first, body.join('\n') + '\n', { name: 'Ancient Path' });
     log_(ss, 'witness danger', m.wit.email + ' → ' + m.L.email, 'sent to our team');
     return { ok: true };
   } catch (err) {
@@ -4929,7 +5067,7 @@ function witnessTeamCopy_(ss, cfg, wit, L, text) {
   var r = witnessRows_(ss).filter(function (x) { return x.token === wit.token; })[0]; if (!r || r.copies >= 2) return;
   ss.getSheetByName('Witness').getRange(r.row, 12).setValue(r.copies + 1);
   var first = firstOf_(L.name) || 'a man';
-  GmailApp.sendEmail(HAND_TEAM, 'A new witness’s letter to ' + first + ' (' + (r.copies + 1) + ' of 2)', ['A witness walking with ' + first + ' wrote to him. Our team reads their first two letters.', '', 'Witness: ' + (wit.name || wit.email) + ' · ' + wit.email, 'Man: ' + (L.name || first) + ' · ' + L.email, '', 'The letter:', String(text || '').slice(0, 4000)].join('\n') + '\n', { name: 'Ancient Path' });
+  apSend_(HAND_TEAM, 'A new witness’s letter to ' + first + ' (' + (r.copies + 1) + ' of 2)', ['A witness walking with ' + first + ' wrote to him. Our team reads their first two letters.', '', 'Witness: ' + (wit.name || wit.email) + ' · ' + wit.email, 'Man: ' + (L.name || first) + ' · ' + L.email, '', 'The letter:', apLit_(String(text || '').slice(0, 4000)), '', '[Open the Front Desk](' + DESK_LINK_ + ')'].join('\n') + '\n', { name: 'Ancient Path' }); // build 13.19: the desk in words; the letter kept exactly as written
 }
 
 /* ---- the invited witness's weekly email (the day of his yes, each week) and his reminder to write ---- */
@@ -5108,7 +5246,7 @@ function deskAsk(token, text) {
     var wf = firstOf_(wit.name) || 'A witness', names = witnessMen_(ss, wit).map(function (L) { return firstOf_(L.name); }).filter(Boolean).join(' and ') || 'a man';
     var because = wf + ', who walks with ' + names + ', asks:\n“' + t + '”\n' + (wit.name || wit.email) + ' · ' + wit.email;
     var carded = deskCard_('witness:ask:' + Utilities.getUuid().slice(0, 8), cfg['desk owner'] || teamName_(), 'Answer ' + wf + '’s question', 'For our team · A witness asks', because, '', 'RE14');
-    if (!carded) GmailApp.sendEmail(HAND_TEAM, 'A witness asked our team a question', because + '\n', { name: 'Ancient Path' });
+    if (!carded) apSend_(HAND_TEAM, 'A witness asked our team a question', wf + ', who walks with ' + names + ', asks:\n' + apLit_('“' + t + '”') + '\n' + (wit.name || wit.email) + ' · ' + wit.email + '\n\n[Open the Front Desk](' + DESK_LINK_ + ')\n', { name: 'Ancient Path' }); // build 13.19: the desk in words; his question kept exactly
     log_(ss, 'witness ask', wit.email, carded ? 'card' : 'email');
     return { ok: true };
   } catch (err) { return { ok: false, error: 'failed' }; }
@@ -5360,8 +5498,8 @@ function roadHand_(ss, cfg, L) {
     var first = String(L.name || '').trim().split(/\s+/)[0];
     var mk = rows.filter(function (r) { return r.what === 'mark' && r.week === week.start; }).pop(), m = mk ? markOf_(mk.text) : null;
     var lines = [(first || 'A man') + ' raised a hand on the road.', '', (first || 'A man') + ' · ' + L.email]; // build 11.0: his first name and how to reach him, and nothing about his week (the sheet says so)
-    lines.push('', 'He has been told ' + (leader ? 'his group’s leader' : 'our team') + ' has his note.');
-    GmailApp.sendEmail(to, 'A hand raised on the road', lines.join('\n') + '\n', { name: 'Ancient Path' });
+    lines.push('', 'He has been told ' + (leader ? 'his group’s leader' : 'our team') + ' has his note.', '', '[Open the Front Desk](' + DESK_LINK_ + ')'); // build 13.19: the desk, in words
+    apSend_(to, 'A hand raised on the road', lines.join('\n') + '\n', { name: 'Ancient Path' });
     roadRow_(ss, L.email, '', 'hand', '', week.start);
     log_(ss, 'road', 'hand raised: ' + L.email, 'sent to ' + who);
     return { ok: true, to: who, again: false };
@@ -5523,7 +5661,7 @@ var ROAD_JS = "/* AP-HISROAD road.js build 11.15.2 (Nov 16, 2026; John: the Read
  * what the room carried, The Shelf, Who We Read, his Craft and his lanes. New Answers kinds: after, less, voice, setaside, team, notice (Answers columns: when, who, entry id, kind, text, answer, room, build).
  * A Lanes tab (the twelve lanes of the mockup) and the Config lines are made once by ensureBuild12_. The 6:00 PM release (releaseTick) is switched by Config "auto release" (off until the hold is proven on the Front Desk).
  * Hold cards: research:hold:<entry id> on the Front Desk's Actions tab (rule RE15); a card marked done by hand is a hold. */
-var SCRIPT_BUILD = '13.18';
+var SCRIPT_BUILD = '13.19';
 var SCRIPT_LABEL = 'Text Notices Build 2'; // the one label stamped in every file of the build (Notices.gs N8, Front Desk 39, this script, desk.js 38; road.js stays 11.14), in the Log and in the repo commit
 var LANES_HEAD_12 = ['lane', 'what it covers', 'voices', 'Sources disciplines folded in', 'added'];
 var LANES_12 = [
@@ -6213,6 +6351,8 @@ function releaseAuto_(ss, cfg, when) {
   if (rel.length || held.length || waiting.length || when !== 'catch') log_(ss, 'auto release', today_() + ' · ' + (when || 'by hand'), rel.length + ' released, ' + held.length + ' held, ' + waiting.length + ' waiting on their lines, ' + sent + ' notice' + (sent === 1 ? '' : 's') + ' sent');
   return { released: rel.length, held: held.length, waiting: waiting.length, sent: sent };
 }
+/** Build 13.19: the Your Growth notice, pure: one line, the link in "Open Your Growth", signed by our team, why he gets it last. */
+function growthNoticeText_(link) { return 'There is something new on Your Growth.\n\n[Open Your Growth](' + link + ')\n\nOur team at Ancient Path\n\nYou get this because notices are on for you on Your Growth.\n'; }
 /** The one plain line: only to a facilitator whose room's week the released pieces fit, and not to one who chose No notice. */
 function sendNotices_(ss, cfg, rel) {
   var map = courseMap_(ss), link = String(cfg['growth page link'] || 'https://www.ancientpathcoaching.com/your-growth').trim(), sent = 0;
@@ -6223,7 +6363,7 @@ function sendNotices_(ss, cfg, rel) {
       var fit = rel.some(function (e) { return weekPairs_(e.week, map)[c.abbr.toLowerCase()] === Number(nx.week); }); if (!fit) return;
       var pref = 'email'; answersFor_(ss, p.email).forEach(function (r) { if (r.kind === 'notice') pref = r.text === 'none' ? 'none' : 'email'; });
       if (pref === 'none' || logHas_(ss, 'growth notice', p.email + ' · ' + today_())) return;
-      GmailApp.sendEmail(p.email, 'Something new on Your Growth', 'There is something new on Your Growth.\n\n' + link + '\n', { name: 'Ancient Path' });
+      apSend_(p.email, 'Something new on Your Growth', growthNoticeText_(link), { name: 'Ancient Path' }); // build 13.19 (AP-LINK 1)
       log_(ss, 'growth notice', p.email + ' · ' + today_(), 'sent'); sent++;
     } catch (x) {}
   });
@@ -6722,7 +6862,7 @@ function triClose_(sig) {
 /** S1 only: one plain email, once per signature. What stopped, who it touches, and the desk link on its own line. Never the error. */
 function triMail_(x) {
   try {
-    GmailApp.sendEmail(Session.getEffectiveUser().getEmail(), TRI_.LABEL + ': ' + x.j, ['What stopped: ' + x.j + '.', 'It touches ' + x.who + '.', TRI_SEV_WORDS_.S1, 'The repair is under way. The card on the Front Desk shows where it stands:', '', TRI_.DESK].join('\n'));
+    apSend_(Session.getEffectiveUser().getEmail(), TRI_.LABEL + ': ' + x.j, ['What stopped: ' + x.j + '.', 'It touches ' + x.who + '.', TRI_SEV_WORDS_.S1, 'The repair is under way. The card on the Front Desk shows where it stands.', '', '[Open the Front Desk](' + TRI_.DESK + ')'].join('\n'), {}); // build 13.19 (AP-LINK 1)
     return true;
   } catch (e) { return false; }
 }
