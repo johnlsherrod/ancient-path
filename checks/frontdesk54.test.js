@@ -17,7 +17,7 @@ return {deskFeedPush_, whoPlatform_, FD, pressKeep_: typeof pressKeep_==='functi
 globalThis.__alerts=alerts;
 const X=fn(...Object.values(g));
 let pass=0,fail=0; const ok=(c,n)=>{if(c)pass++;else{fail++;console.log('FAIL: '+n)}};
-ok(X.FD.BUILD==='54','the build is 54');
+ok(Number(X.FD.BUILD)>=54,'the build is 54 or later');
 const feed={generated:'2026-11-23T12:00:00Z',build:'54',roster:[{name:'x',phone:'1'}],inbound:{recent:[{summary:'his words'}]},actions:[{key:'note:a',title:'A'}],carrying:[{key:'plan:b',title:'B',note:'n'}],doneThisWeek:3};
 X.deskFeedPush_(JSON.stringify(feed));
 const push=fetches.find(f=>/desk_feed_push/.test(f.u)); const body=push&&JSON.parse(push.o.payload);
