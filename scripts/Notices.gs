@@ -1,4 +1,12 @@
 /**
+ * Ancient Path — Front Desk · Notices.gs · build N14 · One record for how he is told (Nov 25, 2026; with Research reader 13.19 and Front Desk 56; built on the live N13, read back from the Google Drive connector, so everything in N13 is kept).
+ * Found Nov 25: the Texts tab read "not sent · text me is off" at 8:58 AM while the notice email told him he had chosen Text. Settings (and the platform's off ask, PlatformTexts.gs) wrote "text me = no" here and never told the Research reader, so the Learners tab still said One line by text.
+ * 1. noticeOptWrite_: when "text me" is set to no from Settings, noticeMoveChoice_ moves his Research reader notice choice from One line by text to One line by email in the same write (Research Engine sheet, Learners, the notice column). A man on Email or Only on this page is not touched; a man not on Learners is not an error. If the move fails, nothing changes and the caller answers failed. STOP, Twilio's stopped and a failing number do not move it: his choice stays Text so START brings it back, and the Research reader says it came by email because we could not text him.
+ * 2. textMail_ (Email him instead) sends through apSend_ (Code.gs 56): any address in our team's words is held in words.
+ * Simplicity check. Count: scheduled tasks, connectors, pages, docs, sheet tabs and Config rows unchanged. Retires: the second record of how he is told. When it breaks: the Research reader heals a Text choice with "text me" off the first time it sends him a notice. Next school: nothing more (the move reads the school's own Learners tab by its notice header).
+ * Open: the platform's off ask does not say Email or None, so a man whose choice was Text on the Learners tab and who chose None on the platform moves to Email here.
+ */
+/**
  * Ancient Path — Front Desk · Notices.gs · build N13 · Witness 6 (Nov 20, 2026; built on the live N12 (Replies Go Out By API), read through the Google Drive connector, so everything in N12 is kept).
  * One line changes: the address a witness's weekly text may carry is his page on the platform, https://app.ancientpathcoaching.com/#/desk (or #/desk/<id>), and nothing else.
  * The old tokened /witness?k= address retires with the Research reader's witness page. No new text, no new kind, no new tab: the registered witness texts are unchanged word for word.
@@ -183,7 +191,7 @@ function noticeRun_(email, opts, heldRow) {
     const opt = noticeFindOpt_(op, email);
     if (!opt) return no('no text setting on file', '', true);
     const last4 = String(opt.phone || '').replace(/\D/g, '').slice(-4);
-    if (String(opt.textMe).trim().toLowerCase() !== 'yes') return no('text me is off', last4, true);
+    if (String(opt.textMe).trim().toLowerCase() !== 'yes') return opt.stoppedAt ? Object.assign(no('he replied STOP; texts stay off until he texts START', last4, true), { stopped: true }) : no('text me is off', last4, true); // build N14: STOP is a text that failed (his choice stays Text and the email says so); "text me" off is not
     const to = noticePhone_(opt.phone);
     if (!to) return no('no usable phone number', last4, true);
 
@@ -388,6 +396,7 @@ function noticeOptWrite_(email, phone, value, by, byReply) {
   const lock = LockService.getScriptLock();
   lock.waitLock(25000);
   try {
+    if (value === 'no' && by === 'Settings') noticeMoveChoice_(email); // build N14, one record: his "text me" and the Research reader's notice choice change in the same write; if the move cannot be made, nothing changes (the caller answers failed)
     const ss = SpreadsheetApp.openById(FD.SHEET_ID);
     noticeEnsureTabs_(ss);
     const op = ss.getSheetByName('TextOptIn');
@@ -396,6 +405,23 @@ function noticeOptWrite_(email, phone, value, by, byReply) {
     if (phone) op.getRange(o.row, 2).setValue(phone);
     noticeSetOpt_(op, email, value, by, byReply);
   } finally { lock.releaseLock(); }
+}
+
+/** Build N14: his Research reader notice choice leaves Text for Email (Research Engine sheet, Learners, the column headed notice). True when it moved. Throws when the sheet cannot be written, so the caller changes nothing. */
+function noticeMoveChoice_(email) {
+  const sh = SpreadsheetApp.openById(RESEARCH_SHEET_ID_).getSheetByName('Learners');
+  if (!sh || sh.getLastRow() < 2) return false;
+  const head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(h => String(h).trim().toLowerCase());
+  const col = head.findIndex(h => h.indexOf('notice') === 0) + 1;
+  if (col < 1) return false;
+  const rows = sh.getRange(2, 1, sh.getLastRow() - 1, Math.max(col, 1)).getValues();
+  for (let i = 0; i < rows.length; i++) {
+    if (String(rows[i][0] || '').toLowerCase().trim() !== email) continue;
+    if (String(rows[i][col - 1] || '').trim() !== 'One line by text') return false;
+    sh.getRange(i + 2, col).setValue('One line by email');
+    return true;
+  }
+  return false;
 }
 
 /** What Settings and the desk need to know about one man's texts. */
@@ -549,7 +575,7 @@ function textMail_(who, b) {
   if (n >= 40) throw { code: 'too_many' };
   const opts = { name: String((who && who.name) || sign), replyTo: mine || me };
   if (cc.length) opts.cc = cc.join(',');
-  GmailApp.sendEmail(email, subject, body, opts);
+  apSend_(email, subject, body, opts); // build N14 (AP-LINK 1): our team's words, any address held in words (Open Your Page, Open the Front Desk...)
   const now = new Date(); props.setProperty(dayKey, String(n + 1));
   const sends = ss.getSheetByName('Sends');
   if (sends) append_(sends, [[now, 'Email to him (from the Text him sheet)', subject, email + (cc.length ? ' · cc ' + cc.join(', ') : ''), 0, 'sent by ' + mine + (first ? ' for ' + first : '')]]);
@@ -786,7 +812,7 @@ function noticeLog_(tx, heldRow, row) {
 
 function noticeFindOpt_(op, email) {
   const d = op.getDataRange().getValues();
-  for (let i = 1; i < d.length; i++) if (String(d[i][0]).trim().toLowerCase() === email) return { row: i + 1, phone: d[i][1], textMe: d[i][2] };
+  for (let i = 1; i < d.length; i++) if (String(d[i][0]).trim().toLowerCase() === email) return { row: i + 1, phone: d[i][1], textMe: d[i][2], stoppedAt: String(d[i][5] || '').trim() };
   return null;
 }
 
