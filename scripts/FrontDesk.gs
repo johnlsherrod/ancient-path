@@ -1,4 +1,11 @@
 /**
+ * Ancient Path — Front Desk · build 56 · Links in Words (AP-LINK 1, ruled Nov 20, 2026; Nov 25, 2026 with Research reader 13.19 and Notices.gs N14). Built on the live build 55, read back from the Google Drive connector, so everything in 55 is kept.
+ *   1. One function sends every email that carries a link: apSend_ (the same source, word for word, as the Research reader's). The plain-text copy keeps the address alone on its own line; the html body holds it in a few words (Open Your Page, Open the Front Desk, Open Before We Meet, Open your questions...). A person's own words are never turned into a link (apLit_).
+ *   2. Changed sends: the weekly room email (Your Page and the course, in the sentence), the answers reminder, the agreement and answers asks from the desk, the referral ask, the wait-list welcome, the seat email, a note to the room, the facilitator notes, the story decision note, the triage mail (MailApp, same words) and Email him instead (Notices.gs). The contact-form reply (contactSend_) is the presser's own typed words and is left as typed; the sign-in code has no link.
+ *   3. The wait-list welcome, the agreement ask and Your Page's Before We Meet carry the same words for the same place: Open Before We Meet.
+ *   FD.BUILD 56, DESK_BUILD 45 (desk.js unchanged), CSS_RULES 523. Simplicity check: count: no tab, timer, page, Config row or connector added; retires the pasted address in every email; when it breaks, an address with no known words goes as "Open the page" and one triage card names it; next school: nothing more (the words are by place, in one list). Preflight: every send found by searching sendEmail and reply across Code.gs and Notices.gs; the helper and each builder run in checks/frontdesk56.test.js against stand-ins for GmailApp, MailApp and the sheet.
+ */
+/**
  * Ancient Path — Front Desk · build 55 · The Tuesday signal cards (signals-5, Nov 25, 2026). Built on build 54, read back from the live project on Nov 25 through the Drive connector
  * (Code.gs identical to ancient-path #10, commit e3638d7), so everything in 54 is kept.
  *   1. Each run that pulls the platform's failures (about every 25 minutes) also reads the newest Tuesday's open signal cards (signal_cards_door, behind the event log's own
@@ -661,7 +668,7 @@
  */
 
 const FD = {
-  BUILD: '55',
+  BUILD: '56',
   OWN: [{ email: 'john@ancientpathcoaching.com', name: 'John Sherrod' }, { email: 'johnsherrodtest@gmail.com', name: 'John Sherrod' }], // build 39: our own addresses, which an admin may press Text him on (isOurs_ keeps them off the Roster and out of every count)
   SHEET_ID: '1aKaSP8R4kn-UrVBMzuoEXJ9yQll1oB3p3Z_64Icmrvw',
   SIGNALS_SHEET_ID: '1s79xljKjt-sYCZin0-oRFp5swxcETS0a4gzr126_Dns',
@@ -3149,6 +3156,88 @@ function ensureBuild17_(ss) {
 // ───────────────────────────── build 19 · the Weeks tab and the seeded Pieces tab ─────────────────────────────
 
 const SITE_ = 'https://www.ancientpathcoaching.com';
+/* ═══════════ build 13.19 · AP-LINK 1 in every email (ruled Nov 20, 2026; one source, carried word for word by the Research reader and by the Front Desk's Code.gs) ═══════════
+ * A link in an email lives in a few words, never the pasted address. apSend_ takes the plain text of an email and sends it with an htmlBody, and keeps the plain copy
+ * (the address alone on its own line, because plain text cannot hold words). Two ways to say where the words go:
+ *   marked: [Open Your Page](https://www.ancientpathcoaching.com/start) anywhere in the text. Alone in a paragraph, the plain copy shows the address alone on its line;
+ *           inside a sentence, the plain copy keeps the words and puts the address alone on a line under that paragraph.
+ *   bare:   an address already in the text (a Config line, words our team wrote, a card's preview). It gets the words for its place (apLinkWords_, or the map the sender passes).
+ *           When a line ends with a colon and only an address follows ("Join the wait list:"), the html carries the words in that sentence and drops the colon (no setup lines).
+ * An address with no words known gets "Open the page" and is the one thing the tests below list, so it is named and fixed, never shipped by accident. */
+var AP_LINK_WORDS_ = [
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/front-desk\b/i, 'Open the Front Desk'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/start#readings\b/i, 'Open your readings'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/start\b/i, 'Open Your Page'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/your-growth\b/i, 'Open Your Growth'],
+  [/^https?:\/\/(?:www\.)?(?:ancientpathcoaching\.com)\/before-we-meet\b/i, 'Open Before We Meet'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/payment\?/i, 'Confirm your seat'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/your-answers\b/i, 'Open your questions'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/path-player\b/i, 'Open your course'],
+  [/^https?:\/\/(?:www\.)?ancientpathcoaching\.com\/course\/student-course\b/i, 'Open Breaking Free'],
+  [/^https?:\/\/app\.ancientpathcoaching\.com\/y\//i, 'Read what it asks of you'],
+  [/^https?:\/\/app\.ancientpathcoaching\.com\/#\/desk/i, 'Open Your Desk'],
+  [/^https?:\/\/docs\.google\.com\/document\//i, 'Open the notes']
+];
+function apLinkWords_(url, words) {
+  var u = String(url || '');
+  if (words) { if (typeof words === 'string') return words; if (words[u]) return String(words[u]); }
+  for (var i = 0; i < AP_LINK_WORDS_.length; i++) if (AP_LINK_WORDS_[i][0].test(u)) return AP_LINK_WORDS_[i][1];
+  return 'Open the page';
+}
+function apEsc_(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+/** A person's own words inside an email text (a man's answer, a witness's letter): kept exactly as he wrote them, never turned into a link, never changed. */
+function apLit_(s) { return '\u0003' + String(s == null ? '' : s).replace(/[\u0001-\u0006]/g, '') + '\u0004'; }
+/** The plain copy and the html of one email text. Pure. words = { address: 'words' } for bare addresses (optional). Returns { plain, html, bare: [addresses given the fallback words] }. */
+function apMailParts_(text, words) {
+  var src = String(text == null ? '' : text).replace(/\r\n?/g, '\n'), links = [], bare = [], lits = [];
+  src = src.replace(/\u0003([\s\S]*?)\u0004/g, function (m, s) { lits.push(s); return '\u0005' + (lits.length - 1) + '\u0006'; });
+  function back(t) { return t.replace(/\u0005(\d+)\u0006/g, function (m, n) { return lits[Number(n)]; }); }
+  // 1. marked links, then bare addresses, each become one placeholder
+  var marked = src.replace(/\[([^\]\n]{2,90})\]\((https?:\/\/[^\s)]+)\)/g, function (m, w, u) { links.push({ w: w, u: u, bare: false }); return '\u0001' + (links.length - 1) + '\u0002'; });
+  marked = marked.replace(/https?:\/\/[^\s<>"'\u0001\u0002]+/g, function (m) {
+    var tail = (m.match(/[.,;:!?)]+$/) || [''])[0], u = tail ? m.slice(0, m.length - tail.length) : m, w = apLinkWords_(u, words);
+    if (w === 'Open the page') bare.push(u);
+    links.push({ w: w, u: u, bare: true }); return '\u0001' + (links.length - 1) + '\u0002' + tail;
+  });
+  var paras = marked.replace(/^\n+|\n+$/g, '').split(/\n{2,}/), plain = [], html = [];
+  function ph(i) { return '\u0001' + i + '\u0002'; }
+  var onlyLink = /^\u0001(\d+)\u0002$/;
+  for (var k = 0; k < paras.length; k++) {
+    var p = paras[k], t = p.trim(), m1 = onlyLink.exec(t), here = [];
+    p.replace(/\u0001(\d+)\u0002/g, function (m, n) { here.push(Number(n)); return m; });
+    // plain copy: the address alone on its line; inside a sentence the words stay and the address follows under the paragraph
+    if (m1) plain.push(links[Number(m1[1])].u);
+    else {
+      var body = p.replace(/\u0001(\d+)\u0002/g, function (m, n) { return links[Number(n)].bare ? links[Number(n)].u : links[Number(n)].w; });
+      plain.push(back(body));
+      here.forEach(function (n) { if (!links[n].bare) plain.push(links[n].u); });
+    }
+    // html: a setup line ("...:" then only an address) is one sentence with the words in it
+    var nextT = k + 1 < paras.length ? paras[k + 1].trim() : '', m2 = onlyLink.exec(nextT);
+    if (!m1 && m2 && /:\s*$/.test(t)) {
+      var L2 = links[Number(m2[1])];
+      html.push('<p style="margin:0 0 16px">' + apHtmlLine_(t.replace(/:\s*$/, '.'), links, lits) + ' <a href="' + apEsc_(L2.u) + '">' + apEsc_(L2.w) + '</a></p>');
+      plain.push(L2.u); k++; continue;
+    }
+    if (m1) html.push('<p style="margin:0 0 16px"><a href="' + apEsc_(links[Number(m1[1])].u) + '">' + apEsc_(links[Number(m1[1])].w) + '</a></p>');
+    else html.push('<p style="margin:0 0 16px">' + apHtmlLine_(p, links, lits) + '</p>');
+  }
+  return { plain: plain.join('\n\n') + '\n', html: '<div style="font:16px/1.5 Arial,Helvetica,sans-serif;color:#222">' + html.join('') + '</div>', bare: bare };
+}
+function apHtmlLine_(p, links, lits) {
+  return apEsc_(p).replace(/\u0005(\d+)\u0006/g, function (m, n) { return apEsc_(lits[Number(n)]); }).replace(/\n/g, '<br>').replace(/\u0001(\d+)\u0002/g, function (m, n) { var l = links[Number(n)]; return '<a href="' + apEsc_(l.u) + '">' + apEsc_(l.w) + '</a>'; });
+}
+/** Send one email in words. svc = MailApp for the alerts that always used it; the default is GmailApp. opts as GmailApp's (name, cc, bcc, replyTo). Never sends the address in the html. */
+function apSend_(to, subject, text, opts, words, svc) {
+  var parts = apMailParts_(text, words), o = {}, k;
+  for (k in (opts || {})) if (Object.prototype.hasOwnProperty.call(opts, k)) o[k] = opts[k];
+  o.htmlBody = parts.html;
+  (svc || GmailApp).sendEmail(to, subject, parts.plain, o);
+  if (parts.bare.length) { try { apBareNote_(parts.bare, subject); } catch (x) {} } // an address with no words known went as "Open the page": named, so it is fixed
+  return parts;
+}
+/** The one place an address with no known words is named: one triage card, so it is fixed and never shipped by accident. */
+function apBareNote_(list, subject) { try { alert_('An email went with no words for its link (' + list.join(', ') + '): ' + subject); } catch (e) {} }
 /** Breaking Free — Jeremiah's Journey, as ruled Oct 11, 2026. Section titles read from the course player (student-course) that day. */
 const WEEKS_SEED_ = [
   [1, '2026-10-07', 'Start Here, Orientation and Week 1 — The Enemy Knows You', '', ''],
@@ -3651,7 +3740,8 @@ function askSend_(who, b) {
   if (n >= 40) throw { code: 'too_many' };
   const opts = { name: 'John Sherrod' };
   if (cfg.reminderCc) opts.cc = cfg.reminderCc;
-  GmailApp.sendEmail(t.email, t.subject, t.body, opts);
+  const aw = {}; aw[cfg.agreementUrl] = 'Open Before We Meet';
+  apSend_(t.email, t.subject, t.body, opts, aw); // build 56 (AP-LINK 1): the address is held in words; the plain copy keeps it alone on its line
   const now = new Date();
   props.setProperty(dayKey, String(n + 1));
   props.setProperty('asked:' + t.kind + ':' + t.email, now.toISOString());
@@ -3698,13 +3788,8 @@ function facilitatorNotes_(ss, cfg) {
     props.setProperty(stamp, new Date().toISOString()); // stamp first: never twice
     to.forEach(p => {
       const first = (p.name || '').split(/\s+/)[0];
-      const body = (first ? first + ',' : 'Hello,') + '\n\n' +
-        'The notes from Week ' + f.week + (weekNight_(ss, f.room, f.week) ? ' (' + fmtDay_(weekNight_(ss, f.room, f.week), 'EEEE, MMM d') + ')' : '') + ' are ready: ' + f.name + '.\n\n' +
-        f.url + '\n\n' +
-        'They cover last week, what the room carried, who to follow up with, what was promised, and what opens at the next room. They are on your desk too:\n\n' +
-        SITE_ + '/front-desk\n\n' +
-        'John\n';
-      try { GmailApp.sendEmail(p.email, f.room + ' — Week ' + f.week + ' notes are ready', body, { name: 'John Sherrod' }); } catch (e) { alert_('The facilitator note for ' + p.email + ' did not send: ' + e); return; }
+      const body = facNoteBody_(first, f, weekNight_(ss, f.room, f.week) ? fmtDay_(weekNight_(ss, f.room, f.week), 'EEEE, MMM d') : ''); // build 56 (AP-LINK 1): the link in words
+      try { apSend_(p.email, f.room + ' — Week ' + f.week + ' notes are ready', body, { name: 'John Sherrod' }); } catch (e) { alert_('The facilitator note for ' + p.email + ' did not send: ' + e); return; }
       if (sends) append_(sends, [[new Date(), 'Facilitator notes', f.room + ' — Week ' + f.week + ' notes are ready', p.email, 0, f.name]]);
     });
     if (!to.length && sends) append_(sends, [[new Date(), 'Facilitator notes', f.name, '(no facilitator on People for ' + f.room + ')', 0, 'nothing sent']]);
@@ -4574,8 +4659,8 @@ function weeklyBody_(c, mine) {
   if (mine && mine.readings && mine.minutes) L.push('Your readings are waiting, about ' + mine.minutes + ' minutes.', '');
   pieceLines_(c.week).forEach(x => L.push(x));
   c.coming.forEach(x => L.push(x));
-  L.push('Everything for this week is on your page:', '', SITE_ + '/start', '',
-    'To join tomorrow, open ' + c.course + " and press Join on this week's session card:", '', SITE_ + '/path-player?courseid=' + c.courseId, '',
+  L.push('Everything for this week is on [Your Page](' + SITE_ + '/start).', '',
+    'To join tomorrow, open [' + String(c.course).replace(/[\[\]()]/g, '') + '](' + SITE_ + '/path-player?courseid=' + c.courseId + ") and press Join on this week's session card.", '',
     "If you can't be there, reply and tell me before " + c.day + '.', '', 'John');
   return L.join('\n').replace(/\n{3,}/g, '\n\n');
 }
@@ -4667,7 +4752,7 @@ function sendRoomWeek_(ss, cfg, rm, night, test) {
       if (m && (m.check || m.readings)) { pick = men[i]; mine = m; break; }
       if (m && i === 0) mine = m;
     }
-    GmailApp.sendEmail(me, subject, weeklyBody_(Object.assign({ first: pick.first }, base), mine), opts);
+    apSend_(me, subject, weeklyBody_(Object.assign({ first: pick.first }, base), mine), opts);
     if (sends) append_(sends, [[new Date(), 'Room reminder (test)', subject, me + ' only', 0, 'as for ' + night + ' · built for ' + pick.first + ' · ' + (mine ? (mine.check ? 'check-in line' : 'no check-in line') + ', ' + (mine.readings ? 'readings line' : 'no readings line') : 'week-level version' + (err ? ' (' + err + ')' : ''))]]);
     Logger.log('Test sent to ' + me + ' for ' + pick.first + '.');
     return;
@@ -4683,7 +4768,7 @@ function sendRoomWeek_(ss, cfg, rm, night, test) {
   todo.forEach(m => {
     const mine = pl.by[m.email] || null;
     try {
-      GmailApp.sendEmail(m.email, subject, weeklyBody_(Object.assign({ first: m.first }, base), mine), opts);
+      apSend_(m.email, subject, weeklyBody_(Object.assign({ first: m.first }, base), mine), opts);
       props.setProperty(skey(m.email), new Date().toISOString());
       sent++;
       if (mine && (mine.check || mine.readings)) personal++;
@@ -4694,7 +4779,7 @@ function sendRoomWeek_(ss, cfg, rm, night, test) {
     if (props.getProperty(skey(addr))) return;
     const p = people.find(x => String(x['email'] || '').toLowerCase().trim() === addr);
     try {
-      GmailApp.sendEmail(addr, subject, weeklyBody_(Object.assign({ first: (p && firstOf_(p['name'])) || firstFromEmail_(addr) }, base), null), opts);
+      apSend_(addr, subject, weeklyBody_(Object.assign({ first: (p && firstOf_(p['name'])) || firstFromEmail_(addr) }, base), null), opts);
       props.setProperty(skey(addr), new Date().toISOString());
     } catch (e) { failed.push(addr + ' (' + e + ')'); }
   });
@@ -4891,7 +4976,7 @@ function sendAnswersReminders_(ss, cfg, test) {
   const sends = ss.getSheetByName('Sends');
   const now = new Date();
   if (test) {
-    GmailApp.sendEmail(me, '[TEST] ' + ANSWERS_REMINDER_SUBJECT, answersReminderText_('Test Man', 'bf'), { name: 'John Sherrod' });
+    apSend_(me, '[TEST] ' + ANSWERS_REMINDER_SUBJECT, answersReminderText_('Test Man', 'bf'), { name: 'John Sherrod' });
     if (sends) append_(sends, [[now, 'Answers reminder (test)', '[TEST] ' + ANSWERS_REMINDER_SUBJECT, me, 0, 'founders only']]);
     return;
   }
@@ -4907,7 +4992,7 @@ function sendAnswersReminders_(ss, cfg, test) {
     if (props.getProperty(stamp)) return;
     props.setProperty(stamp, now.toISOString()); // stamp first: if anything fails after this, he is never sent a second one
     try {
-      GmailApp.sendEmail(em, ANSWERS_REMINDER_SUBJECT, answersReminderText_(r['name'], answersDoorOf_(r['here for'])), { name: 'John Sherrod' });
+      apSend_(em, ANSWERS_REMINDER_SUBJECT, answersReminderText_(r['name'], answersDoorOf_(r['here for'])), { name: 'John Sherrod' });
     } catch (e) {
       props.deleteProperty(stamp); // nothing was sent, so the next pass may try again
       throw e;
@@ -5155,7 +5240,7 @@ function triAlertEmail_() {
 /** S1 only: one plain email, once per signature. What stopped, who it touches, and the desk link on its own line. Never the error. */
 function triMail_(x) {
   try {
-    MailApp.sendEmail(triAlertEmail_(), TRI_.LABEL + ': ' + x.j, ['What stopped: ' + x.j + '.', 'It touches ' + x.who + '.', TRI_SEV_WORDS_.S1, 'The repair is under way. The card on the Front Desk shows where it stands:', '', TRI_.DESK].join('\n'));
+    apSend_(triAlertEmail_(), TRI_.LABEL + ': ' + x.j, ['What stopped: ' + x.j + '.', 'It touches ' + x.who + '.', TRI_SEV_WORDS_.S1, 'The repair is under way. The card on the Front Desk shows where it stands.', '', '[Open the Front Desk](' + TRI_.DESK + ')'].join('\n'), {}, null, MailApp); // build 56 (AP-LINK 1)
     return true;
   } catch (e) { return false; }
 }
@@ -6456,7 +6541,7 @@ function referralAskText_(cfg) {
     '',
     'Most of the men in this room came because another man said, come with me.',
     '',
-    'If there is a man you would bring, send him this page. It holds the January room and the wait list:',
+    'If there is a man you would bring, send him this page. It holds the January room and the wait list.',
     '',
     cfg.inviteUrl,
     '',
@@ -6485,7 +6570,8 @@ function roomAskSend_(who, b) {
   const me = Session.getEffectiveUser().getEmail();
   const opts = { name: 'John Sherrod', bcc: men.join(',') };
   if (cfg.reminderCc) opts.cc = cfg.reminderCc;
-  GmailApp.sendEmail(me, t.subject, t.body, opts);
+  const rw = {}; rw[cfg.inviteUrl] = 'See the January room'; // the referral ask's one link, in words
+  apSend_(me, t.subject, t.body, opts, rw);
   const now = new Date();
   props.setProperty('asked:referral:room', now.toISOString());
   const sends = ss.getSheetByName('Sends');
@@ -8893,6 +8979,13 @@ function seatActs_(x, out) {
   const w = 'Sent. The approved seat email went to him from our desk, signed by Jason, with Jason copied. The Sends tab keeps the line.';
   return [{ a: 'send', t: 'Send', word: CLOSED_SENT_, went: w, fwent: w, noUndo: true }];
 }
+/** Build 56 (AP-LINK 1): the approved seat email's two sentences that carried an address, with the link held in the words that were already there ("Open this link and press Confirm:" and "the short form at"); a Google redirect wrapper around an address is taken off. Pure. */
+function seatLinks_(body) {
+  let t = String(body || '').replace(/https?:\/\/www\.google\.com\/url\?q=(https?[^&\s]+?)&(?:amp;)?(?:source|ust|sa)=[^\s]*/g, (m, u) => { try { return decodeURIComponent(u); } catch (e) { return u; } });
+  t = t.replace(/Open this link and press Confirm:\s*(https?:\/\/[^\s]+?)\.(\s)/, '[Open your seat and press Confirm]($1).$2');
+  t = t.replace(/the short form at (https?:\/\/[^\s]+?),(\s)/, '[the short form]($1),$2');
+  return t.replace(/\]\(http:\/\/ancientpathcoaching\.com\//g, '](https://www.ancientpathcoaching.com/');
+}
 function seatSend_(who, row) {
   const key = String(row['key']), em = keyEmail_(key);
   if (!em) throw { code: 'bad_action' };
@@ -8904,7 +8997,7 @@ function seatSend_(who, row) {
   const me = Session.getEffectiveUser().getEmail();
   const opts = { name: 'Ancient Path Biblical Coaching', replyTo: cfg.reminderCc || 'jason@ancientpathcoaching.com' };
   if (cfg.reminderCc) opts.cc = cfg.reminderCc;
-  GmailApp.sendEmail(em, mail.subject, mail.body, opts);
+  apSend_(em, mail.subject, seatLinks_(mail.body), opts);
   const now = new Date(), sends = ss.getSheetByName('Sends');
   if (sends) append_(sends, [[now, 'Seat email (from the desk)', mail.subject, me + (cfg.reminderCc ? ' · cc ' + cfg.reminderCc : ''), 1, 'sent by ' + (who && who.email)]]);
   return { kind: 'sent', to: em, subject: mail.subject, went: 'Sent. The approved seat email went to him from our desk, signed by Jason, with Jason copied. The Sends tab keeps the line.' };
@@ -8956,7 +9049,7 @@ function noteSend_(who, row) {
   const me = Session.getEffectiveUser().getEmail();
   const opts = { name: 'John Sherrod', bcc: men.join(',') };
   if (cfg.reminderCc) opts.cc = cfg.reminderCc;
-  GmailApp.sendEmail(me, mail.subject, mail.body, opts);
+  apSend_(me, mail.subject, mail.body, opts);
   const now = new Date(), sends = ss.getSheetByName('Sends');
   if (sends) append_(sends, [[now, 'Note to the room (from the desk)', mail.subject, me + (cfg.reminderCc ? ' · cc ' + cfg.reminderCc : ''), men.length, 'sent by ' + (who && who.email)]]);
   return { kind: 'sent', to: men.length, went: 'Sent to ' + men.length + ' ' + (men.length === 1 ? 'man' : 'men') + ' in the room, each in Bcc, Jason copied. The Sends tab keeps the line.' };
@@ -9577,15 +9670,27 @@ function wlActs_(x, out) {
   const w = 'Sent. The welcome went to him from our desk, signed by you. The Sends tab keeps the line.';
   return [{ a: 'send', t: 'Send', word: CLOSED_SENT_, went: w, fwent: w, noUndo: true }];
 }
+/** Build 56 (AP-LINK 1): the facilitator's "notes are ready" email, pure. night = the room's night for that week, '' when it has none. */
+function facNoteBody_(first, f, night) {
+  return (first ? first + ',' : 'Hello,') + '\n\n' +
+    'The notes from Week ' + f.week + (night ? ' (' + night + ')' : '') + ' are ready: ' + String(f.name).replace(/[\[\]()]/g, '') + '.\n\n' +
+    '[Open the Week ' + f.week + ' notes](' + f.url + ')\n\n' +
+    'They cover last week, what the room carried, who to follow up with, what was promised, and what opens at the next room. They are on [the Front Desk](' + SITE_ + '/front-desk) too.\n\n' +
+    'John\n';
+}
+/** Build 56 (AP-LINK 1): the wait-list welcome, pure. */
+function wlWelcomeBody_(first, by) {
+  return (first ? 'Hello ' + first + ',' : 'Hello,') + '\n\nThank you for raising your hand. You are on the January Breaking Free wait list, and every man on it hears from us within a week.\n\nYour one step now is [the short page that tells us where you are](' + SITE_BASE_ + '/before-we-meet).\n\nA short conversation with one of our team follows, and you will know where you stand within a week.\n\n' + by + '\nAncient Path';
+}
 function wlSend_(who, row) {
   const em = keyEmail_(String(row['key'] || '')); if (!em || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) throw { code: 'bad_action' };
   const cfg = readConfig_(), ss = SpreadsheetApp.openById(FD.SHEET_ID), me = Session.getEffectiveUser().getEmail(), by = byOf_(who) || 'Our team';
   let first = ''; try { const m = rows_(ss.getSheetByName('Roster')).filter(r => String(r['email'] || '').toLowerCase().trim() === em)[0]; if (m) first = firstOf_(m['name'] || m['first name'] || ''); } catch (e) {}
   const subject = 'You are on the January wait list';
-  const body = (first ? 'Hello ' + first + ',' : 'Hello,') + '\n\nThank you for raising your hand. You are on the January Breaking Free wait list, and every man on it hears from us within a week.\n\nYour one step now is the short page that tells us where you are:\n' + SITE_BASE_ + '/before-we-meet\n\nA short conversation with one of our team follows, and you will know where you stand within a week.\n\n' + by + '\nAncient Path';
+  const body = wlWelcomeBody_(first, by);
   const opts = { name: by + ' · Ancient Path', replyTo: (who && who.email) || me };
   if (cfg.reminderCc) opts.cc = cfg.reminderCc;
-  GmailApp.sendEmail(em, subject, body, opts);
+  apSend_(em, subject, body, opts);
   const sends = ss.getSheetByName('Sends');
   if (sends) append_(sends, [[new Date(), 'Wait-list welcome (from the desk)', subject, em, 1, 'sent by ' + (who && who.email)]]);
   return { kind: 'sent', went: 'Sent. The welcome went to him from our desk, signed by ' + by + '. The Sends tab keeps the line.' };
@@ -9865,11 +9970,11 @@ function storyMail_(who, st, decision) {
     const by = String((who && who.email) || '').toLowerCase();
     const to = pool.filter((e, i) => pool.indexOf(e) === i && e !== by);
     if (!to.length) return;
-    const who1 = byOf_(who) || 'Our team', t = '“' + st.title + '”' + (st.name ? ' from ' + st.name : '');
+    const who1 = byOf_(who) || 'Our team', t = apLit_('“' + st.title + '”' + (st.name ? ' from ' + st.name : '')); // his own words, kept exactly
     const body = decision === 'Approved' ? who1 + ' published ' + t + ' from the Front Desk.\n\nIt is on Our Stories as ' + (st.show || 'no name') + '. Undo stays on the desk for ten minutes, and it can be taken down at any time.'
       : decision === 'Held' ? who1 + ' held ' + t + ' from the Front Desk.\n\nIt is private. It needs our team to read it together before anything else is decided.'
       : who1 + ' declined ' + t + ' from the Front Desk.\n\nIt stays his, and nothing is published.';
-    GmailApp.sendEmail(to.join(','), 'Story ' + (decision === 'Approved' ? 'published' : decision === 'Held' ? 'held' : 'declined') + ': ' + st.title, body, { name: 'Ancient Path Biblical Coaching' });
+    apSend_(to.join(','), 'Story ' + (decision === 'Approved' ? 'published' : decision === 'Held' ? 'held' : 'declined') + ': ' + st.title, body + '\n\n[Open the Front Desk](' + SITE_ + '/front-desk)\n', { name: 'Ancient Path Biblical Coaching' }); // build 56: the desk, in words
   } catch (e) { /* the decision is on the sheet; a note that cannot go is only a note */ }
 }
 
