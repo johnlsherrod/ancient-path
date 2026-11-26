@@ -1,5 +1,7 @@
 /* ==========================================================================
-   AP-STORY-MODULE-v20.4
+   AP-STORY-MODULE-v20.5
+
+   v20.5 (26 Nov 2026) — the foot says only what is true (the independent review of Ending Well, M7). The kept-from-the-first-word foot carried "and you can delete any of it at any time", and no page lets a person delete a piece. The foot is now the ruled pair in the Story Standard, word for word: "Everything you write here is kept as you write it, so nothing is lost. It’s yours: no one sees it unless you share it." The clause returns with the delete it describes. Nothing else changed from v20.4.
 
    v20.4 (16 Nov 2026) — team waits for the page (John, Nov 16: "fix the open items"). Built on v20.3, which stands as written. One change: a
      story event sent before the page has finished loading no longer counts one of our own as a man. LearnWorlds puts his session on the page
@@ -403,7 +405,7 @@
      v20.3 · the count carries where and who. Every story_ and stone_ event leaves through here with exactly four things: piece (a slug),
      part (the part he is on, when known), build and team. Anything else a caller hands in is dropped. A script that sends its own
      gtag("event", "story_...") is caught by the wrapper below and goes through here too. */
-  var BUILD = "20.4";
+  var BUILD = "20.5";
   var TEAM_RE = /^johnlsherrod\+|^johnsherrod.*test|^johnlsherrod@gmail\.com$|@ancientpathcoaching\.com$/;   /* the Front Desk's isOurs_ rule, and John's own address */
   var TEAM = { v: null, started: false, queue: [], timer: null };
   var PARTS = {};   /* a script with steps of its own hands its part over: APStory.setPart(piece, n) */
@@ -1926,7 +1928,7 @@
   /* v20 · the words on the page: the privacy line at the foot of every writing page is the Begin sentence (first sentence in bold), and
      "Save and stop for now" reads "Stop for now". Run at mount and again once the page has finished building itself. */
   var BEGIN_1 = "Everything you write here is kept as you write it, so nothing is lost.";
-  var BEGIN_2 = "It's yours: no one sees it unless you share it, and you can delete any of it at any time.";
+  var BEGIN_2 = "It’s yours: no one sees it unless you share it.";
   var OLD_FIRST = "Nothing you write here reaches us unless you choose to save it with us.";
   function norm(t) { return String(t || "").replace(/\s+/g, " ").trim(); }
   Story.prototype.sweepWords = function () {
