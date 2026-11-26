@@ -151,7 +151,7 @@
     "key": "growing",
     "stem": "Between me and God, what is growing is",
     "prompt": "Spirit is where you and God meet. Of faith, hope and love, which one grew — and what does it look like in an ordinary week?",
-    "ex": "Between me and God, what is growing is hope. I expect him to show up now.",
+    "ex": "Between me and God, what is growing is hope. I expect Him to show up now.",
     "words": [
      "faith",
      "hope",
@@ -236,9 +236,9 @@
    },
    {
     "key": "asked",
-    "stem": "I asked him for",
+    "stem": "I asked Him for",
     "prompt": "What did you ask God for at the start? Say it the way you said it then. Not every ask is answered yet.",
-    "ex": "I asked him for it to stop.",
+    "ex": "I asked Him for it to stop.",
     "words": [],
     "rowNote": "",
     "own": false,
@@ -248,15 +248,15 @@
    {
     "key": "goddid",
     "stem": "What God did was",
-    "prompt": "Say what he did, not what you did. For some it is this: a room with people in it, and what got named there. If nothing has moved yet, say that — it is true, and it belongs here.",
+    "prompt": "Say what He did, not what you did. For some it is this: a room with people in it, and what got named there. If nothing has moved yet, say that — it is true, and it belongs here.",
     "ex": "What God did was put me in a room with people willing to walk with me.",
     "words": [],
     "rowNote": "",
     "own": false,
     "bridge": null,
     "lookback": {
-     "label": "You asked him for:",
-     "stem": "I asked him for"
+     "label": "You asked Him for:",
+     "stem": "I asked Him for"
     }
    }
   ]
@@ -293,7 +293,7 @@
    {
     "key": "bridge3",
     "stem": "",
-    "prompt": "What you asked him for, and what he did. How long did it take, and what did the waiting look like?",
+    "prompt": "What you asked Him for, and what He did. How long did it take, and what did the waiting look like?",
     "ex": "While that was going on, I kept asking, and for a month nothing changed except that I kept showing up.",
     "words": [
      "What happened next was",
@@ -304,7 +304,7 @@
     "rowNote": "",
     "own": false,
     "bridge": {
-     "a": "I asked him for",
+     "a": "I asked Him for",
      "aPart": "What God did",
      "b": "What God did was",
      "bPart": "What God did",
@@ -318,7 +318,7 @@
  {
   "title": "What I take with me",
   "scene": "Jesus turned and saw them following and said to them, “What are you seeking?” — John 1:38",
-  "frame": "His first question to the men who followed him. Answer it for a year from now.",
+  "frame": "Jesus’ first words in John’s Gospel are a question, asked of two who followed Him. Answer it for a year from now.",
   "stone": false,
   "slots": [
    {
