@@ -1,14 +1,14 @@
 [
  {
-  "title": "The Doorway",
+  "title": "The men",
   "scene": "",
-  "frame": "Week 12 says “look for, pray for, and actively seek relationship and community with other men.” This is written to them, before you have met them.",
+  "frame": "This is written to the men you will walk with, before you have met them.",
   "stone": false,
   "slots": [
    {
     "key": "iam",
     "stem": "To the men I will walk with, I am",
-    "prompt": "Twelve weeks are done. Start with the men you will walk with. One word for what you feel toward them now — the row has some — then why, in a few words.",
+    "prompt": "It is done. Start with the men you will walk with. One word for what you feel toward them now — the row has some — then why, in a few words.",
     "ex": "To the men I will walk with, I am tired and hopeful. You haven’t heard any of this yet. Here it is.",
     "words": [
      "thankful",
@@ -47,13 +47,13 @@
  {
   "title": "Where I started",
   "scene": "",
-  "frame": "Start where you started. Three lines, and a picture a man could see.",
+  "frame": "Start where it began. Three lines, and a picture anyone could see.",
   "stone": false,
   "slots": [
    {
     "key": "started",
     "stem": "When I started, I was",
-    "prompt": "Go back to the first week. Where were you — the place, the time of day, what was going on at home? A picture, not a label.",
+    "prompt": "Go back to the day it began — the first meeting, the first session, the first week. Where were you: the place, the time of day, what was going on around you? A picture, not a label.",
     "ex": "When I started, I was sitting in the truck in the driveway, not ready to go in the house.",
     "words": [],
     "rowNote": "",
@@ -64,7 +64,7 @@
    {
     "key": "toldmyself",
     "stem": "What I told myself was",
-    "prompt": "Now the sentence you were living on then — the one you said to yourself to get through the day. “I’ve got it handled.” “Nobody needs to know.” Short.",
+    "prompt": "Now the sentence you were living on back then — the one you said to yourself to get through the day. “I’ve got it handled.” “Nobody needs to know.” Short.",
     "ex": "What I told myself was that I had it handled.",
     "words": [],
     "rowNote": "",
@@ -94,7 +94,7 @@
    {
     "key": "camein",
     "stem": "What came in through my eyes and ears was",
-    "prompt": "Week 1 called it your Sphere of Influence: “any sound, sight, smell, or touch, you control.” And: “The enemy has had free rein inside your SOI, and he’s been bringing his trash in with him.” What was coming in?",
+    "prompt": "Everything that reached you through your eyes and ears — any sound, sight, smell, or touch you control. What was coming in?",
     "ex": "What came in through my eyes and ears was a screen at midnight and voices telling me I was the only one.",
     "words": [],
     "rowNote": "",
@@ -121,7 +121,7 @@
      "guidance",
      "celebration"
     ],
-    "rowNote": "From Richard Foster’s Celebration of Discipline. Walk With Me teaches all twelve.",
+    "rowNote": "From Richard Foster’s Celebration of Discipline.",
     "own": false,
     "bridge": null,
     "lookback": null
@@ -165,7 +165,7 @@
   ]
  },
  {
-  "title": "Between the lines",
+  "title": "Then and now",
   "scene": "",
   "frame": "Two of your lines. What happened between them?",
   "stone": false,
@@ -198,13 +198,13 @@
  {
   "title": "What God did",
   "scene": "I will turn their mourning into joy; I will comfort them, and give them gladness for sorrow. — Jeremiah 31:13",
-  "frame": "If it is still quiet and the struggle is still here, say that. It is not failure. This takes years, not weeks, and God’s answer may be as small as twelve weeks kept with nobody watching.",
+  "frame": "If it is still quiet and the struggle is still here, say that. It is not failure. This takes years, not weeks, and God’s answer may be as small as a stretch kept with nobody watching.",
   "stone": false,
   "slots": [
    {
     "key": "sawme",
     "stem": "Nobody was watching, and what I noticed was",
-    "prompt": "Twelve weeks with no room and no men. What did you notice about yourself that nobody else was there to see? One picture.",
+    "prompt": "A stretch with no room and no men. What did you notice about yourself that nobody else was there to see? One picture.",
     "ex": "Nobody was watching, and what I noticed was that I kept opening the book on the days I wanted to quit.",
     "words": [],
     "rowNote": "",
@@ -248,8 +248,8 @@
    {
     "key": "goddid",
     "stem": "What God did was",
-    "prompt": "Say what he did, not what you did. For some men it is this: twelve weeks kept with nobody watching, and what got named in them. If nothing has moved yet, say that — it is true, and it belongs here.",
-    "ex": "What God did was keep me at it for twelve weeks with nobody watching.",
+    "prompt": "Say what he did, not what you did. For some men it is this: a stretch kept with nobody watching, and what got named in it. If nothing has moved yet, say that — it is true, and it belongs here.",
+    "ex": "What God did was keep me at it, day after day, with nobody watching.",
     "words": [],
     "rowNote": "",
     "own": false,
@@ -262,7 +262,7 @@
   ]
  },
  {
-  "title": "Between the lines",
+  "title": "Seen and answered",
   "scene": "",
   "frame": "Two more pairs of your lines. What happened between each?",
   "stone": false,
@@ -346,7 +346,7 @@
    {
     "key": "ask",
     "stem": "What I will ask of you is",
-    "prompt": "The course is done. What will you need from the men you find?",
+    "prompt": "It is done. What will you need from the men you find?",
     "ex": "What I will ask of you is to ask me the question, even when I say I’m fine.",
     "words": [],
     "rowNote": "",
@@ -383,7 +383,7 @@
     "key": "held",
     "stem": "I’ll know it has held when",
     "prompt": "How will you know? Something you could see or count, four weeks from now.",
-    "ex": "I’ll know it has held when it is still happening four weeks from now.",
+    "ex": "I’ll know it has held when I have read a chapter before my phone four mornings a week, four weeks in a row.",
     "words": [],
     "rowNote": "",
     "own": false,
@@ -427,7 +427,7 @@
    {
     "key": "answer",
     "stem": "I will answer it by",
-    "prompt": "Week 12: “The days are not the achievement. Whatever you did that made the days is the achievement. Find it, name it out loud in the room, and do it again.” Pick one, or write your own.",
+    "prompt": "“The days are not the achievement. Whatever you did that made the days is the achievement. Find it, name it out loud, and do it again.” Pick one, or write your own.",
     "ex": "I will answer it by reading this again, that day.",
     "words": [
      "reading this again",
@@ -483,17 +483,17 @@
    {
     "key": "meaning",
     "stem": "What this stone means to me is",
-    "prompt": "Pick one to see where it comes from, or write your own.",
-    "ex": "What this stone means to me is a new discipline: I do the next right thing.",
+    "prompt": "The answer you give when someone asks what this stone means.",
+    "ex": "What this stone means to me is a discipline kept: I do the next right thing.",
     "words": [
      "a rescue",
-     "a new discipline",
+     "a discipline kept",
      "more hope",
      "growth in faith",
      "capacity to love",
      "a sacrifice"
     ],
-    "rowNote": "",
+    "rowNote": "Pick one to see where it comes from, or write your own.",
     "own": false,
     "bridge": null,
     "lookback": null

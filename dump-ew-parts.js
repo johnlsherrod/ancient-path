@@ -1,10 +1,10 @@
 // Writes ew-parts.json and ew-parts-solo.json from the page's own PARTS (window.ewParts), so the worksheet carries the same words as the page.
 const { JSDOM } = require("jsdom"); const fs = require("fs");
-const page = fs.readFileSync(__dirname + "/ending-well-v4.html", "utf8");
-const scripts = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
-const markup = page.replace(/<script>[\s\S]*?<\/script>/g, "");
-for (const mode of ["cohort", "solo"]) {
-  const html = '<!doctype html><html><body>' + (mode === "solo" ? markup.replace('id="ewRoot" data-mode="cohort"', 'id="ewRoot" data-mode="solo"') : markup) + '</body></html>';
+for (const [mode, file] of [["cohort", "ending-well-v5.html"], ["solo", "ending-well-v5-public.html"]]) {   /* cohort = the course door (Week 12), solo = the public door (/ending-well) */
+  const page = fs.readFileSync(__dirname + "/" + file, "utf8");
+  const scripts = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+  const markup = page.replace(/<script>[\s\S]*?<\/script>/g, "");
+  const html = '<!doctype html><html><body>' + markup + '</body></html>';
   const dom = new JSDOM(html, { runScripts: "outside-only", pretendToBeVisual: true }); const w = dom.window;
   w.HTMLElement.prototype.scrollIntoView = function () {}; w.scrollBy = () => {};
   w.eval(scripts[0]);

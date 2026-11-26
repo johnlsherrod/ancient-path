@@ -1,6 +1,6 @@
 [
  {
-  "title": "The Doorway",
+  "title": "The men",
   "scene": "",
   "frame": "The course’s last charge was “stay with the men you walked with.” This is where you say it to them.",
   "stone": false,
@@ -106,7 +106,7 @@
     "key": "takein",
     "stem": "What I take in now is",
     "prompt": "The same eyes and ears. Now you are the gatekeeper for what comes in. What do you let in — a first thing in the morning, a habit that has held, a practice you took up? Pick from the row, or write your own.",
-    "ex": "What I take in now is the view of the room from my knees, the walk with prayer as my partner, the study times where I seek relationship.",
+    "ex": "What I take in now is a walk before the house wakes up and a chapter of John read out loud.",
     "words": [
      "meditation",
      "prayer",
@@ -165,7 +165,7 @@
   ]
  },
  {
-  "title": "Between the lines",
+  "title": "Then and now",
   "scene": "",
   "frame": "Two of your lines. What happened between them?",
   "stone": false,
@@ -205,7 +205,7 @@
     "key": "sawme",
     "stem": "You saw me",
     "prompt": "Not the story itself — the night you told it. What did the men do with it? In a room like that, shame has no place to hide.",
-    "ex": "You saw me, and I’m not sure which night or exactly what I said. What I remember is learning to trust as the nights became the source of community I had longed for.",
+    "ex": "You saw me the night I said the thing I had never said out loud, and nobody looked away.",
     "words": [],
     "rowNote": "",
     "own": false,
@@ -262,7 +262,7 @@
   ]
  },
  {
-  "title": "Between the lines",
+  "title": "Seen and answered",
   "scene": "",
   "frame": "Two more pairs of your lines. What happened between each?",
   "stone": false,
@@ -372,7 +372,7 @@
     "key": "smallstep",
     "stem": "The one small thing I will try this month is",
     "prompt": "Not the whole life. One small thing, repeated, that moves you one degree — something you could start tomorrow.",
-    "ex": "The one small thing I will try this month is joining a circle of men that chose to grow with the community of believers.",
+    "ex": "The one small thing I will try this month is one chapter of John before my phone.",
     "words": [],
     "rowNote": "",
     "own": false,
@@ -383,7 +383,7 @@
     "key": "held",
     "stem": "I’ll know it has held when",
     "prompt": "How will you know? Something you could see or count, four weeks from now.",
-    "ex": "I’ll know it has held when it is still happening four weeks from now.",
+    "ex": "I’ll know it has held when I have read a chapter before my phone four mornings a week, four weeks in a row.",
     "words": [],
     "rowNote": "",
     "own": false,
@@ -453,7 +453,7 @@
     "key": "stone",
     "stem": "",
     "prompt": "Or your own words.",
-    "ex": "I asked him for death or life. Either way I was ready to surrender everything I had become.",
+    "ex": "Do the next right thing.",
     "words": [],
     "rowNote": "",
     "own": true,
@@ -464,7 +464,7 @@
     "key": "stonefor",
     "stem": "This stone is for",
     "prompt": "Naming well is a skill. Name the one this is for, and you will name other things well too.",
-    "ex": "This stone is for those who chose the same path.",
+    "ex": "This stone is for my son, for when he asks.",
     "words": [
      "my son",
      "my daughter",
@@ -484,17 +484,17 @@
    {
     "key": "meaning",
     "stem": "What this stone means to me is",
-    "prompt": "Pick one to see where it comes from, or write your own.",
-    "ex": "What this stone means to me is surrender. The help was always there, as long as I surrendered the ego that said I needed to do it on my own.",
+    "prompt": "The answer you give when someone asks what this stone means.",
+    "ex": "What this stone means to me is a discipline kept: I do the next right thing.",
     "words": [
      "a rescue",
-     "a new discipline",
+     "a discipline kept",
      "more hope",
      "growth in faith",
      "capacity to love",
      "a sacrifice"
     ],
-    "rowNote": "",
+    "rowNote": "Pick one to see where it comes from, or write your own.",
     "own": false,
     "bridge": null,
     "lookback": null

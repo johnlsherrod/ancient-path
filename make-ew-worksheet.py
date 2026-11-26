@@ -13,6 +13,14 @@ here = os.path.dirname(os.path.abspath(__file__))
 root = here if os.path.exists(os.path.join(here, 'story.js')) else os.path.join(here, 'ancient-path')   # run from the repo root, or from the folder above it
 MODE = os.environ.get('EW_MODE', 'cohort')
 parts = json.load(open(os.path.join(root, 'ew-parts-solo.json' if MODE == 'solo' else 'ew-parts.json')))
+# the sheet carries the page's own words: EW_MODE=cohort is the course door (ending-well-v5.html), EW_MODE=solo is the public door (ending-well-v5-public.html)
+import html as _html, re as _re
+_page = open(os.path.join(root, 'ending-well-v5-public.html' if MODE == 'solo' else 'ending-well-v5.html'), encoding='utf-8').read()
+def _lift(i): return _html.unescape(_re.search(r'id="%s">(.*?)</p>' % i, _page, _re.S).group(1)).strip()
+EYEBROW, LEDE = _lift('ewEyebrow'), _lift('ewLede')
+SAVE_NOTE = ('This sheet carries the same questions as the page, for working away from a screen. When you are ready, type your lines into Ending Well at ancientpathcoaching.com/ending-well so it is saved to your page.' if MODE == 'solo'
+  else 'This sheet carries the same questions as the page, for working away from a screen. When you are ready, type your lines into Ending Well in Week 12 so it is saved to your page.')
+FOOT = 'ancientpathcoaching.com' if MODE == 'solo' else 'Written at the end of Breaking Free. · ancientpathcoaching.com'
 NAVY, BRONZE, INK, QUIET, RULE = HexColor('#1F2A44'), HexColor('#B8945F'), HexColor('#2B3040'), HexColor('#6B7280'), HexColor('#E2DCD1')
 S = {
   'eyebrow': ParagraphStyle('eyebrow', fontName='Helvetica-Bold', fontSize=8.5, leading=12, textColor=BRONZE, spaceAfter=6),
@@ -31,9 +39,9 @@ S = {
 }
 def esc(t): return t.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 rule_line = '_' * 86
-story = [Paragraph('BREAKING FREE · ENDING WELL · WORKSHEET', S['eyebrow']), Paragraph('Ending Well', S['h1']),
-  Paragraph('How a thing ends decides what you carry into what comes next. Twelve weeks of Breaking Free are ending. Before you close it, say what is different, what it cost, what you saw along the way, what God did, and what you are taking with you — in your own words, one line at a time. Each line starts for you; you finish it.', S['lede']),
-  Paragraph('This sheet carries the same questions as the page, for working away from a screen. When you are ready, type your lines into Ending Well in Week 12 so it is saved to your page.', S['safe'])]
+story = [Paragraph(esc(EYEBROW.upper()) + ' · WORKSHEET', S['eyebrow']), Paragraph('Ending Well', S['h1']),
+  Paragraph(esc(LEDE), S['lede']),
+  Paragraph(esc(SAVE_NOTE), S['safe'])]
 for i, p in enumerate(parts):
   block = [Paragraph('Part %d of %d — %s' % (i + 1, len(parts), esc(p['title'])), S['part'])]
   if p.get('scene'): block.append(Paragraph(esc(p['scene']), S['scene']))
@@ -57,7 +65,7 @@ for i, p in enumerate(parts):
     story.append(KeepTogether(sl))
   if p.get('stone'):
     story.append(Paragraph('On the page you can tap one of your own lines from What God did instead. Three months after you set it, we will ask you what it means to you.', S['words']))
-story.append(Paragraph('Written at the end of Breaking Free. · ancientpathcoaching.com', S['foot']))
+story.append(Paragraph(esc(FOOT), S['foot']))
 out = os.path.join(root, 'Ending-Well-worksheet' + ('-solo' if MODE == 'solo' else '') + '.pdf')
 doc = SimpleDocTemplate(out, pagesize=letter, leftMargin=0.9*inch, rightMargin=0.9*inch, topMargin=0.8*inch, bottomMargin=0.8*inch, title='Ending Well — worksheet', author='Ancient Path')
 doc.build(story)
