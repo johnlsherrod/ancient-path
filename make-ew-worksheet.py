@@ -13,11 +13,14 @@ here = os.path.dirname(os.path.abspath(__file__))
 root = here if os.path.exists(os.path.join(here, 'story.js')) else os.path.join(here, 'ancient-path')   # run from the repo root, or from the folder above it
 MODE = os.environ.get('EW_MODE', 'cohort')
 parts = json.load(open(os.path.join(root, 'ew-parts-solo.json' if MODE == 'solo' else 'ew-parts.json')))
-# the sheet carries the page's own words: EW_MODE=cohort is the course door (ending-well-v5.html), EW_MODE=solo is the public door (ending-well-v5-public.html)
+# the sheet carries the page's own words: EW_MODE=cohort is the course door (ending-well-v6.html), EW_MODE=solo is the public door (ending-well-v6-public.html)
 import html as _html, re as _re
-_page = open(os.path.join(root, 'ending-well-v5-public.html' if MODE == 'solo' else 'ending-well-v5.html'), encoding='utf-8').read()
+_page = open(os.path.join(root, 'ending-well-v6-public.html' if MODE == 'solo' else 'ending-well-v6.html'), encoding='utf-8').read()
 def _lift(i): return _html.unescape(_re.search(r'id="%s">(.*?)</p>' % i, _page, _re.S).group(1)).strip()
 EYEBROW, LEDE = _lift('ewEyebrow'), _lift('ewLede')
+if MODE == 'solo':   # the public door sets its own eyebrow and lede in script (v6), so lift them from there; the sheet carries the "A group" setting
+    _m = _re.search(r'ld\.textContent = "(.*?)";', _page); LEDE = _m.group(1).replace('\\u2014', '\u2014')
+    _m = _re.search(r'eb\.textContent = "(.*?)";', _page); EYEBROW = _m.group(1)
 SAVE_NOTE = ('This sheet carries the same questions as the page, for working away from a screen. When you are ready, type your lines into Ending Well at ancientpathcoaching.com/ending-well so it is saved to your page.' if MODE == 'solo'
   else 'This sheet carries the same questions as the page, for working away from a screen. When you are ready, type your lines into Ending Well in Week 12 so it is saved to your page.')
 FOOT = 'ancientpathcoaching.com' if MODE == 'solo' else 'Written at the end of Breaking Free. · ancientpathcoaching.com'
