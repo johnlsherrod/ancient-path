@@ -3325,8 +3325,8 @@
   };
 
   window.APStory = {
-    version: "20.4",
-    build: "20.4",   /* v20.3: rides on every story event (v20.4: the team answer waits for the page) */
+    version: "20.5",
+    build: "20.5",   /* v20.3: rides on every story event (v20.4: the team answer waits for the page) */
     assistant: ASSIST,
     row: ROW,   /* v19.2: the row standard every piece draws its foot rows through */
     wordForIt: WORD_FOR_IT.slice(),   /* v15: The Word for It, the only feeling words any piece offers */
