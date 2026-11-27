@@ -5,7 +5,7 @@ let pass = 0, total = 0; const res = [];
 const chk = (n, c, d) => { total++; if (c) pass++; res.push((c ? "ok   " : "FAIL ") + n + (d ? " — " + d : "")); };
 (async () => {
   const b = await chromium.launch({ executablePath: process.env.CHROME_BIN || "/opt/pw-browsers/chromium-1243/chrome-linux64/chrome" });
-  for (const [door, file] of [["course", "ending-well-v6.3.html"], ["public", "ending-well-v6.3-public.html"]]) for (const [name, w, h] of [["phone", 390, 800], ["desk", 1440, 900]]) {
+  for (const [door, file] of [["course", "ending-well-v6.4.html"], ["public", "ending-well-v6.4-public.html"]]) for (const [name, w, h] of [["phone", 390, 800], ["desk", 1440, 900]]) {
     const tag = door + "/" + name + ": ";
     const html = fs.readFileSync(__dirname + "/" + file, "utf8");
     const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: name === "phone", isMobile: name === "phone" }); const p = await ctx.newPage();

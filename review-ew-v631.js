@@ -4,13 +4,13 @@ const { chromium } = require("playwright"); const fs = require("fs");
 const story = fs.readFileSync(__dirname + "/story.js", "utf8");
 let pass = 0, total = 0; const res = [];
 const chk = (n, c, d) => { total++; if (c) pass++; res.push((c ? "ok   " : "FAIL ") + n + (d ? " — " + d : "")); };
-const CASES = [["course", "ending-well-v6.3.html", ""], ["public-group", "ending-well-v6.3-public.html", "?with=group"], ["public-one", "ending-well-v6.3-public.html", "?with=one"], ["public-alone", "ending-well-v6.3-public.html", "?with=alone"]];
+const CASES = [["course", "ending-well-v6.4.html", ""], ["public-group", "ending-well-v6.4-public.html", "?with=group"], ["public-one", "ending-well-v6.4-public.html", "?with=one"], ["public-alone", "ending-well-v6.4-public.html", "?with=alone"]];
 (async () => {
   const b = await chromium.launch({ executablePath: process.env.CHROME_BIN || "/opt/pw-browsers/chromium-1243/chrome-linux64/chrome" });
-  for (const [door, file, q] of CASES) for (const [name, w, h] of [["phone", 390, 800], ["desk", 1440, 900]]) {
+  for (const [door, file, q] of CASES) for (const [name, w, h] of [["phone", 390, 800], ["tablet", 820, 1000], ["desk", 1440, 900]]) {
     const tag = door + "/" + name + ": ";
     const html = fs.readFileSync(__dirname + "/" + file, "utf8");
-    const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: name === "phone", isMobile: name === "phone", deviceScaleFactor: 2 }); const p = await ctx.newPage();
+    const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: name !== "desk", isMobile: name === "phone", deviceScaleFactor: 2 }); const p = await ctx.newPage();
     const errs = []; p.on("pageerror", e => errs.push(e.message));
     await p.route("**/*", r => { const u = r.request().url();
       if (/story\.js/.test(u)) return r.fulfill({ contentType: "application/javascript", body: story, headers: { "access-control-allow-origin": "*" } });
@@ -31,8 +31,8 @@ const CASES = [["course", "ending-well-v6.3.html", ""], ["public-group", "ending
       }));
       r.forEach(x => { boxes++; if (x.stack) stacked++;
         const hit = (a, c) => a && c && a.l < c.r - 1 && a.r > c.l + 1 && a.t < c.b - 1 && a.b > c.t + 1;
-        if (x.m) { mics++; if (x.m.l < x.t.r - 1 && name === "phone") bad.push(x.id + ": the microphone sits in the writing"); if (x.m.r > x.line.r + 1) bad.push(x.id + ": the microphone leaves the box"); if (hit(x.m, x.s)) bad.push(x.id + ": the microphone is over the opening words"); }
-        if (x.wd && (hit(x.wd, x.s) || (name === "phone" && x.wd.l < x.t.r - 1 && x.wd.t < x.t.b && x.wd.b > x.t.t))) bad.push(x.id + ": Talk is over the words");
+        if (x.m) { mics++; if (x.m.l < x.t.r - 1) bad.push(x.id + ": the microphone sits in the writing"); if (x.m.r > x.line.r + 1) bad.push(x.id + ": the microphone leaves the box"); if (hit(x.m, x.s)) bad.push(x.id + ": the microphone is over the opening words"); }
+        if (x.wd && (hit(x.wd, x.s) || (x.wd.l < x.t.r - 1 && x.wd.t < x.t.b && x.wd.b > x.t.t))) bad.push(x.id + ": Talk is over the words");
         if (x.s && !x.stack && x.s.r > x.t.r + 1) bad.push(x.id + ": the opening words run past the box");
         if (x.s && x.stack && x.s.b > x.t.t + 2) bad.push(x.id + ": stacked opening words are not above the box");
         if (!x.stack && x.indent > x.tw - 60) bad.push(x.id + ": the indent leaves under 60px to write in");
