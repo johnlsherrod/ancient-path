@@ -9,7 +9,7 @@
     "key": "iam",
     "stem": "To the men I walked with, I am",
     "prompt": "Twelve weeks are done. Start with the men. One word for what you feel toward them now — the row has some — then why, in a few words.",
-    "ex": "To the men I walked with, I am hopeful and restless, wanting what the future offers, sometimes expecting that today.",
+    "ex": "To the men I walked with, I am tired and grateful. You heard the worst of it and you kept showing up.",
     "words": [
      "thankful",
      "grateful",
@@ -88,7 +88,7 @@
  {
   "title": "What changed",
   "scene": "",
-  "frame": "Time didn’t change you. The work you did in this room did. Say what is different, in three places: body, soul, spirit.",
+  "frame": "Time didn’t change you. The work you did in this group did. Say what is different, in three places: body, soul, spirit.",
   "stone": false,
   "slots": [
    {
@@ -204,7 +204,7 @@
    {
     "key": "sawme",
     "stem": "You saw me",
-    "prompt": "Not the story itself — the night you told it. What did the men do with it? In a room like that, shame has no place to hide.",
+    "prompt": "Not the story itself — the night you told it. What did the men do with it? In a group like that, shame has no place to hide.",
     "ex": "You saw me the night I said the thing I had never said out loud, and nobody looked away.",
     "words": [],
     "rowNote": "",
@@ -215,7 +215,7 @@
    {
     "key": "expected",
     "stem": "What I expected was",
-    "prompt": "Before you said it out loud — what did you brace for? Being judged, being handled, the room going quiet.",
+    "prompt": "Before you said it out loud — what did you brace for? Being judged, being handled, the group going quiet.",
     "ex": "What I expected was that no one would care, understand or accept me. I was afraid to be known.",
     "words": [],
     "rowNote": "",
@@ -249,7 +249,7 @@
     "key": "goddid",
     "stem": "What God did was",
     "prompt": "Say what He did, not what you did. For some men it is this: a room with men in it, and what got named there. If nothing has moved yet, say that — it is true, and it belongs here.",
-    "ex": "What God did was set the path ahead with men that had already walked it, a freedom trail merchandised with the right mix of beautiful views, difficult terrain and resting spots.",
+    "ex": "What God did was set the path ahead with men that had already walked it, a freedom trail laid out with the right mix of beautiful views, difficult terrain and resting spots.",
     "words": [],
     "rowNote": "",
     "own": false,
@@ -367,7 +367,15 @@
     "own": false,
     "bridge": null,
     "lookback": null
-   },
+   }
+  ]
+ },
+ {
+  "title": "How I’ll keep it",
+  "scene": "",
+  "frame": "Not the whole life. One small step, a way to see that it held, and what you will do when you drift.",
+  "stone": false,
+  "slots": [
    {
     "key": "smallstep",
     "stem": "The one small thing I will try this month is",

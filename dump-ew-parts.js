@@ -1,6 +1,6 @@
 // Writes ew-parts.json and ew-parts-solo.json from the page's own PARTS (window.ewParts), so the worksheet carries the same words as the page.
 const { JSDOM } = require("jsdom"); const fs = require("fs");
-for (const [mode, file] of [["cohort", "ending-well-v6.2.html"], ["solo", "ending-well-v6.2-public.html"]]) {   /* cohort = the course door (Week 12), solo = the public door (/ending-well) */
+for (const [mode, file] of [["cohort", "ending-well-v6.3.html"], ["solo", "ending-well-v6.3-public.html"]]) {   /* cohort = the course door (Week 12), solo = the public door (/ending-well) */
   const page = fs.readFileSync(__dirname + "/" + file, "utf8");
   const scripts = [...page.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
   const markup = page.replace(/<script>[\s\S]*?<\/script>/g, "");

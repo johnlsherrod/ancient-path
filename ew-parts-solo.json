@@ -94,7 +94,7 @@
    {
     "key": "camein",
     "stem": "What came in through my eyes and ears was",
-    "prompt": "Everything that reached you through your eyes and ears — any sound, sight, smell, or touch you control. What was coming in?",
+    "prompt": "Everything that reached you through your eyes and ears — any sound or sight you control. What was coming in?",
     "ex": "What came in through my eyes and ears was a screen at midnight and voices telling me I was the only one.",
     "words": [],
     "rowNote": "",
@@ -204,8 +204,8 @@
    {
     "key": "sawme",
     "stem": "You saw me",
-    "prompt": "Not the story itself — the day you told it. What did they do with it? In a room like that, shame has no place to hide.",
-    "ex": "You saw me the night I said the thing I had never said out loud, and nobody looked away.",
+    "prompt": "Not the story itself — the day you told it. What did they do with it? In a group like that, shame has no place to hide.",
+    "ex": "You saw me the day I said the thing I had never said out loud, and nobody looked away.",
     "words": [],
     "rowNote": "",
     "own": false,
@@ -215,8 +215,8 @@
    {
     "key": "expected",
     "stem": "What I expected was",
-    "prompt": "Before you said it out loud — what did you brace for? Being judged, being handled, the room going quiet.",
-    "ex": "What I expected was the room to go cold.",
+    "prompt": "Before you said it out loud — what did you brace for? Being judged, being handled, the group going quiet.",
+    "ex": "What I expected was the group to go cold.",
     "words": [],
     "rowNote": "",
     "own": false,
@@ -367,7 +367,15 @@
     "own": false,
     "bridge": null,
     "lookback": null
-   },
+   }
+  ]
+ },
+ {
+  "title": "How I’ll keep it",
+  "scene": "",
+  "frame": "Not the whole life. One small step, a way to see that it held, and what you will do when you drift.",
+  "stone": false,
+  "slots": [
    {
     "key": "smallstep",
     "stem": "The one small thing I will try this month is",
@@ -427,7 +435,7 @@
    {
     "key": "answer",
     "stem": "I will answer it by",
-    "prompt": "“The days are not the achievement. Whatever you did that made the days is the achievement. Find it, name it out loud, and do it again.” Pick one, or write your own.",
+    "prompt": "The days are not the achievement. Whatever you did that made the days is the achievement. Find it, name it out loud, and do it again. Pick one, or write your own.",
     "ex": "I will answer it by a text to one of them, that day.",
     "words": [
      "a call",
